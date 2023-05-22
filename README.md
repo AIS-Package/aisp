@@ -1,6 +1,6 @@
 <div align = center> 
 
-|    <img src='docs/logos/logo.svg'/>   |     <h1 class='text-title' align=center>**Artificial Immune Systems Package.**</h1>  |
+|    <img src='https://ais-package.github.io/assets/images/logo-7b415c6841a3ed8a760eff38ecd996b8.svg'/>   |     <h1 class='text-title' align=center>**Artificial Immune Systems Package.**</h1>  |
 |:-------------:|:-------------:|
 
 </div>
@@ -18,7 +18,7 @@
 
 #### Package documentation / Documentação do pacote:
 
-* [Docs.](https://ais-package.github.io/)
+* [Docs.](https://ais-package.github.io/docs/intro)
 
 * [Wiki Github.](https://github.com/AIS-Package/aisp/wiki)
 
@@ -45,7 +45,7 @@
 
 #### Introduction
 
-The **AISP**, is a python module that implements artificial immune systems techniques, distributed under the GNU General Public License v3 (GPLv3).
+The **AISP** is a python package that implements artificial immune systems techniques, distributed under the GNU Lesser General Public License v3.0 (GPLv3).
 
 The package started in **2022** as a research package at the Federal Institute of Northern Minas Gerais - Salinas campus (**IFNMG - Salinas**).
 
@@ -102,22 +102,18 @@ from aisp.NSA import RNSA
 
 nsa = RNSA(N=300, r=0.05)
 ```
+
 </section>
 </section>
 <section id='examples'>
 
 #### Examples:
 
+---
+
 ##### Example using the negative selection technique (**nsa**):
 
-In the example present in this [notebook](https://github.com/AIS-Package/aisp/blob/main/examples/RNSA/example_with_randomly_generated_dataset-en.ipynb), **500** random samples were generated, arranged in two groups, one for each class, we can see the non-self detectors generated below:
-
-<div align = center>
-
-![](/docs/imgs/exemple-en.png)
-</div>
-
---- 
+In the example present in this [notebook](https://github.com/AIS-Package/aisp/blob/main/examples/RNSA/example_with_randomly_generated_dataset-en.ipynb), **500** random samples were generated, arranged in two groups, one for each class.
 
 Below are some examples that use a database for classification with the [Jupyter notebook](https://jupyter.org/) tool.
 
@@ -129,6 +125,9 @@ Below are some examples that use a database for classification with the [Jupyter
     + [geyser_dataBase_example](https://github.com/AIS-Package/aisp/blob/main/examples/RNSA/geyser_dataBase_example_en.ipynb)
 + **BNSA** 
     + [mushrooms_dataBase_example](https://github.com/AIS-Package/aisp/blob/main/examples/BNSA/mushrooms_dataBase_example_en.ipynb)
+
+---
+
 
 </section>
 </section>
@@ -156,7 +155,7 @@ Below are some examples that use a database for classification with the [Jupyter
 
 #### Introdução
 
-O **AISP**, é um módulo python que implementa as técnicas dos sistemas imunológicos artificiais, distribuído sob a licença GNU General Public License v3 (GPLv3).
+O **AISP** é um pacote python que implementa as técnicas dos sistemas imunológicos artificiais, distribuído sob a licença GNU Lesser General Public License v3.0 (GPLv3).
 
 O pacote teve início no ano de **2022** como um pacote de pesquisa no instituto federal do norte de minas gerais - campus salinas (**IFNMG - Salinas**).
 
@@ -176,7 +175,7 @@ Os sistemas imunológicos artificiais (SIA) inspiram-se no sistema imunológico 
 #### **Instalação**
 
 
-O módulo requer a instalação do [python 3.10.7](https://www.python.org/downloads/) ou superior.
+O módulo requer a instalação do [python 3.8.10](https://www.python.org/downloads/) ou superior.
 
 <section id='dependências'>
 
@@ -219,19 +218,14 @@ nsa = RNSA(N=300, r=0.05)
 <section id='exemplos'>
 
 #### Exemplos:
-##### Exemplo utilizando a técnica de seleção negativa (**nsa**):
-
-No exemplo presente nesse [notebook](https://github.com/AIS-Package/aisp/blob/main/examples/RNSA/example_with_randomly_generated_dataset-pt.ipynb), gerou-se **500** amostras aleatórias dispostas em dois grupos um para cada classe, podemos visualizar os detectores do não-próprio gerados abaixo:
-
-<div align = center>
-
-![](/docs/imgs/exemplo-ptbr.png)
-
-</div>
 
 ---
 
-A seguir alguns exemplos que utiliza-se de base de dados para classificação com a ferramenta [Jupyter notebook](https://jupyter.org/)..
+##### Exemplo utilizando a técnica de seleção negativa (**nsa**):
+
+No exemplo presente nesse [notebook](https://github.com/AIS-Package/aisp/blob/main/examples/RNSA/example_with_randomly_generated_dataset-pt.ipynb), gerando **500** amostras aleatórias dispostas em dois grupos um para cada classe.
+
+A seguir alguns exemplos que utiliza-se de base de dados para classificação com a ferramenta [Jupyter notebook](https://jupyter.org/).
 
 #### **Seleção Negativa:**
 
@@ -241,5 +235,9 @@ A seguir alguns exemplos que utiliza-se de base de dados para classificação co
 
 + **BNSA** 
     + [mushrooms_dataBase_example](https://github.com/AIS-Package/aisp/blob/main/examples/BNSA/mushrooms_dataBase_example_en.ipynb)
+
+
+---
+
 </section>
 </section>

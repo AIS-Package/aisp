@@ -6,13 +6,42 @@ build-backend = "setuptools.build_meta"
 name = "aisp"
 version = "0.1.0"
 authors = [
-  { name="João Paulo", email="jpsilvabarr@gmail.com" },
+  { name="João Paulo da Silva Barros", email="jpsilvabarr@gmail.com" },
 ]
-description = "Pacote que implementa técnicas de sistemas imunológicos artificiais."
+
+maintainers = [
+  { name="Alison Zille Lopes",  email="alisonzille@gmail.com"},
+]
+
+description = "Package with techniques of artificial immune systems."
+
 readme = "README.md"
+
 requires-python = ">= 3.8.10"
+
+license = {text = "LGPL-3.0 license"}
+
 classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
     "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
 ]
+
+dependencies = [
+    "numpy>=1.23.0",
+    "scipy>=1.8.1",
+    "tqdm==4.64.1",
+]
+
+keywords = ["Artificial Immune Systems", "classification", "Natural computing", "machine learning", "artificial intelligence"]
+
+[project.urls]
+Homepage = "https://ais-package.github.io/"
+Documentation = "https://ais-package.github.io/docs/intro"
+"Source Code" = "https://github.com/AIS-Package/aisp"
+Tracker = "https://github.com/AIS-Package/aisp/issues"
