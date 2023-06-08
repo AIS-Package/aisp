@@ -1,5 +1,6 @@
 import numpy as np
 import numpy.typing as npt
+from typing import Literal
 from scipy.spatial.distance import euclidean, cityblock, minkowski
 
 class Base:
@@ -39,7 +40,7 @@ class Base:
         else:
             self.metric = 'euclidean'
 
-    def distance(self, u: npt.NDArray, v: npt.NDArray):
+    def _distance(self, u: npt.NDArray, v: npt.NDArray):
         """
         Function to calculate the distance between two points by the chosen ``metric``.
 
@@ -72,7 +73,47 @@ class Base:
         else:
             return euclidean(u, v)
         
-    def slice_index_list_by_class(self, y: npt.NDArray) -> dict:
+    def _check_and_raise_exceptions_fit(self, X: npt.NDArray = None, y: npt.NDArray = None, _class_: Literal['RNSA', 'BNSA'] = 'RNSA'):
+        """
+        Function responsible for verifying fit function parameters and throwing exceptions if the verification is not successful.
+
+        Parameters:
+        ---
+             * X (``npt.NDArray``): Training array, containing the samples and their characteristics,
+            [``N samples`` (rows)][``N features`` (columns)].
+            * y (``npt.NDArray``): Array of target classes of ``X`` with [``N samples`` (lines)].
+            * _class_ (Literal[RNSA, BNSA], optional): Current class. Defaults to 'RNSA'.
+
+        ---
+
+        Função responsável por verificar os parâmetros da função fit e lançar exceções se a verificação não for bem-sucedida.
+
+         Parâmetros:
+         ---
+              * X (``npt.NDArray``): Array de treinamento, contendo as amostras e suas características,
+             [``N samples`` (linhas)][``N features`` (colunas)].
+             * y (``npt.NDArray``): Array de classes alvo de ``X`` com [``N samples`` (linhas)].
+             * _class_ (Literal[RNSA, BNSA], opcional): Classe atual. O padrão é 'RNSA'.
+        """
+        if not isinstance(X,  (np.ndarray)):
+            if isinstance(X,  (list)):
+                X = np.array(X)
+            else:
+                raise TypeError("X is not an ndarray.")
+        elif not isinstance(y, (np.ndarray)):
+            if isinstance(y, (list)):
+                y = np.array(y)
+            else:
+                raise TypeError("y is not an ndarray.")
+        if X.shape[0] != y.shape[0]:
+            raise TypeError(
+                "X does not have the same amount of sample for the output classes in y.")
+        
+        if _class_ == 'BNSA' and not np.isin(X, [0, 1]).all():
+            raise ValueError(
+                "The array X contains values that are not composed only of 0 and 1.")
+
+    def _slice_index_list_by_class(self, y: npt.NDArray) -> dict:
         """
         The function ``__slice_index_list_by_class(...)``, separates the indices of the lines according to the output class,
         to loop through the sample array, only in positions where the output is the class being trained.
@@ -105,7 +146,7 @@ class Base:
 
         return positionSamples
     
-    def score(self, X: npt.NDArray, y: list) -> float:
+    def _score(self, X: npt.NDArray, y: list) -> float:
         """
         Score function calculates forecast accuracy.
 

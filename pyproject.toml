@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aisp"
-version = "0.1.0"
+version = "0.1.1"
 authors = [
   { name="João Paulo da Silva Barros", email="jpsilvabarr@gmail.com" },
 ]
@@ -33,7 +33,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "numpy>=1.23.0",
+    "numpy>=1.22.4",
     "scipy>=1.8.1",
     "tqdm==4.64.1",
 ]

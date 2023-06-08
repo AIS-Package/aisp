@@ -34,7 +34,12 @@ possível loop infinito caso seja definido um raio que não seja possível gerar
     Defaults to ``'default-NSA'``.
 
 * *r_s* (``float``): O valor de ``rₛ`` é o raio das amostras próprias da matriz ``X``.
-* *cell_bounds* (``bool``):  Se definido como ``True``, esta opção limita a geração dos detectores ao espaço do plano compreendido entre 0 e 1. Isso significa que qualquer detector cujo raio ultrapasse esse limite é descartado, e esta variável é usada exclusivamente no algoritmo ``V-detector``.
+* ``**kwargs``:
+    - *non_self_label* (``str``): Esta variável armazena o rótulo que será atribuído quando os dados possuírem 
+    apenas uma classe de saída, e a amostra for classificada como não pertencente a essa classe. Defaults to ``'non-self'``.
+    - *cell_bounds* (``bool``):  Se definido como ``True``, esta opção limita a geração dos detectores ao espaço do plano 
+    compreendido entre 0 e 1. Isso significa que qualquer detector cujo raio ultrapasse esse limite é descartado, 
+    e esta variável é usada exclusivamente no algoritmo ``V-detector``.
 
 **Outras variáveis iniciadas:**
 
@@ -308,8 +313,13 @@ The ``RNSA`` class has the purpose of classifying and identifying anomalies thro
     Defaults to ``'default-NSA'``.
 
 * *r_s* (``float``): rₛ Radius of the ``X`` own samples.
-* *cell_bounds* (``bool``): If set to ``True``, this option limits the generation of detectors to the space within the plane between 0 and 1. 
-This means that any detector whose radius exceeds this limit is discarded, this variable is only used in the ``V-detector`` algorithm.
+* ``**kwargs``:
+    - *non_self_label* (``str``): This variable stores the label that will be assigned when the data has only one 
+    output class, and the sample is classified as not belonging to that class. Defaults to ``'non-self'``.
+    - *cell_bounds* (``bool``): If set to ``True``, this option limits the generation of detectors to the space within 
+    the plane between 0 and 1. This means that any detector whose radius exceeds this limit is discarded, 
+    this variable is only used in the ``V-detector`` algorithm. Defaults to ``False``.
+
 
 **Other variables initiated:**
 

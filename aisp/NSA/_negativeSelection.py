@@ -1,7 +1,7 @@
 import numpy as np
 import numpy.typing as npt
 from tqdm import tqdm
-from typing import Literal
+from typing import Dict, Literal, Union
 from collections import namedtuple
 from scipy.spatial.distance import hamming
 
@@ -74,10 +74,10 @@ class RNSA(Base):
         r_s: float = 0.0001, 
         k: int = 1, 
         metric: Literal['manhattan', 'minkowski', 'euclidean'] = 'euclidean', 
-        max_discards: int = 100, 
+        max_discards: int = 1000, 
         seed: int = None, 
         algorithm: Literal['default-NSA', 'V-detector'] ='default-NSA', 
-        cell_bounds: bool = False
+        **kwargs: Dict[str, Union[bool, str]]
     ):
         """
         Negative Selection class constructor (``RNSA``).
@@ -103,7 +103,7 @@ class RNSA(Base):
             Defaults to ``'euclidean'``.
 
             * max_discards (``int``): This parameter indicates the maximum number of consecutive detector discards, aimed at preventing a 
-            possible infinite loop in case a radius is defined that cannot generate non-self detectors. Defaults to ``100``.
+            possible infinite loop in case a radius is defined that cannot generate non-self detectors. Defaults to ``1000``.
             * seed (``int``): Seed for the random generation of values in the detectors. Defaults to ``None``.
 
             * algorithm(``str``), Set the algorithm version:
@@ -113,10 +113,12 @@ class RNSA(Base):
 
             Defaults to ``'default-NSA'``.
 
-            
-            * cell_bounds (``bool``): If set to ``True``, this option limits the generation of detectors to the space within 
-            the plane between 0 and 1. This means that any detector whose radius exceeds this limit is discarded, 
-            this variable is only used in the ``V-detector`` algorithm. Defaults to ``False``.
+            - ``**kwargs``:
+                    - non_self_label (``str``): This variable stores the label that will be assigned when the data has only one 
+                    output class, and the sample is classified as not belonging to that class. Defaults to ``'non-self'``.
+                    - cell_bounds (``bool``): If set to ``True``, this option limits the generation of detectors to the space within 
+                    the plane between 0 and 1. This means that any detector whose radius exceeds this limit is discarded, 
+                    this variable is only used in the ``V-detector`` algorithm. Defaults to ``False``.
 
         ---
 
@@ -142,7 +144,7 @@ class RNSA(Base):
             Defaults to ``'euclidean'``.
 
             * max_discards (``int``): Este parâmetro indica o número máximo de descartes de detectores em sequência, que tem como objetivo evitar um 
-            possível loop infinito caso seja definido um raio que não seja possível gerar detectores do não-próprio. Defaults to ``100``.
+            possível loop infinito caso seja definido um raio que não seja possível gerar detectores do não-próprio. Defaults to ``1000``.
             * seed (``int``): Semente para a geração randômica dos valores nos detectores. Defaults to ``None``.
             * algorithm (``str``), Definir a versão do algoritmo:
 
@@ -151,9 +153,12 @@ class RNSA(Base):
 
             Defaults to ``'default-NSA'``.
 
-            * cell_bounds (``bool``):  Se definido como ``True``, esta opção limita a geração dos detectores ao espaço do plano 
-            compreendido entre 0 e 1. Isso significa que qualquer detector cujo raio ultrapasse esse limite é descartado, 
-            e esta variável é usada exclusivamente no algoritmo ``V-detector``.
+            - ``**kwargs``:
+                    - non_self_label (``str``): Esta variável armazena o rótulo que será atribuído quando os dados possuírem 
+                    apenas uma classe de saída, e a amostra for classificada como não pertencente a essa classe. Defaults to ``'non-self'``.
+                    - cell_bounds (``bool``):  Se definido como ``True``, esta opção limita a geração dos detectores ao espaço do plano 
+                    compreendido entre 0 e 1. Isso significa que qualquer detector cujo raio ultrapasse esse limite é descartado, 
+                    e esta variável é usada exclusivamente no algoritmo ``V-detector``.
         """
         
         if metric == 'manhattan' or metric == 'minkowski' or metric == 'euclidean':
@@ -194,9 +199,10 @@ class RNSA(Base):
             self._Detector = namedtuple("Detector", "position")
             self._algorithm: str = 'default-NSA'
             
-        self._cell_bounds: bool = cell_bounds 
+        self._cell_bounds: bool = kwargs.get('cell_bounds', False)
+        self.non_self_label: str = kwargs.get('non_self_label', 'non-self')
         self.max_discards: int = max_discards
-        self.detectors: dict = None
+        self.detectors: Union[dict, None] = None
         self.classes: npt.NDArray = None
 
     def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True):
@@ -229,19 +235,7 @@ class RNSA(Base):
         ---
             (``self``): Retorna a própria instância.
         """
-        if not isinstance(X,  (np.ndarray)):
-            if isinstance(X,  (list)):
-                X = np.array(X)
-            else:
-                raise TypeError("X is not an ndarray.")
-        elif not isinstance(y, (np.ndarray)):
-            if isinstance(y, (list)):
-                y = np.array(y)
-            else:
-                raise TypeError("y is not an ndarray.")
-        if X.shape[0] != y.shape[0]:
-            raise TypeError(
-                "X does not have the same amount of sample for the output classes in y.")
+        super()._check_and_raise_exceptions_fit(X, y)
         
         # Identificando as classes possíveis, dentro do array de saídas ``y``.
         self.classes = np.unique(y)
@@ -352,7 +346,7 @@ class RNSA(Base):
 
             # Se possuir apenas uma classe e não classificar a amostra define a saída como não-própria.
             if not class_found and len(self.classes) == 1:
-                C = np.append(C, ['non-self'])
+                C = np.append(C, [self.non_self_label])
             # Se não identificar a classe com os detectores, coloca a classe com a maior distância da média dos seus detectores.
             elif not class_found:
                 average_distance = dict()
@@ -412,17 +406,19 @@ class RNSA(Base):
             elif distance_mean > (self.r + self.r_s):
                 return True  # Detector é valido!
         else:
-            distance = None
+            distance: Union[float, None] = None
             for i in samples_index_class:
                 if self._algorithm == 'V-detector':
-                    if distance == None:
-                        distance = self.__distance(X[i], vector_x)
-                    elif distance > self.__distance(X[i], vector_x):
-                        distance = self.__distance(X[i], vector_x)
+                    new_distance = self.__distance(X[i], vector_x)
+                    if distance is None:
+                        distance = new_distance
+                    elif distance > new_distance:
+                        distance = new_distance
                 else:
                     # Calcula a distância entre os vetores, se menor ou igual ao raio + raio da amostra define a validade do detector como falso.
                     if (self.r + self.r_s) >= self.__distance(X[i], vector_x):
                         return False  # Detector não é valido!
+                    
             if self._algorithm == 'V-detector':
                 return self.__detector_is_valid_to_Vdetector(distance, vector_x)
             return True  # Detector é valido!
@@ -563,7 +559,7 @@ class RNSA(Base):
         ---
             * Distância (``double``) entre os dois pontos.
         """
-        return super().distance(u, v)
+        return super()._distance(u, v)
 
     def __detector_is_valid_to_Vdetector(self, distance: float, vector_x: npt.NDArray):
         """
@@ -633,7 +629,7 @@ class RNSA(Base):
         ---
             * dict: Um dicionário com a lista de posições do array(``y``), com as classes como chave.
         """
-        return super().slice_index_list_by_class(y)
+        return super()._slice_index_list_by_class(y)
  
     def score(self, X: npt.NDArray, y: list) -> float:
         """
@@ -681,7 +677,7 @@ class RNSA(Base):
         accuracy : float
             A acurácia do modelo.
         """
-        return super().score(X, y)
+        return super()._score(X, y)
 
     def get_params(self, deep: bool = True) -> dict:
         return {
@@ -735,7 +731,7 @@ class BNSA(Base):
         self, 
         N: int = 100, 
         aff_thresh: float = 0.1, 
-        max_discards: int = 100, 
+        max_discards: int = 1000, 
         seed: int = None
     ):
         """
@@ -751,7 +747,7 @@ class BNSA(Base):
              * aff_thresh (``float``): The variable represents the percentage of similarity between the T cell and the own samples.
              The default value is 10% (0.1), while a value of 1.0 represents 100% similarity.
              * max_discards (``int``): This parameter indicates the maximum number of detector discards in sequence, which aims to avoid a
-             possible infinite loop if a radius is defined that it is not possible to generate non-self detectors. Defaults to ``100``.
+             possible infinite loop if a radius is defined that it is not possible to generate non-self detectors. Defaults to ``1000``.
              * seed (``int``): Seed for the random generation of values in the detectors. Defaults to ``None``.
 
         ---
@@ -768,7 +764,7 @@ class BNSA(Base):
             * aff_thresh (``float``): A variável representa a porcentagem de similaridade entre a célula T e as amostras próprias. 
             O valor padrão é de 10% (0,1), enquanto que o valor de 1,0 representa 100% de similaridade.
             * max_discards (``int``): Este parâmetro indica o número máximo de descartes de detectores em sequência, que tem como objetivo evitar um 
-            possível loop infinito caso seja definido um raio que não seja possível gerar detectores do não-próprio. Defaults to ``100``.
+            possível loop infinito caso seja definido um raio que não seja possível gerar detectores do não-próprio. Defaults to ``1000``.
             * seed (``int``): Semente para a geração randômica dos valores nos detectores. Defaults to ``None``.
         """
         if N > 0:
@@ -823,22 +819,7 @@ class BNSA(Base):
         ---
             (``self``): Retorna a própria instância.
         """
-        if not isinstance(X,  (np.ndarray)):
-            if isinstance(X,  (list)):
-                X = np.array(X)
-            else:
-                raise TypeError("X is not an ndarray.")
-        elif not isinstance(y, (np.ndarray)):
-            if isinstance(y, (list)):
-                y = np.array(y)
-            else:
-                raise TypeError("y is not an ndarray.")
-        if X.shape[0] != y.shape[0]:
-            raise TypeError(
-                "X does not have the same amount of sample for the output classes in y.")
-        elif not np.isin(X, [0, 1]).all():
-            raise Exception(
-                "The array X contains values that are not composed only of 0 and 1.")
+        super()._check_and_raise_exceptions_fit(X, y, 'BNSA')
 
         if X.dtype != bool:
             X = X.astype(bool)
@@ -927,20 +908,23 @@ class BNSA(Base):
             contendo as classes previstas para ``X``.
             * ``None``: Se não existir detectores para a previsão.
         """
-        if not isinstance(X,  (np.ndarray)):
-            if isinstance(X,  (list)):
-                X = np.array(X)
-            else:
-                raise TypeError("X is not an ndarray.")
-        
+        # se não houver detectores retorna None.
+        if self.detectors is None:
+            return None
+        elif not isinstance(X,  (np.ndarray, list)):
+            raise TypeError("X is not an ndarray or list")
+        elif len(self.detectors[self.classes[0]][0]) != len(X[0]):
+            raise Exception('X does not have {} features to make the prediction'.format(
+                len(self.detectors[self.classes[0]][0])))
+        # Verifica se a matriz X contém apenas amostras binárias. Caso contrário, lança uma exceção.
         if not np.isin(X, [0, 1]).all():
-            raise Exception(
+            raise ValueError(
                 "The array X contains values that are not composed only of 0 and 1.")
 
         if X.dtype != bool:
             X = X.astype(bool)
             
-         # Inicia um array vazio.
+        # Inicia um array vazio.
         C = np.empty(shape=(0))
         # Para cada linha de amostra em X.
         for line in X:
@@ -1009,7 +993,7 @@ class BNSA(Base):
         ---
             * dict: Um dicionário com a lista de posições do array(``y``), com as classes como chave.
         """
-        return super().slice_index_list_by_class(y)
+        return super()._slice_index_list_by_class(y)
 
     def score(self, X: npt.NDArray, y: list) -> float:
         """
@@ -1057,7 +1041,7 @@ class BNSA(Base):
         accuracy : float
             A acurácia do modelo.
         """
-        return super().score(X, y)
+        return super()._score(X, y)
 
     def get_params(self, deep: bool = True) -> dict:
         return {

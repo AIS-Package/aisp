@@ -45,7 +45,7 @@
 
 #### Introduction
 
-The **AISP** is a python package that implements artificial immune systems techniques, distributed under the GNU Lesser General Public License v3.0 (GPLv3).
+The **AISP** is a python package that implements artificial immune systems techniques, distributed under the GNU Lesser General Public License v3.0 (LGPLv3).
 
 The package started in **2022** as a research package at the Federal Institute of Northern Minas Gerais - Salinas campus (**IFNMG - Salinas**).
 
@@ -75,7 +75,7 @@ The module requires installation of [python 3.8.10](https://www.python.org/downl
 
 |    Packages   |     Version   |
 |:-------------:|:-------------:|
-|    numpy      |    ≥ 1.23.0   |
+|    numpy      |    ≥ 1.22.4   |
 |    scipy      |    ≥ 1.8.1    |
 |    tqdm       |    ≥ 4.64.1   |
 
@@ -155,7 +155,7 @@ Below are some examples that use a database for classification with the [Jupyter
 
 #### Introdução
 
-O **AISP** é um pacote python que implementa as técnicas dos sistemas imunológicos artificiais, distribuído sob a licença GNU Lesser General Public License v3.0 (GPLv3).
+O **AISP** é um pacote python que implementa as técnicas dos sistemas imunológicos artificiais, distribuído sob a licença GNU Lesser General Public License v3.0 (LGPLv3).
 
 O pacote teve início no ano de **2022** como um pacote de pesquisa no instituto federal do norte de minas gerais - campus salinas (**IFNMG - Salinas**).
 
@@ -184,7 +184,7 @@ O módulo requer a instalação do [python 3.8.10](https://www.python.org/downlo
 
 |    Pacotes    |     Versão    |
 |:-------------:|:-------------:|
-|    numpy      |    ≥ 1.23.0   |
+|    numpy      |    ≥ 1.22.4   |
 |    scipy      |    ≥ 1.8.1    |
 |    tqdm       |    ≥ 4.64.1   |
 
