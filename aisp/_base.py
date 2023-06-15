@@ -13,16 +13,21 @@ class Base:
     A classe base contém funções que são utilizadas por mais de uma classe do pacote, 
     e por isso são consideradas essenciais para o funcionamento geral do sistema.
     """
-    def __init__(self, metric: str = 'euclidean'):
+    def __init__(self, metric: str = 'euclidean', p: float = 2):
         """
         Parameters:
         ---
         * metric (``str``): Way to calculate the distance between the detector and the sample:
 
                 * ``'Euclidean'`` ➜ The calculation of the distance is given by the expression: √( (x₁ – x₂)² + (y₁ – y₂)² + ... + (yn – yn)²).
-                * ``'minkowski'`` ➜ The calculation of the distance is given by the expression: ( |X₁ – Y₁|p + |X₂ – Y₂|p + ... + |Xn – Yn|p) ¹/ₚ , In this project ``p == 2``.
+                * ``'minkowski'`` ➜ The calculation of the distance is given by the expression: ( |X₁ – Y₁|p + |X₂ – Y₂|p + ... + |Xn – Yn|p) ¹/ₚ.
                 * ``'manhattan'`` ➜ The calculation of the distance is given by the expression: ( |x₁ – x₂| + |y₁ – y₂| + ... + |yn – yn|) .
         
+        
+        * p (``float``): This parameter stores the value of ``p`` used in the Minkowski distance. 
+        The default is ``2``, which represents normalized Euclidean distance. Different values of p lead to 
+        different variants of the Minkowski distance [learn more](https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.minkowski.html).
+
         ---
 
         Parameters:
@@ -30,15 +35,20 @@ class Base:
         * metric (``str``): Forma para se calcular a distância entre o detector e a amostra: 
 
                 * ``'euclidiana'`` ➜ O cálculo da distância dá-se pela expressão: √( (x₁ – x₂)² + (y₁ – y₂)² + ... + (yn – yn)²).
-                * ``'minkowski'``  ➜ O cálculo da distância dá-se pela expressão: ( |X₁ – Y₁|p + |X₂ – Y₂|p + ... + |Xn – Yn|p) ¹/ₚ , Neste projeto ``p == 2``.
+                * ``'minkowski'``  ➜ O cálculo da distância dá-se pela expressão: ( |X₁ – Y₁|p + |X₂ – Y₂|p + ... + |Xn – Yn|p).
                 * ``'manhattan'``  ➜ O cálculo da distância dá-se pela expressão: ( |x₁ – x₂| + |y₁ – y₂| + ... + |yn – yn|).
 
             Defaults to ``'euclidean'``.
+        
+        * p (``float``): Este parâmetro armazena o valor de ``p`` utilizada na distância de Minkowski.
+          O padrão é ``2``, o que significa distância euclidiana normalizada. Diferentes valores de p levam a 
+          diferentes variantes da distância de Minkowski [saiba mais](https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.minkowski.html).
         """
         if metric == 'manhattan' or metric == 'minkowski' or metric == 'euclidean':
-            self.metric = metric
+            self.metric: str = metric
         else:
-            self.metric = 'euclidean'
+            self.metric: str = 'euclidean'
+        self.p: float = p
 
     def _distance(self, u: npt.NDArray, v: npt.NDArray):
         """
@@ -69,7 +79,7 @@ class Base:
         if self.metric == 'manhattan':
             return cityblock(u, v)
         elif self.metric == 'minkowski':
-            return minkowski(u, v, 2)
+            return minkowski(u, v, self.p)
         else:
             return euclidean(u, v)
         
