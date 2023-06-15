@@ -31,8 +31,15 @@ class RNSA(Base):
 
             Defaults to ``'default-NSA'``.
 
-        * cell_bounds (``bool``): If set to ``True``, this option limits the generation of detectors to 
-            the space within the plane between 0 and 1. 
+        * non_self_label (``str``): This variable stores the label that will be assigned when the data has only one 
+        output class, and the sample is classified as not belonging to that class. Defaults to ``'non-self'``.
+        * cell_bounds (``bool``): If set to ``True``, this option limits the generation of detectors to the space within 
+        the plane between 0 and 1. This means that any detector whose radius exceeds this limit is discarded, 
+        this variable is only used in the ``V-detector`` algorithm. Defaults to ``False``.
+        * p (``float``): This parameter stores the value of ``p`` used in the Minkowski distance. The default is ``2``, which 
+        represents normalized Euclidean distance. Different values of p lead to different variants of the Minkowski 
+        distance [learn more](https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.minkowski.html).
+       
         * detectors (``dict``): This variable stores a list of detectors by class.
         * classes (``npt.NDArray``): list of output classes.
         
@@ -60,13 +67,19 @@ class RNSA(Base):
 
             Defaults to ``'default-NSA'``.
 
-        * cell_bounds (``bool``):  Se definido como ``True``, esta opção limita a geração dos detectores ao espaço 
-            do plano compreendido entre 0 e 1.
-       
+        * non_self_label (``str``): Esta variável armazena o rótulo que será atribuído quando os dados possuírem 
+        apenas uma classe de saída, e a amostra for classificada como não pertencente a essa classe. Defaults to ``'non-self'``.
+        * cell_bounds (``bool``):  Se definido como ``True``, esta opção limita a geração dos detectores ao espaço do plano 
+        compreendido entre 0 e 1. Isso significa que qualquer detector cujo raio ultrapasse esse limite é descartado, 
+        e esta variável é usada exclusivamente no algoritmo ``V-detector``.
+        * p (``float``): Este parâmetro armazena o valor de ``p`` utilizada na distância de Minkowski. O padrão é ``2``, o que significa 
+        distância euclidiana normalizada. Diferentes valores de p levam a diferentes variantes da distância de 
+        Minkowski [saiba mais](https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.minkowski.html).
         
         * detectors (``dict``): Essa variável armazena uma lista com detectores por classes.
         * classes (``npt.NDArray``): lista com as classes de saída.
     """
+    
     def __init__(
         self, 
         N: int = 100, 
@@ -77,7 +90,7 @@ class RNSA(Base):
         max_discards: int = 1000, 
         seed: int = None, 
         algorithm: Literal['default-NSA', 'V-detector'] ='default-NSA', 
-        **kwargs: Dict[str, Union[bool, str]]
+        **kwargs: Dict[str, Union[bool, str, float]]
     ):
         """
         Negative Selection class constructor (``RNSA``).
@@ -97,7 +110,7 @@ class RNSA(Base):
             * metric (``str``): Way to calculate the distance between the detector and the sample:
 
                 * ``'Euclidean'`` ➜ The calculation of the distance is given by the expression: √( (x₁ – x₂)² + (y₁ – y₂)² + ... + (yn – yn)²).
-                * ``'minkowski'`` ➜ The calculation of the distance is given by the expression: ( |X₁ – Y₁|p + |X₂ – Y₂|p + ... + |Xn – Yn|p) ¹/ₚ, In this project ``p == 2``.
+                * ``'minkowski'`` ➜ The calculation of the distance is given by the expression: ( |X₁ – Y₁|p + |X₂ – Y₂|p + ... + |Xn – Yn|p) ¹/ₚ.
                 * ``'manhattan'`` ➜ The calculation of the distance is given by the expression: ( |x₁ – x₂| + |y₁ – y₂| + ... + |yn – yn|) .
 
             Defaults to ``'euclidean'``.
@@ -119,7 +132,9 @@ class RNSA(Base):
                     - cell_bounds (``bool``): If set to ``True``, this option limits the generation of detectors to the space within 
                     the plane between 0 and 1. This means that any detector whose radius exceeds this limit is discarded, 
                     this variable is only used in the ``V-detector`` algorithm. Defaults to ``False``.
-
+                    - p (``float``): This parameter stores the value of ``p`` used in the Minkowski distance. The default is ``2``, which 
+                    represents normalized Euclidean distance. Different values of p lead to different variants of the Minkowski 
+                    distance [learn more](https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.minkowski.html).
         ---
 
         Construtor da classe de Seleção negativa (``RNSA``).
@@ -138,7 +153,7 @@ class RNSA(Base):
             * metric (``str``): Forma para se calcular a distância entre o detector e a amostra: 
 
                 * ``'euclidiana'`` ➜ O cálculo da distância dá-se pela expressão: √( (x₁ – x₂)² + (y₁ – y₂)² + ... + (yn – yn)²).
-                * ``'minkowski'``  ➜ O cálculo da distância dá-se pela expressão: ( |X₁ – Y₁|p + |X₂ – Y₂|p + ... + |Xn – Yn|p) ¹/ₚ, Neste projeto ``p == 2``.
+                * ``'minkowski'``  ➜ O cálculo da distância dá-se pela expressão: ( |X₁ – Y₁|p + |X₂ – Y₂|p + ... + |Xn – Yn|p) ¹/ₚ.
                 * ``'manhattan'``  ➜ O cálculo da distância dá-se pela expressão: ( |x₁ – x₂| + |y₁ – y₂| + ... + |yn – yn|).
 
             Defaults to ``'euclidean'``.
@@ -159,6 +174,9 @@ class RNSA(Base):
                     - cell_bounds (``bool``):  Se definido como ``True``, esta opção limita a geração dos detectores ao espaço do plano 
                     compreendido entre 0 e 1. Isso significa que qualquer detector cujo raio ultrapasse esse limite é descartado, 
                     e esta variável é usada exclusivamente no algoritmo ``V-detector``.
+                    - p (``float``): Este parâmetro armazena o valor de ``p`` utilizada na distância de Minkowski. O padrão é ``2``, o que significa 
+                    distância euclidiana normalizada. Diferentes valores de p levam a diferentes variantes da distância de 
+                    Minkowski [saiba mais](https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.minkowski.html).
         """
         
         if metric == 'manhattan' or metric == 'minkowski' or metric == 'euclidean':
@@ -198,10 +216,17 @@ class RNSA(Base):
         else:
             self._Detector = namedtuple("Detector", "position")
             self._algorithm: str = 'default-NSA'
-            
+
+        if max_discards > 0:
+            self.max_discards: int = max_discards
+        else:
+            self.max_discards: int = 1000
+
+        # Obtém as variáveis do kwargs.
+        self.p: float = kwargs.get('p', 2)
         self._cell_bounds: bool = kwargs.get('cell_bounds', False)
         self.non_self_label: str = kwargs.get('non_self_label', 'non-self')
-        self.max_discards: int = max_discards
+        
         self.detectors: Union[dict, None] = None
         self.classes: npt.NDArray = None
 
@@ -688,7 +713,8 @@ class RNSA(Base):
             'seed': self.seed,
             'algorithm': self._algorithm,
             'r_s': self.r_s,
-            'cell_bounds': self._cell_bounds
+            'cell_bounds': self._cell_bounds,
+            'p': self.p
         }
 
 class BNSA(Base):
