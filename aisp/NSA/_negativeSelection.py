@@ -227,6 +227,7 @@ class RNSA(Base):
         self._cell_bounds: bool = kwargs.get('cell_bounds', False)
         self.non_self_label: str = kwargs.get('non_self_label', 'non-self')
         
+        # Inicializa as demais variáveis da classe como None
         self.detectors: Union[dict, None] = None
         self.classes: npt.NDArray = None
 
@@ -374,12 +375,11 @@ class RNSA(Base):
                 C = np.append(C, [self.non_self_label])
             # Se não identificar a classe com os detectores, coloca a classe com a maior distância da média dos seus detectores.
             elif not class_found:
-                average_distance = dict()
+                average_distance: dict = {}
                 for _class_ in self.classes:
                     detectores = list(
                         map(lambda x: x.position, self.detectors[_class_]))
-                    average_distance[_class_] = self.__distance(
-                        np.average(detectores, axis=0), line)
+                    average_distance[_class_] = np.average([self.__distance(detector, line) for detector in detectores])
                 C = np.append(
                     C, [max(average_distance, key=average_distance.get)])
         return C
@@ -846,10 +846,12 @@ class BNSA(Base):
             (``self``): Retorna a própria instância.
         """
         super()._check_and_raise_exceptions_fit(X, y, 'BNSA')
-
+        
+        # Converte todo o array X para booleano
         if X.dtype != bool:
             X = X.astype(bool)
 
+        # Identificando as classes possíveis, dentro do array de saídas ``y``.
         self.classes = np.unique(y)
         # Dict que armazenará os detectores com as classes como key.
         list_detectors_by_class = dict()
@@ -872,7 +874,7 @@ class BNSA(Base):
                 
                 is_valid_detector: bool = True
                 # Gera um vetor candidato a detector aleatoriamente com valores 0 e 1.
-                vector_x = np.random.randint(0, 2, X.shape[1], dtype=bool)
+                vector_x = np.random.choice([False, True], size=X.shape[1])
                 for i in sample_index[_class_]:
                     # Verifica a validade do detector para o não-próprio com relação às amostras da classe.
                     if hamming(X[i], vector_x) <= self.aff_thresh:
@@ -946,7 +948,8 @@ class BNSA(Base):
         if not np.isin(X, [0, 1]).all():
             raise ValueError(
                 "The array X contains values that are not composed only of 0 and 1.")
-
+        
+        # Converte todo o array X para booleano
         if X.dtype != bool:
             X = X.astype(bool)
             
@@ -959,17 +962,17 @@ class BNSA(Base):
             possible_classes: list = [] 
             for _class_ in self.classes:
                 # Lista para armzenar as taxas de similaridade entre a amostra e os detectores.
-                similarity_list: list = []
+                similarity_sum: float = 0
                 for detector in self.detectors[_class_]:
                     similarity = hamming(line, detector)
                     if similarity <= self.aff_thresh:
                         class_found = False
                         break
                     else:
-                        similarity_list.append(similarity)
+                        similarity_sum += similarity
                 # Se a amostra passar por todos os detectores de uma classe, adiciona a classe como possivel previsão e sua media de similaridade.
                 if class_found:
-                    possible_classes.append([_class_, min(similarity_list)])
+                    possible_classes.append([_class_, similarity_sum / self.N])
         
             # Se, pertencer a uma ou mais classes, adiciona a classe com a distância média mais distante.
             if len(possible_classes) > 0 :
@@ -983,13 +986,13 @@ class BNSA(Base):
                 C = np.append(C, ['non-self'])
             # Se não identificar a classe com os detectores, coloca a classe com a maior distância da média dos seus detectores.
             elif not class_found:
-                class_differences = []
+                class_differences: dict = {}
                 for _class_ in self.classes:
-                    differences = []
+                    difference_sum: float = 0
                     for detector in self.detectors[_class_]:
-                        differences.append(hamming(line, detector))
-                    class_differences.append(min(differences))
-                C = np.append(C, [self.classes[class_differences.index(max(class_differences))]])
+                        difference_sum += hamming(line, detector)
+                    class_differences[_class_] = (difference_sum / self.N)
+                C = np.append(C, [max(class_differences, key=class_differences.get)])
  
         return C
 
