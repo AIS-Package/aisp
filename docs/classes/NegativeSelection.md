@@ -61,7 +61,7 @@ Nela é realizado o treinamento de acordo com ``X`` e ``y``, usando o método de
 **Os parâmetros de entrada são:**
 * ``X``: array com as características das amostras com **N** amostras (linhas) e **N** características  (colunas), normalizados para valores entre [0, 1]. 
 * ``y``: array com as classes de saídas disposto em **N** amostras que são relacionadas ao ``X``.
-* ``verbose``: booleano com valor default ``True``, determina se o feedback da geração dos detectores será printado.
+* ``verbose``: boolean com valor default ``True``, determina se o feedback da geração dos detectores será imprimido.
 
 *Retorna a instância da classe.*
 
@@ -114,13 +114,13 @@ def __checks_valid_detector(self, X: npt.NDArray, vector_x: npt.NDArray, samples
 
 * ``vector_x``: Detector candidato gerado aleatoriamente. 
 
-* ``samplesIndexClass``: Array com os indexs de uma classe.
+* ``samplesIndexClass``: Array com os indexes de uma classe.
 
 **Retorna:** Verdadeiro (``True``) para os detectores que não possuam amostras em seu interior ou falso (``False``) se possuir.
 
 ---
 
-### Fuction __compare_KnearestNeighbors_List(...):
+### Função __compare_KnearestNeighbors_List(...):
 
 A função ``def __compare_KnearestNeighbors_List(...)`` compara a distância dos k-vizinhos mais próximo, para isso se a distância da nova amostra for menor, substitui ``k-1`` e ordena em ordem crescente:
 
@@ -168,7 +168,7 @@ def __detector_is_valid_to_Vdetector(self, distance, vector_x):
 
 ### Função __distance(...):
 
-A função ``def __distance(...)`` calcula a distância entre dois pontos utilizando a técnica definida em ``mettric``, no qual são: ``'euclidiana', 'minkowski', ou 'manhattan'``
+A função ``def __distance(...)`` calcula a distância entre dois pontos utilizando a técnica definida em ``metric``, no qual são: ``'euclidiana', 'minkowski', ou 'manhattan'``
 
 ```python
 def __distance(self, u: npt.NDArray, v: npt.NDArray):
@@ -202,6 +202,9 @@ A classe ``BNSA`` tem a finalidade de classificação e identificação de anoma
 * *max_discards* (``int``): Este parâmetro indica o número máximo de descartes de detectores em sequência, que tem como objetivo evitar um 
 possível loop infinito caso seja definido um raio que não seja possível gerar detectores do não-próprio. Defaults to ``100``.
 * *seed* (``int``): Semente para a geração randômica dos valores nos detectores. Defaults to ``None``.
+* no_label_sample_selection (``str``): Método para a seleção de rótulos para amostras designadas como não pertencentes por todos os detectores não pertencentes. **Tipos de métodos disponíveis:**
+    - (``max_average_difference``): Seleciona a classe com a maior diferença média entre os detectores.
+    - (``max_nearest_difference``): Seleciona a classe com a maior diferença entre o detector mais próximo e mais distante da amostra.
 
 **Outras variáveis iniciadas:**
 
@@ -221,7 +224,7 @@ Nela é realizado o treinamento de acordo com ``X`` e ``y``, usando o método de
 **Os parâmetros de entrada são:**
 * ``X``: array com as características das amostras com **N** amostras (linhas) e **N** características  (colunas), normalizados para valores entre [0, 1]. 
 * ``y``: array com as classes de saídas disposto em **N** amostras que são relacionadas ao ``X``.
-* ``verbose``: booleano com valor default ``True``, determina se o feedback da geração dos detectores será printado.
+* ``verbose``: boolean com valor default ``True``, determina se o feedback da geração dos detectores será imprimido.
 
 *Retorna a instância da classe.*
 
@@ -329,7 +332,7 @@ The ``RNSA`` class has the purpose of classifying and identifying anomalies thro
 
 ---
 
-### Fuction fit(...)
+### Function fit(...)
 
 The ``fit(...)`` function generates the detectors for non-fits with respect to the samples:
 
@@ -350,7 +353,7 @@ The input parameters are:
 
 ---
 
-### Fuction predict(...)
+### Function predict(...)
 
 The ``predict(...)`` function performs class prediction using the generated detectors:
 
@@ -383,7 +386,7 @@ It returns the accuracy as a float type.
 
 ---
 
-### Fuction __checks_valid_detector(...):
+### Function __checks_valid_detector(...):
 
 The ``def __checks_valid_detector(...)`` function checks if the detector has a valid ``r`` radius for the non-self of the class:
 
@@ -402,7 +405,7 @@ def __checks_valid_detector(self, X: npt.NDArray, vector_x: npt.NDArray, samples
 
 ---
 
-### Fuction __compare_KnearestNeighbors_List(...):
+### Function __compare_KnearestNeighbors_List(...):
 
 The ``def __compare_KnearestNeighbors_List(...)`` function compares the distance of the k-nearest neighbors, so if the distance of the new sample is smaller, replaces ``k-1`` and sorts in ascending order:
 
@@ -448,7 +451,7 @@ def __detector_is_valid_to_Vdetector(self, distance, vector_x):
 
 ---
 
-### Fuction __distance(...):
+### Function __distance(...):
 
 The function ``def __distance(...)`` calculates the distance between two points using the technique defined in ``metric``, which are: ``'euclidean', 'norm_euclidean', or 'manhattan'``
 
@@ -487,7 +490,9 @@ The ``BNSA`` (Binary Negative Selection Algorithm) class has the purpose of clas
 * *max_discards* (``int``): This parameter indicates the maximum number of detector discards in sequence, which aims to avoid a
 possible infinite loop if a radius is defined that it is not possible to generate non-self detectors. Defaults to ``100``.
 * *seed* (``int``): Seed for the random generation of values in the detectors. Defaults to ``None``.
-
+* no_label_sample_selection (``str``): Method for selecting labels for samples designated as non-members by all non-member detectors. **Available method types:**
+    - (``max_average_difference``): Selects the class with the highest average difference among the detectors.
+    - (``max_nearest_difference``): Selects the class with the highest difference between the nearest and farthest detector from the sample.
 
 **Other variables initiated:**
 
@@ -497,7 +502,7 @@ possible infinite loop if a radius is defined that it is not possible to generat
 
 
 
-### Fuction fit(...)
+### Function fit(...)
 
 The ``fit(...)`` function generates the detectors for non-fits with respect to the samples:
 
@@ -518,7 +523,7 @@ In it, training is performed according to ``X`` and ``y``, using the negative se
 
 ---
 
-### Fuction predict(...)
+### Function predict(...)
 
 The ``predict(...)`` function performs class prediction using the generated detectors:
 
