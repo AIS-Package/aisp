@@ -3,7 +3,7 @@ import numpy.typing as npt
 from tqdm import tqdm
 from typing import Dict, Literal, Optional, Union
 from collections import namedtuple
-from scipy.spatial.distance import hamming
+from scipy.spatial.distance import cdist
 
 from ._base import Base
 
@@ -421,8 +421,7 @@ class RNSA(Base):
                         [self.__distance(detector, line)
                          for detector in detectores]
                     )
-                C = np.append(
-                    C, [max(average_distance, key=average_distance.get)])
+                C = np.append(C, [max(average_distance, key=average_distance.get)])
         return C
 
     def __checks_valid_detector(self, X: npt.NDArray = None, vector_x: npt.NDArray = None,
@@ -960,11 +959,12 @@ class BNSA(Base):
                 is_valid_detector: bool = True
                 # Gera um vetor candidato a detector aleatoriamente com valores 0 e 1.
                 vector_x = np.random.choice([False, True], size=X.shape[1])
-                for i in sample_index[_class_]:
-                    # Verifica a validade do detector para o não-próprio com relação às amostras da classe.
-                    if hamming(X[i], vector_x) <= self.aff_thresh:
-                        is_valid_detector = False
-                        break
+                # Calcula a distância entre o candidato e as amostras da classe.
+                distances = cdist(np.expand_dims(vector_x, axis=0), 
+                                  X[sample_index[_class_]], metric='hamming')
+                # Verifica se alguma das distâncias está abaixo ou igual ao limiar
+                is_valid_detector = not np.any(distances <= self.aff_thresh)
+
                 # Se o detector for válido, adicione a lista dos válidos.
                 if is_valid_detector:
                     discard_count = 0
@@ -1057,13 +1057,18 @@ class BNSA(Base):
             for _class_ in self.classes:
                 # Lista para armazenar as taxas de similaridade entre a amostra e os detectores.
                 similarity_sum: float = 0
-                for detector in self.detectors[_class_]:
-                    similarity = hamming(line, detector)
-                    if similarity <= self.aff_thresh:
-                        class_found = False
-                        break
-                    else:
-                        similarity_sum += similarity
+
+                # Calcula a distância de Hamming entre a linha e todos os detectores
+                distances = cdist(np.expand_dims(line, axis=0),
+                                  self.detectors[_class_], metric='hamming')
+
+                # Verificar se alguma distância está abaixo ou igual ao limiar
+                if np.any(distances <= self.aff_thresh):
+                    class_found = False
+                else:
+                    # Somar todas as distâncias
+                    similarity_sum = np.sum(distances)
+
                 # Se a amostra passar por todos os detectores de uma classe, adiciona a classe como
                 # possível previsão e sua media de similaridade.
                 if class_found:
@@ -1086,19 +1091,18 @@ class BNSA(Base):
                 for _class_ in self.classes:
                     # Atribua-a o rotulo a classe com à maior distância em relação ao detector mais próximo.
                     if self.no_label_sample_selection == 'nearest_difference':
-                        differences: list = []
-                        for detector in self.detectors[_class_]:
-                            differences.append(hamming(line, detector))
-                        class_differences[_class_] = min(differences)
+                        difference_min: float = cdist( np.expand_dims(line, axis=0),
+                                                    self.detectors[_class_], metric='hamming'
+                                                ).min()
+                        class_differences[_class_] = difference_min
                     # Ou com base na maior distância com relação à média da distancias dos detectores
                     else:
-                        difference_sum: float = 0
-                        for detector in self.detectors[_class_]:
-                            difference_sum += hamming(line, detector)
+                        difference_sum: float = cdist( np.expand_dims(line, axis=0),
+                                                    self.detectors[_class_], metric='hamming'
+                                                ).sum()
                         class_differences[_class_] = difference_sum / self.N
 
-                C = np.append(
-                    C, [max(class_differences, key=class_differences.get)])
+                C = np.append(C, [max(class_differences, key=class_differences.get)])
 
         return C
 
