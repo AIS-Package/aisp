@@ -37,7 +37,6 @@
 > 2. [Installation.](#installation)
 >    1. [Dependencies](#dependencies)
 >    2. [User installation](#user-installation)
->    3. [How to import the Techniques](#how-to-import-the-techniques)
 > 3. [Examples.](#examples)
 
 ---
@@ -55,8 +54,8 @@ Artificial Immune Systems (AIS) are inspired by the vertebrate immune system, cr
 ##### Algorithms implemented:
 
 > - [x] [**Negative Selection.**](https://ais-package.github.io/docs/aisp-techniques/Negative%20Selection/)
+> - [ ] *Clonal Selection Algorithms.*
 > - [ ] *Dendritic Cells.*
-> - [ ] *Clonalg.*
 > - [ ] *Immune Network Theory.*
 
 </section>
@@ -93,17 +92,7 @@ pip install aisp
 ```
 
 </section>
-<section id='how-to-import-the-techniques'>
 
-##### **How to import the Techniques**
-
-``` Python
-from aisp.NSA import RNSA
-
-nsa = RNSA(N=300, r=0.05)
-```
-
-</section>
 </section>
 <section id='examples'>
 
@@ -147,7 +136,6 @@ Below are some examples that use a database for classification with the [Jupyter
 > 2. [Instalação.](#instalação)
 >    1. [Dependências](#dependências)
 >    2. [Instalação do usuário](#instalação-do-usuário)
->    3. [Como importar as Tecnicas](#como-importar-as-tecnicas)
 > 3. [Exemplos.](#exemplos)
 
 ---
@@ -164,8 +152,8 @@ Os sistemas imunológicos artificiais (SIA) inspiram-se no sistema imunológico 
 ##### Algoritmos implementados:
 
 > - [x] [**Seleção Negativa.**](https://ais-package.github.io/docs/aisp-techniques/Negative%20Selection/)
+> - [ ] *Algoritmos de Seleção Clonal.*
 > - [ ] *Células Dendríticas.*
-> - [ ] *Clonalg.*
 > - [ ] *Teoria da Rede Imune.*
 
 </section>
@@ -203,17 +191,6 @@ pip install aisp
 
 </section>
 
-<section id='como-importar-as-tecnicas'>
-
-##### **Como importar as Tecnicas**
-
-``` Python
-from aisp.NSA import RNSA
-
-nsa = RNSA(N=300, r=0.05)
-```
-
-</section>
 </section>
 <section id='exemplos'>
 
