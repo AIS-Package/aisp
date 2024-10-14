@@ -2,9 +2,12 @@
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools]
+packages = {find = {exclude = ["*test*", "*tests", "*tests/*", ".venv", ".idea", ".vscode", "docs"]}}
+
 [project]
 name = "aisp"
-version = "0.1.32"
+version = "0.1.33"
 authors = [
   { name="João Paulo da Silva Barros", email="jpsilvabarr@gmail.com" },
 ]

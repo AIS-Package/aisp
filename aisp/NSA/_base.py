@@ -1,7 +1,11 @@
+from abc import abstractmethod
+
 import numpy as np
 import numpy.typing as npt
-from typing import Literal
+from typing import Literal, Optional
 from scipy.spatial.distance import euclidean, cityblock, minkowski
+
+from ..utils.metrics import accuracy_score
 
 
 class Base:
@@ -93,8 +97,11 @@ class Base:
         else:
             return euclidean(u, v)
 
-    def _check_and_raise_exceptions_fit(self, X: npt.NDArray = None, y: npt.NDArray = None,
-        _class_: Literal["RNSA", "BNSA"] = "RNSA",
+    @staticmethod
+    def _check_and_raise_exceptions_fit(
+            X: npt.NDArray = None,
+            y: npt.NDArray = None,
+            _class_: Literal["RNSA", "BNSA"] = "RNSA",
     ):
         """
         Function responsible for verifying fit function parameters and throwing exceptions if the \
@@ -149,43 +156,6 @@ class Base:
                 "The array X contains values that are not composed only of 0 and 1."
             )
 
-    def _slice_index_list_by_class(self, y: npt.NDArray) -> dict:
-        """
-        The function ``__slice_index_list_by_class(...)``, separates the indices of the lines \
-        according to the output class, to loop through the sample array, only in positions where \
-        the output is the class being trained.
-
-        Parameters:
-        ---
-            * y (npt.NDArray): Receives a ``y``[``N sample``] array with the output classes of the \
-                ``X`` sample array.
-
-        returns:
-        ---
-            * dict: A dictionary with the list of array positions(``y``), with the classes as key.
-
-        ---
-
-        A função ``__slice_index_list_by_class(...)``, separa os índices das linhas conforme a \
-        classe de saída, para percorrer o array de amostra, apenas nas posições que a saída for \
-        a classe que está sendo treinada.
-
-        Parameters:
-        ---
-            * y (npt.NDArray): Recebe um array ``y``[``N amostra``] com as classes de saída do \
-                array de amostra ``X``.
-
-        Returns:
-        ---
-            * dict: Um dicionário com a lista de posições do array(``y``), com as classes como chave.
-        """
-        position_samples = dict()
-        for _class_ in self.classes:
-            # Pega as posições das amostras por classes a partir do y.
-            position_samples[_class_] = list(np.where(y == _class_)[0])
-
-        return position_samples
-
     def _score(self, X: npt.NDArray, y: list) -> float:
         """
         Score function calculates forecast accuracy.
@@ -237,4 +207,75 @@ class Base:
         if len(y) == 0:
             return 0
         y_pred = self.predict(X)
-        return np.sum(y == y_pred) / len(y)
+        return accuracy_score(y, y_pred)
+
+    @abstractmethod
+    def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True):
+        """
+        Function to train the model using the input data ``X`` and corresponding labels ``y``.
+
+        This abstract method is implemented by the class that inherits it.
+
+        Parameters:
+        ---
+            * X (``npt.NDArray``): Input data used for training the model, previously normalized to the range [0, 1].
+            * y (``npt.NDArray``): Corresponding labels or target values for the input data.
+            * verbose (``bool``, optional): Flag to enable or disable detailed output during \
+                training. Default is ``True``.
+
+        Returns:
+        ---
+            * self: Returns the instance of the class that implements this method.
+
+        ---
+
+        Função para treinar o modelo usando os dados de entrada ``X`` e os classes correspondentes ``y``.
+
+        Este método abstrato é implementado pela classe que o herdar.
+
+        Parâmetros:
+        ---
+            * X (``npt.NDArray``): Dados de entrada utilizados para o treinamento do modelo, previamente \
+                normalizados no intervalo [0, 1].
+            * y (``npt.NDArray``): Rótulos ou valores-alvo correspondentes aos dados de entrada.
+            * verbose (``bool``, opcional): Flag para ativar ou desativar a saída detalhada durante o \
+                treinamento. O padrão é ``True``.
+
+        Retornos:
+        ---
+            * self: Retorna a instância da classe que implementa este método.
+        """
+        pass
+
+    @abstractmethod
+    def predict(self, X) -> Optional[npt.NDArray]:
+        """
+        Function to generate predictions based on the input data ``X``.
+
+        This abstract method is implemented by the class that inherits it.
+
+        Parameters:
+        ---
+            * X (``npt.NDArray``): Input data for which predictions will be generated.
+
+        Returns:
+        ---
+            * Predictions (``Optional[npt.NDArray]``): Predicted values for each input sample, or ``None``
+                if the prediction fails.
+
+        ---
+
+        Função para gerar previsões com base nos dados de entrada ``X``.
+
+        Este método abstrato é implementado pela classe que o herdar.
+
+        Parâmetros:
+        ---
+            * X (``npt.NDArray``): Dados de entrada para os quais as previsões serão geradas.
+
+        Retornos:
+        ---
+            * Previsões (``Optional[npt.NDArray]``): Valores previstos para cada amostra de entrada,
+                ou ``None`` se a previsão falhar.
+        """
+        pass

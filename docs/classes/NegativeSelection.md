@@ -6,6 +6,8 @@ A **seleção negativa** é o processo em que o sistema imunológico faz a matur
 
 # RNSA (Algoritmo de Seleção Negativa de Valor Real)
 
+Esta classe estende a classe [**Base**](../advanced-guides/BaseNegativeSelection.md#português).
+
 ## Construtor RNSA:
 
 A classe ``RNSA`` tem a finalidade de classificação e identificação de anomalias através do método self e not self . 
@@ -194,6 +196,10 @@ Retorna um dicionario com as classes como chave e os índices em ``X`` das amost
 
 # BNSA (Algoritmo de Seleção Negativa Binária).
 
+Esta classe estende a classe [**Base**](../advanced-guides/BaseNegativeSelection.md#português).
+
+## Construtor BNSA:
+
 A classe ``BNSA`` tem a finalidade de classificação e identificação de anomalias através do método self e not self . 
 
 **Attributes:**
@@ -284,6 +290,8 @@ Retorna um dicionario com as classes como chave e os índices em ``X`` das amost
 
 
 # RNSA (Real-Valued Negative Selection Algorithm)
+
+This class extends the [**Base**](../advanced-guides/BaseNegativeSelection.md#english) class.
 
 ## Constructor RNSA:
 
@@ -478,6 +486,8 @@ Returns a dictionary with the classes as key and the indices in ``X`` of the sam
 ---
 
 # BNSA (Binary Negative Selection Algorithm)
+
+This class extends the [**Base**](../advanced-guides/BaseNegativeSelection.md#english) class.
 
 ## Constructor RNSA:
 
