@@ -1,6 +1,9 @@
 ## Português
 
-A **seleção negativa** é o processo em que o sistema imunológico faz a maturação das células-T conhecidas também por linfócitos-T, no qual tornam-as aptas na detecção dos não-próprios. Assim, o Algoritmo de seleção negativa (NSA), utilizam-se de hiperesferas simbolizando os detectores em um espaço de dados N-dimensional. [[1]](#ref1)
+A **seleção negativa** é o processo em que o sistema imunológico faz a maturação das células-T 
+conhecidas também por linfócitos-T, no qual tornam-as aptas na detecção dos não-próprios. 
+Assim, o Algoritmo de seleção negativa (NSA), utilizam-se de hiperesferas simbolizando 
+os detectores em um espaço de dados N-dimensional. [[1]](#ref1)
 
 ---
 
@@ -10,7 +13,8 @@ Esta classe estende a classe [**Base**](../advanced-guides/BaseNegativeSelection
 
 ## Construtor RNSA:
 
-A classe ``RNSA`` tem a finalidade de classificação e identificação de anomalias através do método self e not self . 
+A classe ``RNSA`` tem a finalidade de classificação e identificação de anomalias através 
+do método self e not self . 
 
 **Attributes:**
 * *N* (``int``): Quantidade de detectores. Defaults to ``100``.
