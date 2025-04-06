@@ -89,10 +89,18 @@ class RNSA(Base):
         * classes (``npt.NDArray``): lista com as classes de saída.
     """
 
-    def __init__(self, N: int = 100, r: float = 0.05, r_s: float = 0.0001, k: int = 1,
-                 metric: Literal["manhattan", "minkowski", "euclidean"] = "euclidean", max_discards: int = 1000,
-                 seed: int = None, algorithm: Literal["default-NSA", "V-detector"] = "default-NSA",
-                 **kwargs: Dict[str, Union[bool, str, float]]):
+    def __init__(
+        self,
+        N: int = 100,
+        r: float = 0.05,
+        r_s: float = 0.0001,
+        k: int = 1,
+        metric: Literal["manhattan", "minkowski", "euclidean"] = "euclidean",
+        max_discards: int = 1000,
+        seed: int = None,
+        algorithm: Literal["default-NSA", "V-detector"] = "default-NSA",
+        **kwargs: Dict[str, Union[bool, str, float]],
+    ):
         """
         Negative Selection class constructor (``RNSA``).
 
@@ -458,8 +466,12 @@ class RNSA(Base):
         """
         return slice_index_list_by_class(self.classes, y)
 
-    def __checks_valid_detector(self, X: npt.NDArray = None, vector_x: npt.NDArray = None,
-                                samples_index_class: npt.NDArray = None):
+    def __checks_valid_detector(
+        self,
+        X: npt.NDArray = None,
+        vector_x: npt.NDArray = None,
+        samples_index_class: npt.NDArray = None,
+    ):
         """
         Function to check if the detector has a valid non-proper ``r`` radius for the class.
 
@@ -712,52 +724,6 @@ class RNSA(Base):
                         return False
             return True, new_detector_r
 
-    def score(self, X: npt.NDArray, y: list) -> float:
-        """
-        Score function calculates forecast accuracy.
-
-        Details:
-        ---
-        This function performs the prediction of X and checks how many elements are equal between \
-        vector y and y_predicted. This function was added for compatibility with some scikit-learn \
-        functions.
-
-        Parameters:
-        -----------
-
-        * X (np.ndarray): Feature set with shape (n_samples, n_features).
-        * y (np.ndarray): True values with shape (n_samples,).
-
-        Returns:
-        -------
-
-        accuracy: float
-            The accuracy of the model.
-
-        ---
-
-        Função score calcular a acurácia da previsão.
-
-        Details:
-        ---
-        Esta função realiza a previsão de X e verifica quantos elementos são iguais entre o vetor \
-        y e y_previsto. Essa função foi adicionada para oferecer compatibilidade com algumas \
-        funções do scikit-learn.
-
-        Parameters:
-        ---
-
-        * X (np.ndarray): Conjunto de características com shape (n_samples, n_features).
-        * y (np.ndarray): Valores verdadeiros com shape (n_samples,).
-
-        returns:
-        ---
-
-        * accuracy (float): A acurácia do modelo.
-
-        """
-        return super()._score(X, y)
-
     def get_params(self, deep: bool = True) -> dict:
         return {
             "N": self.N,
@@ -816,9 +782,16 @@ class BNSA(Base):
 
     """
 
-    def __init__(self, N: int = 100, aff_thresh: float = 0.1, max_discards: int = 1000, seed: int = None,
-                 no_label_sample_selection: Literal["max_average_difference", "max_nearest_difference"] =
-                 "max_average_difference"):
+    def __init__(
+        self,
+        N: int = 100,
+        aff_thresh: float = 0.1,
+        max_discards: int = 1000,
+        seed: int = None,
+        no_label_sample_selection: Literal[
+            "max_average_difference", "max_nearest_difference"
+        ] = "max_average_difference",
+    ):
         """
         Constructor of the Negative Selection class (``BNSA``).
 
@@ -1132,55 +1105,6 @@ class BNSA(Base):
             * dict: Um dicionário com a lista de posições do array(``y``), com as classes como chave.
         """
         return slice_index_list_by_class(self.classes, y)
-
-    def score(self, X: npt.NDArray, y: list) -> float:
-        """
-        Score function calculates forecast accuracy.
-
-        Details:
-        ---
-        This function performs the prediction of X and checks how many elements are equal between vector \
-        y and y_predicted. This function was added for compatibility with some scikit-learn functions.
-
-        Parameters:
-        -----------
-
-        X: np.ndarray
-            Feature set with shape (n_samples, n_features).
-        y: np.ndarray
-            True values with shape (n_samples,).
-
-        Returns:
-        -------
-
-        accuracy: float
-            The accuracy of the model.
-
-        ---
-
-        Função score calcular a acurácia da previsão.
-
-        Details:
-        ---
-        Esta função realiza a previsão de X e verifica quantos elementos são iguais entre o vetor y \
-        e y_previsto.
-        Essa função foi adicionada para oferecer compatibilidade com algumas funções do scikit-learn.
-
-        Parameters:
-        ---
-
-        * X : np.ndarray
-            Conjunto de características com shape (n_samples, n_features).
-        * y : np.ndarray
-            Valores verdadeiros com shape (n_samples,).
-
-        returns:
-        ---
-
-        accuracy : float
-            A acurácia do modelo.
-        """
-        return super()._score(X, y)
 
     def get_params(self, deep: bool = True) -> dict:
         return {
