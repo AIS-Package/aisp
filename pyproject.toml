@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools >= 77.0.3"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
@@ -21,11 +21,10 @@ description = "Package with techniques of artificial immune systems."
 readme = "README.md"
 
 requires-python = ">= 3.8.10"
-
-license = {text = "LGPL-3.0 license"}
+license = "LGPL-3.0-only"
+license-files = ["LICENSE"]
 
 classifiers = [
-    "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
@@ -38,13 +37,8 @@ classifiers = [
 dependencies = [
     "numpy>=1.22.4",
     "scipy>=1.8.1",
-    "tqdm>=4.64.1",
+    "tqdm>=4.64.1"
 ]
-
-[tool.poetry]
-readme = "README.md"
-
-repository = "https://github.com/AIS-Package/aisp"
 
 keywords = ["Artificial Immune Systems", "classification", "Natural computing", "machine learning", "artificial intelligence"]
 
