@@ -49,7 +49,8 @@ Artificial Immune Systems (AIS) are inspired by the vertebrate immune system, cr
 ##### Algorithms implemented:
 
 > - [x] [**Negative Selection.**](https://ais-package.github.io/docs/aisp-techniques/Negative%20Selection/)
-> - [ ] *Clonal Selection Algorithms.*
+> - [x] **Clonal Selection Algorithms.**
+>     * [AIRS](./docs/classes/AIRS.md#english)
 > - [ ] *Dendritic Cells.*
 > - [ ] *Immune Network Theory.*
 

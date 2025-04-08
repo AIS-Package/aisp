@@ -5,7 +5,7 @@ from tqdm import tqdm
 from typing import List, Literal, Optional
 from scipy.spatial.distance import hamming, cdist
 
-from ._base import Base
+from ._base import BaseClassifier
 from ..utils import slice_index_list_by_class
 
 
@@ -184,7 +184,7 @@ class _ABR(_Cell):
 
         Parameters:
         ---
-        * resource (```float```): Quantidade inicial de recursos.
+        * resource (``float``): Quantidade inicial de recursos.
         * amplified (``float``): Amplificador para o consumo de recursos pela célula. É multiplicado \
             pelo estímulo da célula. O valor padrão é 1.
 
@@ -201,7 +201,7 @@ class _ABR(_Cell):
             return aux_resource
 
 
-class AIRS(Base):
+class AIRS(BaseClassifier):
     """Artificial Immune Recognition System (AIRS)
 
     The AIRS is a classification algorithm inspired by the clonal selection process. The \
@@ -762,55 +762,6 @@ class AIRS(Base):
             * dict: Um dicionário com a lista de posições do array(``y``), com as classes como chave.
         """
         return slice_index_list_by_class(self.classes, y)
-
-    def score(self, X: npt.NDArray, y: list) -> float:
-        """
-        Score function calculates forecast accuracy.
-
-        Details:
-        ---
-        This function performs the prediction of X and checks how many elements are equal between vector \
-        y and y_predicted. This function was added for compatibility with some scikit-learn functions.
-
-        Parameters:
-        -----------
-
-        X: np.ndarray
-            Feature set with shape (n_samples, n_features).
-        y: np.ndarray
-            True values with shape (n_samples,).
-
-        Returns:
-        -------
-
-        accuracy: float
-            The accuracy of the model.
-
-        ---
-
-        Função score calcular a acurácia da previsão.
-
-        Details:
-        ---
-        Esta função realiza a previsão de X e verifica quantos elementos são iguais entre o vetor y \
-        e y_previsto.
-        Essa função foi adicionada para oferecer compatibilidade com algumas funções do scikit-learn.
-
-        Parameters:
-        ---
-
-        * X : np.ndarray
-            Conjunto de características com shape (n_samples, n_features).
-        * y : np.ndarray
-            Valores verdadeiros com shape (n_samples,).
-
-        returns:
-        ---
-
-        accuracy : float
-            A acurácia do modelo.
-        """
-        return super()._score(X, y)
 
     def get_params(self, deep: bool = True) -> dict:
         return {
