@@ -8,7 +8,7 @@ from scipy.spatial.distance import euclidean, cityblock, minkowski
 from ..utils.metrics import accuracy_score
 
 
-class Base:
+class BaseClassifier:
     """
     The base class contains functions that are used by more than one class in the package, and \
     therefore are considered essential for the overall functioning of the system.
@@ -159,7 +159,7 @@ class Base:
                 "The array X contains values that are not composed only of 0 and 1."
             )
 
-    def _score(self, X: npt.NDArray, y: list) -> float:
+    def score(self, X: npt.NDArray, y: list) -> float:
         """
         Score function calculates forecast accuracy.
 

@@ -72,7 +72,7 @@ Nela é realizado o treinamento de acordo com ``X`` e ``y``, usando o método de
 
 ### Função predict(...)
 
-A função ``predict(...)`` realiza a previsão das classes utilizando os detectores gerados:
+A função ``predict(...)`` realiza a previsão das classes utilizando as células de memória geradas:
 
 ```python
 def predict(self, X: npt.NDArray) -> npt.NDArray:
@@ -80,7 +80,7 @@ def predict(self, X: npt.NDArray) -> npt.NDArray:
 
 **O parâmetro de entrada:**
  
-* ``X``: array  com as características para a previsão, com **N** amostras (Linhas) e **N** colunas.
+* ``X``: array com as características para a previsão, com **N** amostras (Linhas) e **N** colunas.
 
 **Retorna:** 
 * ``C``: Um array de previsão com as classes de saída para as características informadas. 
@@ -106,22 +106,27 @@ retorna a acurácia, do tipo ``float``.
 
 A função "_refinement_ABR(...)" faz o processo de refinamento do conjunto ABR ate que o valor médio da estimulação seja maior que o limite definido (``affinity_threshold_scalar``)
 
+```python
+def _refinement_ABR(self, ai: npt.NDArray, c_match: _Cell, abr_list: List[_ABR]) -> _Cell:
+```
+
 Parameters:
 * c_match (``_Cell``): Célula com a maior estimulação com relação a aᵢ
 * abr_list (``List[_ABR]``): Conjunto ABR.
 
 
-```python
-def _refinement_ABR(self, ai: npt.NDArray, c_match: _Cell, abr_list: List[_ABR]) -> _Cell:
-```
-
-Retorna a A célula (_Cell) com maior estimulação de ABR
+Retorna a célula (_Cell) com maior estimulação de ABR
 
 ---
 
 ### Função _cells_affinity_threshold(...):
 
 A função "_cells_affinity_threshold(...)" calcula o limite de afinidade com base na afinidade média entre instâncias de treinamento, onde aᵢ e aⱼ são um par de antígenos, e a afinidade é medida pela distância (Euclidiana, Manhattan, Minkowski, Hamming).
+
+```python
+def _cells_affinity_threshold(self, antigens_list: npt.NDArray):
+```
+
 **Seguindo a fórmula:**
 
 $$
@@ -130,11 +135,7 @@ $$
 $$
 
 Parameters:
-* antigens_list (``NDArray``): List of training antigens.
-
-```python
-def _cells_affinity_threshold(self, antigens_list: npt.NDArray):
-```
+* antigens_list (``NDArray``): Lista de antígenos de treinamento.
 
 ---
 
@@ -142,13 +143,13 @@ def _cells_affinity_threshold(self, antigens_list: npt.NDArray):
 
 A função "_affinity(...)" calcula o estimulo entre dois vetores usando métricas.
 
-Parameters:
-* u (``npt.NDArray``): Coordenadas do primeiro ponto.
-* v (``npt.NDArray``): Coordenadas do segundo ponto.
-
 ```python
 def _affinity(self, u: npt.NDArray, v: npt.NDArray) -> float:
 ```
+
+Parameters:
+* u (``npt.NDArray``): Coordenadas do primeiro ponto.
+* v (``npt.NDArray``): Coordenadas do segundo ponto.
 
 Retorna a taxa de estimulo entre os vetores.
 
@@ -158,12 +159,14 @@ Retorna a taxa de estimulo entre os vetores.
 
 A função "_init_memory_c(...)" inicializa as células de memória escolhendo `n_antigens_selected` aleatoriamente da lista de antígenos de treinamento.
 
-Parameters:
-* antigens_list (``NDArray``): List of training antigens.
-
 ```python
 def _init_memory_c(self, antigens_list: npt.NDArray) -> List[_Cell]:
 ```
+
+Parameters:
+* antigens_list (``NDArray``): Lista de antígenos de treinamento.
+
+
 
 ---
 

@@ -503,7 +503,7 @@ class RNSA(Base):
 
         """
         # If any of the input arrays have zero size, returns false.
-        if (np.size(samples_index_class) == 0 or np.size(X) == 0 or np.size(vector_x) == 0):
+        if np.size(samples_index_class) == 0 or np.size(X) == 0 or np.size(vector_x) == 0:
             return False
         # If self.k > 1, uses the k nearest neighbors (kNN); otherwise, checks the detector
         # without considering kNN.

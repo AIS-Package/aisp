@@ -58,4 +58,4 @@ def accuracy_score(
             f"Error: The arrays must have the same size. Size of y_true: "
             f"{len(y_true)}, Size of y_pred: {len(y_pred)}"
         )
-    return np.sum(np.sum(np.array(y_true) == np.array(y_pred))) / n
+    return np.sum(np.array(y_true) == np.array(y_pred)) / n
