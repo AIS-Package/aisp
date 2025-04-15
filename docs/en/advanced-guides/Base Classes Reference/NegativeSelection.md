@@ -26,10 +26,6 @@ This function was added for compatibility with some scikit-learn functions.
 
 + accuracy: ``float`` The accuracy of the model.
 
-:::note
-This score uses the [**accuracy_score**](/docs/advanced-guides/Utils/Metrics#function-accuracy_score) function.
-:::
-
 ---
 
 ## Protected Functions:
