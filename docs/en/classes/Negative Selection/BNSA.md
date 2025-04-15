@@ -79,6 +79,24 @@ It returns the accuracy as a float type.
 
 ---
 
+### Function __assign_class_to_non_self_sample(...):
+
+This function determines the class of a sample when all detectors classify it as "non-self". Classification is performed using the ``max_average_difference`` and ``max_nearest_difference`` methods.
+
+```python
+def __assign_class_to_non_self_sample(self, line, c) -> npt.NDArray:
+```
+**The input parameter is:** 
+
+* ***line*** (``list``): Sample to be classified.
+* ***c*** (``npt.NDArray``): List of predictions to be updated with the new classification.
+
+**Returns:** 
+
+``npt.NDArray``: The list of predictions `c` updated with the class assigned to the sample.
+
+--
+
 ### Function __slice_index_list_by_class(...):
 
 The function ``__slice_index_list_by_class(...)``, separates the indices of the lines according to the output class, to go through the sample array, only in the positions that the output is the class that is being trained:

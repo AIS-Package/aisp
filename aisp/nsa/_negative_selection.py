@@ -320,9 +320,7 @@ class RNSA(Base):
             # the radius plus the sample's radius, sets the validity of the detector to
             # true.
             threshold: float = self.r + self.r_s
-            if not any(
-                self.__distance(X[i], vector_x) <= threshold for i in samples_index_class
-            ):
+            if all(self.__distance(X[i], vector_x) > threshold for i in samples_index_class):
                 return True # Detector is valid!
 
         return False  # Detector is not valid!
@@ -672,14 +670,14 @@ class BNSA(Base):
 
         return c
 
-    def __assign_class_to_non_self_sample(self, line, c):
+    def __assign_class_to_non_self_sample(self, line, c) -> npt.NDArray:
         """
         This function determines the class of a sample when all detectors classify it
         as "non-self". Classification is performed using the ``max_average_difference``
         and ``max_nearest_difference`` methods.
 
         Parameters:
-            line (type): Sample to be classified.
+            line (list): Sample to be classified.
             c (list): List of predictions to be updated with the new classification.
 
         Returns:
