@@ -9,7 +9,10 @@ packages = {find = {exclude = ["*test*", "*tests", "*tests/*", ".venv", ".idea",
 good-names = ["X", "N"]
 
 [tool.pylint."MESSAGES CONTROL"]
-disable = ["R0902"]
+disable = ["R0902", "R0917"]
+
+[tool.pylint.'DESIGN']
+max-args = 15
 
 [project]
 name = "aisp"

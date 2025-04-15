@@ -310,23 +310,20 @@ class RNSA(Base):
                 return True
         else:
             distance: Union[float, None] = None
-            for i in samples_index_class:
-                if self._algorithm == "V-detector":
-                    new_distance = self.__distance(X[i], vector_x)
-                    if distance is None:
-                        distance = new_distance
-                    elif distance > new_distance:
-                        distance = new_distance
-                else:
-                    # Calculates the distance between the vectors; if it is less than or equal to
-                    # the radius plus the sample's radius, sets the validity of the detector to
-                    # false.
-                    if (self.r + self.r_s) >= self.__distance(X[i], vector_x):
-                        return False  # Detector não é valido!
-
             if self._algorithm == "V-detector":
+                distance = min(
+                    self.__distance(X[i], vector_x) for i in samples_index_class
+                )
                 return self.__detector_is_valid_to_vdetector(distance, vector_x)
-            return True
+
+            # Calculates the distance between the vectors; if not it is less than or equal to
+            # the radius plus the sample's radius, sets the validity of the detector to
+            # true.
+            threshold: float = self.r + self.r_s
+            if not any(
+                self.__distance(X[i], vector_x) <= threshold for i in samples_index_class
+            ):
+                return True # Detector is valid!
 
         return False  # Detector is not valid!
 
@@ -483,7 +480,7 @@ class BNSA(Base):
         seed (``int``): Seed for the random generation of values in the detectors. Defaults to
             ``None``.
         no_label_sample_selection (``str``): Method for selecting labels for samples designated as
-            non-members by all non-member detectors. Available method types:
+            non-self by all detectors. Available method types:
             - (``max_average_difference``): Selects the class with the highest average difference
                 among the detectors.
             - (``max_nearest_difference``): Selects the class with the highest difference between
@@ -671,29 +668,44 @@ class BNSA(Base):
                 c = np.append(c, ["non-self"])
             # If the class cannot be identified by the detectors
             elif not class_found:
-                class_differences: dict = {}
-                for _class_ in self.classes:
-                    # Assign the label to the class with the greatest distance from
-                    # the nearest detector.
-                    if self.no_label_sample_selection == "nearest_difference":
-                        difference_min: float = cdist(
-                            np.expand_dims(line, axis=0),
-                            self.detectors[_class_],
-                            metric="hamming",
-                        ).min()
-                        class_differences[_class_] = difference_min
-                    # Or based on the greatest distance from the average distances of the detectors.
-                    else:
-                        difference_sum: float = cdist(
-                            np.expand_dims(line, axis=0),
-                            self.detectors[_class_],
-                            metric="hamming",
-                        ).sum()
-                        class_differences[_class_] = difference_sum / self.N
-
-                c = np.append(c, [max(class_differences, key=class_differences.get)])
+                c = self.__assign_class_to_non_self_sample(line, c)
 
         return c
+
+    def __assign_class_to_non_self_sample(self, line, c):
+        """
+        This function determines the class of a sample when all detectors classify it
+        as "non-self". Classification is performed using the ``max_average_difference``
+        and ``max_nearest_difference`` methods.
+
+        Parameters:
+            line (type): Sample to be classified.
+            c (list): List of predictions to be updated with the new classification.
+
+        Returns:
+            list: The list of predictions `c` updated with the class assigned to the sample.
+        """
+        class_differences: dict = {}
+        for _class_ in self.classes:
+            # Assign the label to the class with the greatest distance from
+            # the nearest detector.
+            if self.no_label_sample_selection == "nearest_difference":
+                difference_min: float = cdist(
+                    np.expand_dims(line, axis=0),
+                    self.detectors[_class_],
+                    metric="hamming",
+                ).min()
+                class_differences[_class_] = difference_min
+            # Or based on the greatest distance from the average distances of the detectors.
+            else:
+                difference_sum: float = cdist(
+                    np.expand_dims(line, axis=0),
+                    self.detectors[_class_],
+                    metric="hamming",
+                ).sum()
+                class_differences[_class_] = difference_sum / self.N
+
+        return np.append(c, [max(class_differences, key=class_differences.get)])
 
     def __slice_index_list_by_class(self, y: npt.NDArray) -> dict:
         """
@@ -703,7 +715,8 @@ class BNSA(Base):
 
         Parameters:
             * y (``npt.NDArray``)
-                Receives a ``y``[``N sample``] array with the output classes of the ``X``sample array.
+                Receives a ``y``[``N sample``] array with the output classes of the ``X``
+                sample array.
 
         Returns:
             dict: A dictionary with the list of array positions(``y``), with the classes as key.

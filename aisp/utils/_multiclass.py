@@ -6,7 +6,7 @@ import numpy.typing as npt
 
 def slice_index_list_by_class(classes: Union[npt.NDArray, list], y: npt.NDArray) -> dict:
     """
-    The function ``__slice_index_list_by_class(...)``, separates the indices of the lines according
+    The function ``slice_index_list_by_class(...)``, separates the indices of the lines according
     to the output class, to loop through the sample array, only in positions where the output is the
     class being trained.
 
