@@ -17,7 +17,7 @@ class TestBNSA:
         model = BNSA(N=50, aff_thresh=0.2, seed=self.seed)
         model.fit(self.X, self.y)
         predictions = model.predict(self.X)
-        assert predictions is not None, "Predictions should not be None."
+        assert predictions is not None
         assert len(predictions) == len(self.y)
 
     def test_score(self):
