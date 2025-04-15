@@ -179,7 +179,7 @@ class RNSA(Base):
                 else:
                     discard_count += 1
                     if discard_count == self.max_discards:
-                        raise MaxDiscardsReachedError(__class__)
+                        raise MaxDiscardsReachedError(_class_)
 
             # Add detectors, with classes as keys in the dictionary.
             list_detectors_by_class[_class_] = valid_detectors_set
