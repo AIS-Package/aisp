@@ -2,12 +2,12 @@
 
 from collections import namedtuple
 from typing import Dict, Literal, Optional, Union
-from scipy.spatial.distance import cdist
 from tqdm import tqdm
 
 import numpy as np
 import numpy.typing as npt
 
+from ._detectors_checkers import check_detector_bnsa_validity
 from ..exceptions import MaxDiscardsReachedError
 from ..utils import slice_index_list_by_class
 from ..utils.sanitizers import sanitize_seed, sanitize_choice, sanitize_param
@@ -159,21 +159,19 @@ class RNSA(Base):
                 # Generates a candidate detector vector randomly with values between 0 and 1.
                 vector_x = np.random.random_sample(size=X.shape[1])
                 # Checks the validity of the detector for non-self with respect to the class samples
-                valid_detector = self.__checks_valid_detector(
-                    X=X, vector_x=vector_x, samples_index_class=sample_index[_class_]
-                )
+                valid_detector = self.__checks_valid_detector(X[sample_index[_class_]], vector_x)
 
                 # If the detector is valid, add it to the list of valid detectors.
-                if self._algorithm == "V-detector" and valid_detector is not False:
+                if valid_detector is not False:
                     discard_count = 0
-                    valid_detectors_set.append(
-                        self._detector(vector_x, valid_detector[1])
-                    )
-                    if verbose:
-                        progress.update(1)
-                elif valid_detector:
-                    discard_count = 0
-                    valid_detectors_set.append(self._detector(vector_x))
+
+                    if self._algorithm == "V-detector":
+                        valid_detectors_set.append(
+                            self._detector(vector_x, valid_detector[1])
+                        )
+                    else:
+                        valid_detectors_set.append(self._detector(vector_x))
+
                     if verbose:
                         progress.update(1)
                 else:
@@ -221,7 +219,7 @@ class RNSA(Base):
         )
 
         # Initializes an empty array that will store the predictions.
-        c = np.empty(shape=0)
+        c = []
         # For each sample row in X.
         for line in X:
             class_found: bool
@@ -229,13 +227,13 @@ class RNSA(Base):
             if _class_ is None:
                 class_found = False
             else:
-                c = np.append(c, [_class_])
+                c.append(_class_)
                 class_found = True
 
             # If there is only one class and the sample is not classified,
             # set the output as non-self.
             if not class_found and len(self.classes) == 1:
-                c = np.append(c, [self.non_self_label])
+                c.append(self.non_self_label)
             # If the class is not identified with the detectors, assign the class with
             # the greatest distance from the mean of its detectors.
             elif not class_found:
@@ -247,8 +245,8 @@ class RNSA(Base):
                     average_distance[_class_] = np.average(
                         [self.__distance(detector, line) for detector in detectores]
                     )
-                c = np.append(c, [max(average_distance, key=average_distance.get)])
-        return c
+                c.append(max(average_distance, key=average_distance.get))
+        return np.array(c)
 
     def __slice_index_list_by_class(self, y: npt.NDArray) -> dict:
         """
@@ -270,42 +268,35 @@ class RNSA(Base):
 
     def __checks_valid_detector(
         self,
-        X: npt.NDArray = None,
-        vector_x: npt.NDArray = None,
-        samples_index_class: npt.NDArray = None
+        x_class: npt.NDArray = None,
+        vector_x: npt.NDArray = None
     ) -> Union[bool, tuple[bool, float]]:
         """
         Function to check if the detector has a valid non-proper ``r`` radius for the class.
 
         Parameters
         ----------
-        * X (``npt.NDArray``)
-            Array ``X`` with the samples.
+        * x_class (``npt.NDArray``)
+            Array ``x_class`` with the samples per class.
         * vector_x (``npt.NDArray``)
             Randomly generated vector x candidate detector with values between[0, 1].
-        * samples_index_class (``npt.NDArray``)
-            Sample positions of a class in ``X``.
 
         Returns
         ----------
         * Validity (``bool``): Returns whether the detector is valid or not.
         """
         # If any of the input arrays have zero size, Returns false.
-        if (
-            np.size(samples_index_class) == 0
-            or np.size(X) == 0
-            or np.size(vector_x) == 0
-        ):
+        if (np.size(x_class) == 0 or np.size(vector_x) == 0):
             return False
         # If self.k > 1, uses the k nearest neighbors (kNN); otherwise, checks the detector
         # without considering kNN.
         if self.k > 1:
             knn_list = np.empty(shape=0)
-            for i in samples_index_class:
+            for x in x_class:
                 # Calculates the distance between the two vectors and adds it to the kNN list if
                 # the distance is smaller than the largest distance in the list.
                 knn_list = self.__compare_knearest_neighbors_list(
-                    knn_list, self.__distance(X[i], vector_x)
+                    knn_list, self.__distance(x, vector_x)
                 )
             # If the average of the distances in the kNN list is less than the radius, Returns true.
             distance_mean = np.mean(knn_list)
@@ -317,7 +308,7 @@ class RNSA(Base):
             distance: Union[float, None] = None
             if self._algorithm == "V-detector":
                 distance = min(
-                    self.__distance(X[i], vector_x) for i in samples_index_class
+                    self.__distance(x, vector_x) for x in x_class
                 )
                 return self.__detector_is_valid_to_vdetector(distance, vector_x)
 
@@ -325,7 +316,7 @@ class RNSA(Base):
             # the radius plus the sample's radius, sets the validity of the detector to
             # true.
             threshold: float = self.r + self.r_s
-            if all(self.__distance(X[i], vector_x) > threshold for i in samples_index_class):
+            if all(self.__distance(x, vector_x) > threshold for x in x_class):
                 return True # Detector is valid!
 
         return False  # Detector is not valid!
@@ -548,8 +539,7 @@ class BNSA(Base):
         super()._check_and_raise_exceptions_fit(X, y, "BNSA")
 
         # Converts the entire array X to boolean
-        if X.dtype != bool:
-            X = X.astype(bool)
+        X = X.astype(np.bool_)
 
         # Identifying the possible classes within the output array `y`.
         self.classes = np.unique(y)
@@ -574,21 +564,12 @@ class BNSA(Base):
                 progress.set_description_str(
                     f"Generating the detectors for the {_class_} class:"
                 )
+            x_class = X[sample_index[_class_]]
             while len(valid_detectors_set) < self.N:
-                is_valid_detector: bool = True
                 # Generates a candidate detector vector randomly with values 0 and 1.
-                vector_x = np.random.choice([False, True], size=X.shape[1])
-                # Calculates the distance between the candidate and the class samples.
-                distances = cdist(
-                    np.expand_dims(vector_x, axis=0),
-                    X[sample_index[_class_]],
-                    metric="hamming",
-                )
-                # Checks if any of the distances is below or equal to the threshold.
-                is_valid_detector = not np.any(distances <= self.aff_thresh)
-
+                vector_x = np.random.randint(0, 2, size=X.shape[1]).astype(np.bool_)
                 # If the detector is valid, add it to the list of valid detectors.
-                if is_valid_detector:
+                if check_detector_bnsa_validity(x_class, vector_x, self.aff_thresh):
                     discard_count = 0
                     valid_detectors_set.append(vector_x)
                     if verbose:
@@ -640,7 +621,7 @@ class BNSA(Base):
             X = X.astype(bool)
 
         # Initializes an empty array that will store the predictions.
-        c = np.empty(shape=0)
+        c = []
         # For each sample row in X.
         for line in X:
             class_found: bool = True
@@ -650,17 +631,13 @@ class BNSA(Base):
             for _class_ in self.classes:
                 similarity_sum: float = 0
                 # Calculates the Hamming distance between the row and all detectors.
-                distances = cdist(
-                    np.expand_dims(line, axis=0),
-                    self.detectors[_class_],
-                    metric="hamming",
-                )
+                distances = np.mean(np.not_equal(line, self.detectors[_class_]), axis=1)
 
                 # Check if any distance is below or equal to the threshold.
                 if np.any(distances <= self.aff_thresh):
                     class_found = False
                 else:
-                    similarity_sum = np.sum(distances)
+                    similarity_sum = distances.sum()
 
                 # If the sample passes through all detectors of a class, adds the class as a
                 # possible prediction and its average similarity.
@@ -670,7 +647,7 @@ class BNSA(Base):
             # If belonging to one or more classes, adds the class with the greatest
             # average distance
             if len(possible_classes) > 0:
-                c = np.append(c, [max(possible_classes, key=lambda x: x[1])[0]])
+                c.append(max(possible_classes, key=lambda x: x[1])[0])
                 class_found = True
             else:
                 class_found = False
@@ -678,14 +655,14 @@ class BNSA(Base):
             # If there is only one class and the sample is not classified, sets the
             # output as non-self.
             if not class_found and len(self.classes) == 1:
-                c = np.append(c, ["non-self"])
+                c.append("non-self")
             # If the class cannot be identified by the detectors
             elif not class_found:
                 c = self.__assign_class_to_non_self_sample(line, c)
 
-        return c
+        return np.array(c)
 
-    def __assign_class_to_non_self_sample(self, line, c) -> npt.NDArray:
+    def __assign_class_to_non_self_sample(self, line: npt.NDArray, c: list) -> npt.NDArray:
         """
         This function determines the class of a sample when all detectors classify it
         as "non-self". Classification is performed using the ``max_average_difference``
@@ -705,22 +682,19 @@ class BNSA(Base):
             # Assign the label to the class with the greatest distance from
             # the nearest detector.
             if self.no_label_sample_selection == "nearest_difference":
-                difference_min: float = cdist(
-                    np.expand_dims(line, axis=0),
-                    self.detectors[_class_],
-                    metric="hamming",
+                difference_min: float = np.mean(
+                    np.not_equal(line, self.detectors[_class_]), axis=1
                 ).min()
                 class_differences[_class_] = difference_min
             # Or based on the greatest distance from the average distances of the detectors.
             else:
-                difference_sum: float = cdist(
-                    np.expand_dims(line, axis=0),
-                    self.detectors[_class_],
-                    metric="hamming",
+                difference_sum: float = np.mean(
+                    np.not_equal(line, self.detectors[_class_]), axis=1
                 ).sum()
                 class_differences[_class_] = difference_sum / self.N
 
-        return np.append(c, [max(class_differences, key=class_differences.get)])
+        c.append(max(class_differences, key=class_differences.get))
+        return c
 
     def __slice_index_list_by_class(self, y: npt.NDArray) -> dict:
         """
