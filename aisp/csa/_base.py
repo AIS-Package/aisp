@@ -1,10 +1,12 @@
+"""Base Class for Clonal Selection Algorithm."""
 from abc import abstractmethod
 from typing import Literal, Optional
 
 import numpy as np
 import numpy.typing as npt
+from scipy.spatial.distance import cityblock, euclidean, minkowski
+
 from aisp.exceptions import FeatureDimensionMismatch
-from scipy.spatial.distance import euclidean, cityblock, minkowski
 
 from ..utils.metrics import accuracy_score
 
@@ -55,10 +57,9 @@ class BaseClassifier:
         """
         if self.metric == "manhattan":
             return cityblock(u, v)
-        elif self.metric == "minkowski":
+        if self.metric == "minkowski":
             return minkowski(u, v, self.p)
-        else:
-            return euclidean(u, v)
+        return euclidean(u, v)
 
     @staticmethod
     def _check_and_raise_exceptions_fit(
@@ -74,15 +75,15 @@ class BaseClassifier:
 
         Parameters
         ----------
-            * X (``npt.NDArray``): Training array, containing the samples and their characteristics, \
-                [``N samples`` (rows)][``N features`` (columns)].
-            * y (``npt.NDArray``): Array of target classes of ``X`` with [``N samples`` (lines)].
-            * algorithm (Literal[RNSA, BNSA], optional): Current class. Defaults to 'RNSA'.
+        * X (``npt.NDArray``): Training array, containing the samples and their characteristics, \
+            [``N samples`` (rows)][``N features`` (columns)].
+        * y (``npt.NDArray``): Array of target classes of ``X`` with [``N samples`` (lines)].
+        * algorithm (Literal[RNSA, BNSA], optional): Current class. Defaults to 'RNSA'.
 
         Raises
         ----------
-            * TypeError: If X or y are not ndarrays or have incompatible shapes.
-            * ValueError: If _class_ is BNSA and X contains values that are not composed only of 0 and 1.
+        * TypeError: If X or y are not ndarrays or have incompatible shapes.
+        * ValueError: If _class_ is BNSA and X contains values that are not composed only of 0 and 1.
         """
         if not isinstance(X, np.ndarray):
             if isinstance(X, list):
