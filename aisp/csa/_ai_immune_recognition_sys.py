@@ -62,7 +62,7 @@ class _Cell:
         clone_set = []
 
         while len(clone_set) < n:
-            n_mutations = random.randint(0, len(self.vector) + 1)
+            n_mutations = random.randint(0, len(self.vector))
             if n_mutations > 0:
                 clone = self.vector.copy()
                 position_mutations = np.random.choice(
@@ -70,8 +70,8 @@ class _Cell:
                 )
                 if self._algorithm == "binary-features":
                     clone[position_mutations] = np.random.randint(
-                        0, 2, size=n_mutations
-                    ).astype(np.bool_)
+                        0, 2, size=n_mutations, dtype=bool
+                    )
                 else:
                     clone[position_mutations] = np.random.uniform(size=n_mutations)
                 clone_set.append(clone)
