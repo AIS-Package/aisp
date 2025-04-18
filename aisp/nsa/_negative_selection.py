@@ -7,7 +7,7 @@ from tqdm import tqdm
 import numpy as np
 import numpy.typing as npt
 
-from ._detectors_checkers import check_detector_bnsa_validity
+from ._ns_core import check_detector_bnsa_validity, bnsa_class_prediction
 from ..exceptions import MaxDiscardsReachedError
 from ..utils import slice_index_list_by_class
 from ..utils.sanitizers import sanitize_seed, sanitize_choice, sanitize_param
@@ -150,6 +150,7 @@ class RNSA(Base):
             # Initializes the empty set that will contain the valid detectors.
             valid_detectors_set = []
             discard_count = 0
+            x_class = X[sample_index[_class_]]
             # Indicating which class the algorithm is currently processing for the progress bar.
             if verbose:
                 progress.set_description_str(
@@ -159,7 +160,7 @@ class RNSA(Base):
                 # Generates a candidate detector vector randomly with values between 0 and 1.
                 vector_x = np.random.random_sample(size=X.shape[1])
                 # Checks the validity of the detector for non-self with respect to the class samples
-                valid_detector = self.__checks_valid_detector(X[sample_index[_class_]], vector_x)
+                valid_detector = self.__checks_valid_detector(x_class, vector_x)
 
                 # If the detector is valid, add it to the list of valid detectors.
                 if valid_detector is not False:
@@ -516,7 +517,8 @@ class BNSA(Base):
         )
 
         self.classes: npt.NDArray = None
-        self.detectors: npt.NDArray = None
+        self.detectors: Optional[dict] = None
+        self._detectors_stack: npt.NDArray = None
 
     def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True):
         """
@@ -590,6 +592,9 @@ class BNSA(Base):
             )
         # Saves the found detectors in the attribute for the class detectors.
         self.detectors = list_detectors_by_class
+        self._detectors_stack = np.array(
+            [np.stack(self.detectors[class_name]) for class_name in self.classes]
+        )
         return self
 
     def predict(self, X: npt.NDArray) -> Optional[npt.NDArray]:
@@ -625,29 +630,16 @@ class BNSA(Base):
         # For each sample row in X.
         for line in X:
             class_found: bool = True
-            # List to store the possible classes to which the sample matches with self
-            # when compared to the non-self detectors.
-            possible_classes: list = []
-            for _class_ in self.classes:
-                similarity_sum: float = 0
-                # Calculates the Hamming distance between the row and all detectors.
-                distances = np.mean(np.not_equal(line, self.detectors[_class_]), axis=1)
-
-                # Check if any distance is below or equal to the threshold.
-                if np.any(distances <= self.aff_thresh):
-                    class_found = False
-                else:
-                    similarity_sum = distances.sum()
-
-                # If the sample passes through all detectors of a class, adds the class as a
-                # possible prediction and its average similarity.
-                if class_found:
-                    possible_classes.append([_class_, similarity_sum / self.N])
-
+            # Class prediction based on detectors
+            class_index = bnsa_class_prediction(
+                line,
+                self._detectors_stack,
+                self.aff_thresh
+            )
             # If belonging to one or more classes, adds the class with the greatest
             # average distance
-            if len(possible_classes) > 0:
-                c.append(max(possible_classes, key=lambda x: x[1])[0])
+            if class_index > -1:
+                c.append(self.classes[class_index])
                 class_found = True
             else:
                 class_found = False
@@ -658,11 +650,11 @@ class BNSA(Base):
                 c.append("non-self")
             # If the class cannot be identified by the detectors
             elif not class_found:
-                c = self.__assign_class_to_non_self_sample(line, c)
+                self.__assign_class_to_non_self_sample(line, c)
 
         return np.array(c)
 
-    def __assign_class_to_non_self_sample(self, line: npt.NDArray, c: list) -> npt.NDArray:
+    def __assign_class_to_non_self_sample(self, line: npt.NDArray, c: list):
         """
         This function determines the class of a sample when all detectors classify it
         as "non-self". Classification is performed using the ``max_average_difference``
@@ -679,22 +671,16 @@ class BNSA(Base):
         """
         class_differences: dict = {}
         for _class_ in self.classes:
+            distances = np.sum(line != self.detectors[_class_]) / self.N
             # Assign the label to the class with the greatest distance from
             # the nearest detector.
             if self.no_label_sample_selection == "nearest_difference":
-                difference_min: float = np.mean(
-                    np.not_equal(line, self.detectors[_class_]), axis=1
-                ).min()
-                class_differences[_class_] = difference_min
+                class_differences[_class_] = distances.min()
             # Or based on the greatest distance from the average distances of the detectors.
             else:
-                difference_sum: float = np.mean(
-                    np.not_equal(line, self.detectors[_class_]), axis=1
-                ).sum()
-                class_differences[_class_] = difference_sum / self.N
+                class_differences[_class_] = distances.sum() / self.N
 
         c.append(max(class_differences, key=class_differences.get))
-        return c
 
     def __slice_index_list_by_class(self, y: npt.NDArray) -> dict:
         """

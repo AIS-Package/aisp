@@ -35,7 +35,7 @@ class TestBNSA:
         """Should the fit and predict methods of the BNSA class."""
         X, y, seed = bnsa_data
         model = BNSA(N=50, aff_thresh=0.2, seed=seed)
-        model.fit(X, y)
+        model.fit(X, y, verbose=False)
         predictions = model.predict(X)
         assert predictions is not None
         assert isinstance(predictions, np.ndarray)
@@ -52,13 +52,13 @@ class TestBNSA:
             "consider reducing its value."
         )
         with pytest.raises(MaxDiscardsReachedError, match=expected_message):
-            model.fit(X, y)
+            model.fit(X, y, verbose=False)
 
     def test_predict_raises_feature_dimension_mismatch(self, bnsa_data):
         """Should raise FeatureDimensionMismatch when prediction input has wrong dimensions."""
         X, y, seed = bnsa_data
         model = BNSA(N=1000, aff_thresh=0.2, seed=seed)
-        model.fit(X, y)
+        model.fit(X, y, verbose=False)
         x_invalid = np.random.choice([True, False], size=(5, 5))
 
         with pytest.raises(FeatureDimensionMismatch):
@@ -68,7 +68,7 @@ class TestBNSA:
         """Score should return a value between 0 and 1."""
         X, y, seed = bnsa_data
         model = BNSA(N=50, aff_thresh=0.2, seed=seed)
-        model.fit(X, y)
+        model.fit(X, y, verbose=False)
         score = model.score(X, y)
         assert isinstance(score, float)
         assert 0.0 <= score <= 1.0
@@ -81,7 +81,7 @@ class TestRNSA:
         """Should the fit and predict methods of the RNSA class."""
         X, y, seed = rnsa_data
         model = RNSA(N=50, r=0.1, seed=seed)
-        model.fit(X, y)
+        model.fit(X, y, verbose=False)
         predictions = model.predict(X)
         assert predictions is not None
         assert isinstance(predictions, np.ndarray)
@@ -98,13 +98,13 @@ class TestRNSA:
             "consider reducing its value."
         )
         with pytest.raises(MaxDiscardsReachedError, match=expected_message):
-            model.fit(X, y)
+            model.fit(X, y, verbose=False)
 
     def test_predict_raises_feature_dimension_mismatch(self, rnsa_data):
         """Should raise FeatureDimensionMismatch when prediction input has wrong dimensions."""
         X, y, seed = rnsa_data
         model = RNSA(N=1000, aff_thresh=0.2, seed=seed)
-        model.fit(X, y)
+        model.fit(X, y, verbose=False)
         x_invalid = np.random.rand(5, 5)
         with pytest.raises(FeatureDimensionMismatch):
             model.predict(x_invalid)
@@ -113,7 +113,7 @@ class TestRNSA:
         """Score should return a value between 0 and 1."""
         X, y, seed = rnsa_data
         model = RNSA(N=50, r=0.1, seed=seed)
-        model.fit(X, y)
+        model.fit(X, y, verbose=False)
         score = model.score(X, y)
         assert isinstance(score, float)
         assert 0.0 <= score <= 1.0

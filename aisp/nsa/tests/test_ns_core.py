@@ -2,7 +2,7 @@
 import pytest
 import numpy as np
 
-from aisp.nsa._detectors_checkers import check_detector_bnsa_validity
+from aisp.nsa._ns_core import bnsa_class_prediction, check_detector_bnsa_validity
 
 @pytest.mark.parametrize(
     "x_class, vector_x, aff_thresh, expected_result",
@@ -31,3 +31,37 @@ def test_check_detector_bnsa_validity(
     """
     result = check_detector_bnsa_validity(x_class, vector_x, aff_thresh)
     assert result == expected_result
+
+@pytest.mark.parametrize(
+    "features, class_detectors, aff_thresh, expected",
+    [
+        (
+            np.array([1, 0, 0]),
+            np.array([
+                [[1, 1, 1], [1, 1, 1]],
+                [[0, 0, 1], [0, 1, 0]]
+            ]),
+            0.25,
+            0
+        ),
+        (
+            np.array([0, 1, 1]),
+            np.array([
+                [[0, 0, 1], [1, 0, 1]],
+                [[0, 1, 0], [0, 1, 1]]
+            ]),
+            0.6,
+            -1
+        )
+    ],
+    ids=[
+        "Sample suitable only for class 0",
+        "Sample rejected by all detectors (non-suitable)"
+    ]
+)
+def test_bnsa_class_prediction(features, class_detectors, aff_thresh, expected):
+    """
+    Tests the function that predicts the classes for binary samples by the trained detectors.
+    """
+    result = bnsa_class_prediction(features, class_detectors, aff_thresh)
+    assert result == expected
