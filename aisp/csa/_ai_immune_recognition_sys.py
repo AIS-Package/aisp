@@ -1,16 +1,20 @@
 """Artificial Immune Recognition System (AIRS)"""
 
 import random
+from collections import Counter
+from heapq import nlargest
 from typing import List, Literal, Optional
 
 import numpy as np
 import numpy.typing as npt
-from aisp.utils.sanitizers import sanitize_param, sanitize_seed
-from scipy.spatial.distance import hamming, cdist
+from scipy.spatial.distance import cdist
 from tqdm import tqdm
 
-from ._base import BaseClassifier
+from aisp.utils.sanitizers import sanitize_param, sanitize_seed
+
 from ..utils import slice_index_list_by_class
+from ..utils.immune_mutation import generate_mutated_clones
+from ._base import BaseClassifier
 
 
 class _Cell:
@@ -28,18 +32,18 @@ class _Cell:
     """
 
     def __init__(
-            self,
-            size: Optional[int] = None,
-            vector: Optional[npt.NDArray] = None,
-            algorithm: Literal[
-                "continuous-features", "binary-features"
-            ] = "continuous-features",
+        self,
+        size: Optional[int] = None,
+        vector: Optional[npt.NDArray] = None,
+        algorithm: Literal[
+            "continuous-features", "binary-features"
+        ] = "continuous-features",
     ) -> None:
         if vector is None and size is not None:
             if algorithm == "binary-features":
-                self.vector: npt.NDArray = np.random.randint(
-                    0, 2, size=size
-                ).astype(np.bool_)
+                self.vector: npt.NDArray = np.random.randint(0, 2, size=size).astype(
+                    np.bool_
+                )
             else:
                 self.vector: npt.NDArray = np.random.uniform(size=size)
         else:
@@ -48,7 +52,7 @@ class _Cell:
         self._algorithm: Literal["continuous-features", "binary-features"] = algorithm
 
     def hyper_clonal_mutate(self, n: int) -> npt.NDArray:
-        """ 
+        """
         Clones N features from a cell's features, generating a set of mutated vectors.
 
         Parameters
@@ -59,24 +63,7 @@ class _Cell:
         ----------
         * npt.NDArray: An array containing N mutated vectors from the original cell.
         """
-        clone_set = []
-
-        while len(clone_set) < n:
-            n_mutations = random.randint(0, len(self.vector))
-            if n_mutations > 0:
-                clone = self.vector.copy()
-                position_mutations = np.random.choice(
-                    np.arange(len(clone)), size=n_mutations, replace=False
-                )
-                if self._algorithm == "binary-features":
-                    clone[position_mutations] = np.random.randint(
-                        0, 2, size=n_mutations, dtype=bool
-                    )
-                else:
-                    clone[position_mutations] = np.random.uniform(size=n_mutations)
-                clone_set.append(clone)
-
-        return np.array(clone_set)
+        return generate_mutated_clones(self.vector, self._algorithm, n)
 
 
 class _ABR(_Cell):
@@ -96,13 +83,13 @@ class _ABR(_Cell):
     """
 
     def __init__(
-            self,
-            size: Optional[int] = None,
-            vector: Optional[npt.NDArray] = None,
-            stimulation: Optional[float] = None,
-            algorithm: Literal[
-                "continuous-features", "binary-features"
-            ] = "continuous-features",
+        self,
+        size: Optional[int] = None,
+        vector: Optional[npt.NDArray] = None,
+        stimulation: Optional[float] = None,
+        algorithm: Literal[
+            "continuous-features", "binary-features"
+        ] = "continuous-features",
     ) -> None:
         super().__init__(size=size, vector=vector, algorithm=algorithm)
         self.resource = 0
@@ -113,7 +100,7 @@ class _ABR(_Cell):
         """
         Updates the amount of resources available for an ABR after consumption.
 
-        This function consumes the resources and returns the remaining amount of resources after 
+        This function consumes the resources and returns the remaining amount of resources after
         consumption.
 
         Parameters
@@ -130,9 +117,9 @@ class _ABR(_Cell):
         if aux_resource < 0:
             self.resource = resource
             return 0
-        else:
-            self.resource = aux_resource
-            return aux_resource
+
+        self.resource = aux_resource
+        return aux_resource
 
 
 class AIRS(BaseClassifier):
@@ -150,6 +137,7 @@ class AIRS(BaseClassifier):
     * rate_clonal (``float``): Maximum number of possible clones of a class. This \
         quantity is multiplied by (cell stimulus * rate_hypermutation) to define the number
         of clones. Defaults to 10.
+    * rate_mc_init (``float``): Percentage of samples used to initialize memory cells.
     * rate_hypermutation (``float``): The rate of mutated clones derived from rate_clonal as a
         scalar factor. Defaults to 0.75.
     * affinity_threshold_scalar (``float``): Normalized affinity threshold. Defaults to 0.75.
@@ -189,24 +177,25 @@ class AIRS(BaseClassifier):
         self,
         n_resources: float = 10,
         rate_clonal: int = 10,
-        n_antigens_selected: int = 5,
+        rate_mc_init: int = 0.2,
         rate_hypermutation: float = 0.75,
         affinity_threshold_scalar: float = 0.75,
         k: int = 10,
         max_iters: int = 100,
         resource_amplified: float = 1.0,
         metric: Literal["manhattan", "minkowski", "euclidean"] = "euclidean",
-        algorithm: Literal["continuous-features", "binary-features"] = "continuous-features",
-        seed: int = None, **kwargs,
+        algorithm: Literal[
+            "continuous-features", "binary-features"
+        ] = "continuous-features",
+        seed: int = None,
+        **kwargs,
     ) -> None:
 
         super().__init__(metric)
 
         self.n_resources: float = sanitize_param(n_resources, 10, lambda x: x >= 1)
-        self.n_antigens_selected: int = sanitize_param(
-            n_antigens_selected,
-            5,
-            lambda x: x >= 1
+        self.rate_mc_init: float = sanitize_param(
+            rate_mc_init, 0.2, lambda x: x > 0 and x <= 1
         )
         self.rate_clonal: int = sanitize_param(rate_clonal, 10, lambda x: x > 0)
         self.rate_hypermutation: float = sanitize_param(
@@ -224,8 +213,10 @@ class AIRS(BaseClassifier):
         if self.seed is not None:
             np.random.seed(self.seed)
 
-        self._algorithm: Literal["continuous-features", "binary-features"] = sanitize_param(
-            algorithm, "continuous-features", lambda x: x == "binary-features"
+        self._algorithm: Literal["continuous-features", "binary-features"] = (
+            sanitize_param(
+                algorithm, "continuous-features", lambda x: x == "binary-features"
+            )
         )
 
         if metric == "manhattan" or metric == "minkowski":
@@ -263,7 +254,7 @@ class AIRS(BaseClassifier):
         super()._check_and_raise_exceptions_fit(X, y, self._algorithm)
 
         # Converte todo o array X para boolean quando utilizar a versão binária.
-        if self._algorithm == 'binary-features' and X.dtype != bool:
+        if self._algorithm == "binary-features" and X.dtype != bool:
             X = X.astype(bool)
 
         # Identificando as classes possíveis, dentro do array de saídas ``y``.
@@ -272,15 +263,19 @@ class AIRS(BaseClassifier):
         sample_index = self.__slice_index_list_by_class(y)
         # Barra de progresso para o cada amostras (ai) em treinamento.
         if verbose:
-            progress = tqdm(total=len(y), postfix="\n",
-                            bar_format="{desc} ┇{bar}┇ {n}/{total} memory cells for each aᵢ")
+            progress = tqdm(
+                total=len(y),
+                postfix="\n",
+                bar_format="{desc} ┇{bar}┇ {n}/{total} memory cells for each aᵢ",
+            )
         # Inicia o conjunto que receberá as células de memória.
         pool_cells_classes = {}
         for _class_ in self.classes:
             # Informando em qual classe o algoritmo está para a barra de progresso.
             if verbose:
                 progress.set_description_str(
-                    f"Generating the memory cells for the {_class_} class:")
+                    f"Generating the memory cells for the {_class_} class:"
+                )
             x_class = X[sample_index[_class_]]
             # Calculando o limiar de semelhança entre os antígenos
             self._cells_affinity_threshold(antigens_list=x_class)
@@ -292,31 +287,40 @@ class AIRS(BaseClassifier):
                 for cell in pool_c:
                     cell.stimulation = self._affinity(cell.vector, ai)
 
-                # Pegando a célula com o maior estímulo do conjunto de memória e adicionando-a ao conjunto ABR.
+                # Pegando a célula com o maior estímulo do conjunto de memória e adicionando-a ao
+                # conjunto ABR.
                 c_match: _Cell = max(pool_c, key=lambda x: x.stimulation)
                 abr_list: list[_ABR] = [
                     _ABR(
                         vector=c_match.vector,
                         stimulation=c_match.stimulation,
-                        algorithm=self._algorithm
+                        algorithm=self._algorithm,
                     )
                 ]
 
                 set_clones: npt.NDArray = c_match.hyper_clonal_mutate(
-                    int(self.rate_hypermutation * self.rate_clonal * c_match.stimulation)
+                    int(
+                        self.rate_hypermutation * self.rate_clonal * c_match.stimulation
+                    )
                 )
 
                 # Populando ARB com os clones
                 for clone in set_clones:
-                    abr_list.append(_ABR(vector=clone, algorithm=self._algorithm,
-                                         stimulation=self._affinity(clone, ai)))
+                    abr_list.append(
+                        _ABR(
+                            vector=clone,
+                            algorithm=self._algorithm,
+                            stimulation=self._affinity(clone, ai),
+                        )
+                    )
 
-                c_candidate = self._refinement_ABR(ai, c_match, abr_list)
+                c_candidate = self._refinement_abr(ai, c_match, abr_list)
 
                 if c_candidate.stimulation > c_match.stimulation:
                     pool_c.append(c_candidate)
                     if self._affinity(c_candidate.vector, c_match.vector) < (
-                            self.affinity_threshold * self.affinity_threshold_scalar):
+                        self.affinity_threshold * self.affinity_threshold_scalar
+                    ):
                         pool_c.remove(c_match)
 
                 if verbose:
@@ -368,56 +372,41 @@ class AIRS(BaseClassifier):
             return None
 
         super()._check_and_raise_exceptions_predict(
-            X,
-            len(self.cells_memory[self.classes[0]][0].vector),
-            self._algorithm
+            X, len(self.cells_memory[self.classes[0]][0].vector), self._algorithm
         )
 
         # Inicia uma lista vazia.
         c: list = []
-
+    
         for line in X:
-            label_stim_list = []
-            for _class_ in self.classes:
-                for cell in self.cells_memory[_class_]:
-                    stimulation = self._affinity(cell.vector, line)
-                    label_stim_list.append((_class_, stimulation))
-
+            label_stim_list = [
+                (_class, self._affinity(cell.vector, line))
+                for _class in self.classes
+                for cell in self.cells_memory[_class]
+            ]
             # Criar a lista com os k vizinhos mais próximos.
-            k_nearest_neighbors = sorted(label_stim_list, key=lambda x: x[1], reverse=True)[: self.k]
+            k_nearest = nlargest(self.k, label_stim_list, key=lambda x: x[1])
             # Conta os votos com base no número de vezes que uma classe aparece na lista de knn.
-            voting_on_labels: dict = {}
-            for vote in k_nearest_neighbors:
-                voting_on_labels[vote[0]] = voting_on_labels.get(vote[0], 0) + 1
+            votes = Counter(label for label, _ in k_nearest)
             # Adiciona o rotulo com a maior quantidade de votos.
-            c.append(max(voting_on_labels, key=voting_on_labels.get))
+            c.append(votes.most_common(1)[0][0])
         return np.array(c)
 
-    def _refinement_ABR(self, ai: npt.NDArray, c_match: _Cell, abr_list: List[_ABR]) -> _Cell:
+    def _refinement_abr(
+        self, ai: npt.NDArray, c_match: _Cell, abr_list: List[_ABR]
+    ) -> _Cell:
         """
-        Execute the refinement process for the ABR set until the average stimulation value exceeds the defined threshold (``affinity_threshold_scalar``).
+        Execute the refinement process for the ABR set until the average stimulation value exceeds
+        the defined threshold (``affinity_threshold_scalar``).
 
-        Parameters:
-        ---
-        - **c_match** (``_Cell``): Cell with the highest stimulation relative to aᵢ
-        - **abr_list** (``List[_ABR]``): ABR set.
+        Parameters
+        ----------
+        * **c_match** (``_Cell``): Cell with the highest stimulation relative to aᵢ
+        * **abr_list** (``List[_ABR]``): ABR set.
 
-        Returns:
-        ---
-        - **_Cell**: The cell with the highest ABR stimulation
-
-        ---
-
-        Executa o processo de refinamento do conjunto ABR ate que o valor médio da estimulação 
-        seja maior que o limite definido (``affinity_threshold_scalar``)
-
-        Parameters:
-        ---
-            * c_match (``_Cell``): Célula com a maior estimulação com relação a aᵢ
-            * abr_list (``List[_ABR]``): Conjunto ABR.
-
-        Returns:
-            _Cell: A célula com maior estimulação de ABR
+        Returns
+        ----------
+        * **_Cell**: The cell with the highest ABR stimulation
         """
         iters = 0
         # Competição e Refinamento ARB
@@ -427,27 +416,32 @@ class AIRS(BaseClassifier):
             resource = self.n_resources
             for cell in abr_list:
                 resource = cell.set_resource(
-                    resource=resource, amplified=self.resource_amplified)
+                    resource=resource, amplified=self.resource_amplified
+                )
                 if resource == 0:
                     break
             # remove as células sem recursos e calcula a media de estimulo de ABR.
             abr_list = list(filter(lambda item: item.resource != 0, abr_list))
             avg_stimulation = sum(item.stimulation for item in abr_list) / len(abr_list)
             # Se o máximo de interações ou a média do estímulo maior que o limiar para o loop
-            if (iters == self.max_iters
-                    or avg_stimulation > self.affinity_threshold):
+            if iters == self.max_iters or avg_stimulation > self.affinity_threshold:
                 break
 
             # pegando uma célula aleatória e efetuando mutações.
             abr_random = random.choice(abr_list)
             clone_abr = abr_random.hyper_clonal_mutate(
-                int(self.rate_clonal * c_match.stimulation))
+                int(self.rate_clonal * c_match.stimulation)
+            )
 
             # Adicionando os clones os ABR com a taxa de estimulo com aᵢ
-            for clone in clone_abr:
-                abr_list.append(
-                    _ABR(vector=clone, stimulation=self._affinity(clone, ai),
-                         algorithm=self._algorithm))
+            abr_list = [
+                _ABR(
+                    vector=clone,
+                    stimulation=self._affinity(clone, ai),
+                    algorithm=self._algorithm,
+                )
+                for clone in clone_abr
+            ]
 
         # Retorna a célula com maior estímulo com aᵢ
         return max(abr_list, key=lambda x: x.stimulation)
@@ -461,21 +455,9 @@ class AIRS(BaseClassifier):
 
         > affinity_threshold = (Σᵢ=₁ⁿ⁻¹ Σⱼ=ᵢ₊₁ⁿ affinity(aᵢ, aⱼ)) / (n(n-1)/2
 
-        Parameters:
-        ---
+        Parameters
+        ----------
         - antigens_list (``NDArray``): List of training antigens.
-
-        ---
-
-        Esta função calcula o limite de afinidade com base na afinidade média entre instâncias de
-        treinamento, onde aᵢ e aⱼ são um par de antígenos, e a afinidade é medida pela distância
-        (Euclidiana, Manhattan, Minkowski, Hamming).
-        Seguindo a fórmula:
-        > affinity_threshold = (Σᵢ=₁ⁿ⁻¹ Σⱼ=ᵢ₊₁ⁿ affinity(aᵢ, aⱼ)) / (n(n-1)/2
-
-        Parameters:
-        ---
-            * antigens_list (`NDArray`): Lista de antígenos de treinamento.
         """
         # Calcular todas as distâncias entre as amostras do conjunto de treinamento
         distances = cdist(antigens_list, antigens_list, metric=self.metric)
@@ -483,76 +465,50 @@ class AIRS(BaseClassifier):
         # Somar todas as distâncias euclidianas
         sum_distance = np.sum(distances)
 
-        self.affinity_threshold = 1 - (sum_distance / ((len(antigens_list) *
-                                                        (len(antigens_list) - 1)) / 2))
+        self.affinity_threshold = 1 - (
+            sum_distance / ((len(antigens_list) * (len(antigens_list) - 1)) / 2)
+        )
 
     def _affinity(self, u: npt.NDArray, v: npt.NDArray) -> float:
         """
-
         Calculates the stimulus between two vectors using metrics.
 
-        Parameters:
-        ---
-            * u (``npt.NDArray``): Coordinates of the first point.
-            * v (``npt.NDArray``): Coordinates of the second point.
+        Parameters
+        ----------
+        * u (``npt.NDArray``): Coordinates of the first point.
+        * v (``npt.NDArray``): Coordinates of the second point.
 
-        returns:
-        ---
-            * (``float``) the stimulus rate between the vectors.
-
-        ---
-
-        Calcula o estimulo entre dois vetores usando métricas.
-
-        Parameters:
-        ---
-            * u (``npt.NDArray``): Coordenadas do primeiro ponto.
-            * v (``npt.NDArray``): Coordenadas do segundo ponto.
-
-        Returns:
-        ---
-            * (``float``) a taxa de estimulo entre os vetores.
-
+        returns
+        ----------
+        * (``float``) the stimulus rate between the vectors.
         """
         distance: float
         if self._algorithm == "binary-features":
-            distance = float(hamming(u, v))
+            distance = np.sum(u != v) / len(u)
         else:
             distance = self._distance(u, v)
         return 1 - (distance / (1 + distance))
 
     def _init_memory_c(self, antigens_list: npt.NDArray) -> List[_Cell]:
         """
-        This function initializes memory cells by randomly selecting `n_antigens_selected`
+        This function initializes memory cells by randomly selecting `rate_mc_init`
         from the list of training antigens.
 
-        Parameters:
-        ---
+        Parameters
+        ----------
         - antigens_list (``NDArray``): List of training antigens.
 
-        Returns:
-        ---
+        Returns
+        ----------
         * Mc: List of initialized memories.
-        ---
-
-        Esta função inicializa as células de memória escolhendo `n_antigens_selected` aleatoriamente
-        da lista de antígenos de treinamento.
-
-        Parameters:
-        ---
-            * antigens_list (`NDArray`): Lista de antígenos de treinamento.
-
-        Returns:
-        ---
-            * Mc: Lista de memórias inicializadas.
         """
         m_c = []
-        randomly_antigens_indexs = np.random.choice(
-            antigens_list.shape[0],
-            size=self.n_antigens_selected,
-            replace=False
+        n = round(len(antigens_list) * self.rate_mc_init)
+
+        randomly_antigens_index = np.random.choice(
+            antigens_list.shape[0], size=n, replace=False
         )
-        for antigen in antigens_list[randomly_antigens_indexs]:
+        for antigen in antigens_list[randomly_antigens_index]:
             m_c.append(_Cell(vector=antigen, algorithm=self._algorithm))
         return m_c
 
@@ -562,33 +518,21 @@ class AIRS(BaseClassifier):
         according to the output class, to loop through the sample array, only in positions where \
         the output is the class being trained.
 
-        Parameters:
-        ---
-            * y (npt.NDArray): Receives a ``y``[``N sample``] array with the output classes of the \
-                ``X`` sample array.
+        Parameters
+        ----------
+        * y (npt.NDArray): Receives a ``y``[``N sample``] array with the output classes of the \
+            ``X`` sample array.
 
-        returns:
-        ---
-            * dict: A dictionary with the list of array positions(``y``), with the classes as key.
-
-        ---
-
-        A função ``__slice_index_list_by_class(...)``, separa os índices das linhas conforme a classe \
-        de saída, para percorrer o array de amostra, apenas nas posições que a saída for a classe que \
-        está sendo treinada.
-
-        Parameters:
-        ---
-            * y (npt.NDArray): Recebe um array ``y``[``N amostra``] com as classes de saída do array \
-                de amostra ``X``.
-
-        Returns:
-        ---
-            * dict: Um dicionário com a lista de posições do array(``y``), com as classes como chave.
+        returns
+        ----------
+        * dict: A dictionary with the list of array positions(``y``), with the classes as key.
         """
         return slice_index_list_by_class(self.classes, y)
 
     def get_params(self, deep: bool = True) -> dict:  # pylint: disable=W0613
+        """
+        The get_params function Returns a dictionary with the object's main parameters.
+        """
         return {
             "n_resources": self.n_resources,
             "rate_hypermutation": self.rate_hypermutation,
