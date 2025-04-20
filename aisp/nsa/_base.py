@@ -4,7 +4,8 @@ from typing import Literal, Optional
 
 import numpy as np
 import numpy.typing as npt
-from scipy.spatial.distance import cityblock, euclidean, minkowski
+
+from aisp.utils.distance import compute_metric_distance
 
 from ..exceptions import FeatureDimensionMismatch
 from ..utils.metrics import accuracy_score
@@ -51,12 +52,7 @@ class Base:
         ----------
         * Distance (``double``) between the two points.
         """
-        if self.metric == "manhattan":
-            return cityblock(u, v)
-        if self.metric == "minkowski":
-            return minkowski(u, v, self.p)
-
-        return euclidean(u, v)
+        return compute_metric_distance(u, v, self.metric, self.p)
 
     @staticmethod
     def _check_and_raise_exceptions_fit(

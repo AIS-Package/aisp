@@ -7,9 +7,12 @@ from tqdm import tqdm
 import numpy as np
 import numpy.typing as npt
 
-from ._ns_core import check_detector_bnsa_validity, bnsa_class_prediction
+from ._ns_core import (
+    check_detector_bnsa_validity, bnsa_class_prediction, check_detector_rnsa_validity
+)
 from ..exceptions import MaxDiscardsReachedError
 from ..utils import slice_index_list_by_class
+from ..utils.distance import min_distance_to_class_vectors
 from ..utils.sanitizers import sanitize_seed, sanitize_choice, sanitize_param
 from ._base import Base
 
@@ -144,7 +147,7 @@ class RNSA(Base):
             progress = tqdm(
                 total=int(self.N * (len(self.classes))),
                 bar_format="{desc} ┇{bar}┇ {n}/{total} detectors",
-                postfix="\n",
+                postfix="\n"
             )
         for _class_ in self.classes:
             # Initializes the empty set that will contain the valid detectors.
@@ -306,19 +309,17 @@ class RNSA(Base):
             if distance_mean > (self.r + self.r_s):
                 return True
         else:
-            distance: Union[float, None] = None
+
             if self._algorithm == "V-detector":
-                distance = min(
-                    self.__distance(x, vector_x) for x in x_class
-                )
+                distance = min_distance_to_class_vectors(x_class, vector_x, self.metric, self.p)
                 return self.__detector_is_valid_to_vdetector(distance, vector_x)
 
             # Calculates the distance between the vectors; if not it is less than or equal to
             # the radius plus the sample's radius, sets the validity of the detector to
             # true.
             threshold: float = self.r + self.r_s
-            if all(self.__distance(x, vector_x) > threshold for x in x_class):
-                return True # Detector is valid!
+            if check_detector_rnsa_validity(x_class, vector_x, threshold, self.metric, self.p):
+                return True  # Detector is valid!
 
         return False  # Detector is not valid!
 
