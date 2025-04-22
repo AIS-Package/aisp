@@ -4,12 +4,19 @@ The functions perform detector checks and utilize Numba decorators for Just-In-T
 """
 
 import numpy.typing as npt
-from numba import njit
+from numba import njit, types
 
 from aisp.utils.distance import compute_metric_distance, hamming
 
 
-@njit(cache=True)
+@njit(
+    [(
+        types.Array(types.boolean, 2, 'C'),
+        types.Array(types.boolean, 1, 'C'),
+        types.float64
+    )],
+    cache=True
+)
 def check_detector_bnsa_validity(
     x_class: npt.NDArray,
     vector_x: npt.NDArray,
@@ -60,7 +67,14 @@ def check_detector_bnsa_validity(
     return True
 
 
-@njit(cache=True)
+@njit(
+    [(
+        types.Array(types.boolean, 1, 'C'),
+        types.Array(types.boolean, 3, 'C'),
+        types.float64
+    )],
+    cache=True
+)
 def bnsa_class_prediction(
     features: npt.NDArray,
     class_detectors: npt.NDArray,
@@ -112,7 +126,14 @@ def bnsa_class_prediction(
     return best_class_idx
 
 
-@njit(cache=True)
+@njit(
+[(
+    types.Array(types.float64, 2, 'C'),
+    types.Array(types.float64, 1, 'C'),
+    types.float64, types.int32, types.float64
+)],
+cache=True
+)
 def check_detector_rnsa_validity(
     x_class: npt.NDArray,
     vector_x: npt.NDArray,

@@ -319,7 +319,9 @@ class RNSA(Base):
             # the radius plus the sample's radius, sets the validity of the detector to
             # true.
             threshold: float = self.r + self.r_s
-            if check_detector_rnsa_validity(x_class, vector_x, threshold, get_metric_code(self.metric), self.p):
+            if check_detector_rnsa_validity(
+                x_class, vector_x, threshold, get_metric_code(self.metric), self.p
+            ):
                 return True  # Detector is valid!
 
         return False  # Detector is not valid!

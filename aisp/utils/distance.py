@@ -2,15 +2,14 @@
 
 import numpy as np
 import numpy.typing as npt
-from numba import njit
-from numba.types import boolean, float64, Array, int32
+from numba import njit, types
 
 EUCLIDEAN = 0
 MANHATTAN = 1
 MINKOWSKI = 2
 HAMMING = 3
 
-@njit([(Array(boolean, 1, 'C'), Array(boolean, 1, 'C'))], cache=True)
+@njit()
 def hamming(u: npt.NDArray, v: npt.NDArray) -> np.float64:
     """
     Function to calculate the normalized Hamming distance between two points.
@@ -41,9 +40,13 @@ def hamming(u: npt.NDArray, v: npt.NDArray) -> np.float64:
     ----------
     * Distância (``float``) entre os dois pontos.
     """
-    return np.sum(u != v) / len(u)
+    n = len(u)
+    if n == 0:
+        return 0.0
 
-@njit([(Array(float64, 1, 'C'), Array(float64, 1, 'C'))], cache=True)
+    return np.sum(u != v) / n
+
+@njit()
 def euclidean(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]) -> np.float64:
     """
     Function to calculate the normalized Euclidean distance between two points.
@@ -76,7 +79,7 @@ def euclidean(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]) -> np.floa
     """
     return np.linalg.norm(u - v)
 
-@njit([(Array(float64, 1, 'C'), Array(float64, 1, 'C'))], cache=True)
+@njit()
 def cityblock(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]) -> np.float64:
     """
     Function to calculate the normalized Manhattan distance between two points.
@@ -107,9 +110,13 @@ def cityblock(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]) -> np.floa
     ----------
     * Distância (``float``) entre os dois pontos.
     """
-    return np.sum(np.abs(u - v)) / len(u)
+    n = len(u)
+    if n == 0:
+        return -1.0
 
-@njit([(Array(float64, 1, 'C'), Array(float64, 1, 'C'), float64)], cache=True)
+    return np.sum(np.abs(u - v)) / n
+
+@njit()
 def minkowski(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64], p: float = 2.0):
     """
     Function to calculate the normalized Minkowski distance between two points.
@@ -149,17 +156,26 @@ def minkowski(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64], p: float =
     * Distância (``float``) entre os dois pontos.
 
     """
-    return (np.sum(np.abs(u - v) ** p) ** (1/p)) / len(u)
+    n = len(u)
+    if n == 0:
+        return -1.0
 
-@njit([
-    (Array(float64, 1, 'C'), Array(float64, 1, 'C'), int32, float64)
-], cache=True)
+    return (np.sum(np.abs(u - v) ** p) ** (1/p)) / n
+
+@njit(
+[(
+    types.Array(types.float64, 1, 'C'),
+    types.Array(types.float64, 1, 'C'),
+    types.int32, types.float64
+)],
+cache=True
+)
 def compute_metric_distance(
     u: npt.NDArray[np.float64],
     v: npt.NDArray[np.float64],
     metric: int,
-    p=2.0
-):
+    p: np.float64 = 2.0
+) -> np.float64:
     """
     Function to calculate the distance between two points by the chosen ``metric``.
 
@@ -193,9 +209,15 @@ def compute_metric_distance(
 
     return euclidean(u, v)
 
-@njit([
-    (Array(float64, 2, 'C'), Array(float64, 1, 'C'), int32, float64)
-], cache=True)
+
+@njit(
+[(
+    types.Array(types.float64, 2, 'C'),
+    types.Array(types.float64, 1, 'C'),
+    types.int32, types.float64
+)],
+cache=True
+)
 def min_distance_to_class_vectors(
     x_class: npt.NDArray,
     vector_x: npt.NDArray,
