@@ -16,7 +16,7 @@ max-args = 15
 
 [project]
 name = "aisp"
-version = "0.1.36"
+version = "0.1.40-dev2"
 authors = [
   { name="João Paulo da Silva Barros", email="jpsilvabarr@gmail.com" },
 ]

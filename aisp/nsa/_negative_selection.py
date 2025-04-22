@@ -12,7 +12,9 @@ from ._ns_core import (
 )
 from ..exceptions import MaxDiscardsReachedError
 from ..utils import slice_index_list_by_class
-from ..utils.distance import min_distance_to_class_vectors
+from ..utils.distance import (
+    min_distance_to_class_vectors, get_metric_code, compute_metric_distance
+)
 from ..utils.sanitizers import sanitize_seed, sanitize_choice, sanitize_param
 from ._base import Base
 
@@ -84,8 +86,6 @@ class RNSA(Base):
         algorithm: Literal["default-NSA", "V-detector"] = "default-NSA",
         **kwargs: Dict[str, Union[bool, str, float]]
     ):
-        super().__init__(metric)
-
         self.metric = sanitize_choice(
             metric,
             ["manhattan", "minkowski"],
@@ -309,16 +309,17 @@ class RNSA(Base):
             if distance_mean > (self.r + self.r_s):
                 return True
         else:
-
             if self._algorithm == "V-detector":
-                distance = min_distance_to_class_vectors(x_class, vector_x, self.metric, self.p)
+                distance = min_distance_to_class_vectors(
+                    x_class, vector_x, get_metric_code(self.metric), self.p
+                )
                 return self.__detector_is_valid_to_vdetector(distance, vector_x)
 
             # Calculates the distance between the vectors; if not it is less than or equal to
             # the radius plus the sample's radius, sets the validity of the detector to
             # true.
             threshold: float = self.r + self.r_s
-            if check_detector_rnsa_validity(x_class, vector_x, threshold, self.metric, self.p):
+            if check_detector_rnsa_validity(x_class, vector_x, threshold, get_metric_code(self.metric), self.p):
                 return True  # Detector is valid!
 
         return False  # Detector is not valid!
@@ -414,7 +415,7 @@ class RNSA(Base):
         ----------
         * Distance (``float``): between the two points.
         """
-        return super()._distance(u, v)
+        return compute_metric_distance(u, v, get_metric_code(self.metric), self.p)
 
     def __detector_is_valid_to_vdetector(
         self,

@@ -3,10 +3,15 @@
 import numpy as np
 import numpy.typing as npt
 from numba import njit
+from numba.types import boolean, float64, Array, int32
 
+EUCLIDEAN = 0
+MANHATTAN = 1
+MINKOWSKI = 2
+HAMMING = 3
 
-@njit(cache=True)
-def hamming(u: npt.NDArray, v: npt.NDArray):
+@njit([(Array(boolean, 1, 'C'), Array(boolean, 1, 'C'))], cache=True)
+def hamming(u: npt.NDArray, v: npt.NDArray) -> np.float64:
     """
     Function to calculate the normalized Hamming distance between two points.
     
@@ -38,8 +43,8 @@ def hamming(u: npt.NDArray, v: npt.NDArray):
     """
     return np.sum(u != v) / len(u)
 
-@njit(cache=True)
-def euclidean(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]):
+@njit([(Array(float64, 1, 'C'), Array(float64, 1, 'C'))], cache=True)
+def euclidean(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]) -> np.float64:
     """
     Function to calculate the normalized Euclidean distance between two points.
     
@@ -71,8 +76,8 @@ def euclidean(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]):
     """
     return np.linalg.norm(u - v)
 
-@njit(cache=True)
-def cityblock(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]):
+@njit([(Array(float64, 1, 'C'), Array(float64, 1, 'C'))], cache=True)
+def cityblock(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]) -> np.float64:
     """
     Function to calculate the normalized Manhattan distance between two points.
     
@@ -104,8 +109,8 @@ def cityblock(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]):
     """
     return np.sum(np.abs(u - v)) / len(u)
 
-@njit(cache=True)
-def minkowski(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64], p: float = 2):
+@njit([(Array(float64, 1, 'C'), Array(float64, 1, 'C'), float64)], cache=True)
+def minkowski(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64], p: float = 2.0):
     """
     Function to calculate the normalized Minkowski distance between two points.
     
@@ -146,12 +151,14 @@ def minkowski(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64], p: float =
     """
     return (np.sum(np.abs(u - v) ** p) ** (1/p)) / len(u)
 
-@njit
+@njit([
+    (Array(float64, 1, 'C'), Array(float64, 1, 'C'), int32, float64)
+], cache=True)
 def compute_metric_distance(
-    u: npt.NDArray,
-    v: npt.NDArray,
-    metric="euclidean",
-    p=2
+    u: npt.NDArray[np.float64],
+    v: npt.NDArray[np.float64],
+    metric: int,
+    p=2.0
 ):
     """
     Function to calculate the distance between two points by the chosen ``metric``.
@@ -179,21 +186,21 @@ def compute_metric_distance(
     * Distância (``double``) entre os dois pontos com a métrica selecionada.
 
     """
-    if metric == "hamming":
-        return hamming(u, v)
-    if metric == "cityblock":
+    if metric == MANHATTAN:
         return cityblock(u, v)
-    if metric == "minkowski":
+    if metric == MINKOWSKI:
         return minkowski(u, v, p)
 
     return euclidean(u, v)
 
-@njit()
+@njit([
+    (Array(float64, 2, 'C'), Array(float64, 1, 'C'), int32, float64)
+], cache=True)
 def min_distance_to_class_vectors(
     x_class: npt.NDArray,
     vector_x: npt.NDArray,
-    metric: str,
-    p: int
+    metric: int,
+    p: float = 2.0
 ) -> float:
     """
     Calculates the minimum distance between an input vector and the vectors of a class.
@@ -225,7 +232,7 @@ def min_distance_to_class_vectors(
     * vector_x (``npt.NDArray``): Vetor a ser comparado com os vetores da classe.
         Formato esperado: (n_características,).
     * metric (``str``): Métrica de distância a ser utilizada. Opções disponíveis: 
-        ["hamming", "cityblock", "minkowski", "euclidean"]
+        ["cityblock", "minkowski", "euclidean"]
     * p (``float``): Parâmetro da métrica de Minkowski (utilizado apenas se `metric` for 
         "minkowski").
     
@@ -244,3 +251,35 @@ def min_distance_to_class_vectors(
         min_distance = min(min_distance, distance)
 
     return min_distance
+
+
+def get_metric_code(metric: str) -> int:
+    """
+    Retorna o código numérico associado a uma métrica de distância.
+  
+    Parameters
+    ----------
+    * metric (str): Nome da métrica. Pode ser "euclidean", "manhattan", "minkowski" ou "hamming".
+
+    Raises
+    ----------
+    * ValueError: Se a métrica informada não for suportada.
+
+    Returns
+    ----------
+    * int: Código numérico correspondente à métrica.
+    """
+    metric_map = {
+        "euclidean": EUCLIDEAN,
+        "manhattan": MANHATTAN,
+        "minkowski": MINKOWSKI,
+        "hamming": HAMMING
+    }
+
+    normalized_metric = metric.strip().lower()
+
+    if normalized_metric not in metric_map:
+        supported = "', '".join(metric_map.keys())
+        raise ValueError(f"Unknown metric: '{metric}'. Supported: {supported}")
+
+    return metric_map[normalized_metric]

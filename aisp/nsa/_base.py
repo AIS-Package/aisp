@@ -5,11 +5,8 @@ from typing import Literal, Optional
 import numpy as np
 import numpy.typing as npt
 
-from aisp.utils.distance import compute_metric_distance
-
 from ..exceptions import FeatureDimensionMismatch
 from ..utils.metrics import accuracy_score
-from ..utils.sanitizers import sanitize_choice
 
 
 class Base:
@@ -17,42 +14,12 @@ class Base:
     The base class contains functions that are used by more than one class in the package, and
     therefore are considered essential for the overall functioning of the system.
 
-    Parameters
-    ----------
-    * metric (``str``): Way to calculate the distance between the detector and the sample:
-        * ``'Euclidean'`` ➜ The calculation of the distance is given by the expression: \
-            √( (x₁ – x₂)² + (y₁ – y₂)² + ... + (yn – yn)²).
-        * ``'minkowski'`` ➜ The calculation of the distance is given by the expression: \
-            ( |X₁ – Y₁|p + |X₂ – Y₂|p + ... + |Xn – Yn|p) ¹/ₚ.
-        * ``'manhattan'`` ➜ The calculation of the distance is given by the expression: \
-            ( |x₁ – x₂| + |y₁ – y₂| + ... + |yn – yn|) .
-    * p (``float``): This parameter stores the value of ``p`` used in the Minkowski distance.\
-        The default is ``2``, which represents normalized Euclidean distance. Different \
-        values of p lead to different variants of the [Minkowski Distance][1].
-
     Notes
     ----------
     [1]: https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.minkowski_distance.html
     """
-
-    def __init__(self, metric: str = "euclidean", p: float = 2):
-        self.metric = sanitize_choice(metric, ["manhattan", "minkowski"], "euclidean")
-        self.p: float = p
-
-    def _distance(self, u: npt.NDArray, v: npt.NDArray):
-        """
-        Function to calculate the distance between two points by the chosen ``metric``.
-
-        Parameters
-        ----------
-        * u (``npt.NDArray``): Coordinates of the first point.
-        * v (``npt.NDArray``): Coordinates of the second point.
-
-        returns
-        ----------
-        * Distance (``double``) between the two points.
-        """
-        return compute_metric_distance(u, v, self.metric, self.p)
+    def __init__(self):
+        pass
 
     @staticmethod
     def _check_and_raise_exceptions_fit(

@@ -117,8 +117,8 @@ def check_detector_rnsa_validity(
     x_class: npt.NDArray,
     vector_x: npt.NDArray,
     threshold: float,
-    metric: str,
-    p: int
+    metric: int,
+    p: float
 ) -> bool:
     """
     Checks the validity of a candidate detector (vector_x) against samples from a class (x_class)
