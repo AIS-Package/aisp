@@ -16,7 +16,7 @@ max-args = 15
 
 [project]
 name = "aisp"
-version = "0.1.40-dev2"
+version = "0.1.40-dev3"
 authors = [
   { name="João Paulo da Silva Barros", email="jpsilvabarr@gmail.com" },
 ]
@@ -45,8 +45,8 @@ classifiers = [
 
 dependencies = [
     "numpy>=1.22.4",
-    "scipy>=1.8.1",
-    "tqdm>=4.64.1"
+    "tqdm>=4.64.1",
+    "numba>=0.58.0"
 ]
 
 keywords = ["Artificial Immune Systems", "classification", "Natural computing", "machine learning", "artificial intelligence"]
