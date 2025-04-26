@@ -16,7 +16,7 @@ max-args = 15
 
 [project]
 name = "aisp"
-version = "0.1.40-dev3"
+version = "0.1.40-dev4"
 authors = [
   { name="João Paulo da Silva Barros", email="jpsilvabarr@gmail.com" },
 ]
@@ -29,7 +29,7 @@ description = "Package with techniques of artificial immune systems."
 
 readme = "README.md"
 
-requires-python = ">= 3.8.10"
+requires-python = ">= 3.9"
 license = "LGPL-3.0-only"
 license-files = ["LICENSE"]
 
@@ -37,7 +37,6 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -46,7 +45,7 @@ classifiers = [
 dependencies = [
     "numpy>=1.22.4",
     "tqdm>=4.64.1",
-    "numba>=0.58.0"
+    "numba>=0.59.0",
 ]
 
 keywords = ["Artificial Immune Systems", "classification", "Natural computing", "machine learning", "artificial intelligence"]
