@@ -44,6 +44,7 @@ O módulo requer a instalação do [python 3.8.10](https://www.python.org/downlo
 |    numpy      |    ≥ 1.22.4   |
 |    scipy      |    ≥ 1.8.1    |
 |    tqdm       |    ≥ 4.64.1   |
+|    numba      |    ≥ 0.59.0   |
 
 </div>
 </section>

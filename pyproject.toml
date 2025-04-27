@@ -1,22 +1,11 @@
 [build-system]
-requires = ["setuptools >= 77.0.3"]
+requires = ["setuptools >= 61.0"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools]
-packages = {find = {exclude = ["*test*", "*tests", "*tests/*", ".venv", ".idea", ".vscode", "docs"]}}
-
-[tool.pylint.'BASIC']
-good-names = ["X", "N"]
-
-[tool.pylint."MESSAGES CONTROL"]
-disable = ["R0902", "R0917"]
-
-[tool.pylint.'DESIGN']
-max-args = 15
 
 [project]
 name = "aisp"
-version = "0.1.40-dev4"
+version = "0.1.40"
 authors = [
   { name="João Paulo da Silva Barros", email="jpsilvabarr@gmail.com" },
 ]
@@ -40,19 +29,47 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
 dependencies = [
-    "numpy>=1.22.4",
-    "tqdm>=4.64.1",
-    "scipy>=1.8.1",
-    "numba>=0.59.0",
+  "numpy>=1.22.4",
+  "numba>=0.59.0",
+  "scipy>=1.8.1",
+  "tqdm>=4.64.1",
 ]
 
-keywords = ["Artificial Immune Systems", "classification", "Natural computing", "machine learning", "artificial intelligence"]
+keywords = [
+    "Artificial Immune Systems",
+    "classification",
+    "Natural computing",
+    "machine learning",
+    "artificial intelligence",
+    "AIS"
+]
 
 [project.urls]
 Homepage = "https://ais-package.github.io/"
 Documentation = "https://ais-package.github.io/docs/intro"
 "Source Code" = "https://github.com/AIS-Package/aisp"
 Tracker = "https://github.com/AIS-Package/aisp/issues"
+
+[tool.setuptools]
+packages = { find = { exclude = [
+  "*test*",
+  "*tests",
+  "*tests/*",
+  ".venv",
+  ".idea",
+  ".vscode",
+  "docs"
+]}}
+
+[tool.pylint]
+good-names = ["X", "N"]
+disable = [
+    "R0902",
+    "R0917"
+]
+max-args = 15
