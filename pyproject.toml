@@ -18,7 +18,7 @@ description = "Package with techniques of artificial immune systems."
 
 readme = "README.md"
 
-requires-python = ">= 3.9"
+requires-python = ">= 3.10"
 license = "LGPL-3.0-only"
 license-files = ["LICENSE"]
 
@@ -26,9 +26,10 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]

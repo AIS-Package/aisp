@@ -32,7 +32,7 @@ Os sistemas imunológicos artificiais (SIA) inspiram-se no sistema imunológico 
 ## **Instalação**
 
 
-O módulo requer a instalação do [python 3.8.10](https://www.python.org/downloads/) ou superior.
+O módulo requer a instalação do [python 3.10](https://www.python.org/downloads/) ou superior.
 
 <section id='dependências'>
 

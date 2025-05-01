@@ -59,7 +59,7 @@ Artificial Immune Systems (AIS) are inspired by the vertebrate immune system, cr
 
 #### **Installation**
 
-The module requires installation of [python 3.8.10](https://www.python.org/downloads/) or higher.
+The module requires installation of [python 3.10](https://www.python.org/downloads/) or higher.
 
 <section id='dependencies'>
 
