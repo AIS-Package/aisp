@@ -162,9 +162,7 @@ class RNSA(BaseNSA):
                 # If the detector is valid, add it to the list of valid detectors.
                 if valid_detector is not False:
                     discard_count = 0
-                    radius = (
-                        valid_detector[1] if self.algorithm == "V-detector" else None
-                    )
+                    radius = valid_detector[1] if self.algorithm == "V-detector" else None
                     valid_detectors_set.append(Detector(vector_x, radius))
                     if verbose:
                         progress.update(1)
