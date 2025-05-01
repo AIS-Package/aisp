@@ -3,6 +3,7 @@ from typing import TypeVar, Iterable, Callable, Any, Optional
 
 T = TypeVar('T')
 
+
 def sanitize_choice(value: T, valid_choices: Iterable[T], default: T) -> T:
     """
     Returns the value if it is present in the set of valid choices; otherwise, 
@@ -10,8 +11,8 @@ def sanitize_choice(value: T, valid_choices: Iterable[T], default: T) -> T:
 
     Parameters
     ----------
-    * value: The value to be checked.
-    * valid_choices (iterable): A collection of valid choices.
+    * value (``T``): The value to be checked.
+    * valid_choices (``Iterable[T]``): A collection of valid choices.
     * default: The default value to be returned if 'value' is not in 'valid_choices'.
 
     Returns

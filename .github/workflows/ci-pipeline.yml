@@ -36,5 +36,5 @@ jobs:
         pip install dist/*.whl
 
     - name: 🧪 Run tests
-      run: pytest
+      run: pytest -v
     

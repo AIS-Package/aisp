@@ -1,4 +1,4 @@
-# Classe nsa._Base
+# Classe BaseNSA
 
 A classe `Base` é uma classe utilitária contendo funções com o modificador 
 protected que podem ser herdadas por outras classes do módulo de seleção negativa. 
@@ -94,3 +94,12 @@ Implementação:
 
 - [RNSA](../../classes/Negative%20Selection/RNSA.md#função-predict)
 - [BNSA](../../classes/Negative%20Selection/BNSA.md#função-predict)
+
+# Classe Detector
+
+Representa um detector não-próprio do class RNSA.
+
+Atributos
+----------
+* ***position*** (``np.ndarray``): Vetor de características do detector.
+* ***radius*** (``float, opcional``): Raio do detector, utilizado no algoritmo V-detector.

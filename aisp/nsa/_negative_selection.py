@@ -1,6 +1,5 @@
 """Negative Selection Algorithm."""
 
-from collections import namedtuple
 from typing import Dict, Literal, Optional, Union
 from tqdm import tqdm
 
@@ -8,20 +7,24 @@ import numpy as np
 import numpy.typing as npt
 
 from ._ns_core import (
-    check_detector_bnsa_validity, bnsa_class_prediction, check_detector_rnsa_validity
+    check_detector_bnsa_validity,
+    bnsa_class_prediction,
+    check_detector_rnsa_validity,
 )
 from ..exceptions import MaxDiscardsReachedError
 from ..utils import slice_index_list_by_class
 from ..utils.distance import (
-    min_distance_to_class_vectors, get_metric_code, compute_metric_distance
+    min_distance_to_class_vectors,
+    get_metric_code,
+    compute_metric_distance,
 )
 from ..utils.sanitizers import sanitize_seed, sanitize_choice, sanitize_param
-from ._base import Base
+from ._base import BaseNSA, Detector
 
 
-class RNSA(Base):
+class RNSA(BaseNSA):
     """
-    The ``RNSA`` (Real-Valued Negative Selection Algorithm) class is for classification and 
+    The ``RNSA`` (Real-Valued Negative Selection Algorithm) class is for classification and
     identification purposes. of anomalies through the self and not self method.
 
     Parameters
@@ -69,7 +72,7 @@ class RNSA(Base):
     Notes
     ----------
     [1] https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.minkowski_distance.html
-    
+
     [2] https://doi.org/10.1007/978-3-540-24854-5_30
 
     """
@@ -84,13 +87,9 @@ class RNSA(Base):
         max_discards: int = 1000,
         seed: int = None,
         algorithm: Literal["default-NSA", "V-detector"] = "default-NSA",
-        **kwargs: Dict[str, Union[bool, str, float]]
+        **kwargs: Dict[str, Union[bool, str, float]],
     ):
-        self.metric = sanitize_choice(
-            metric,
-            ["manhattan", "minkowski"],
-            "euclidean"
-        )
+        self.metric = sanitize_choice(metric, ["manhattan", "minkowski"], "euclidean")
         self.seed = sanitize_seed(seed)
         if self.seed is not None:
             np.random.seed(seed)
@@ -98,28 +97,23 @@ class RNSA(Base):
         self.N: int = sanitize_param(N, 100, lambda x: x >= 1)
         self.r: float = sanitize_param(r, 0.05, lambda x: x > 0)
         self.r_s: float = sanitize_param(r_s, 0.0001, lambda x: x > 0)
-
-        if algorithm == "V-detector":
-            self._detector = namedtuple("Detector", ["position", "radius"])
-            self._algorithm: str = algorithm
-        else:
-            self._detector = namedtuple("Detector", "position")
-            self._algorithm: str = "default-NSA"
-
+        self.algorithm: str = sanitize_param(
+            algorithm, "default-NSA", lambda x: x == "V-detector"
+        )
         self.max_discards: int = sanitize_param(max_discards, 1000, lambda x: x > 0)
 
         # Retrieves the variables from kwargs.
         self.p: float = kwargs.get("p", 2)
-        self._cell_bounds: bool = kwargs.get("cell_bounds", False)
+        self.cell_bounds: bool = kwargs.get("cell_bounds", False)
         self.non_self_label: str = kwargs.get("non_self_label", "non-self")
 
         # Initializes the other class variables as None.
-        self.detectors: Union[dict, None] = None
+        self._detectors: Union[dict, None] = None
         self.classes: npt.NDArray = None
 
     def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True):
         """
-        The function ``fit(...)``, performs the training according to ``X`` and ``y``, using the 
+        The function ``fit(...)``, performs the training according to ``X`` and ``y``, using the
         method negative selection method(``NegativeSelect``).
 
         Parameters
@@ -128,7 +122,7 @@ class RNSA(Base):
             characteristics, [``N samples`` (rows)][``N features`` (columns)].
         * y (``npt.NDArray``): Array of target classes of ``X`` with [``N samples`` (lines)].
             verbose (``bool``): Feedback from detector generation to the user.
-        
+
         Returns
         ----------
         * (``self``): Returns the instance itself.
@@ -147,7 +141,7 @@ class RNSA(Base):
             progress = tqdm(
                 total=int(self.N * (len(self.classes))),
                 bar_format="{desc} ┇{bar}┇ {n}/{total} detectors",
-                postfix="\n"
+                postfix="\n",
             )
         for _class_ in self.classes:
             # Initializes the empty set that will contain the valid detectors.
@@ -168,14 +162,10 @@ class RNSA(Base):
                 # If the detector is valid, add it to the list of valid detectors.
                 if valid_detector is not False:
                     discard_count = 0
-
-                    if self._algorithm == "V-detector":
-                        valid_detectors_set.append(
-                            self._detector(vector_x, valid_detector[1])
-                        )
-                    else:
-                        valid_detectors_set.append(self._detector(vector_x))
-
+                    radius = (
+                        valid_detector[1] if self.algorithm == "V-detector" else None
+                    )
+                    valid_detectors_set.append(Detector(vector_x, radius))
                     if verbose:
                         progress.update(1)
                 else:
@@ -192,7 +182,7 @@ class RNSA(Base):
                 f"successfully generated\033[0m"
             )
         # Saves the found detectors in the attribute for the non-self detectors of the trained model
-        self.detectors = list_detectors_by_class
+        self._detectors = list_detectors_by_class
         return self
 
     def predict(self, X: npt.NDArray) -> Optional[npt.NDArray]:
@@ -215,11 +205,11 @@ class RNSA(Base):
             If there are no detectors for the prediction.
         """
         # If there are no detectors, Returns None.
-        if self.detectors is None:
+        if self._detectors is None:
             return None
 
         super()._check_and_raise_exceptions_predict(
-            X, len(self.detectors[self.classes[0]][0].position)
+            X, len(self._detectors[self.classes[0]][0].position)
         )
 
         # Initializes an empty array that will store the predictions.
@@ -244,7 +234,7 @@ class RNSA(Base):
                 average_distance: dict = {}
                 for _class_ in self.classes:
                     detectores = list(
-                        map(lambda x: x.position, self.detectors[_class_])
+                        map(lambda x: x.position, self._detectors[_class_])
                     )
                     average_distance[_class_] = np.average(
                         [self.__distance(detector, line) for detector in detectores]
@@ -254,8 +244,8 @@ class RNSA(Base):
 
     def __slice_index_list_by_class(self, y: npt.NDArray) -> dict:
         """
-        The function ``__slice_index_list_by_class(...)``, separates the indices of the lines 
-        according to the output class, to loop through the sample array, only in positions where 
+        The function ``__slice_index_list_by_class(...)``, separates the indices of the lines
+        according to the output class, to loop through the sample array, only in positions where
         the output is the class being trained.
 
         Parameters
@@ -271,9 +261,7 @@ class RNSA(Base):
         return slice_index_list_by_class(self.classes, y)
 
     def __checks_valid_detector(
-        self,
-        x_class: npt.NDArray = None,
-        vector_x: npt.NDArray = None
+        self, x_class: npt.NDArray = None, vector_x: npt.NDArray = None
     ) -> Union[bool, tuple[bool, float]]:
         """
         Function to check if the detector has a valid non-proper ``r`` radius for the class.
@@ -290,7 +278,7 @@ class RNSA(Base):
         * Validity (``bool``): Returns whether the detector is valid or not.
         """
         # If any of the input arrays have zero size, Returns false.
-        if (np.size(x_class) == 0 or np.size(vector_x) == 0):
+        if np.size(x_class) == 0 or np.size(vector_x) == 0:
             return False
         # If self.k > 1, uses the k nearest neighbors (kNN); otherwise, checks the detector
         # without considering kNN.
@@ -304,12 +292,12 @@ class RNSA(Base):
                 )
             # If the average of the distances in the kNN list is less than the radius, Returns true.
             distance_mean = np.mean(knn_list)
-            if self._algorithm == "V-detector":
+            if self.algorithm == "V-detector":
                 return self.__detector_is_valid_to_vdetector(distance_mean, vector_x)
             if distance_mean > (self.r + self.r_s):
                 return True
         else:
-            if self._algorithm == "V-detector":
+            if self.algorithm == "V-detector":
                 distance = min_distance_to_class_vectors(
                     x_class, vector_x, get_metric_code(self.metric), self.p
                 )
@@ -327,9 +315,7 @@ class RNSA(Base):
         return False  # Detector is not valid!
 
     def __compare_knearest_neighbors_list(
-        self,
-        knn: npt.NDArray,
-        distance: float
+        self, knn: npt.NDArray, distance: float
     ) -> npt.NDArray:
         """
         Compares the k-nearest neighbor distance at position ``k-1`` in the list ``knn``,
@@ -380,10 +366,10 @@ class RNSA(Base):
             # Variable to indicate if the class was found with the detectors.
             class_found: bool = True
             sum_distance = 0
-            for detector in self.detectors[_class_]:
+            for detector in self._detectors[_class_]:
                 distance = self.__distance(detector.position, line)
                 sum_distance += distance
-                if self._algorithm == "V-detector":
+                if self.algorithm == "V-detector":
                     if distance <= detector.radius:
                         class_found = False
                         break
@@ -420,9 +406,7 @@ class RNSA(Base):
         return compute_metric_distance(u, v, get_metric_code(self.metric), self.p)
 
     def __detector_is_valid_to_vdetector(
-        self,
-        distance: float,
-        vector_x: npt.NDArray
+        self, distance: float, vector_x: npt.NDArray
     ) -> Union[bool, tuple[bool, float]]:
         """
         Check if the distance between the detector and the samples, minus the radius of the samples,
@@ -445,33 +429,17 @@ class RNSA(Base):
             return False
 
         # If _cell_bounds is True, considers the detector to be within the plane bounds.
-        if self._cell_bounds:
+        if self.cell_bounds:
             for p in vector_x:
                 if (p - new_detector_r) < 0 or (p + new_detector_r) > 1:
                     return False
 
         return (True, new_detector_r)
 
-    def get_params(self, deep: bool = True) -> dict:  # pylint: disable=W0613
-        """
-        The get_params function Returns a dictionary with the object's main parameters.
-        """
-        return {
-            "N": self.N,
-            "r": self.r,
-            "k": self.k,
-            "metric": self.metric,
-            "seed": self.seed,
-            "algorithm": self._algorithm,
-            "r_s": self.r_s,
-            "cell_bounds": self._cell_bounds,
-            "p": self.p,
-        }
 
-
-class BNSA(Base):
+class BNSA(BaseNSA):
     """
-    The ``BNSA`` (Binary Negative Selection Algorithm) class is for classification and 
+    The ``BNSA`` (Binary Negative Selection Algorithm) class is for classification and
     identification purposes of anomalies through the self and not self method.
 
     Parameters
@@ -501,7 +469,7 @@ class BNSA(Base):
         seed: int = None,
         no_label_sample_selection: Literal[
             "max_average_difference", "max_nearest_difference"
-        ] = "max_average_difference"
+        ] = "max_average_difference",
     ):
         super().__init__()
 
@@ -517,16 +485,16 @@ class BNSA(Base):
         self.no_label_sample_selection: float = sanitize_param(
             no_label_sample_selection,
             "max_average_difference",
-            lambda x: x == "nearest_difference"
+            lambda x: x == "nearest_difference",
         )
 
         self.classes: npt.NDArray = None
-        self.detectors: Optional[dict] = None
+        self._detectors: Optional[dict] = None
         self._detectors_stack: npt.NDArray = None
 
     def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True):
         """
-        The function ``fit(...)``, performs the training according to ``X`` and ``y``, using the 
+        The function ``fit(...)``, performs the training according to ``X`` and ``y``, using the
         method negative selection method(``NegativeSelect``).
 
         Parameters
@@ -537,7 +505,7 @@ class BNSA(Base):
         * y (``npt.NDArray``):
             Array of target classes of ``X`` with [``N samples`` (lines)].
             verbose (``bool``): Feedback from detector generation to the user.
-        
+
         Returns
         ----------
         * (``self``): Returns the instance itself.
@@ -595,9 +563,9 @@ class BNSA(Base):
                 f"successfully generated\033[0m"
             )
         # Saves the found detectors in the attribute for the class detectors.
-        self.detectors = list_detectors_by_class
+        self._detectors = list_detectors_by_class
         self._detectors_stack = np.array(
-            [np.stack(self.detectors[class_name]) for class_name in self.classes]
+            [np.stack(self._detectors[class_name]) for class_name in self.classes]
         )
         return self
 
@@ -618,11 +586,11 @@ class BNSA(Base):
         * ``None``: If there are no detectors for the prediction.
         """
         # If there are no detectors, Returns None.
-        if self.detectors is None:
+        if self._detectors is None:
             return None
 
         super()._check_and_raise_exceptions_predict(
-            X, len(self.detectors[self.classes[0]][0]), "BNSA"
+            X, len(self._detectors[self.classes[0]][0]), "BNSA"
         )
 
         # Converts the entire array X to boolean.
@@ -636,9 +604,7 @@ class BNSA(Base):
             class_found: bool = True
             # Class prediction based on detectors
             class_index = bnsa_class_prediction(
-                line,
-                self._detectors_stack,
-                self.aff_thresh
+                line, self._detectors_stack, self.aff_thresh
             )
             # If belonging to one or more classes, adds the class with the greatest
             # average distance
@@ -675,7 +641,7 @@ class BNSA(Base):
         """
         class_differences: dict = {}
         for _class_ in self.classes:
-            distances = np.sum(line != self.detectors[_class_]) / self.N
+            distances = np.sum(line != self._detectors[_class_]) / self.N
             # Assign the label to the class with the greatest distance from
             # the nearest detector.
             if self.no_label_sample_selection == "nearest_difference":
@@ -688,8 +654,8 @@ class BNSA(Base):
 
     def __slice_index_list_by_class(self, y: npt.NDArray) -> dict:
         """
-        The function ``__slice_index_list_by_class(...)``, separates the indices of the lines 
-        according to the output class, to loop through the sample array, only in positions where 
+        The function ``__slice_index_list_by_class(...)``, separates the indices of the lines
+        according to the output class, to loop through the sample array, only in positions where
         the output is the class being trained.
 
         Parameters
@@ -703,14 +669,3 @@ class BNSA(Base):
         * dict: A dictionary with the list of array positions(``y``), with the classes as key.
         """
         return slice_index_list_by_class(self.classes, y)
-
-    def get_params(self, deep: bool = True) -> dict:  # pylint: disable=W0613
-        """
-        The get_params function Returns a dictionary with the object's main parameters.
-        """
-        return {
-            "N": self.N,
-            "aff_thresh": self.aff_thresh,
-            "max_discards": self.max_discards,
-            "seed": self.seed,
-        }

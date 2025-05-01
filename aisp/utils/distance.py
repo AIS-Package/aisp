@@ -9,6 +9,7 @@ MANHATTAN = 1
 MINKOWSKI = 2
 HAMMING = 3
 
+
 @njit()
 def hamming(u: npt.NDArray, v: npt.NDArray) -> np.float64:
     """
@@ -46,6 +47,7 @@ def hamming(u: npt.NDArray, v: npt.NDArray) -> np.float64:
 
     return np.sum(u != v) / n
 
+
 @njit()
 def euclidean(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]) -> np.float64:
     """
@@ -78,6 +80,7 @@ def euclidean(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]) -> np.floa
     * Distância (``float``) entre os dois pontos.
     """
     return np.linalg.norm(u - v)
+
 
 @njit()
 def cityblock(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]) -> np.float64:
@@ -115,6 +118,7 @@ def cityblock(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]) -> np.floa
         return -1.0
 
     return np.sum(np.abs(u - v)) / n
+
 
 @njit()
 def minkowski(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64], p: float = 2.0):
@@ -160,15 +164,16 @@ def minkowski(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64], p: float =
     if n == 0:
         return -1.0
 
-    return (np.sum(np.abs(u - v) ** p) ** (1/p)) / n
+    return (np.sum(np.abs(u - v) ** p) ** (1 / p)) / n
+
 
 @njit(
-[(
-    types.Array(types.float64, 1, 'C'),
-    types.Array(types.float64, 1, 'C'),
-    types.int32, types.float64
-)],
-cache=True
+    [(
+        types.Array(types.float64, 1, 'C'),
+        types.Array(types.float64, 1, 'C'),
+        types.int32, types.float64
+    )],
+    cache=True
 )
 def compute_metric_distance(
     u: npt.NDArray[np.float64],
@@ -206,17 +211,19 @@ def compute_metric_distance(
         return cityblock(u, v)
     if metric == MINKOWSKI:
         return minkowski(u, v, p)
+    if metric == HAMMING:
+        return hamming(u, v)
 
     return euclidean(u, v)
 
 
 @njit(
-[(
-    types.Array(types.float64, 2, 'C'),
-    types.Array(types.float64, 1, 'C'),
-    types.int32, types.float64
-)],
-cache=True
+    [(
+        types.Array(types.float64, 2, 'C'),
+        types.Array(types.float64, 1, 'C'),
+        types.int32, types.float64
+    )],
+    cache=True
 )
 def min_distance_to_class_vectors(
     x_class: npt.NDArray,

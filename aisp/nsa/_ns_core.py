@@ -104,21 +104,21 @@ def bnsa_class_prediction(
         class_found = True
 
         # Calculates the Hamming distance between the row and all detectors.
-        for detector_index  in range(n_detectors):
-            # Calcula a distância de Hamming normalizada entre a amostra e o detector
+        for detector_index in range(n_detectors):
+            # Calculates the normalized Hamming distance between the sample and the detector
             distance = hamming(features, class_detectors[class_index][detector_index])
 
-            # Se a distância for menor ou igual ao limiar, o detector reconhece a amostra
-            # como não-própria
+            # If the distance is less than or equal to the threshold, the detector recognizes
+            # the sample as non-self.
             if distance <= aff_thresh:
                 class_found = False
                 break
             total_distance += distance
 
-        # se a amostrar é própria para a classe
+        # if the sample is self for the class
         if class_found:
             avg_distance = total_distance / n_detectors
-            # Escolhe a classe com a maior distância média.
+            # Choose the class with the largest average distance.
             if avg_distance > best_avg_distance:
                 best_avg_distance = avg_distance
                 best_class_idx = class_index
@@ -127,12 +127,12 @@ def bnsa_class_prediction(
 
 
 @njit(
-[(
-    types.Array(types.float64, 2, 'C'),
-    types.Array(types.float64, 1, 'C'),
-    types.float64, types.int32, types.float64
-)],
-cache=True
+    [(
+        types.Array(types.float64, 2, 'C'),
+        types.Array(types.float64, 1, 'C'),
+        types.float64, types.int32, types.float64
+    )],
+    cache=True
 )
 def check_detector_rnsa_validity(
     x_class: npt.NDArray,

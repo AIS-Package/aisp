@@ -1,4 +1,4 @@
-# nsa._base Class
+# BaseNSA class
 
 The ``_Base`` class contains utility functions with the ``protected`` modifier that can be inherited by various classes for ease of use. It includes functions for distance calculation, data separation to improve training and prediction efficiency, accuracy measurement and other functions.
 
@@ -91,3 +91,14 @@ Implementation:
 
 - [RNSA](../../classes/Negative%20Selection/RNSA.md#function-predict)
 - [BNSA](../../classes/Negative%20Selection/BNSA.md#function-predict)
+
+
+# Detector class
+
+Represents a non-self detector of the RNSA class.
+
+Attributes
+----------
+* ***position*** (``np.ndarray``): Detector feature vector.
+* ***radius*** (``float, optional``): Detector radius, used in the V-detector algorithm.
+
