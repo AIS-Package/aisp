@@ -11,8 +11,8 @@ from aisp.utils.distance import compute_metric_distance, hamming
 
 @njit(
     [(
-        types.Array(types.boolean, 2, 'C'),
-        types.Array(types.boolean, 1, 'C'),
+        types.boolean[:, :],
+        types.boolean[:],
         types.float64
     )],
     cache=True
@@ -51,8 +51,8 @@ def check_detector_bnsa_validity(
 
 @njit(
     [(
-        types.Array(types.boolean, 1, 'C'),
-        types.Array(types.boolean, 3, 'C'),
+        types.boolean[:],
+        types.boolean[:, :, :],
         types.float64
     )],
     cache=True
@@ -110,8 +110,7 @@ def bnsa_class_prediction(
 
 @njit(
     [(
-        types.Array(types.float64, 2, 'C'),
-        types.Array(types.float64, 1, 'C'),
+        types.float64[:, :], types.float64[:],
         types.float64, types.int32, types.float64
     )],
     cache=True

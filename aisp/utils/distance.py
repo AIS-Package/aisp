@@ -10,8 +10,8 @@ MINKOWSKI = 2
 HAMMING = 3
 
 
-@njit()
-def hamming(u: npt.NDArray, v: npt.NDArray) -> np.float64:
+@njit([(types.boolean[:], types.boolean[:])], cache=True)
+def hamming(u: npt.NDArray[np.bool_], v: npt.NDArray[np.bool_]) -> np.float64:
     """
     Function to calculate the normalized Hamming distance between two points.
     
@@ -104,8 +104,7 @@ def minkowski(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64], p: float =
 
 @njit(
     [(
-        types.Array(types.float64, 1, 'C'),
-        types.Array(types.float64, 1, 'C'),
+        types.float64[:], types.float64[:],
         types.int32, types.float64
     )],
     cache=True
@@ -136,23 +135,20 @@ def compute_metric_distance(
         return cityblock(u, v)
     if metric == MINKOWSKI:
         return minkowski(u, v, p)
-    if metric == HAMMING:
-        return hamming(u, v)
 
     return euclidean(u, v)
 
 
 @njit(
     [(
-        types.Array(types.float64, 2, 'C'),
-        types.Array(types.float64, 1, 'C'),
+        types.float64[:, :], types.float64[:],
         types.int32, types.float64
     )],
     cache=True
 )
 def min_distance_to_class_vectors(
-    x_class: npt.NDArray,
-    vector_x: npt.NDArray,
+    x_class: npt.NDArray[np.float64],
+    vector_x: npt.NDArray[np.float64],
     metric: int,
     p: float = 2.0
 ) -> float:
