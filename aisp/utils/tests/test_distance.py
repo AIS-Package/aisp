@@ -25,7 +25,7 @@ def test_euclidean(u, v, expected_output):
 @pytest.mark.parametrize(
     "u, v, expected_output",
     [
-        (np.array([1, 0, 1, 1]), np.array([1, 1, 0, 1]), 0.5),
+        (np.array([1, 0, 1, 1]).astype(np.bool_), np.array([1, 1, 0, 1]).astype(np.bool_), 0.5),
         (np.array([True, False, True, False]), np.array([True, True, True, False]), 0.25),
     ],
     ids=[
