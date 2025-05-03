@@ -13,8 +13,9 @@ from tqdm import tqdm
 from aisp.utils.sanitizers import sanitize_param, sanitize_seed
 
 from ..utils import slice_index_list_by_class
+from ..utils.distance import hamming, compute_metric_distance, get_metric_code
 from ..utils.immune_mutation import generate_mutated_clones
-from ._base import BaseClassifier
+from ._base import BaseAIRS
 
 
 class _Cell:
@@ -122,7 +123,7 @@ class _ABR(_Cell):
         return aux_resource
 
 
-class AIRS(BaseClassifier):
+class AIRS(BaseAIRS):
     """Artificial Immune Recognition System (AIRS)
 
     The AIRS is a classification algorithm inspired by the clonal selection process. The \
@@ -177,7 +178,7 @@ class AIRS(BaseClassifier):
         self,
         n_resources: float = 10,
         rate_clonal: int = 10,
-        rate_mc_init: int = 0.2,
+        rate_mc_init: float = 0.2,
         rate_hypermutation: float = 0.75,
         affinity_threshold_scalar: float = 0.75,
         k: int = 10,
@@ -190,12 +191,9 @@ class AIRS(BaseClassifier):
         seed: int = None,
         **kwargs,
     ) -> None:
-
-        super().__init__(metric)
-
         self.n_resources: float = sanitize_param(n_resources, 10, lambda x: x >= 1)
         self.rate_mc_init: float = sanitize_param(
-            rate_mc_init, 0.2, lambda x: x > 0 and x <= 1
+            rate_mc_init, 0.2, lambda x: 0 < x <= 1
         )
         self.rate_clonal: int = sanitize_param(rate_clonal, 10, lambda x: x > 0)
         self.rate_hypermutation: float = sanitize_param(
@@ -228,10 +226,10 @@ class AIRS(BaseClassifier):
                 self.metric = "euclidean"
 
         # Obtém as variáveis do kwargs.
-        self.p: float = kwargs.get("p", 2)
+        self.p: float = kwargs.get("p", 2.0)
         # Conjunto de células de memórias
         self.cells_memory = None
-        self.affinity_threshold = self.affinity_threshold_scalar
+        self.affinity_threshold = 0.0
         self.classes = None
 
     def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True):
@@ -377,7 +375,7 @@ class AIRS(BaseClassifier):
 
         # Inicia uma lista vazia.
         c: list = []
-    
+
         for line in X:
             label_stim_list = [
                 (_class, self._affinity(cell.vector, line))
@@ -484,9 +482,9 @@ class AIRS(BaseClassifier):
         """
         distance: float
         if self._algorithm == "binary-features":
-            distance = np.sum(u != v) / len(u)
+            distance = hamming(u, v)
         else:
-            distance = self._distance(u, v)
+            distance = self.__distance(u, v)
         return 1 - (distance / (1 + distance))
 
     def _init_memory_c(self, antigens_list: npt.NDArray) -> List[_Cell]:
@@ -529,18 +527,17 @@ class AIRS(BaseClassifier):
         """
         return slice_index_list_by_class(self.classes, y)
 
-    def get_params(self, deep: bool = True) -> dict:  # pylint: disable=W0613
+    def __distance(self, u: npt.NDArray, v: npt.NDArray) -> float:
         """
-        The get_params function Returns a dictionary with the object's main parameters.
+        Function to calculate the distance between two points by the chosen ``metric``.
+
+        Parameters
+        ----------
+        * u (``npt.NDArray``): Coordinates of the first point.
+        * v (``npt.NDArray``): Coordinates of the second point.
+
+        Returns
+        ----------
+        * Distance (``float``): between the two points.
         """
-        return {
-            "n_resources": self.n_resources,
-            "rate_hypermutation": self.rate_hypermutation,
-            "affinity_threshold_scalar": self.affinity_threshold_scalar,
-            "k": self.k,
-            "max_iters": self.max_iters,
-            "resource_amplified": self.resource_amplified,
-            "metric": self.metric,
-            "seed": self.seed,
-            "p": self.p,
-        }
+        return compute_metric_distance(u, v, get_metric_code(self.metric), self.p)
