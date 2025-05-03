@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.9", "3.10"]
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
     steps:
     - uses: actions/checkout@v4
     - name: ⚙️ Set up Python ${{ matrix.python-version }}
@@ -36,5 +36,5 @@ jobs:
         pip install dist/*.whl
 
     - name: 🧪 Run tests
-      run: pytest
+      run: pytest -v
     

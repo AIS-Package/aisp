@@ -23,7 +23,7 @@ possível loop infinito caso seja definido um raio que não seja possível gerar
 
 * *classes* (``npt.NDArray``): lista de classes de saída.
 
-### Função fit(...)
+### Método fit(...)
 
 A função ``fit(...)`` gera os detectores para os não próprios com relação às amostras:
 
@@ -37,11 +37,17 @@ Nela é realizado o treinamento de acordo com ``X`` e ``y``, usando o método de
 * ``y``: array com as classes de saídas disposto em **N** amostras que são relacionadas ao ``X``.
 * ``verbose``: boolean com valor default ``True``, determina se o feedback da geração dos detectores será imprimido.
 
+**Lança:**
+* ``TypeError``: Se X ou y não forem ndarrays ou tiverem formas incompatíveis.
+* ``MaxDiscardsReachedError``: O número máximo de descartes do detector foi atingido durante
+a maturação. Verifique o valor do raio definido e considere reduzi-lo.
+
+
 *Retorna a instância da classe.*
 
 ---
 
-### Função predict(...)
+### Método predict(...)
 
 A função ``predict(...)`` realiza a previsão das classes utilizando os detectores gerados:
 
@@ -53,13 +59,19 @@ def predict(self, X: npt.NDArray) -> npt.NDArray:
  
 * ``X``: array  com as características para a previsão, com **N** amostras (Linhas) e **N** colunas.
 
+**Lança:**
+* `TypeError`: Se X não for um ndarray ou uma lista.
+* `FeatureDimensionMismatch`: Se o número de características em X não corresponder ao número esperado.
+* `ValueError`: X contém valores que não são compostos apenas por 0 e 1.
+
+
 **Retorna:** 
 * ``C``: Um array de previsão com as classes de saída para as características informadas. 
 * ``None``: se não houver detectores.
 
 ---
 
-### Função score(...):
+### Método score(...):
 
 A função "score(...)" calcula a precisão do modelo treinado por meio da realização de previsões e do cálculo da acurácia.
 
@@ -76,7 +88,7 @@ retorna a acurácia, do tipo ``float``.
 ---
 
 
-### Função __assign_class_to_non_self_sample(...):
+### Método __assign_class_to_non_self_sample(...):
 
 Essa função determina a classe de uma amostra quando todos os detectores a classificam como não-própria. A classificação é realizada utilizando os métodos ``max_average_difference`` ou ``max_nearest_difference``.
 
@@ -95,7 +107,7 @@ def __assign_class_to_non_self_sample(self, line, c) -> npt.NDArray:
 
 --
 
-### Função __slice_index_list_by_class(...):
+### Método __slice_index_list_by_class(...):
 
 A função ``__slice_index_list_by_class(...)``, separa os índices das linhas conforme a classe de saída, para percorrer o array de amostra, apenas nas posições que a saída for a classe que está sendo treinada:
 

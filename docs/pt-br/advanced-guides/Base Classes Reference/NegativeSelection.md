@@ -1,4 +1,4 @@
-# Classe nsa._Base
+# Classe BaseNSA
 
 A classe `Base` é uma classe utilitária contendo funções com o modificador 
 protected que podem ser herdadas por outras classes do módulo de seleção negativa. 
@@ -8,55 +8,18 @@ precisão e realizar outras tarefas necessárias.
 
 ## Funções
 
-### def score(...)
-
-```python
-def score(self, X: npt.NDArray, y: list) -> float
-```
-
-A função de pontuação (score) calcula a precisão da previsão.
-
-Esta função realiza a previsão de X e verifica quantos elementos são iguais entre o vetor y e y_predicted. 
-Esta função foi adicionada para compatibilidade com algumas funções do scikit-learn.
-
-**Parâmetros**:
-+ ***X***: np.ndarray
-    Conjunto de características com formato (n_amostras, n_características).
-+ ***y***: np.ndarray
-    Valores verdadeiros com formato (n_amostras,).
-
-**Retorna**:
-
-+ precisão: float
-    A precisão do modelo.
-
----
-
 ## Funções Protegidas:
-
----
-
-### def _distance(...):
-
-```python
-def _distance(self, u: npt.NDArray, v: npt.NDArray)
-```
-
-Função para calcular a distância entre dois pontos usando a "métrica" escolhida.
-
-**Parâmetros**:
-* ***u*** (``npt.NDArray``): Coordenadas do primeiro ponto.
-* ***v*** (``npt.NDArray``): Coordenadas do segundo ponto.
-
-**Retorna**:
-* Distância (``double``) entre os dois pontos.
 
 ---
 
 ### def _check_and_raise_exceptions_fit(...)
 
 ```python
-def _check_and_raise_exceptions_fit(self, X: npt.NDArray = None, y: npt.NDArray = None, _class_: Literal['RNSA', 'BNSA'] = 'RNSA')
+def _check_and_raise_exceptions_fit(
+    X: npt.NDArray = None,
+    y: npt.NDArray = None,
+    _class_: Literal["RNSA", "BNSA"] = "RNSA",
+) -> None:
 ```
 Função responsável por verificar os parâmetros da função fit e lançar exceções se a verificação não for bem-sucedida.
 
@@ -65,32 +28,29 @@ Função responsável por verificar os parâmetros da função fit e lançar exc
 * ***y*** (``npt.NDArray``): Array de classes alvo de ``X`` com [``N samples`` (linhas)].
 * ***_class_*** (Literal[RNSA, BNSA], opcional): Classe atual. O padrão é 'RNSA'.
 
----
 
-## Métodos abstratos
+**Lança:**
+* ``TypeError``: Se X ou y não forem ndarrays ou tiverem formas incompatíveis.
+* ``MaxDiscardsReachedError``: O número máximo de descartes do detector foi atingido durante
+a maturação. Verifique o valor do raio definido e considere reduzi-lo.
 
-### def fit(...)
 
-```python
-def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True)
-```
-
-Ajusta o modelo aos dados de treinamento.
-
-Implementação:
-
-- [RNSA](../../classes/Negative%20Selection/RNSA.md#função-fit)
-- [BNSA](../../classes/Negative%20Selection/BNSA.md#função-fit)
-
-### def predict(...)
+### def _check_and_raise_exceptions_predict(...)
 
 ```python
-def predict(self, X) -> Optional[npt.NDArray]:
+def _check_and_raise_exceptions_predict(
+    X: npt.NDArray = None,
+    expected: int = 0,
+    _class_: Literal["RNSA", "BNSA"] = "RNSA",
+) -> None:
 ```
+Função responsável por verificar os parâmetros da função predict e lançar exceções caso a verificação não seja bem-sucedida.
+**Parâmetros**:
+* ***X*** (``npt.NDArray``): Array de treinamento, contendo as amostras e suas características, [``N samples`` (linhas)][``N features`` (colunas)].
+* ***expected*** (``int``): Número esperado de características por amostra (colunas em X).
+* ***_class_*** (``Literal[RNSA, BNSA], opcional``): Classe atual. O padrão é 'RNSA'.
 
-Realiza a previsão dos rótulos para os dados fornecidos.
-
-Implementação:
-
-- [RNSA](../../classes/Negative%20Selection/RNSA.md#função-predict)
-- [BNSA](../../classes/Negative%20Selection/BNSA.md#função-predict)
+**Lança:**
+* ``TypeError``: Se X ou y não forem ndarrays ou tiverem formas incompatíveis.
+* ``MaxDiscardsReachedError``: O número máximo de descartes do detector foi atingido durante
+a maturação. Verifique o valor do raio definido e considere reduzi-lo.
