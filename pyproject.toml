@@ -71,7 +71,10 @@ packages = { find = { exclude = [
 good-names = ["X", "N"]
 disable = [
     "R0902",
-    "R0917"
+    "R0917",
+    "R0801",
+    "R0914",
+    "R0903"
 ]
 max-args = 15
 
