@@ -209,8 +209,7 @@ Function to calculate the distance between two points by the chosen ``metric``.
 **Parameters:**
 * u (``npt.NDArray``): Coordinates of the first point.
 * v (``npt.NDArray``): Coordinates of the second point.
-* metric (``str``): Distance metric to be used. Available options: 
-["hamming", "cityblock", "minkowski", "euclidean"]
+* metric (``int``): Distance metric to be used. Available options: [0 (Euclidean), 1 (Manhattan), 2 (Minkowski)]
 * p (``float``): Parameter for the Minkowski distance (used only if `metric` is "minkowski").
 
 **Returns:**
@@ -235,8 +234,7 @@ Calculates the minimum distance between an input vector and the vectors of a cla
 **Parameters:**
 * x_class (``npt.NDArray``): Array containing the class vectors to be compared with the input vector. Expected shape: (n_samples, n_features).
 * vector_x (``npt.NDArray``): Vector to be compared with the class vectors. Expected shape: (n_features,).
-* metric (``str``): Distance metric to be used. Available options: 
-["hamming", "cityblock", "minkowski", "euclidean"]
+* metric (``int``): Distance metric to be used. Available options: [0 (Euclidean), 1 (Manhattan), 2 (Minkowski)]
 * p (``float``): Parameter for the Minkowski distance (used only if `metric` is "minkowski").
 
 **Returns:**

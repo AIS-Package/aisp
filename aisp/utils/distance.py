@@ -122,8 +122,8 @@ def compute_metric_distance(
     ----------
     * u (``npt.NDArray``): Coordinates of the first point.
     * v (``npt.NDArray``): Coordinates of the second point.
-    * metric (``str``): Distance metric to be used. Available options: 
-    ["hamming", "cityblock", "minkowski", "euclidean"]
+    * metric (``int``): Distance metric to be used. Available options: 
+    [0 (Euclidean), 1 (Manhattan), 2 (Minkowski)]
     * p (``float``): Parameter for the Minkowski distance (used only if `metric` 
     is "minkowski").
 

@@ -23,7 +23,7 @@ possível loop infinito caso seja definido um raio que não seja possível gerar
 
 * *classes* (``npt.NDArray``): lista de classes de saída.
 
-### Função fit(...)
+### Método fit(...)
 
 A função ``fit(...)`` gera os detectores para os não próprios com relação às amostras:
 
@@ -47,7 +47,7 @@ a maturação. Verifique o valor do raio definido e considere reduzi-lo.
 
 ---
 
-### Função predict(...)
+### Método predict(...)
 
 A função ``predict(...)`` realiza a previsão das classes utilizando os detectores gerados:
 
@@ -71,7 +71,7 @@ def predict(self, X: npt.NDArray) -> npt.NDArray:
 
 ---
 
-### Função score(...):
+### Método score(...):
 
 A função "score(...)" calcula a precisão do modelo treinado por meio da realização de previsões e do cálculo da acurácia.
 
@@ -88,7 +88,7 @@ retorna a acurácia, do tipo ``float``.
 ---
 
 
-### Função __assign_class_to_non_self_sample(...):
+### Método __assign_class_to_non_self_sample(...):
 
 Essa função determina a classe de uma amostra quando todos os detectores a classificam como não-própria. A classificação é realizada utilizando os métodos ``max_average_difference`` ou ``max_nearest_difference``.
 
@@ -107,7 +107,7 @@ def __assign_class_to_non_self_sample(self, line, c) -> npt.NDArray:
 
 --
 
-### Função __slice_index_list_by_class(...):
+### Método __slice_index_list_by_class(...):
 
 A função ``__slice_index_list_by_class(...)``, separa os índices das linhas conforme a classe de saída, para percorrer o array de amostra, apenas nas posições que a saída for a classe que está sendo treinada:
 

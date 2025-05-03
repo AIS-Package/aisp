@@ -65,7 +65,7 @@ Checks the validity of a candidate detector (vector_x) against samples from a cl
 * x_class (``npt.NDArray``): Array containing the class samples. Expected shape:  (n_samples, n_features).
 * vector_x (``npt.NDArray``): Array representing the detector. Expected shape: (n_features,).
 * threshold (``float``): threshold.
-* metric (``str``): Distance metric to be used. Available options:["hamming", "cityblock", "minkowski", "euclidean"]
+* metric (``int``): Distance metric to be used. Available options: [0 (Euclidean), 1 (Manhattan), 2 (Minkowski)]
 * p (``float``): Parameter for the Minkowski distance (used only if `metric` is "minkowski").
 
 **returns**:

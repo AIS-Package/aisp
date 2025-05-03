@@ -110,8 +110,8 @@ class Detector:
 
     Attributes
     ----------
-    * position (np.ndarray): Detector feature vector.
-    * radius (float, optional): Detector radius, used in the V-detector algorithm.
+    * position (``npt.NDArray[np.float64]``): Detector feature vector.
+    * radius (``float, optional``): Detector radius, used in the V-detector algorithm.
     """
 
     position: npt.NDArray[np.float64]

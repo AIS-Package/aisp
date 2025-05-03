@@ -206,7 +206,7 @@ Função para calcular a distância entre dois pontos pela ``métrica`` escolhid
 **Parameters:**
 * u (``npt.NDArray``): Coordenadas do primeiro ponto.
 * v (``npt.NDArray``): Coordenadas do segundo ponto.
-* metric (``str``): Métrica de distância a ser utilizada. Opções disponíveis: ["cityblock", "minkowski", "euclidean"]
+* metric (``int``): Métrica de distância a ser utilizada. Opções disponíveis: [0 (Euclidean), 1 (Manhattan), 2 (Minkowski)].
 * p (``float``): Parâmetro da métrica de Minkowski (utilizado apenas se `metric` for "minkowski").
     
 
@@ -231,7 +231,7 @@ Calcula a menor distância entre um vetor de entrada e os vetores de uma classe.
 **Parameters:**
 * x_class (``npt.NDArray``): Array contendo os vetores da classe com os quais o vetor de entrada será comparado. Formato esperado: (n_amostras, n_características).
 * vector_x (``npt.NDArray``): Vetor a ser comparado com os vetores da classe. Formato esperado: (n_características,).
-* metric (``str``): Métrica de distância a ser utilizada. Opções disponíveis: ["cityblock", "minkowski", "euclidean"]
+* metric (``int``): Métrica de distância a ser utilizada. Opções disponíveis: [0 (Euclidean), 1 (Manhattan), 2 (Minkowski)].
 * p (``float``): Parâmetro da métrica de Minkowski (utilizado apenas se `metric` for "minkowski").
 
 **Returns:**

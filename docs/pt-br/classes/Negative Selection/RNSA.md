@@ -45,7 +45,7 @@ possível loop infinito caso seja definido um raio que não seja possível gerar
 
 ---
 
-## Função fit(...)
+## Método fit(...)
 
 A função ``fit(...)`` gera os detectores para os não próprios com relação às amostras:
 
@@ -57,7 +57,7 @@ Nela é realizado o treinamento de acordo com ``X`` e ``y``, usando o método de
 **Os parâmetros de entrada são:**
 * ``X``: array com as características das amostras com **N** amostras (linhas) e **N** características  (colunas), normalizados para valores entre [0, 1]. 
 * ``y``: array com as classes de saídas disposto em **N** amostras que são relacionadas ao ``X``.
-* ``verbose``: boolean com valor default ``True``, determina se o feedback da geração dos detectores será imprimido.
+* ``verbose``: boolean com valor default ``True``, determina se o feedback da geração dos detectores será impresso.
 
 **Lança:**
 * ``TypeError``: Se X ou y não forem ndarrays ou tiverem formas incompatíveis.
@@ -68,7 +68,7 @@ a maturação. Verifique o valor do raio definido e considere reduzi-lo.
 
 ---
 
-### Função predict(...)
+### Método predict(...)
 
 A função ``predict(...)`` realiza a previsão das classes utilizando os detectores gerados:
 
@@ -91,7 +91,7 @@ def predict(self, X: npt.NDArray) -> npt.NDArray:
 
 ---
 
-### Função score(...):
+### Método score(...):
 
 A função "score(...)" calcula a precisão do modelo treinado por meio da realização de previsões e do cálculo da acurácia.
 
@@ -107,7 +107,7 @@ retorna a acurácia, do tipo ``float``.
 
 ---
 
-### Função __checks_valid_detector(...):
+### Método __checks_valid_detector(...):
 
 A função ``def __checks_valid_detector(...)`` verifica se o detector possui raio ``r`` válido para o não-próprio da classe:
 
@@ -126,7 +126,7 @@ def __checks_valid_detector(self, X: npt.NDArray, vector_x: npt.NDArray, samples
 
 ---
 
-### Função __compare_KnearestNeighbors_List(...):
+### Método __compare_KnearestNeighbors_List(...):
 
 A função ``def __compare_KnearestNeighbors_List(...)`` compara a distância dos k-vizinhos mais próximo, para isso se a distância da nova amostra for menor, substitui ``k-1`` e ordena em ordem crescente:
 
@@ -138,7 +138,7 @@ def __compare_KnearestNeighbors_List(self, knn: npt.NDArray, distance: float) ->
 
 ---
 
-### Função __compare_sample_to_detectors(...):
+### Método __compare_sample_to_detectors(...):
 
 Função para comparar uma amostra com os detectores, verificando se a amostra é própria.
 
@@ -152,7 +152,7 @@ Nesta função, quando possui ambiguidade de classes, retorna a classe que possu
        
 ---
 
-### Função __detector_is_valid_to_Vdetector(...):
+### Método __detector_is_valid_to_Vdetector(...):
 
 Verifique se a distância entre o detector e as amostras, descontando o raio das amostras, é maior do que o raio mínimo.
 
@@ -172,7 +172,7 @@ def __detector_is_valid_to_Vdetector(self, distance, vector_x):
 
 ---
 
-### Função __distance(...):
+### Método __distance(...):
 
 A função ``def __distance(...)`` calcula a distância entre dois pontos utilizando a técnica definida em ``metric``, no qual são: ``'euclidiana', 'minkowski', ou 'manhattan'``
 
@@ -186,7 +186,7 @@ Retorna a distancia (``double``) entre os dois pontos.
 
 ---
 
-### Função __slice_index_list_by_class(...):
+### Método __slice_index_list_by_class(...):
 
 A função ``__slice_index_list_by_class(...)``, separa os índices das linhas conforme a classe de saída, para percorrer o array de amostra, apenas nas posições que a saída for a classe que está sendo treinada:
 
