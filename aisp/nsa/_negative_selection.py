@@ -178,7 +178,7 @@ class RNSA(BaseNSA):
                         raise MaxDiscardsReachedError(_class_)
 
             # Add detectors, with classes as keys in the dictionary.
-            list_detectors_by_class[_class_] = valid_detectors_set
+            list_detectors_by_class[_class_] = np.array(valid_detectors_set)
         # Notify completion of detector generation for the classes.
         if verbose:
             progress.set_description(
@@ -565,7 +565,7 @@ class BNSA(BaseNSA):
                         raise MaxDiscardsReachedError(_class_)
 
             # Add detectors to the dictionary with classes as keys.
-            list_detectors_by_class[_class_] = valid_detectors_set
+            list_detectors_by_class[_class_] = np.array(valid_detectors_set)
 
         # Notify the completion of detector generation for the classes.
         if verbose:

@@ -5,7 +5,7 @@ from typing import Optional
 
 import numpy.typing as npt
 
-from aisp.utils.metrics import accuracy_score
+from ..utils.metrics import accuracy_score
 
 
 class BaseClassifier(ABC):

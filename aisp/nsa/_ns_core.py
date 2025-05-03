@@ -6,7 +6,7 @@ The functions perform detector checks and utilize Numba decorators for Just-In-T
 import numpy.typing as npt
 from numba import njit, types
 
-from aisp.utils.distance import compute_metric_distance, hamming
+from ..utils.distance import compute_metric_distance, hamming
 
 
 @njit(
