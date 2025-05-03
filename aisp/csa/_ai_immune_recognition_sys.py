@@ -7,14 +7,13 @@ from typing import List, Literal, Optional
 
 import numpy as np
 import numpy.typing as npt
-from scipy.spatial.distance import cdist
 from tqdm import tqdm
 
-from aisp.utils.sanitizers import sanitize_param, sanitize_seed, sanitize_choice
-
+from ._cs_core import binary_affinity_threshold, continuous_affinity_threshold
+from ..utils.sanitizers import sanitize_param, sanitize_seed, sanitize_choice
 from ..utils import slice_index_list_by_class
 from ..utils.distance import hamming, compute_metric_distance, get_metric_code
-from ..utils.immune_mutation import generate_mutated_clones
+from ..base.mutation import clone_and_mutate_continuous, clone_and_mutate_binary
 from ._base import BaseAIRS
 
 
@@ -42,11 +41,11 @@ class _Cell:
     ) -> None:
         if vector is None and size is not None:
             if algorithm == "binary-features":
-                self.vector: npt.NDArray = np.random.randint(0, 2, size=size).astype(
+                self.vector: npt.NDArray[np.bool_] = np.random.randint(0, 2, size=size).astype(
                     np.bool_
                 )
             else:
-                self.vector: npt.NDArray = np.random.uniform(size=size)
+                self.vector: npt.NDArray[np.float64] = np.random.uniform(size=size)
         else:
             self.vector: npt.NDArray = vector
         self.stimulation: float = 0
@@ -64,7 +63,9 @@ class _Cell:
         ----------
         * npt.NDArray: An array containing N mutated vectors from the original cell.
         """
-        return generate_mutated_clones(self.vector, self._algorithm, n)
+        if self._algorithm == "binary-features":
+            return clone_and_mutate_binary(self.vector, n)
+        return clone_and_mutate_continuous(self.vector, n)
 
 
 class _ABR(_Cell):
@@ -223,7 +224,7 @@ class AIRS(BaseAIRS):
             self.metric: str = sanitize_choice(metric, ["manhattan", "minkowski"], "euclidean")
 
         # Obtém as variáveis do kwargs.
-        self.p: float = kwargs.get("p", 2.0)
+        self.p: float = kwargs.get("p", 2)
         # Conjunto de células de memórias
         self.cells_memory = None
         self.affinity_threshold = 0.0
@@ -249,8 +250,8 @@ class AIRS(BaseAIRS):
         super()._check_and_raise_exceptions_fit(X, y, self._algorithm)
 
         # Converte todo o array X para boolean quando utilizar a versão binária.
-        if self._algorithm == "binary-features" and X.dtype != bool:
-            X = X.astype(bool)
+        if self._algorithm == "binary-features":
+            X = X.astype(np.bool_)
 
         # Identificando as classes possíveis, dentro do array de saídas ``y``.
         self.classes = np.unique(y)
@@ -273,7 +274,7 @@ class AIRS(BaseAIRS):
                 )
             x_class = X[sample_index[_class_]]
             # Calculando o limiar de semelhança entre os antígenos
-            self._cells_affinity_threshold(antigens_list=x_class)
+            self._cells_affinity_threshold(x_class)
             # Iniciar as células de memória para uma classe.
             pool_c: list = self._init_memory_c(antigens_list=x_class)
 
@@ -454,15 +455,14 @@ class AIRS(BaseAIRS):
         ----------
         - antigens_list (``NDArray``): List of training antigens.
         """
-        # Calcular todas as distâncias entre as amostras do conjunto de treinamento
-        distances = cdist(antigens_list, antigens_list, metric=self.metric)
-
-        # Somar todas as distâncias euclidianas
-        sum_distance = np.sum(distances)
-
-        self.affinity_threshold = 1 - (
-            sum_distance / ((len(antigens_list) * (len(antigens_list) - 1)) / 2)
-        )
+        if self._algorithm == "binary-features":
+            self.affinity_threshold = binary_affinity_threshold(antigens_list)
+        else:
+            self.affinity_threshold = continuous_affinity_threshold(
+                antigens_list.astype(np.float64),  # Certifique-se do dtype!
+                get_metric_code(self.metric),
+                self.p
+            )
 
     def _affinity(self, u: npt.NDArray, v: npt.NDArray) -> float:
         """
@@ -481,7 +481,7 @@ class AIRS(BaseAIRS):
         if self._algorithm == "binary-features":
             distance = hamming(u, v)
         else:
-            distance = self.__distance(u, v)
+            distance = compute_metric_distance(u, v, get_metric_code(self.metric), self.p)
         return 1 - (distance / (1 + distance))
 
     def _init_memory_c(self, antigens_list: npt.NDArray) -> List[_Cell]:
@@ -523,18 +523,3 @@ class AIRS(BaseAIRS):
         * dict: A dictionary with the list of array positions(``y``), with the classes as key.
         """
         return slice_index_list_by_class(self.classes, y)
-
-    def __distance(self, u: npt.NDArray, v: npt.NDArray) -> float:
-        """
-        Function to calculate the distance between two points by the chosen ``metric``.
-
-        Parameters
-        ----------
-        * u (``npt.NDArray``): Coordinates of the first point.
-        * v (``npt.NDArray``): Coordinates of the second point.
-
-        Returns
-        ----------
-        * Distance (``float``): between the two points.
-        """
-        return compute_metric_distance(u, v, get_metric_code(self.metric), self.p)
