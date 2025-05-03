@@ -13,24 +13,6 @@ class BaseAIRS(BaseClassifier, ABC):
     """
     The base class contains functions that are used by more than one class in the package, and \
     therefore are considered essential for the overall functioning of the system.
-
-
-    Parameters
-    ----------
-    * metric (``str``): Way to calculate the distance between the detector and the sample:
-        * ``'Euclidean'`` ➜ The calculation of the distance is given by the expression: \
-            √( (x₁ – x₂)² + (y₁ – y₂)² + ... + (yn – yn)²).
-        * ``'minkowski'`` ➜ The calculation of the distance is given by the expression: \
-            ( |X₁ – Y₁|p + |X₂ – Y₂|p + ... + |Xn – Yn|p) ¹/ₚ.
-        * ``'manhattan'`` ➜ The calculation of the distance is given by the expression: \
-            ( |x₁ – x₂| + |y₁ – y₂| + ... + |yn – yn|) .
-    * p (``float``): This parameter stores the value of ``p`` used in the Minkowski distance.\
-        The default is ``2``, which represents normalized Euclidean distance. Different \
-        values of p lead to different variants of the [Minkowski Distance][1].
-
-    Notes
-    ----------
-    [1]: https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.minkowski_distance.html
     """
     @staticmethod
     def _check_and_raise_exceptions_fit(
