@@ -37,6 +37,12 @@ Nela é realizado o treinamento de acordo com ``X`` e ``y``, usando o método de
 * ``y``: array com as classes de saídas disposto em **N** amostras que são relacionadas ao ``X``.
 * ``verbose``: boolean com valor default ``True``, determina se o feedback da geração dos detectores será imprimido.
 
+**Lança:**
+* ``TypeError``: Se X ou y não forem ndarrays ou tiverem formas incompatíveis.
+* ``MaxDiscardsReachedError``: O número máximo de descartes do detector foi atingido durante
+a maturação. Verifique o valor do raio definido e considere reduzi-lo.
+
+
 *Retorna a instância da classe.*
 
 ---
@@ -52,6 +58,12 @@ def predict(self, X: npt.NDArray) -> npt.NDArray:
 **O parâmetro de entrada:**
  
 * ``X``: array  com as características para a previsão, com **N** amostras (Linhas) e **N** colunas.
+
+**Lança:**
+* `TypeError`: Se X não for um ndarray ou uma lista.
+* `FeatureDimensionMismatch`: Se o número de características em X não corresponder ao número esperado.
+* `ValueError`: X contém valores que não são compostos apenas por 0 e 1.
+
 
 **Retorna:** 
 * ``C``: Um array de previsão com as classes de saída para as características informadas. 

@@ -82,12 +82,11 @@ class BaseNSA(BaseClassifier, ABC):
 
         Raises
         ----------
-        * TypeError
-            If X is not an ndarray or list.
-        * FeatureDimensionMismatch
-            If the number of features in X does not match the expected number.
-        * ValueError
-            If _class_ is BNSA and X contains values that are not composed only of 0 and 1.
+        * TypeError: If X is not an ndarray or list.
+        * FeatureDimensionMismatch: If the number of features in X does not match the expected
+            number.
+        * ValueError: If _class_ is BNSA and X contains values that are not composed only of 0
+        and 1.
         """
         if not isinstance(X, (np.ndarray, list)):
             raise TypeError("X is not an ndarray or list")

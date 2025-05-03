@@ -67,7 +67,15 @@ The input parameters are:
 
 * ``verbose``: boolean with default value ``True``, determines if the feedback from the detector generation will be printed.
 
-*Returns the instance of the class.*
+
+**Raises**
+* ``TypeError``: If X or y are not ndarrays or have incompatible shapes.
+* ``MaxDiscardsReachedError``: The maximum number of detector discards was reached during
+  maturation. Check the defined radius value and consider reducing it.
+
+**Returns**
+----------
+ the instance of the class.
 
 ---
 
@@ -81,6 +89,11 @@ def predict(self, X: npt.NDArray) -> npt.NDArray:
 
 **The input parameter is:** 
 * ``X``: array with the characteristics for the prediction, with **N** samples (Rows) and **N** columns.
+
+        
+**Raises:** 
+* ``TypeError``: If X is not an ndarray or list.
+* ``FeatureDimensionMismatch``: If the number of features in X does not match the expected number.
 
 **Returns:** 
 * ``C``: prediction array, with the output classes for the given characteristics.

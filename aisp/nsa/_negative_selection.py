@@ -123,6 +123,12 @@ class RNSA(BaseNSA):
         * y (``npt.NDArray``): Array of target classes of ``X`` with [``N samples`` (lines)].
             verbose (``bool``): Feedback from detector generation to the user.
 
+        Raises
+        ----------
+        * TypeError: If X or y are not ndarrays or have incompatible shapes.
+        * MaxDiscardsReachedError: The maximum number of detector discards was reached during
+            maturation. Check the defined radius value and consider reducing it.
+
         Returns
         ----------
         * (``self``): Returns the instance itself.
@@ -193,6 +199,13 @@ class RNSA(BaseNSA):
         * X (``npt.NDArray``)
             Array with input samples with [``N samples`` (Lines)] and
             [``N characteristics``(Columns)]
+
+        Raises
+        ----------
+        * TypeError
+            If X is not an ndarray or list.
+        * FeatureDimensionMismatch
+            If the number of features in X does not match the expected number.
 
         Returns
         ----------
