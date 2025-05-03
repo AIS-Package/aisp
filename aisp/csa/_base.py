@@ -8,8 +8,6 @@ import numpy.typing as npt
 from aisp.exceptions import FeatureDimensionMismatch
 from ..base import BaseClassifier
 
-from ..utils.metrics import accuracy_score
-
 
 class BaseAIRS(BaseClassifier, ABC):
     """
@@ -56,7 +54,8 @@ class BaseAIRS(BaseClassifier, ABC):
         Raises
         ----------
         * TypeError: If X or y are not ndarrays or have incompatible shapes.
-        * ValueError: If _class_ is BNSA and X contains values that are not composed only of 0 and 1.
+        * ValueError: If _class_ is BNSA and X contains values that are not composed only of 0
+            and 1.
         """
         if not isinstance(X, np.ndarray):
             if isinstance(X, list):

@@ -10,7 +10,7 @@ import numpy.typing as npt
 from scipy.spatial.distance import cdist
 from tqdm import tqdm
 
-from aisp.utils.sanitizers import sanitize_param, sanitize_seed
+from aisp.utils.sanitizers import sanitize_param, sanitize_seed, sanitize_choice
 
 from ..utils import slice_index_list_by_class
 from ..utils.distance import hamming, compute_metric_distance, get_metric_code
@@ -217,13 +217,10 @@ class AIRS(BaseAIRS):
             )
         )
 
-        if metric == "manhattan" or metric == "minkowski":
-            self.metric = metric
+        if algorithm == "binary-features":
+            self.metric: str = "hamming"
         else:
-            if algorithm == "binary-features":
-                self.metric = "hamming"
-            else:
-                self.metric = "euclidean"
+            self.metric: str = sanitize_choice(metric, ["manhattan", "minkowski"], "euclidean")
 
         # Obtém as variáveis do kwargs.
         self.p: float = kwargs.get("p", 2.0)
