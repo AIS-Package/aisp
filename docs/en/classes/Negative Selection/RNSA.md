@@ -193,15 +193,3 @@ def __distance(self, u: npt.NDArray, v: npt.NDArray):
 The input parameters are ``u`` and ``v`` NDArrays, with the coordinates for the points.
 
 **Returns:** the distance (``double``) between the two points.
-
----
-
-### Function __slice_index_list_by_class(...):
-
-The function ``__slice_index_list_by_class(...)``, separates the indices of the lines according to the output class, to go through the sample array, only in the positions that the output is the class that is being trained:
-
-```python
-def __slice_index_list_by_class(self, y: npt.NDArray) -> dict:
-```
-
-Returns a dictionary with the classes as key and the indices in ``X`` of the samples.

@@ -27,6 +27,18 @@ This function was added for compatibility with some scikit-learn functions.
 
 ---
 
+### Function _slice_index_list_by_class(...):
+
+The function ``_slice_index_list_by_class(...)``, separates the indices of the lines according to the output class, to go through the sample array, only in the positions that the output is the class that is being trained:
+
+```python
+def _slice_index_list_by_class(self, y: npt.NDArray) -> dict:
+```
+
+Returns a dictionary with the classes as key and the indices in ``X`` of the samples.
+
+---
+
 ### Function get_params(...)
 
 ```python

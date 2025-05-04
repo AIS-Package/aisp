@@ -111,6 +111,11 @@ class RNSA(BaseNSA):
         self._detectors: Union[dict, None] = None
         self.classes: npt.NDArray = None
 
+    @property
+    def detectors(self) -> Dict[str, list[Detector]]:
+        """Returns the trained detectors, organized by class."""
+        return self._detectors
+
     def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True):
         """
         The function ``fit(...)``, performs the training according to ``X`` and ``y``, using the
@@ -141,7 +146,7 @@ class RNSA(BaseNSA):
         # Dictionary that will store detectors with classes as keys.
         list_detectors_by_class = {}
         # Separates the classes for training.
-        sample_index = self.__slice_index_list_by_class(y)
+        sample_index = self._slice_index_list_by_class(y)
         # Progress bar for generating all detectors.
         if verbose:
             progress = tqdm(
@@ -168,7 +173,9 @@ class RNSA(BaseNSA):
                 # If the detector is valid, add it to the list of valid detectors.
                 if valid_detector is not False:
                     discard_count = 0
-                    radius = valid_detector[1] if self.algorithm == "V-detector" else None
+                    radius = (
+                        valid_detector[1] if self.algorithm == "V-detector" else None
+                    )
                     valid_detectors_set.append(Detector(vector_x, radius))
                     if verbose:
                         progress.update(1)
@@ -178,7 +185,7 @@ class RNSA(BaseNSA):
                         raise MaxDiscardsReachedError(_class_)
 
             # Add detectors, with classes as keys in the dictionary.
-            list_detectors_by_class[_class_] = np.array(valid_detectors_set)
+            list_detectors_by_class[_class_] = valid_detectors_set
         # Notify completion of detector generation for the classes.
         if verbose:
             progress.set_description(
@@ -252,24 +259,6 @@ class RNSA(BaseNSA):
                     )
                 c.append(max(average_distance, key=average_distance.get))
         return np.array(c)
-
-    def __slice_index_list_by_class(self, y: npt.NDArray) -> dict:
-        """
-        The function ``__slice_index_list_by_class(...)``, separates the indices of the lines
-        according to the output class, to loop through the sample array, only in positions where
-        the output is the class being trained.
-
-        Parameters
-        ----------
-        * y (npt.NDArray)
-            Receives a ``y``[``N sample``] array with the output classes of the \
-            ``X`` sample array.
-
-        Returns
-        ----------
-        * dict: A dictionary with the list of array positions(``y``), with the classes as key.
-        """
-        return slice_index_list_by_class(self.classes, y)
 
     def __checks_valid_detector(
         self, x_class: npt.NDArray = None, vector_x: npt.NDArray = None
@@ -503,6 +492,11 @@ class BNSA(BaseNSA):
         self._detectors: Optional[dict] = None
         self._detectors_stack: npt.NDArray = None
 
+    @property
+    def detectors(self) -> Dict[str, npt.NDArray[np.bool_]]:
+        """Returns the trained detectors, organized by class."""
+        return self._detectors
+
     def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True):
         """
         The function ``fit(...)``, performs the training according to ``X`` and ``y``, using the
@@ -531,7 +525,7 @@ class BNSA(BaseNSA):
         # Dictionary that will store detectors with classes as keys.
         list_detectors_by_class = {}
         # Separates the classes for training.
-        sample_index: dict = self.__slice_index_list_by_class(y)
+        sample_index: dict = self._slice_index_list_by_class(y)
         # Progress bar for generating all detectors.
         if verbose:
             progress = tqdm(
@@ -662,21 +656,3 @@ class BNSA(BaseNSA):
                 class_differences[_class_] = distances.sum() / self.N
 
         c.append(max(class_differences, key=class_differences.get))
-
-    def __slice_index_list_by_class(self, y: npt.NDArray) -> dict:
-        """
-        The function ``__slice_index_list_by_class(...)``, separates the indices of the lines
-        according to the output class, to loop through the sample array, only in positions where
-        the output is the class being trained.
-
-        Parameters
-        ----------
-        * y (``npt.NDArray``):
-            Receives a ``y``[``N sample``] array with the output classes of the ``X``
-            sample array.
-
-        Returns
-        ----------
-        * dict: A dictionary with the list of array positions(``y``), with the classes as key.
-        """
-        return slice_index_list_by_class(self.classes, y)

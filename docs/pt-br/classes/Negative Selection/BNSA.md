@@ -105,14 +105,3 @@ def __assign_class_to_non_self_sample(self, line, c) -> npt.NDArray:
 
 ``npt.NDArray``: A lista de previsões `c` atualizada com a classe atribuída à amostra.
 
---
-
-### Método __slice_index_list_by_class(...):
-
-A função ``__slice_index_list_by_class(...)``, separa os índices das linhas conforme a classe de saída, para percorrer o array de amostra, apenas nas posições que a saída for a classe que está sendo treinada:
-
-```python
-def __slice_index_list_by_class(self, y: npt.NDArray) -> dict:
-```
-
-Retorna um dicionario com as classes como chave e os índices em ``X`` das amostras.
