@@ -7,9 +7,9 @@ from typing import List, Literal, Optional
 
 import numpy as np
 import numpy.typing as npt
+from scipy.spatial.distance import pdist
 from tqdm import tqdm
 
-from ._cs_core import binary_affinity_threshold, continuous_affinity_threshold
 from ..utils.sanitizers import sanitize_param, sanitize_seed, sanitize_choice
 from ..utils import slice_index_list_by_class
 from ..utils.distance import hamming, compute_metric_distance, get_metric_code
@@ -456,13 +456,14 @@ class AIRS(BaseAIRS):
         - antigens_list (``NDArray``): List of training antigens.
         """
         if self._algorithm == "binary-features":
-            self.affinity_threshold = binary_affinity_threshold(antigens_list)
+            distances = pdist(antigens_list, metric='hamming')
+        elif self.metric == "minkowski":
+            distances = pdist(antigens_list, metric='minkowski', p=self.p)
         else:
-            self.affinity_threshold = continuous_affinity_threshold(
-                antigens_list.astype(np.float64),  # Certifique-se do dtype!
-                get_metric_code(self.metric),
-                self.p
-            )
+            distances = pdist(antigens_list, metric=self.metric)
+        n = antigens_list.shape[0]
+        sum_affinity = np.sum(1.0 - (distances / (1.0 + distances)))
+        self.affinity_threshold = 1.0 - (sum_affinity / ((n * (n - 1)) / 2))
 
     def _affinity(self, u: npt.NDArray, v: npt.NDArray) -> float:
         """
