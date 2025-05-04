@@ -12,7 +12,6 @@ from ._ns_core import (
     check_detector_rnsa_validity,
 )
 from ..exceptions import MaxDiscardsReachedError
-from ..utils import slice_index_list_by_class
 from ..utils.distance import (
     min_distance_to_class_vectors,
     get_metric_code,
