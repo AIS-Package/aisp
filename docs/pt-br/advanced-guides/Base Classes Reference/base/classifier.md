@@ -30,6 +30,18 @@ Esta função foi adicionada para compatibilidade com algumas funções do sciki
 
 ---
 
+### Método _slice_index_list_by_class(...):
+
+A função ``_slice_index_list_by_class(...)``, separa os índices das linhas conforme a classe de saída, para percorrer o array de amostra, apenas nas posições que a saída for a classe que está sendo treinada:
+
+```python
+def _slice_index_list_by_class(self, y: npt.NDArray) -> dict:
+```
+
+Retorna um dicionário com as classes como chave e os índices em ``X`` das amostras.
+
+---
+
 ### def get_params(...)
 
 ```python

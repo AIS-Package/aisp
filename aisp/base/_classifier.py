@@ -1,10 +1,11 @@
 """Base class for classification algorithm."""
 
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Optional, Union
 
 import numpy.typing as npt
 
+from ..utils import slice_index_list_by_class
 from ..utils.metrics import accuracy_score
 
 
@@ -13,6 +14,8 @@ class BaseClassifier(ABC):
     Base class for classification algorithms, defining the abstract methods ``fit`` and ``predict``,
     and implementing the ``get_params`` method.
     """
+
+    classes: Optional[Union[npt.NDArray, list]] = None
 
     @abstractmethod
     def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True):
@@ -76,6 +79,23 @@ class BaseClassifier(ABC):
             return 0
         y_pred = self.predict(X)
         return accuracy_score(y, y_pred)
+
+    def _slice_index_list_by_class(self, y: npt.NDArray) -> dict:
+        """
+        The function ``_slice_index_list_by_class(...)``, separates the indices of the lines \
+        according to the output class, to loop through the sample array, only in positions where \
+        the output is the class being trained.
+
+        Parameters
+        ----------
+        * y (npt.NDArray): Receives a ``y``[``N sample``] array with the output classes of the \
+            ``X`` sample array.
+
+        returns
+        ----------
+        * dict: A dictionary with the list of array positions(``y``), with the classes as key.
+        """
+        return slice_index_list_by_class(self.classes, y)
 
     def get_params(self, deep: bool = True) -> dict:  # pylint: disable=W0613
         """
