@@ -193,6 +193,7 @@ class AIRS(BaseAIRS):
             [``N samples`` (rows)][``N features`` (columns)].
         * y (``npt.NDArray``): Array of target classes of ``X`` with [``N samples`` (lines)].
         * verbose (``bool``): Feedback on which sample aᵢ the memory cells are being generated.
+
         returns
         ----------
         * (``self``): Returns the instance itself.
@@ -212,7 +213,6 @@ class AIRS(BaseAIRS):
                 postfix="\n",
                 bar_format="{desc} ┇{bar}┇ {n}/{total} memory cells for each aᵢ",
             )
-        # Inicia o conjunto que receberá as células de memória.
         pool_cells_classes = {}
         for _class_ in self.classes:
             if verbose:
@@ -289,30 +289,14 @@ class AIRS(BaseAIRS):
 
         Parameters:
         ---
-            * X (``npt.NDArray``): Array with input samples with [``N samples`` (Lines)] and
+        * X (``npt.NDArray``): Array with input samples with [``N samples`` (Lines)] and
             [``N characteristics``(Columns)]
 
         returns:
         ---
-            * C – (``npt.NDArray``): an ndarray of the form ``C`` [``N samples``],
-            containing the predicted classes for ``X``.
-            * ``None``: If there are no detectors for the prediction.
-
-        ---
-
-        Função para efetuar a previsão das classes com base nos detectores
-        criados após o treinamento.
-
-        Parameters:
-        ---
-            * X (``npt.NDArray``): Array com as amostras de entradas com [``N amostras`` (Linhas)] e
-            [``N características``(Colunas)]
-
-        Returns:
-        ---
-            * C – (``npt.NDArray``): um ndarray de forma ``C`` [``N amostras``],
-            contendo as classes previstas para ``X``.
-            * ``None``: Se não existir detectores para a previsão.
+        * C – (``npt.NDArray``): an ndarray of the form ``C`` [``N samples``], containing the
+            predicted classes for ``X``.
+        * ``None``: If there are no detectors for the prediction.
         """
         if self._cells_memory is None:
             return None
@@ -349,12 +333,12 @@ class AIRS(BaseAIRS):
 
         Parameters
         ----------
-        * **c_match** (``_Cell``): Cell with the highest stimulation relative to aᵢ
-        * **abr_list** (``List[_ABR]``): ABR set.
+        * c_match (``_Cell``): Cell with the highest stimulation relative to aᵢ
+        * abr_list (``List[_ABR]``): ABR set.
 
         Returns
         ----------
-        * **_ABR**: The cell with the highest ABR stimulation
+        * _ABR: The cell with the highest ABR stimulation
         """
         iters = 0
         while True:

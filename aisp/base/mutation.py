@@ -14,19 +14,22 @@ def clone_and_mutate_continuous(
     n: int
 ) -> npt.NDArray[np.float64]:
     """
-    Gera um conjunto de clones mutados a partir de uma célula (``vetor``).
+    Generates a set of mutated clones from a cell represented by a continuous vector.
 
-    Esta função cria `n` clones do vector de entrada e aplica a mutação
-    a cada clones Ela simula os processos de expansão clonal.
+    This function creates `n` clones of the input vector and applies random mutations to each of
+    them, simulating the process of clonal expansion in artificial immune systems. Each clone
+    will have a random number of mutations applied in distinct positions of the original vector.
 
-    Parâmetros
+    Parameters
     ----------
-    * vector (``ndarray``): A célula imune original a ser clonada e mutada.
-    * n (``int``): O número de clones mutados a serem gerados.
+    * vector (``ndarray``): The original immune cell with continuous values to be cloned and
+        mutated.
+    * n (``int``): The number of mutated clones to be generated.
 
-    Retorna
+    Returns
     ----------
-    * ``ndarray``: Um array de `n` clones mutados derivados do vetor original.
+    * ``ndarray``: An Array(n, len(vector)) containing the `n` mutated clones of the original
+        vector.
     """
     n_features = vector.shape[0]
     clone_set = np.empty((n, n_features), dtype=np.float64)
@@ -48,19 +51,21 @@ def clone_and_mutate_binary(
     n: int
 ) -> npt.NDArray[np.bool_]:
     """
-    Gera um conjunto de clones mutados a partir de uma célula (``vetor``).
+    Generates a set of mutated clones from a cell represented by a binary vector.
 
-    Esta função cria `n` clones do vector de entrada e aplica a mutação
-    a cada clones Ela simula os processos de expansão clonal.
+    This function creates `n` clones of the input vector and applies random mutations to each of
+    them, changing some bits randomly. The process simulates clonal expansion in artificial
+    immune systems with discrete representations.
 
-    Parâmetros
+    Parameters
     ----------
-    * vector (``ndarray``): A célula imune original a ser clonada e mutada.
-    * n (``int``): O número de clones mutados a serem gerados.
+    * vector (``ndarray``): The original immune cell with binary values to be cloned and mutated.
+    * n (``int``): The number of mutated clones to be generated.
 
-    Retorna
+    Returns
     ----------
-    * ``ndarray``: Um array de `n` clones mutados derivados do vetor original.
+    * ``ndarray``: An Array(n, len(vector)) containing the `n` mutated clones of the original
+        vector.
     """
     n_features = vector.shape[0]
     clone_set = np.empty((n, n_features), dtype=np.bool_)
