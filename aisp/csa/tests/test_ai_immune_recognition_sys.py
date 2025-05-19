@@ -13,8 +13,8 @@ def b_airs_data():
     """Fixture that provides boolean data and a fixed seed for AIRS testing."""
     seed = 123
     np.random.seed(seed)
-    X = np.random.choice([True, False], size=(100, 10))
-    y = np.random.choice(["a", "b"], size=100)
+    X = np.random.choice([True, False], size=(500, 10))
+    y = np.random.choice(["a", "b"], size=500)
     return X, y, seed
 
 
@@ -23,8 +23,8 @@ def r_airs_data():
     """Fixture that provides real data and a fixed seed for AIRS testing."""
     seed = 123
     np.random.seed(seed)
-    X = np.random.rand(100, 10)
-    y = np.random.choice(["a", "b"], size=100)
+    X = np.random.rand(500, 10)
+    y = np.random.choice(["a", "b"], size=500)
     return X, y, seed
 
 

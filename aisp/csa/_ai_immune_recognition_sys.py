@@ -264,10 +264,7 @@ class AIRS(BaseAIRS):
 
                 if c_candidate.stimulation > match_stimulation:
                     pool_c.append(c_candidate.to_cell())
-                    if (
-                        self._affinity(c_candidate.vector, c_match.vector)
-                        < sufficiently_similar
-                    ):
+                    if self._affinity(c_candidate.vector, c_match.vector) < sufficiently_similar:
                         pool_c.remove(c_match)
 
                 if verbose:
