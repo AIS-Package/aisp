@@ -77,5 +77,4 @@ max-args = 15
 
 [tool.pydocstyle]
 convention = "numpy"
-add-ignore = ["D104", "D107", "D205"]
-exclude = ["tests"]
+add-ignore = ["D104", "D107"]
