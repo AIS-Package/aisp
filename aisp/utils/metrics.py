@@ -12,7 +12,7 @@ def accuracy_score(
     """Calculate the accuracy score based on true and predicted labels.
 
     Parameters
-    ----------
+    -----------
     y_true : Union[npt.NDArray, list]
         Ground truth (correct) labels. Expected to be of the same length as `y_pred`.
     y_pred : Union[npt.NDArray, list]
