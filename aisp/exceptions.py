@@ -1,4 +1,4 @@
-"""Custom warnings and errors"""
+"""Custom warnings and errors."""
 
 
 class MaxDiscardsReachedError(Exception):
@@ -17,9 +17,10 @@ class MaxDiscardsReachedError(Exception):
 
 
 class FeatureDimensionMismatch(Exception):
-    """ 
-    Exception raised when the number of input features does not match the expected number 
-    required by the model for prediction
+    """
+    Exception raised when the number of input features does not match the expected number.
+
+    This exception is triggered during prediction if the input features' dimension is incorrect.
     """
 
     def __init__(

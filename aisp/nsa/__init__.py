@@ -1,4 +1,4 @@
-"""nsa: Module (NSA) Negative Selection Algorithm
+"""Module (NSA) Negative Selection Algorithm.
 
 NSAs simulate the maturation process of T-cells in the immune system, where these cells learn to 
 distinguish between self and non-self. Only T-cells capable of recognizing non-self elements are 

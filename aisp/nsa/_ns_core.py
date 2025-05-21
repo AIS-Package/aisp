@@ -1,4 +1,4 @@
-"""ns: Negative Selection
+"""nsa - Negative Selection.
 
 The functions perform detector checks and utilize Numba decorators for Just-In-Time compilation
 """
@@ -23,20 +23,24 @@ def check_detector_bnsa_validity(
     aff_thresh: float
 ) -> bool:
     """
-    Checks the validity of a candidate detector (vector_x) against samples from a class (x_class)
-    using the Hamming distance. A detector is considered INVALID if its distance to any sample
-    in ``x_class`` is less than or equal to ``aff_thresh``.
+    Check the validity of a candidate detector using the Hamming distance.
+    
+    A detector is considered INVALID if its distance to any sample in ``x_class`` is less than or
+    equal to ``aff_thresh``.
 
     Parameters
     ----------
-    * x_class (``npt.NDArray``): Array containing the class samples. Expected shape: 
-        (n_samples, n_features).
-    * vector_x (``npt.NDArray``): Array representing the detector. Expected shape: (n_features,).
-    * aff_thresh (``float``): Affinity threshold.
+    x_class : npt.NDArray
+        Array containing the class samples. Expected shape:  (n_samples, n_features).
+    vector_x : npt.NDArray
+        Array representing the detector. Expected shape: (n_features,).
+    aff_thresh : float
+        Affinity threshold.
 
     Returns
-    ----------
-    * True if the detector is valid, False otherwise.
+    -------
+    valid : bool
+        True if the detector is valid, False otherwise.
     """
     n = x_class.shape[1]
     if n != vector_x.shape[0]:
@@ -62,20 +66,21 @@ def bnsa_class_prediction(
     class_detectors: npt.NDArray,
     aff_thresh: float
 ) -> int:
-    """
-    Defines the class of a sample from the non-self detectors.
+    """Define the class of a sample from the non-self detectors.
 
     Parameters
     ----------
-    * features (``npt.NDArray``): binary sample to be classified (shape: [n_features]).
-    * class_detectors (``npt.NDArray``): Array containing the detectors of all classes
-    (shape: [n_classes, n_detectors, n_features]).
-    * aff_thresh (``float``): Affinity threshold that determines whether a detector recognizes the
-    sample as non-self.
+    features : npt.NDArray
+        binary sample to be classified (shape: [n_features]).
+    class_detectors : npt.NDArray
+        Array containing the detectors of all classes (shape: [n_classes, n_detectors, n_features]).
+    aff_thresh : float
+        Affinity threshold that determines whether a detector recognizes the sample as non-self.
 
     Returns
-    ----------
-    * int: Index of the predicted class. Returns -1 if it is non-self for all classes.
+    -------
+    best_class_index : int
+        Index of the predicted class. Returns -1 if it is non-self for all classes.
     """
     n_classes, n_detectors, _ = class_detectors.shape
     best_class_idx = -1
@@ -122,25 +127,29 @@ def check_detector_rnsa_validity(
     metric: int,
     p: float
 ) -> bool:
-    """
-    Checks the validity of a candidate detector (vector_x) against samples from a class (x_class)
-    using the Hamming distance. A detector is considered INVALID if its distance to any sample
-    in ``x_class`` is less than or equal to ``aff_thresh``.
+    """Check the validity of a candidate detector using the Hamming distance.
+
+    A detector is considered INVALID if its distance to any sample  in ``x_class`` is less than
+    or equal to ``aff_thresh``.
 
     Parameters
     ----------
-    * x_class (``npt.NDArray``): Array containing the class samples. Expected shape: 
-        (n_samples, n_features).
-    * vector_x (``npt.NDArray``): Array representing the detector. Expected shape: (n_features,).
-    * threshold (``float``): threshold.
-    * metric (``int``): Distance metric to be used. Available options: 
-        [0 (Euclidean), 1 (Manhattan), 2 (Minkowski)].
-    * p (``float``): Parameter for the Minkowski distance (used only if `metric` 
-    is "minkowski").
+    x_class : npt.NDArray
+        Array containing the class samples. Expected shape: (n_samples, n_features).
+    vector_x : npt.NDArray
+        Array representing the detector. Expected shape: (n_features,).
+    threshold : float
+        threshold.
+    metric : int
+        Distance metric to be used. Available options: [0 (Euclidean), 1 (Manhattan),
+        2 (Minkowski)].
+    p : float
+        Parameter for the Minkowski distance (used only if `metric` is "minkowski").
 
     Returns
-    ----------
-    * True if the detector is valid, False otherwise.
+    -------
+    valid : bool
+        True if the detector is valid, False otherwise.
     """
     n = x_class.shape[1]
     if n != vector_x.shape[0]:

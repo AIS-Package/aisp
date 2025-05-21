@@ -13,8 +13,9 @@ from ..exceptions import FeatureDimensionMismatch
 
 class BaseNSA(BaseClassifier, ABC):
     """
-    The base class contains functions that are used by more than one class in the package, and
-    therefore are considered essential for the overall functioning of the system.
+    Base class containing functions used by multiple classes in the package.
+
+    These functions are essential for the overall functioning of the system.
     """
 
     @staticmethod
@@ -23,22 +24,26 @@ class BaseNSA(BaseClassifier, ABC):
         y: npt.NDArray = None,
         _class_: Literal["RNSA", "BNSA"] = "RNSA",
     ) -> None:
-        """
-        Function responsible for verifying fit function parameters and throwing exceptions if the
-        verification is not successful.
+        """Verify fit function parameters.
+
+        Throw exceptions if the verification fails.
 
         Parameters
         ----------
-        * X (``npt.NDArray``) Training array, containing the samples and their
-            characteristics, [``N samples`` (rows)][``N features`` (columns)].
-        * y (``npt.NDArray``) Array of target classes of ``X`` with [``N samples`` (lines)].
-        * _class_ (``Literal[RNSA, BNSA], optional``) Current class. Defaults to 'RNSA'.
+        * X : npt.NDArray
+            Training array, containing the samples and their characteristics, [``N samples`` (
+            rows)][``N features`` (columns)].
+        * y : npt.NDArray
+            Array of target classes of ``X`` with [``N samples`` (lines)].
+        * _class_ : Literal[RNSA, BNSA], default="RNSA"
+            Current class.
 
         Raises
-        ----------
-        * TypeError: If X or y are not ndarrays or have incompatible shapes.
-        * ValueError: If _class_ is BNSA and X contains values that are not composed only of
-            0 and 1.
+        ------
+        TypeError
+            If X or y are not ndarrays or have incompatible shapes.
+        ValueError
+            If _class_ is BNSA and X contains values that are not composed only of 0 and 1.
         """
         if isinstance(X, list):
             X = np.array(X)
@@ -66,27 +71,28 @@ class BaseNSA(BaseClassifier, ABC):
         expected: int = 0,
         _class_: Literal["RNSA", "BNSA"] = "RNSA",
     ) -> None:
-        """
-        Function responsible for verifying predict function parameters and throwing exceptions if
-        the verification is not successful.
+        """Verify predict function parameters.
+
+        Throw exceptions if the verification fails.
 
         Parameters
         ----------
-        * X (``npt.NDArray``)
+        X : npt.NDArray
             Input array for prediction, containing the samples and their characteristics,
             [``N samples`` (rows)][``N features`` (columns)].
-        * expected (``int``)
+        expected : int
             Expected number of features per sample (columns in X).
-        * _class_ (``Literal[RNSA, BNSA], optional``)
+        _class_ : Literal[RNSA, BNSA], default="RNSA"
             Current class. Defaults to 'RNSA'.
 
         Raises
-        ----------
-        * TypeError: If X is not an ndarray or list.
-        * FeatureDimensionMismatch: If the number of features in X does not match the expected
-            number.
-        * ValueError: If _class_ is BNSA and X contains values that are not composed only of 0
-        and 1.
+        ------
+        TypeError
+            If X is not an ndarray or list.
+        FeatureDimensionMismatch
+            If the number of features in X does not match the expected number.
+        ValueError
+            If _class_ is BNSA and X contains values that are not composed only of 0 and 1.
         """
         if not isinstance(X, (np.ndarray, list)):
             raise TypeError("X is not an ndarray or list")
@@ -110,8 +116,10 @@ class Detector:
 
     Attributes
     ----------
-    * position (``npt.NDArray[np.float64]``): Detector feature vector.
-    * radius (``float, optional``): Detector radius, used in the V-detector algorithm.
+    position : npt.NDArray[np.float64]
+        Detector feature vector.
+    radius : float, optional
+        Detector radius, used in the V-detector algorithm.
     """
 
     position: npt.NDArray[np.float64]

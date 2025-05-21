@@ -22,54 +22,61 @@ from ._base import BaseNSA, Detector
 
 
 class RNSA(BaseNSA):
-    """
-    The ``RNSA`` (Real-Valued Negative Selection Algorithm) class is for classification and
-    identification purposes. of anomalies through the self and not self method.
+    """Real-Valued Negative Selection Algorithm (RNSA) for classification and anomaly detection.
 
-    Parameters
+    Uses the self and non-self method to identify anomalies.
+
+    Attributes
     ----------
-    * N (``int``): Number of detectors. Defaults to ``100``.
-    * r (``float``): Radius of the detector. Defaults to ``0.05``.
-    * r_s (``float``): rₛ Radius of the ``X`` own samples. Defaults to ``0.0001``.
-    * k (``int``): Number of neighbors near the randomly generated detectors to perform the
-        distance average calculation. Defaults to ``1``.
-    * metric (``str``): Way to calculate the distance between the detector and the sample:
-            + ``'Euclidean'`` ➜ The calculation of the distance is given by the expression:
-                √( (x₁ – x₂)² + (y₁ – y₂)² + ... + (yn – yn)²).
-            + ``'minkowski'`` ➜ The calculation of the distance is given by the expression:
-                ( |X₁ – Y₁|p + |X₂ – Y₂|p + ... + |Xn – Yn|p) ¹/ₚ.
-            + ``'manhattan'`` ➜ The calculation of the distance is given by the expression:
-                ( |x₁ – x₂| + |y₁ – y₂| + ... + |yn – yn|) .
+    N : int, default=100
+        Number of detectors.
+    r : float, default=0.05
+        Radius of the detector.
+    r_s : float, default=0.0001
+        rₛ Radius of the ``X`` own samples.
+    k : int, default=1
+        Number of neighbors near the randomly generated detectors to perform the distance average
+        calculation.
+    metric: str, default='euclidean'
+        Way to calculate the distance between the detector and the sample:
 
-            Defaults to ``'euclidean'``.
-    * max_discards (``int``): This parameter indicates the maximum number of consecutive
-        detector discards, aimed at preventing a possible infinite loop in case a radius
-        is defined that cannot generate non-self detectors. Defaults to ``1000``.
-    * seed (``int``): Seed for the random generation of values in the detectors. Defaults to
-        ``None``.
-    * algorithm(``str``), Set the algorithm version:
+        + ``'Euclidean'`` ➜ The calculation of the distance is given by the expression:
+            √( (x₁ – x₂)² + (y₁ – y₂)² + ... + (yn – yn)²).
+        + ``'minkowski'`` ➜ The calculation of the distance is given by the expression:
+            ( |X₁ – Y₁|p + |X₂ – Y₂|p + ... + |Xn – Yn|p) ¹/ₚ.
+        + ``'manhattan'`` ➜ The calculation of the distance is given by the expression:
+            ( |x₁ – x₂| + |y₁ – y₂| + ... + |yn – yn|) .
+    max_discards : int, default=1000
+        This parameter indicates the maximum number of consecutive detector discards, aimed at
+        preventing a possible infinite loop in case a radius is defined that cannot generate
+        non-self detectors.
+    seed : int, default=None
+        Seed for the random generation of values in the detectors.
+    algorithm : str, default='default-NSA'
+        Set the algorithm version:
+
         * ``'default-NSA'``: Default algorithm with fixed radius.
-        * ``'V-detector'``: This algorithm is based on the article \
-            [Real-Valued Negative Selection Algorithm with Variable-Sized Detectors][2], \
-            by Ji, Z., Dasgupta, D. (2004), and uses a variable radius for anomaly \
-            detection in feature spaces.
+        * ``'V-detector'``: This algorithm is based on the article
+            [Real-Valued Negative Selection Algorithm with Variable-Sized Detectors][2], by Ji,
+            Z., Dasgupta, D. (2004), and uses a variable radius for anomaly detection in feature
+            spaces.
+    **kwargs : dict
+        Parâmetros adicionais. Os seguintes argumentos são reconhecidos:
 
-        Defaults to ``'default-NSA'``.
-
-    * ``**kwargs``:
-        - non_self_label (``str``): This variable stores the label that will be assigned \
-            when the data has only one output class, and the sample is classified as not \
-            belonging to that class. Defaults to ``'non-self'``.
-        - cell_bounds (``bool``): If set to ``True``, this option limits the generation \
-            of detectors to the space within the plane between 0 and 1. This means that \
-            any detector whose radius exceeds this limit is discarded, this variable is \
-            only used in the ``V-detector`` algorithm. Defaults to ``False``.
-        - p (``float``): This parameter stores the value of ``p`` used in the Minkowski \
-            distance. The default is ``2``, which represents normalized Euclidean distance.\
-            Different values of p lead to different variants of the [Minkowski Distance][1].
+        - non_self_label : str, default='non-self'
+            This variable stores the label that will be assigned when the data has only one
+            output class, and the sample is classified as not belonging to that class.
+        - cell_bounds : bool, default=False
+            If set to ``True``, this option limits the generation of detectors to the space
+            within the plane between 0 and 1. This means that any detector whose radius exceeds
+            this limit is discarded, this variable is only used in the ``V-detector`` algorithm.
+        - p : float, default=2
+            This parameter stores the value of ``p`` used in the Minkowski distance. The default
+            is ``2``, which represents normalized Euclidean distance. Different values of p lead
+            to different variants of the [Minkowski Distance][1].
 
     Notes
-    ----------
+    -----
     [1] https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.minkowski_distance.html
 
     [2] https://doi.org/10.1007/978-3-540-24854-5_30
@@ -117,25 +124,30 @@ class RNSA(BaseNSA):
 
     def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True):
         """
-        The function ``fit(...)``, performs the training according to ``X`` and ``y``, using the
-        method negative selection method(``NegativeSelect``).
+        Perform training according to X and y, using the negative selection method (NegativeSelect).
 
         Parameters
         ----------
-        * X (``npt.NDArray``): Training array, containing the samples and their \
-            characteristics, [``N samples`` (rows)][``N features`` (columns)].
-        * y (``npt.NDArray``): Array of target classes of ``X`` with [``N samples`` (lines)].
-            verbose (``bool``): Feedback from detector generation to the user.
+        X : npt.NDArray
+            Training array, containing the samples and their characteristics, [``N samples`` (
+            rows)][``N features`` (columns)].
+        y : npt.NDArray
+            Array of target classes of ``X`` with [``N samples`` (lines)].
+        verbose: bool, default=True
+            Feedback from detector generation to the user.
 
         Raises
-        ----------
-        * TypeError: If X or y are not ndarrays or have incompatible shapes.
-        * MaxDiscardsReachedError: The maximum number of detector discards was reached during
-            maturation. Check the defined radius value and consider reducing it.
+        ------
+        TypeError
+            If X or y are not ndarrays or have incompatible shapes.
+        MaxDiscardsReachedError
+            The maximum number of detector discards was reached during maturation. Check the
+            defined radius value and consider reducing it.
 
         Returns
-        ----------
-        * (``self``): Returns the instance itself.
+        -------
+        self : RNSA
+        Returns the instance itself.
         """
         progress = None
         super()._check_and_raise_exceptions_fit(X, y)
@@ -197,29 +209,26 @@ class RNSA(BaseNSA):
 
     def predict(self, X: npt.NDArray) -> Optional[npt.NDArray]:
         """
-        Function to perform the prediction of classes based on detectors
-        created after training.
+        Prediction of classes based on detectors created after training.
 
         Parameters
         ----------
-        * X (``npt.NDArray``)
-            Array with input samples with [``N samples`` (Lines)] and
-            [``N characteristics``(Columns)]
+        X : npt.NDArray
+            Array with input samples with [``N_samples`` (Lines)] and [``N_characteristics``
+            (Columns)]
 
         Raises
-        ----------
-        * TypeError
+        ------
+        TypeError
             If X is not an ndarray or list.
-        * FeatureDimensionMismatch
+        FeatureDimensionMismatch
             If the number of features in X does not match the expected number.
 
         Returns
-        ----------
-        * C (``npt.NDArray``)
+        -------
+        C : npt.NDArray or None
             an ndarray of the form ``C`` [``N samples``], containing the predicted classes
-            for ``X``.
-        * ``None``
-            If there are no detectors for the prediction.
+            for ``X``. Returns `None` if no detectors are available for prediction.
         """
         # If there are no detectors, Returns None.
         if self._detectors is None:
@@ -260,21 +269,22 @@ class RNSA(BaseNSA):
         return np.array(c)
 
     def __checks_valid_detector(
-        self, x_class: npt.NDArray = None, vector_x: npt.NDArray = None
+        self, x_class: npt.NDArray, vector_x: npt.NDArray
     ) -> Union[bool, tuple[bool, float]]:
         """
-        Function to check if the detector has a valid non-proper ``r`` radius for the class.
+        Check if the detector has a valid non-proper r radius for the class.
 
         Parameters
         ----------
-        * x_class (``npt.NDArray``)
+        x_class : npt.NDArray
             Array ``x_class`` with the samples per class.
-        * vector_x (``npt.NDArray``)
+        vector_x : npt.NDArray
             Randomly generated vector x candidate detector with values between[0, 1].
 
         Returns
-        ----------
-        * Validity (``bool``): Returns whether the detector is valid or not.
+        -------
+        Validity : bool
+            Returns whether the detector is valid or not.
         """
         # If any of the input arrays have zero size, Returns false.
         if np.size(x_class) == 0 or np.size(vector_x) == 0:
@@ -282,7 +292,7 @@ class RNSA(BaseNSA):
         # If self.k > 1, uses the k nearest neighbors (kNN); otherwise, checks the detector
         # without considering kNN.
         if self.k > 1:
-            knn_list = np.empty(shape=0)
+            knn_list = []
             for x in x_class:
                 # Calculates the distance between the two vectors and adds it to the kNN list if
                 # the distance is smaller than the largest distance in the list.
@@ -317,20 +327,21 @@ class RNSA(BaseNSA):
         self, knn: npt.NDArray, distance: float
     ) -> npt.NDArray:
         """
-        Compares the k-nearest neighbor distance at position ``k-1`` in the list ``knn``,
-        if the distance of the new sample is less, replace it and sort in ascending order.
+        Compare the k-nearest neighbor distance at position k=1 in the list knn.
 
+        If the distance of the new sample is less, replace it and sort in ascending order.
 
         Parameters
         ----------
-        * knn (``npt.NDArray``)
+        knn : npt.NDArray
             List of k-nearest neighbor distances.
-        * distance (``float``)
+        distance : float
             Distance to check.
 
         Returns
-        ----------
-        * ``npt.NDArray``: Updated and sorted nearest neighbor list.
+        -------
+        knn : npt.NDArray
+            Updated and sorted nearest neighbor list.
         """
         # If the number of distances in kNN is less than k, adds the distance.
         if len(knn) < self.k:
@@ -346,18 +357,20 @@ class RNSA(BaseNSA):
 
         return knn
 
-    def __compare_sample_to_detectors(self, line: npt.NDArray):
+    def __compare_sample_to_detectors(self, line: npt.NDArray) -> Optional[str]:
         """
-        Function to compare a sample with the detectors, verifying if the sample is proper.
+        Compare a sample with the detectors, verifying if the sample is proper.
 
         Parameters
         ----------
-        * line (``npt.NDArray``): vector with N-features
+        line : npt.NDArray
+            vector with N-features
 
         Returns
-        ----------
-        * Returns the predicted class with the detectors or None if the sample does not qualify
-        for any class.
+        -------
+        possible_classes : Optional[str]
+            Returns the predicted class with the detectors or None if the sample does not qualify
+            for any class.
         """
         # List to store the classes and the average distance between the detectors and the sample.
         possible_classes = []
@@ -391,37 +404,45 @@ class RNSA(BaseNSA):
 
     def __distance(self, u: npt.NDArray, v: npt.NDArray) -> float:
         """
-        Function to calculate the distance between two points by the chosen ``metric``.
+        Calculate the distance between two points by the chosen ``metric``.
 
         Parameters
         ----------
-        * u (``npt.NDArray``): Coordinates of the first point.
-        * v (``npt.NDArray``): Coordinates of the second point.
+        u : npt.NDArray
+            Coordinates of the first point.
+        v : npt.NDArray
+            Coordinates of the second point.
 
         Returns
-        ----------
-        * Distance (``float``): between the two points.
+        -------
+        Distance : float
+            between the two points.
         """
         return compute_metric_distance(u, v, get_metric_code(self.metric), self.p)
 
     def __detector_is_valid_to_vdetector(
         self, distance: float, vector_x: npt.NDArray
     ) -> Union[bool, tuple[bool, float]]:
-        """
-        Check if the distance between the detector and the samples, minus the radius of the samples,
-        is greater than the minimum radius.
+        """Validate the detector against the vdetector.
+        
+        Check if the distance between the detector and the samples, minus the radius of the
+        samples, is greater than the minimum radius.
 
         Parameters
         ----------
-        * distance (``float``): minimum distance calculated between all samples.
-        * vector_x (``numpy.ndarray``): randomly generated candidate detector vector x with
-            values between 0 and 1.
+        distance : float
+            minimum distance calculated between all samples.
+        vector_x : np.ndarray
+            randomly generated candidate detector vector x with values between 0 and 1.
 
         Returns
-        ----------
-        * ``False`` if the calculated radius is smaller than the minimum distance or exceeds the
-            edge of the space, if this option is enabled.
-        * ``True`` and the distance minus the radius of the samples, if the radius is valid.`
+        -------
+        valid : bool
+
+            - ``False`` if the calculated radius is smaller than the minimum distance or exceeds
+            the edge of the space, if this option is enabled.
+
+            - ``True`` and the distance minus the radius of the samples, if the radius is valid.`
         """
         new_detector_r = float(distance - self.r_s)
         if self.r >= new_detector_r:
@@ -437,27 +458,34 @@ class RNSA(BaseNSA):
 
 
 class BNSA(BaseNSA):
-    """
-    The ``BNSA`` (Binary Negative Selection Algorithm) class is for classification and
-    identification purposes of anomalies through the self and not self method.
+    """BNSA (Binary Negative Selection Algorithm).
+    
+    Class is for classification and identification purposes of anomalies through the self and not
+    self method.
 
-    Parameters
+    Attributes
     ----------
-    * N (``int``): Number of detectors. Defaults to ``100``.
-    * aff_thresh (``float``): The variable represents the percentage of similarity
-        between the T cell and the own samples. The default value is 10% (0.1), while a value of
-        1.0 represents 100% similarity.
-    * max_discards (``int``): This parameter indicates the maximum number of detector discards in
-        sequence, which aims to avoid a possible infinite loop if a radius is defined that it is
-        not possible to generate non-self detectors. Defaults to ``1000``.
-    * seed (``int``): Seed for the random generation of values in the detectors. Defaults to
+    N : int, default=100
+        Number of detectors.
+    aff_thresh : float, default=0.1
+        The variable represents the percentage of similarity between the T cell and the own
+        samples. The default value is 10% (0.1), while a value of 1.0 represents 100% similarity.
+    max_discards : int, default=1000
+        This parameter indicates the maximum number of detector discards in sequence, which aims
+        to avoid a possible infinite loop if a radius is defined that it is not possible to
+        generate non-self detectors. Defaults to ``1000``.
+    seed : Optional[int], default=None
+             Seed for the random generation of values in the detectors. Defaults to
         ``None``.
-    * no_label_sample_selection (``str``): Method for selecting labels for samples designated as
-        non-self by all detectors. Available method types:
-        - (``max_average_difference``): Selects the class with the highest average difference
-            among the detectors.
-        - (``max_nearest_difference``): Selects the class with the highest difference between
-            the nearest and farthest detector from the sample.
+    no_label_sample_selection : str
+        Method for selecting labels for samples designated as non-self by all detectors.
+        Available method types:
+
+        - max_average_difference - Selects the class with the highest average difference among the
+        detectors.
+
+        - max_nearest_difference - Selects the class with the highest difference between the
+        nearest and farthest detector from the sample.
     """
 
     def __init__(
@@ -497,22 +525,22 @@ class BNSA(BaseNSA):
         return self._detectors
 
     def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True):
-        """
-        The function ``fit(...)``, performs the training according to ``X`` and ``y``, using the
-        method negative selection method(``NegativeSelect``).
+        """Training according to X and y, using the method negative selection method.
 
         Parameters
         ----------
-        * X (``npt.NDArray``):
-            Training array, containing the samples and their characteristics,
-            [``N samples`` (rows)][``N features`` (columns)].
-        * y (``npt.NDArray``):
+        X : npt.NDArray
+            Training array, containing the samples and their characteristics, [``N samples`` (
+            rows)][``N features`` (columns)].
+        y : npt.NDArray
             Array of target classes of ``X`` with [``N samples`` (lines)].
-            verbose (``bool``): Feedback from detector generation to the user.
+        verbose : bool, default=True
+            Feedback from detector generation to the user.
 
         Returns
-        ----------
-        * (``self``): Returns the instance itself.
+        -------
+        self : BNSA
+             Returns the instance it self.
         """
         super()._check_and_raise_exceptions_fit(X, y, "BNSA")
 
@@ -574,20 +602,19 @@ class BNSA(BaseNSA):
         return self
 
     def predict(self, X: npt.NDArray) -> Optional[npt.NDArray]:
-        """
-        Function to perform the prediction of classes based on detectors
-        created after training.
+        """Prediction of classes based on detectors created after training.
 
         Parameters
         ----------
-        * X (``npt.NDArray``): Array with input samples with [``N samples`` (Lines)] and
-            [``N characteristics``(Columns)]
+        X : npt.NDArray
+            Array with input samples with [``N_samples`` (Lines)] and [``N_characteristics``(
+            Columns)]
 
         Returns
-        ----------
-        * c (``npt.NDArray``): an ndarray of the form ``C`` [``N samples``],
-            containing the predicted classes for ``X``
-        * ``None``: If there are no detectors for the prediction.
+        -------
+        c : Optional[npt.NDArray]
+            an ndarray of the form ``C`` [``N samples``], containing the predicted classes for
+            ``X``. Returns``None``: If there are no detectors for the prediction.
         """
         # If there are no detectors, Returns None.
         if self._detectors is None:
@@ -629,19 +656,17 @@ class BNSA(BaseNSA):
         return np.array(c)
 
     def __assign_class_to_non_self_sample(self, line: npt.NDArray, c: list):
-        """
-        This function determines the class of a sample when all detectors classify it
-        as "non-self". Classification is performed using the ``max_average_difference``
-        and ``max_nearest_difference`` methods.
+        """Determine the class of a sample when all detectors classify it as "non-self".
+        
+        Classification is performed using the ``max_average_difference`` and
+        ``max_nearest_difference`` methods.
 
         Parameters
         ----------
-        * line (list): Sample to be classified.
-        * c (list): List of predictions to be updated with the new classification.
-
-        Returns
-        ----------
-        * list: The list of predictions `c` updated with the class assigned to the sample.
+        line : list
+            Sample to be classified.
+        c : list
+            List of predictions to be updated with the new classification.
         """
         class_differences: dict = {}
         for _class_ in self.classes:
