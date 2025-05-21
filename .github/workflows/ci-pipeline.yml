@@ -39,4 +39,4 @@ jobs:
       run: pytest -v
 
     - name: 📚 Check docstring style (numpydoc convention)
-      run:  pydocstyle aisp
+      run:  pydocstyle aisp -v
