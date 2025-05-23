@@ -26,7 +26,7 @@ class RNSA(BaseNSA):
 
     Uses the self and non-self method to identify anomalies.
 
-    Attributes
+    Parameters
     ----------
     N : int, default=100
         Number of detectors.
@@ -55,32 +55,31 @@ class RNSA(BaseNSA):
     algorithm : str, default='default-NSA'
         Set the algorithm version:
 
-        * ``'default-NSA'``: Default algorithm with fixed radius.
-        * ``'V-detector'``: This algorithm is based on the article
-            [Real-Valued Negative Selection Algorithm with Variable-Sized Detectors][2], by Ji,
-            Z., Dasgupta, D. (2004), and uses a variable radius for anomaly detection in feature
-            spaces.
+        + ``'default-NSA'``: Default algorithm with fixed radius.
+        + ``'V-detector'``: This algorithm is based on the article Ji & Dasgupta (2004) [1]_
+            and uses a variable radius for anomaly detection in feature spaces.
+
     **kwargs : dict
         Parâmetros adicionais. Os seguintes argumentos são reconhecidos:
 
-        - non_self_label : str, default='non-self'
+        + non_self_label : str, default='non-self'
             This variable stores the label that will be assigned when the data has only one
             output class, and the sample is classified as not belonging to that class.
-        - cell_bounds : bool, default=False
+        + cell_bounds : bool, default=False
             If set to ``True``, this option limits the generation of detectors to the space
             within the plane between 0 and 1. This means that any detector whose radius exceeds
             this limit is discarded, this variable is only used in the ``V-detector`` algorithm.
-        - p : float, default=2
+        + p : float, default=2
             This parameter stores the value of ``p`` used in the Minkowski distance. The default
-            is ``2``, which represents normalized Euclidean distance. Different values of p lead
-            to different variants of the [Minkowski Distance][1].
+            is ``2``, which represents Euclidean distance. Different values of p lead
+            to different variants of the Minkowski Distance.
 
-    Notes
-    -----
-    [1] https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.minkowski_distance.html
-
-    [2] https://doi.org/10.1007/978-3-540-24854-5_30
-
+    References
+    ----------
+    .. [1] Ji, Z.; Dasgupta, D. (2004).
+           Real-Valued Negative Selection Algorithm with Variable-Sized Detectors.
+           In *Lecture Notes in Computer Science*, vol. 3025.
+           https://doi.org/10.1007/978-3-540-24854-5_30
     """
 
     def __init__(
@@ -463,7 +462,7 @@ class BNSA(BaseNSA):
     Class is for classification and identification purposes of anomalies through the self and not
     self method.
 
-    Attributes
+    Parameters
     ----------
     N : int, default=100
         Number of detectors.
@@ -473,11 +472,10 @@ class BNSA(BaseNSA):
     max_discards : int, default=1000
         This parameter indicates the maximum number of detector discards in sequence, which aims
         to avoid a possible infinite loop if a radius is defined that it is not possible to
-        generate non-self detectors. Defaults to ``1000``.
+        generate non-self detectors.
     seed : Optional[int], default=None
-             Seed for the random generation of values in the detectors. Defaults to
-        ``None``.
-    no_label_sample_selection : str
+         Seed for the random generation of values in the detectors.
+    no_label_sample_selection : str, default="max_average_difference"
         Method for selecting labels for samples designated as non-self by all detectors.
         Available method types:
 
@@ -498,8 +496,6 @@ class BNSA(BaseNSA):
             "max_average_difference", "max_nearest_difference"
         ] = "max_average_difference",
     ):
-        super().__init__()
-
         self.N: int = sanitize_param(N, 100, lambda x: x > 0)
         self.aff_thresh: float = sanitize_param(aff_thresh, 0.1, lambda x: 0 < x < 1)
         self.max_discards: float = sanitize_param(max_discards, 1000, lambda x: x > 0)
@@ -663,7 +659,7 @@ class BNSA(BaseNSA):
 
         Parameters
         ----------
-        line : list
+        line : npt.NDArray
             Sample to be classified.
         c : list
             List of predictions to be updated with the new classification.

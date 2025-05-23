@@ -3,6 +3,7 @@
 import numpy as np
 import numpy.typing as npt
 from numba import njit, types
+from numpy import float64
 
 EUCLIDEAN = 0
 MANHATTAN = 1
@@ -11,7 +12,7 @@ HAMMING = 3
 
 
 @njit([(types.boolean[:], types.boolean[:])], cache=True)
-def hamming(u: npt.NDArray[np.bool_], v: npt.NDArray[np.bool_]) -> np.float64:
+def hamming(u: npt.NDArray[np.bool_], v: npt.NDArray[np.bool_]) -> float64:
     """Calculate the normalized Hamming distance between two points.
     
     ((x₁ ≠ x₂) + (y₁ ≠ y₂) + ... + (yn ≠ yn)) / n
@@ -32,7 +33,7 @@ def hamming(u: npt.NDArray[np.bool_], v: npt.NDArray[np.bool_]) -> np.float64:
     if n == 0:
         return 0.0
 
-    return np.sum(u != v) / n
+    return np.float64(np.sum(u != v) / n)
 
 
 @njit()
@@ -53,7 +54,7 @@ def euclidean(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]) -> np.floa
     distance : np.float64
         Distance : float``) between the two points.
     """
-    return np.linalg.norm(u - v)
+    return np.float64(np.linalg.norm(u - v))
 
 
 @njit()
@@ -103,7 +104,7 @@ def minkowski(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64], p: float =
     Returns
     -------
     np.float64
-        Distance : float``) between the two points.
+        Distance (``float``) between the two points.
     """
     n = len(u)
     if n == 0:

@@ -1,4 +1,5 @@
 """Utility functions for measuring accuracy and performance."""
+
 from typing import Union
 
 import numpy as np

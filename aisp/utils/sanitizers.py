@@ -1,4 +1,5 @@
 """Utility functions for validation and treatment of parameters."""
+
 from typing import TypeVar, Iterable, Callable, Any, Optional
 
 T = TypeVar('T')

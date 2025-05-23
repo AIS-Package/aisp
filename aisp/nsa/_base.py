@@ -88,7 +88,7 @@ class BaseNSA(BaseClassifier, ABC):
         Raises
         ------
         TypeError
-            If X is not an ndarray or list.
+            If X is not an numpy.ndarray or list.
         FeatureDimensionMismatch
             If the number of features in X does not match the expected number.
         ValueError

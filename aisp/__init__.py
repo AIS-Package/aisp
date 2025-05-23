@@ -1,4 +1,4 @@
 """Artificial Immune Systems Package."""
 
 __author__ = "João Paulo da Silva Barros"
-__version__ = "0.1.40"
+__version__ = "0.1.42"

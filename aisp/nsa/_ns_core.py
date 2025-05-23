@@ -3,6 +3,7 @@
 The functions perform detector checks and utilize Numba decorators for Just-In-Time compilation
 """
 
+import numpy as np
 import numpy.typing as npt
 from numba import njit, types
 
@@ -18,8 +19,8 @@ from ..utils.distance import compute_metric_distance, hamming
     cache=True
 )
 def check_detector_bnsa_validity(
-    x_class: npt.NDArray,
-    vector_x: npt.NDArray,
+    x_class: npt.NDArray[np.bool_],
+    vector_x: npt.NDArray[np.bool_],
     aff_thresh: float
 ) -> bool:
     """
@@ -30,9 +31,9 @@ def check_detector_bnsa_validity(
 
     Parameters
     ----------
-    x_class : npt.NDArray
+    x_class : npt.NDArray[np.bool_]
         Array containing the class samples. Expected shape:  (n_samples, n_features).
-    vector_x : npt.NDArray
+    vector_x : npt.NDArray[np.bool_]
         Array representing the detector. Expected shape: (n_features,).
     aff_thresh : float
         Affinity threshold.
@@ -62,17 +63,17 @@ def check_detector_bnsa_validity(
     cache=True
 )
 def bnsa_class_prediction(
-    features: npt.NDArray,
-    class_detectors: npt.NDArray,
+    features: npt.NDArray[np.bool_],
+    class_detectors: npt.NDArray[np.bool_],
     aff_thresh: float
 ) -> int:
     """Define the class of a sample from the non-self detectors.
 
     Parameters
     ----------
-    features : npt.NDArray
+    features : npt.NDArray[np.bool_]
         binary sample to be classified (shape: [n_features]).
-    class_detectors : npt.NDArray
+    class_detectors : npt.NDArray[np.bool_]
         Array containing the detectors of all classes (shape: [n_classes, n_detectors, n_features]).
     aff_thresh : float
         Affinity threshold that determines whether a detector recognizes the sample as non-self.
@@ -121,8 +122,8 @@ def bnsa_class_prediction(
     cache=True
 )
 def check_detector_rnsa_validity(
-    x_class: npt.NDArray,
-    vector_x: npt.NDArray,
+    x_class: npt.NDArray[np.float64],
+    vector_x: npt.NDArray[np.float64],
     threshold: float,
     metric: int,
     p: float
@@ -134,9 +135,9 @@ def check_detector_rnsa_validity(
 
     Parameters
     ----------
-    x_class : npt.NDArray
+    x_class : npt.NDArray[np.float64]
         Array containing the class samples. Expected shape: (n_samples, n_features).
-    vector_x : npt.NDArray
+    vector_x : npt.NDArray[np.float64]
         Array representing the detector. Expected shape: (n_features,).
     threshold : float
         threshold.

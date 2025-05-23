@@ -19,10 +19,17 @@ def slice_index_list_by_class(classes: Union[npt.NDArray, list], y: npt.NDArray)
     -------
     position_samples : dict
         A dictionary with the list of array positions(``y``), with the classes as key.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> labels = ['a', 'b', 'c']
+    >>> y = np.array(['a', 'c', 'b', 'a', 'c', 'b'])
+    >>> slice_index_list_by_class(labels, y)
+    {'a': [0, 3], 1: [2, 5], 2: [1, 4]}
     """
     position_samples = {}
     for _class_ in classes:
         # Gets the sample positions by class from y.
-        position_samples[_class_] = list(np.nonzero(y == _class_)[0])
-
+        position_samples[_class_] = np.flatnonzero(y == _class_).tolist()
     return position_samples
