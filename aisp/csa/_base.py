@@ -27,7 +27,7 @@ class BaseAIRS(BaseClassifier, ABC):
             ] = "continuous-features"
     ):
         """
-        Verify the fit function parameters and throw exceptions if the verification is not successful.
+        Verify the fit parameters and throw exceptions if the verification is not successful.
 
         Parameters
         ----------
@@ -76,7 +76,7 @@ class BaseAIRS(BaseClassifier, ABC):
             ] = "continuous-features"
     ) -> None:
         """
-        Verify the predict function parameters and throw exceptions if the verification is not successful.
+        Verify the predict parameters and throw exceptions if the verification is not successful.
 
         Parameters
         ----------

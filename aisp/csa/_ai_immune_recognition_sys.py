@@ -61,7 +61,7 @@ class _ARB(Cell):
         n_resource : float
             The remaining amount of resources after consumption.
         """
-        consumption = (self.stimulation * amplified)
+        consumption = self.stimulation * amplified
         n_resource -= consumption
         if n_resource < 0:
             return 0
@@ -404,7 +404,7 @@ class AIRS(BaseAIRS):
 
             # pick a random cell for mutations.
             random_index = random.randint(0, len(arb_list) - 1)
-            clone_ARB = arb_list[random_index].hyper_clonal_mutate(
+            clone_arb = arb_list[random_index].hyper_clonal_mutate(
                 int(self.rate_clonal * c_match_stimulation),
                 self.algorithm
             )
@@ -414,7 +414,7 @@ class AIRS(BaseAIRS):
                     vector=clone,
                     stimulation=self._affinity(clone, ai)
                 )
-                for clone in clone_ARB
+                for clone in clone_arb
             ]
 
         return max(arb_list, key=attrgetter("stimulation"))
