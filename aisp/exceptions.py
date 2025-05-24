@@ -24,10 +24,10 @@ class FeatureDimensionMismatch(Exception):
     """
 
     def __init__(
-            self,
-            expected: int,
-            received: int,
-            variable_name: str = None
+        self,
+        expected: int,
+        received: int,
+        variable_name: str = None
     ):
         parts = []
         if variable_name:

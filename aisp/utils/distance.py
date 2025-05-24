@@ -31,68 +31,68 @@ def hamming(u: npt.NDArray[np.bool_], v: npt.NDArray[np.bool_]) -> float64:
     """
     n = len(u)
     if n == 0:
-        return 0.0
+        return float64(0.0)
 
     return np.float64(np.sum(u != v) / n)
 
 
 @njit()
-def euclidean(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]) -> np.float64:
+def euclidean(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]) -> float64:
     """Calculate the normalized Euclidean distance between two points.
     
     √( (x₁ – x₂)² + (y₁ – y₂)² + ... + (yn – yn)²)
 
     Parameters
     ----------
-    u : npt.NDArray[np.float64]
+    u : npt.NDArray[float64]
         Coordinates of the first point.
-    v : npt.NDArray[np.float64]
+    v : npt.NDArray[float64]
         Coordinates of the second point.
 
     Returns
     -------
-    distance : np.float64
+    distance : float64
         Distance : float``) between the two points.
     """
-    return np.float64(np.linalg.norm(u - v))
+    return float64(np.linalg.norm(u - v))
 
 
 @njit()
-def cityblock(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]) -> np.float64:
+def cityblock(u: npt.NDArray[float64], v: npt.NDArray[float64]) -> float64:
     """Calculate the normalized Manhattan distance between two points.
     
     (|x₁ – x₂| + |y₁ – y₂| + ... + |yn – yn|) / n
 
     Parameters
     ----------
-    u : npt.NDArray[np.float64]
+    u : npt.NDArray[float64]
         Coordinates of the first point.
-    v : npt.NDArray[np.float64]
+    v : npt.NDArray[float64]
         Coordinates of the second point.
 
     Returns
     -------
-    distance : np.float64
+    distance : float64
         Distance (``float``) between the two points.
     """
     n = len(u)
     if n == 0:
-        return -1.0
+        return float64(-1.0)
 
-    return np.sum(np.abs(u - v)) / n
+    return float64(np.sum(np.abs(u - v)) / n)
 
 
 @njit()
-def minkowski(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64], p: float = 2.0) -> np.float64:
+def minkowski(u: npt.NDArray[float64], v: npt.NDArray[float64], p: float = 2.0) -> float64:
     """Calculate the normalized Minkowski distance between two points.
     
     (( |X₁ – Y₁|p + |X₂ – Y₂|p + ... + |Xn – Yn|p) ¹/ₚ.) / n
 
     Parameters
     ----------
-    u : npt.NDArray[np.float64]
+    u : npt.NDArray[float64]
         Coordinates of the first point.
-    v : npt.NDArray[np.float64]
+    v : npt.NDArray[float64]
         Coordinates of the second point.
     p : float
         The p parameter defines the type of distance to be calculated:
@@ -103,14 +103,14 @@ def minkowski(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64], p: float =
 
     Returns
     -------
-    np.float64
+    float64
         Distance (``float``) between the two points.
     """
     n = len(u)
     if n == 0:
-        return -1.0
+        return float64(-1.0)
 
-    return (np.sum(np.abs(u - v) ** p) ** (1 / p)) / n
+    return float64((np.sum(np.abs(u - v) ** p) ** (1 / p)) / n)
 
 
 @njit(
@@ -121,18 +121,18 @@ def minkowski(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64], p: float =
     cache=True
 )
 def compute_metric_distance(
-    u: npt.NDArray[np.float64],
-    v: npt.NDArray[np.float64],
+    u: npt.NDArray[float64],
+    v: npt.NDArray[float64],
     metric: int,
-    p: np.float64 = 2.0
-) -> np.float64:
+    p: float64 = 2.0
+) -> float64:
     """Calculate the distance between two points by the chosen metric.
 
     Parameters
     ----------
-    u : npt.NDArray[np.float64]
+    u : npt.NDArray[float64]
         Coordinates of the first point.
-    v : npt.NDArray[np.float64]
+    v : npt.NDArray[float64]
         Coordinates of the second point.
     metric : int
         Distance metric to be used. Available options:  [0 (Euclidean), 1 (Manhattan), 
@@ -142,7 +142,7 @@ def compute_metric_distance(
 
     Returns
     -------
-    np.float64
+    float64
         Distance (``float``) between the two points with the selected metric.
     """
     if metric == MANHATTAN:
@@ -161,8 +161,8 @@ def compute_metric_distance(
     cache=True
 )
 def min_distance_to_class_vectors(
-    x_class: npt.NDArray[np.float64],
-    vector_x: npt.NDArray[np.float64],
+    x_class: npt.NDArray[float64],
+    vector_x: npt.NDArray[float64],
     metric: int,
     p: float = 2.0
 ) -> float:
@@ -170,10 +170,10 @@ def min_distance_to_class_vectors(
 
     Parameters
     ----------
-    x_class : npt.NDArray[np.float64]
+    x_class : npt.NDArray[float64]
         Array containing the class vectors to be compared with the input vector. Expected shape:
         (n_samples, n_features).
-    vector_x : npt.NDArray[np.float64]
+    vector_x : npt.NDArray[float64]
         Vector to be compared with the class vectors. Expected shape: (n_features,).
     metric : int
         Distance metric to be used. Available options: ["hamming", "cityblock", "minkowski",

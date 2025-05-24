@@ -4,6 +4,7 @@ NSAs simulate the maturation process of T-cells in the immune system, where thes
 distinguish between self and non-self. Only T-cells capable of recognizing non-self elements are 
 preserved.
 """
+
 from ._negative_selection import BNSA, RNSA
 
 __author__ = "João Paulo da Silva Barros"
