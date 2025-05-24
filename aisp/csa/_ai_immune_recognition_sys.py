@@ -136,6 +136,8 @@ class AIRS(BaseAIRS):
     This implementation is inspired by AIRS2, a simplified version of the original AIRS algorithm.
     Introducing adaptations to handle continuous and binary datasets.
 
+    Based on Algorithm 16.5 from Brabazon et al. [1]_.
+
     Related and noteworthy works: access here [2]_.
 
     References
@@ -372,7 +374,7 @@ class AIRS(BaseAIRS):
         ----------
         ai : npt.NDArray
             The current antigen.
-        c_match_stimulation : _Cell
+        c_match_stimulation : float
             The highest stimulation relative to aᵢ
         arb_list : List[_ARB]
             ARB set.
@@ -381,14 +383,24 @@ class AIRS(BaseAIRS):
         -------
         _ARB
             The cell with the highest ARB stimulation
+
+        Notes
+        -----
+        Based on Algorithm 16.6 from Brabazon et al. [1]_.
+
+        References
+        ----------
+        .. [1] Brabazon, A., O’Neill, M., & McGarraghy, S. (2015).
+                Natural Computing Algorithms. Natural Computing Series.
+                Springer Berlin Heidelberg. https://doi.org/10.1007/978-3-662-43631-8
         """
         iters = 0
         while True:
             iters += 1
             arb_list.sort(key=attrgetter("stimulation"), reverse=True)
             resource = self.n_resources
-            for abr in arb_list:
-                resource = abr.consume_resource(
+            for arb in arb_list:
+                resource = arb.consume_resource(
                     n_resource=resource, amplified=self.resource_amplified
                 )
                 if resource == 0:
@@ -486,6 +498,9 @@ class AIRS(BaseAIRS):
         """
         n = antigens_list.shape[0]
         n_cells = int(n * self.rate_mc_init)
+
+        if n == 0 or n_cells == 0:
+            return []
 
         permutation = np.random.permutation(n)
         selected = antigens_list[permutation[:n_cells]]
