@@ -22,7 +22,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install pylint pytest build
+        pip install pylint pytest build pydocstyle
 
     - name: ✅ Run lint
       run: |
@@ -37,4 +37,6 @@ jobs:
 
     - name: 🧪 Run tests
       run: pytest -v
-    
+
+    - name: 📚 Check docstring style (numpydoc convention)
+      run:  pydocstyle aisp -v

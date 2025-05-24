@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aisp"
-version = "0.1.41"
+version = "0.1.42"
 authors = [
   { name="João Paulo da Silva Barros", email="jpsilvabarr@gmail.com" },
 ]
@@ -74,3 +74,7 @@ disable = [
     "R0917"
 ]
 max-args = 15
+
+[tool.pydocstyle]
+convention = "numpy"
+add-ignore = ["D104", "D107"]

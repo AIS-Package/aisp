@@ -6,24 +6,30 @@ import numpy.typing as npt
 
 
 def slice_index_list_by_class(classes: Union[npt.NDArray, list], y: npt.NDArray) -> dict:
-    """
-    The function ``slice_index_list_by_class(...)``, separates the indices of the lines according
-    to the output class, to loop through the sample array, only in positions where the output is the
-    class being trained.
+    """Separate indices of samples by class for targeted iteration.
 
     Parameters
     ----------
-    * classes (``list or npt.NDArray``): list with unique classes.
-    * y (``npt.NDArray``): Receives a ``y``[``N sample``] array with the output classes of the 
-        ``X`` sample array.
+    classes: list or npt.NDArray
+        list with unique classes.
+    y : npt.NDArray
+        Receives a ``y``[``N sample``] array with the output classes of the ``X`` sample array.
 
-    returns
-    ----------
-    * dict: A dictionary with the list of array positions(``y``), with the classes as key.
+    Returns
+    -------
+    position_samples : dict
+        A dictionary with the list of array positions(``y``), with the classes as key.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> labels = ['a', 'b', 'c']
+    >>> y = np.array(['a', 'c', 'b', 'a', 'c', 'b'])
+    >>> slice_index_list_by_class(labels, y)
+    {'a': [0, 3], 1: [2, 5], 2: [1, 4]}
     """
     position_samples = {}
     for _class_ in classes:
         # Gets the sample positions by class from y.
-        position_samples[_class_] = list(np.nonzero(y == _class_)[0])
-
+        position_samples[_class_] = np.flatnonzero(y == _class_).tolist()
     return position_samples

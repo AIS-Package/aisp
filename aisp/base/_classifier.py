@@ -10,9 +10,10 @@ from ..utils.metrics import accuracy_score
 
 
 class BaseClassifier(ABC):
-    """
-    Base class for classification algorithms, defining the abstract methods ``fit`` and ``predict``,
-    and implementing the ``get_params`` method.
+    """Base class for classification algorithms.
+
+    Defines the abstract methods ``fit`` and ``predict``, and implements the ``score``,
+    ``get_params`` method.
     """
 
     classes: Optional[Union[npt.NDArray, list]] = None
@@ -20,38 +21,41 @@ class BaseClassifier(ABC):
     @abstractmethod
     def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True):
         """
-        Function to train the model using the input data ``X`` and corresponding labels ``y``.
+        Train the model using the input data X and corresponding labels y.
 
         This abstract method is implemented by the class that inherits it.
 
         Parameters
         ----------
-        * X (``npt.NDArray``): Input data used for training the model, previously normalized to the
-            range [0, 1].
-        * y (``npt.NDArray``): Corresponding labels or target values for the input data.
-        * verbose (``bool``, optional): Flag to enable or disable detailed output during training.
-            Default is ``True``.
+        X : npt.NDArray
+            Input data used for training the model.
+        y : npt.NDArray
+            Corresponding labels or target values for the input data.
+        verbose : bool, default=True
+            Flag to enable or disable detailed output during training.
 
         Returns
-        ----------
-        * self: Returns the instance of the class that implements this method.
+        -------
+        self : BaseClassifier
+            Returns the instance of the class that implements this method.
         """
 
     @abstractmethod
     def predict(self, X) -> Optional[npt.NDArray]:
         """
-        Function to generate predictions based on the input data ``X``.
+        Generate predictions based on the input data X.
 
         This abstract method is implemented by the class that inherits it.
 
         Parameters
         ----------
-        * X (``npt.NDArray``): Input data for which predictions will be generated.
+        X : npt.NDArray
+            Input data for which predictions will be generated.
 
         Returns
-        ----------
-        * Predictions (``Optional[npt.NDArray]``): Predicted values for each input sample, or
-            ``None`` if the prediction fails.
+        -------
+        Predictions : Optional[npt.NDArray]
+            Predicted values for each input sample, or ``None`` if the prediction fails.
         """
 
     def score(self, X: npt.NDArray, y: list) -> float:
@@ -59,21 +63,22 @@ class BaseClassifier(ABC):
         Score function calculates forecast accuracy.
 
         Details
-        ----------
+        -------
         This function performs the prediction of X and checks how many elements are equal
         between vector y and y_predicted. This function was added for compatibility with some
         scikit-learn functions.
 
         Parameters
         ----------
-        * X (``np.ndarray``):
+        X : np.ndarray
             Feature set with shape (n_samples, n_features).
-        * y (``np.ndarray``):
+        y : np.ndarray
             True values with shape (n_samples,).
 
         Returns
-        ----------
-        * accuracy (``float``): The accuracy of the model.
+        -------
+        accuracy : float
+            The accuracy of the model.
         """
         if len(y) == 0:
             return 0
@@ -81,27 +86,28 @@ class BaseClassifier(ABC):
         return accuracy_score(y, y_pred)
 
     def _slice_index_list_by_class(self, y: npt.NDArray) -> dict:
-        """
-        The function ``_slice_index_list_by_class(...)``, separates the indices of the lines \
-        according to the output class, to loop through the sample array, only in positions where \
-        the output is the class being trained.
+        """Separate the indices of the lines according to the output class.
+
+        Loop through the sample array only in positions where the output matches the class
+        being trained.
 
         Parameters
         ----------
-        * y (npt.NDArray): Receives a ``y``[``N sample``] array with the output classes of the \
-            ``X`` sample array.
+        y : npt.NDArray
+            Receives a y [``N sample``] array with the output classes of the ``X`` sample array.
 
-        returns
-        ----------
-        * dict: A dictionary with the list of array positions(``y``), with the classes as key.
+        Returns
+        -------
+        dict: dict
+            A dictionary with the list of array positions(``y``), with the classes as key.
         """
         return slice_index_list_by_class(self.classes, y)
 
     def get_params(self, deep: bool = True) -> dict:  # pylint: disable=W0613
         """
-        The get_params function Returns a dictionary with the object's main parameters.
+        Return a dictionary with the object's main parameters.
 
-        This function is required to ensure compatibility with scikit-learn functions.
+        This method is required to ensure compatibility with scikit-learn functions.
         """
         return {
             key: value
