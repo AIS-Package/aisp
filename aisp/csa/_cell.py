@@ -11,13 +11,13 @@ from ..base.mutation import clone_and_mutate_continuous, clone_and_mutate_binary
 
 @dataclass(slots=True)
 class Cell:
-    """Cell
-
+    """
     Represents a memory B-cell.
 
-    Parameters:
+    Attributes
     ----------
-    * vector (``npt.NDArray``): A vector of cell features.
+    vector : npt.NDArray
+        A vector of cell features.
     """
 
     vector: np.ndarray
@@ -32,11 +32,15 @@ class Cell:
 
         Parameters
         ----------
-        * n (``int``): Number of clones to be generated from mutations of the original cell.
+        n : int
+            Number of clones to be generated from mutations of the original cell.
+        algorithm : Literal["continuous-features", "binary-features"], default="continuous-features"
+            Specifies the type of algorithm to use based on the nature of the input features
 
         Returns
-        ----------
-        * npt.NDArray: An array containing N mutated vectors from the original cell.
+        -------
+        npt.NDArray
+            An array containing N mutated vectors from the original cell.
         """
         if algorithm == "binary-features":
             return clone_and_mutate_binary(self.vector, n)

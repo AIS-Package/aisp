@@ -1,4 +1,4 @@
-"""Artificial Immune Recognition System (AIRS)"""
+"""Artificial Immune Recognition System (AIRS)."""
 
 import random
 from collections import Counter
@@ -17,107 +17,135 @@ from ..utils.distance import hamming, compute_metric_distance, get_metric_code
 from ._base import BaseAIRS
 
 
-class _ABR(Cell):
-    """ABR (Artificial recognition ball)
-    Individual from the set of recognizing cells (ABR), inherits characteristics from a B-cell,
+class _ARB(Cell):
+    """ARB (Artificial recognition ball).
+
+    Individual from the set of recognizing cells (ARB), inherits characteristics from a B-cell,
     adding resource consumption
 
     Parameters
     ----------
-    * vector (``Optional[npt.NDArray]``): A vector of cell features. Defaults to None.
-    * stimulation (``Optional[float]``): The rate at which the cell stimulates antigens.
-        Defaults to None.
+    vector : npt.NDArray
+        A vector of cell features.
+    stimulation : Optional[float], default=None
+        The rate at which the cell stimulates antigens.
     """
 
     def __init__(
         self,
-        vector: Optional[npt.NDArray] = None,
+        vector: npt.NDArray,
         stimulation: Optional[float] = None
     ) -> None:
         super().__init__(vector)
-        self.resource = 0
+        self.resource: float = 0.0
         if stimulation is not None:
             self.stimulation: float = stimulation
 
-    def set_resource(self, resource: float, amplified: float = 1) -> float:
+    def consume_resource(self, n_resource: float, amplified: float = 1) -> float:
         """
-        Updates the amount of resources available for an ABR after consumption.
+        Update the amount of resources available for an ARB after consumption.
 
         This function consumes the resources and returns the remaining amount of resources after
         consumption.
 
         Parameters
         ----------
-        * resource (``float``): Initial amount of resources.
-        * amplified (``float``): Amplifier for the resource consumption by the cell. It is
-            multiplied by the cell's stimulus. The default value is 1.
+        n_resource : float
+            Amount of resources.
+        amplified : float
+            Amplifier for the resource consumption by the cell. It is multiplied by the cell's
+            stimulus. The default value is 1.
 
         Returns
-        ----------
-        * (``float``): The remaining amount of resources after consumption.
+        -------
+        n_resource : float
+            The remaining amount of resources after consumption.
         """
-        aux_resource = resource - (self.stimulation * amplified)
-        if aux_resource < 0:
-            self.resource = resource
+        consumption = (self.stimulation * amplified)
+        n_resource -= consumption
+        if n_resource < 0:
             return 0
 
-        self.resource = aux_resource
-        return aux_resource
+        self.resource = consumption
+        return n_resource
 
     def to_cell(self) -> Cell:
-        """Converte este _ABR em um objeto Cell puro."""
+        """Convert this _ARB into a pure Cell object."""
         return Cell(self.vector)
 
 
 class AIRS(BaseAIRS):
-    """Artificial Immune Recognition System (AIRS)
+    """Artificial Immune Recognition System (AIRS).
 
-    The AIRS is a classification algorithm inspired by the clonal selection process. The \
-    version implemented in this class is inspired by its simplified version, AIRS2, described in \
-    [Brabazon, O'Neill, and McGarraghy (2015)](https://doi.org/10.1007/978-3-662-43631-8). \
-    In this class, there is an adaptation for real-valued data and a secondary option for binary \
-    features.
+    The Artificial Immune Recognition System (AIRS) is a classification algorithm inspired by the
+    clonal selection process of the biological immune system. This implementation is based on the
+    simplified AIRS2 version described in [1]_. The algorithm has been adapted to support both
+    real-valued (continuous) and binary feature datasets.
 
     Parameters
     ----------
-    * n_resources (``float``): Total amount of available resources. Defaults to 10.
-    * rate_clonal (``float``): Maximum number of possible clones of a class. This \
-        quantity is multiplied by (cell stimulus * rate_hypermutation) to define the number
-        of clones. Defaults to 10.
-    * rate_mc_init (``float``): Percentage of samples used to initialize memory cells.
-    * rate_hypermutation (``float``): The rate of mutated clones derived from rate_clonal as a
-        scalar factor. Defaults to 0.75.
-    * affinity_threshold_scalar (``float``): Normalized affinity threshold. Defaults to 0.75.
-    * k (``int``): The number of K nearest neighbors that will be used to choose a label \
-        in the prediction. Defaults to 10.
-    * max_iters (``int``): Maximum number of interactions in the refinement process of \
-        the ABR set exposed to aᵢ. Defaults to 100.
-    * resource_amplified (``float``): Resource consumption amplifier is multiplied with \
-        the incentive to subtract resources. Defaults to 1.0 without amplification.
-    * metric (Literal["manhattan", "minkowski", "euclidean"]): Way to calculate the \
-        distance between the detector and the sample: \
+    n_resources : float, default=10
+            Total amount of available resources.
+    rate_clonal : float, default=10
+        Maximum number of possible clones of a class. This quantity is multiplied by (
+        cell_stimulus * rate_hypermutation) to define the number of clones.
+    rate_mc_init : float, default=0.2
+            Percentage of samples used to initialize memory cells.
+    rate_hypermutation : float, default=0.75
+            The rate of mutated clones derived from rate_clonal as a scalar factor.
+    affinity_threshold_scalar : float, default=0.75
+            Normalized affinity threshold.
+    k : int, default=3
+        The number of K nearest neighbors that will be used to choose a label in the prediction.
+    max_iters : int, default=100
+        Maximum number of interactions in the refinement process of the ARB set exposed to aᵢ.
+    resource_amplified : float, default=1.0
+        Resource consumption amplifier is multiplied with the incentive to subtract resources.
+        Defaults to 1.0 without amplification.
+    metric : Literal["manhattan", "minkowski", "euclidean"], default="euclidean"
+        Way to calculate the distance between the detector and the sample:
 
-        * ``'Euclidean'`` ➜ The calculation of the distance is given by the expression: \
-        √( (x₁ – x₂)² + (y₁ – y₂)² + ... + (yn – yn)²).
-        * ``'minkowski'`` ➜ The calculation of the distance is given by the expression: \
-        ( |X₁ – Y₁|p + |X₂ – Y₂|p + ... + |Xn – Yn|p) ¹/ₚ.
-        * ``'manhattan'`` ➜ The calculation of the distance is given by the expression: \
-        ( |x₁ – x₂| + |y₁ – y₂| + ... + |yn – yn|). \
-        Defaults to "Euclidean".
+        * ``'Euclidean'`` ➜ The calculation of the distance is given by the expression:
+            √( (x₁ – x₂)² + (y₁ – y₂)² + ... + (yn – yn)²).
 
-    * algorithm (Literal["continuous-features", "binary-features"]): [description]. \
-        Defaults to "continuous-features".
-    * seed (int): Seed for the random generation of detector values. Defaults to None.
+        * ``'minkowski'`` ➜ The calculation of the distance is given by the expression:
+            ( |X₁ – Y₁|p + |X₂ – Y₂|p + ... + |Xn – Yn|p) ¹/ₚ.
 
-    - ``**kwargs``:
-        - p (``float``): This parameter stores the value of ``p`` used in the Minkowski \
-        distance. The default is ``2``, which represents normalized Euclidean distance.\
-        Different values of p lead to different variants of the [Minkowski Distance][1].
+        * ``'manhattan'`` ➜ The calculation of the distance is given by the expression:
+            ( |x₁ – x₂| + |y₁ – y₂| + ... + |yn – yn|).
+
+    algorithm : Literal["continuous-features", "binary-features"], default="continuous-features"
+        Specifies the type of algorithm to use based on the nature of the input features:
+
+        * ``continuous-features``: selects an algorithm designed for continuous data, which should
+            be normalized within the range [0, 1].
+
+        * ``binary-features``: selects an algorithm specialized for handling binary variables.
+
+    seed : int
+        Seed for the random generation of detector values. Defaults to None.
+
+    **kwargs
+        p : float
+            This parameter stores the value of ``p`` used in the Minkowsks distance. The default
+            is ``2``, which represents normalized Euclidean distance.\
+            Different values of p lead to different variants of the Minkowski Distance.
 
     Notes
-    ----------
-    [1] https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.minkowski_distance.html
+    -----
+    This implementation is inspired by AIRS2, a simplified version of the original AIRS algorithm.
+    Introducing adaptations to handle continuous and binary datasets.
 
+    Related and noteworthy works: access here [2]_.
+
+    References
+    ----------
+    .. [1] Brabazon, A., O’Neill, M., & McGarraghy, S. (2015). Natural Computing Algorithms. In
+        Natural Computing Series. Springer Berlin Heidelberg.
+        https://doi.org/10.1007/978-3-662-43631-8
+
+    .. [2] AZZOUG, Aghiles. Artificial Immune Recognition System V2.
+        Available at: https://github.com/AghilesAzzoug/Artificial-Immune-System
     """
 
     def __init__(
@@ -127,7 +155,7 @@ class AIRS(BaseAIRS):
         rate_mc_init: float = 0.2,
         rate_hypermutation: float = 0.75,
         affinity_threshold_scalar: float = 0.75,
-        k: int = 10,
+        k: int = 3,
         max_iters: int = 100,
         resource_amplified: float = 1.0,
         metric: Literal["manhattan", "minkowski", "euclidean"] = "euclidean",
@@ -184,19 +212,25 @@ class AIRS(BaseAIRS):
 
     def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True):
         """
+        Fit the model to the training data using the AIRS.
+
         The function ``fit(...)``, performs the training according to ``X`` and ``y``, using the
-        method Artificial Immune Recognition System (``AIRS``).
+        method AIRS.
 
         Parameters
         ----------
-        * X (``npt.NDArray``): Training array, containing the samples and their characteristics,
+        X : npt.NDArray
+            Training array, containing the samples and their characteristics,
             [``N samples`` (rows)][``N features`` (columns)].
-        * y (``npt.NDArray``): Array of target classes of ``X`` with [``N samples`` (lines)].
-        * verbose (``bool``): Feedback on which sample aᵢ the memory cells are being generated.
+        y : npt.NDArray
+            Array of target classes of ``X`` with [``N samples`` (lines)].
+        verbose : bool
+            Feedback on which sample aᵢ the memory cells are being generated.
 
-        returns
-        ----------
-        * (``self``): Returns the instance itself.
+        Returns
+        -------
+        AIRS
+            Returns the instance itself.
         """
         progress = None
 
@@ -240,8 +274,8 @@ class AIRS(BaseAIRS):
                         match_stimulation = stimulation
                         c_match = cell
 
-                abr_list: list[_ABR] = [
-                    _ABR(
+                arb_list: list[_ARB] = [
+                    _ARB(
                         vector=c_match.vector,
                         stimulation=match_stimulation
                     )
@@ -253,14 +287,14 @@ class AIRS(BaseAIRS):
                 )
 
                 for clone in set_clones:
-                    abr_list.append(
-                        _ABR(
+                    arb_list.append(
+                        _ARB(
                             vector=clone,
                             stimulation=self._affinity(clone, ai),
                         )
                     )
 
-                c_candidate = self._refinement_abr(ai, match_stimulation, abr_list)
+                c_candidate = self._refinement_arb(ai, match_stimulation, arb_list)
 
                 if c_candidate.stimulation > match_stimulation:
                     pool_c.append(c_candidate.to_cell())
@@ -281,19 +315,22 @@ class AIRS(BaseAIRS):
 
     def predict(self, X: npt.NDArray) -> Optional[npt.NDArray]:
         """
-        Function to perform the prediction of classes based on detectors
-        created after training.
+        Predict class labels based on the memory cells created during training.
 
-        Parameters:
-        ---
-        * X (``npt.NDArray``): Array with input samples with [``N samples`` (Lines)] and
-            [``N characteristics``(Columns)]
+        This method uses the trained memory cells to perform classification of the input data
+        using the k-nearest neighbors approach.
 
-        returns:
-        ---
-        * C – (``npt.NDArray``): an ndarray of the form ``C`` [``N samples``], containing the
-            predicted classes for ``X``.
-        * ``None``: If there are no detectors for the prediction.
+        Parameters
+        ----------
+        X : npt.NDArray
+            Array with input samples with [``N samples`` (Lines)] and [``N characteristics``(
+            Columns)]
+
+        Returns
+        -------
+        C : npt.NDArray or None
+            An ndarray of the form ``C`` [``N samples``], containing the predicted classes for
+            ``X``. or ``None``: If there are no detectors for the prediction.
         """
         if self._cells_memory is None:
             return None
@@ -321,61 +358,71 @@ class AIRS(BaseAIRS):
             c.append(votes.most_common(1)[0][0])
         return np.array(c)
 
-    def _refinement_abr(
-        self, ai: npt.NDArray, c_match_stimulation: float, abr_list: List[_ABR]
-    ) -> _ABR:
+    def _refinement_arb(
+        self, ai: npt.NDArray, c_match_stimulation: float, arb_list: List[_ARB]
+    ) -> _ARB:
         """
-        Execute the refinement process for the ABR set until the average stimulation value exceeds
-        the defined threshold (``affinity_threshold_scalar``).
+        Refine the ARB set until the average stimulation exceeds the defined threshold.
+
+        This method iteratively refines the ARB set by comparing the average stimulation
+        against the `affinity_threshold_scalar`. Refinement continues through multiple iterations
+        until the threshold is met or exceeded.
 
         Parameters
         ----------
-        * c_match (``_Cell``): Cell with the highest stimulation relative to aᵢ
-        * abr_list (``List[_ABR]``): ABR set.
+        ai : npt.NDArray
+            The current antigen.
+        c_match_stimulation : _Cell
+            The highest stimulation relative to aᵢ
+        arb_list : List[_ARB]
+            ARB set.
 
         Returns
-        ----------
-        * _ABR: The cell with the highest ABR stimulation
+        -------
+        _ARB
+            The cell with the highest ARB stimulation
         """
         iters = 0
         while True:
             iters += 1
-            abr_list.sort(key=attrgetter("stimulation"), reverse=True)
+            arb_list.sort(key=attrgetter("stimulation"), reverse=True)
             resource = self.n_resources
-            for abr in abr_list:
-                resource = abr.set_resource(
-                    resource=resource, amplified=self.resource_amplified
+            for abr in arb_list:
+                resource = abr.consume_resource(
+                    n_resource=resource, amplified=self.resource_amplified
                 )
                 if resource == 0:
                     break
-            # remove cells without resources and calculate the average ABR stimulus.
-            abr_list = [cell for cell in abr_list if cell.resource > 0]
-            if not abr_list:
+            # remove cells without resources and calculate the average ARB stimulus.
+            arb_list = [cell for cell in arb_list if cell.resource > 0]
+            if not arb_list:
                 break
-            avg_stimulation = sum(item.stimulation for item in abr_list) / len(abr_list)
+            avg_stimulation = sum(item.stimulation for item in arb_list) / len(arb_list)
 
             if iters == self.max_iters or avg_stimulation > self.affinity_threshold:
                 break
 
             # pick a random cell for mutations.
-            random_index = random.randint(0, len(abr_list) - 1)
-            clone_abr = abr_list[random_index].hyper_clonal_mutate(
+            random_index = random.randint(0, len(arb_list) - 1)
+            clone_ARB = arb_list[random_index].hyper_clonal_mutate(
                 int(self.rate_clonal * c_match_stimulation),
                 self.algorithm
             )
 
-            abr_list = [
-                _ABR(
+            arb_list = [
+                _ARB(
                     vector=clone,
                     stimulation=self._affinity(clone, ai)
                 )
-                for clone in clone_abr
+                for clone in clone_ARB
             ]
 
-        return max(abr_list, key=attrgetter("stimulation"))
+        return max(arb_list, key=attrgetter("stimulation"))
 
     def _cells_affinity_threshold(self, antigens_list: npt.NDArray):
         """
+        Calculate the affinity threshold based on the average affinity between training instances.
+
         This function calculates the affinity threshold based on the average affinity between
         training instances, where aᵢ and aⱼ are a pair of antigens, and affinity
         is measured by distance (Euclidean, Manhattan, Minkowski, Hamming).
@@ -385,7 +432,8 @@ class AIRS(BaseAIRS):
 
         Parameters
         ----------
-        - antigens_list (``NDArray``): List of training antigens.
+        antigens_list : npt.NDArray
+            List of training antigens.
         """
         if self.algorithm == "binary-features":
             distances = pdist(antigens_list, metric="hamming")
@@ -399,16 +447,19 @@ class AIRS(BaseAIRS):
 
     def _affinity(self, u: npt.NDArray, v: npt.NDArray) -> float:
         """
-        Calculates the stimulus between two vectors using metrics.
+        Calculate the stimulus between two vectors using metrics.
 
         Parameters
         ----------
-        * u (``npt.NDArray``): Coordinates of the first point.
-        * v (``npt.NDArray``): Coordinates of the second point.
+        u : npt.NDArray
+            Coordinates of the first point.
+        v : npt.NDArray
+            Coordinates of the second point.
 
-        returns
-        ----------
-        * (``float``) the stimulus rate between the vectors.
+        Returns
+        -------
+        float
+            The stimulus rate between the vectors.
         """
         distance: float
         if self.algorithm == "binary-features":
@@ -421,16 +472,17 @@ class AIRS(BaseAIRS):
 
     def _init_memory_c(self, antigens_list: npt.NDArray) -> List[Cell]:
         """
-        This function initializes memory cells by randomly selecting `rate_mc_init`
-        from the list of training antigens.
+        Initialize memory cells by randomly selecting `rate_mc_init` antigens.
 
         Parameters
         ----------
-        - antigens_list (``NDArray``): List of training antigens.
+        antigens_list : npt.NDArray
+            List of training antigens.
 
         Returns
-        ----------
-        * Mc: List of initialized memories.
+        -------
+        List[Cell]
+            List of initialized memories.
         """
         n = antigens_list.shape[0]
         n_cells = int(n * self.rate_mc_init)

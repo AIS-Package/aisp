@@ -1,4 +1,4 @@
-"""airs: Artificial Immune Recognition System
+"""airs: Artificial Immune Recognition System.
 
 The functions perform utilize Numba decorators for Just-In-Time compilation
 """
@@ -10,11 +10,11 @@ from numba import njit, types
 
 @njit([(types.float64[:], types.int64)], cache=True)
 def clone_and_mutate_continuous(
-    vector: npt.NDArray,
+    vector: npt.NDArray[np.float64],
     n: int
 ) -> npt.NDArray[np.float64]:
     """
-    Generates a set of mutated clones from a cell represented by a continuous vector.
+    Generate a set of mutated clones from a cell represented by a continuous vector.
 
     This function creates `n` clones of the input vector and applies random mutations to each of
     them, simulating the process of clonal expansion in artificial immune systems. Each clone
@@ -22,14 +22,15 @@ def clone_and_mutate_continuous(
 
     Parameters
     ----------
-    * vector (``ndarray``): The original immune cell with continuous values to be cloned and
-        mutated.
-    * n (``int``): The number of mutated clones to be generated.
+    vector : npt.NDArray[np.float64]
+        The original immune cell with continuous values to be cloned and mutated.
+    n : int
+        The number of mutated clones to be generated.
 
     Returns
-    ----------
-    * ``ndarray``: An Array(n, len(vector)) containing the `n` mutated clones of the original
-        vector.
+    -------
+    clone_set : npt.NDArray
+        An Array(n, len(vector)) containing the `n` mutated clones of the original vector.
     """
     n_features = vector.shape[0]
     clone_set = np.empty((n, n_features), dtype=np.float64)
@@ -51,7 +52,7 @@ def clone_and_mutate_binary(
     n: int
 ) -> npt.NDArray[np.bool_]:
     """
-    Generates a set of mutated clones from a cell represented by a binary vector.
+    Generate a set of mutated clones from a cell represented by a binary vector.
 
     This function creates `n` clones of the input vector and applies random mutations to each of
     them, changing some bits randomly. The process simulates clonal expansion in artificial
@@ -59,13 +60,15 @@ def clone_and_mutate_binary(
 
     Parameters
     ----------
-    * vector (``ndarray``): The original immune cell with binary values to be cloned and mutated.
-    * n (``int``): The number of mutated clones to be generated.
+    vector : npt.NDArray[np.bool_]
+        The original immune cell with binary values to be cloned and mutated.
+    n : int
+        The number of mutated clones to be generated.
 
     Returns
-    ----------
-    * ``ndarray``: An Array(n, len(vector)) containing the `n` mutated clones of the original
-        vector.
+    -------
+    clone_set : npt.NDArray[np.bool_]
+        An Array(n, len(vector)) containing the `n` mutated clones of the original vector.
     """
     n_features = vector.shape[0]
     clone_set = np.empty((n, n_features), dtype=np.bool_)

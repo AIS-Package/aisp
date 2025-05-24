@@ -1,4 +1,5 @@
 """Base Class for Clonal Selection Algorithm."""
+
 from abc import ABC
 from typing import Literal
 
@@ -11,9 +12,12 @@ from ..base import BaseClassifier
 
 class BaseAIRS(BaseClassifier, ABC):
     """
-    The base class contains functions that are used by more than one class in the package, and \
+    Base class for algorithm AIRS.
+
+    The base class contains functions that are used by more than one class in the package, and
     therefore are considered essential for the overall functioning of the system.
     """
+
     @staticmethod
     def _check_and_raise_exceptions_fit(
             X: npt.NDArray = None,
@@ -23,21 +27,25 @@ class BaseAIRS(BaseClassifier, ABC):
             ] = "continuous-features"
     ):
         """
-        Function responsible for verifying fit function parameters and throwing exceptions if the \
-        verification is not successful.
+        Verify the fit function parameters and throw exceptions if the verification is not successful.
 
         Parameters
         ----------
-        * X (``npt.NDArray``): Training array, containing the samples and their characteristics, \
+        X : npt.NDArray
+            Training array, containing the samples and their characteristics,
             [``N samples`` (rows)][``N features`` (columns)].
-        * y (``npt.NDArray``): Array of target classes of ``X`` with [``N samples`` (lines)].
-        * algorithm (Literal[RNSA, BNSA], optional): Current class. Defaults to 'RNSA'.
+        y : npt.NDArray
+            Array of target classes of ``X`` with [``N samples`` (lines)].
+        algorithm : Literal["continuous-features", "binary-features"], default="continuous-features"
+            Specifies the type of algorithm to use, depending on whether the input data has
+            continuous or binary features.
 
         Raises
-        ----------
-        * TypeError: If X or y are not ndarrays or have incompatible shapes.
-        * ValueError: If _class_ is BNSA and X contains values that are not composed only of 0
-            and 1.
+        ------
+        TypeError:
+            If X or y are not ndarrays or have incompatible shapes.
+        ValueError
+            If _class_ is BNSA and X contains values that are not composed only of 0 and 1.
         """
         if not isinstance(X, np.ndarray):
             if isinstance(X, list):
@@ -68,26 +76,26 @@ class BaseAIRS(BaseClassifier, ABC):
             ] = "continuous-features"
     ) -> None:
         """
-        Function responsible for verifying predict function parameters and throwing exceptions if
-        the verification is not successful.
+        Verify the predict function parameters and throw exceptions if the verification is not successful.
 
         Parameters
         ----------
-        * X (``npt.NDArray``)
+        X : npt.NDArray
             Input array for prediction, containing the samples and their characteristics,
             [``N samples`` (rows)][``N features`` (columns)].
-        * expected (``int``)
+        expected : int, default=0
             Expected number of features per sample (columns in X).
-        * _class_ (``Literal[RNSA, BNSA], optional``)
-            Current class. Defaults to 'RNSA'.
+        algorithm : Literal["continuous-features", "binary-features"], default="continuous-features"
+            Specifies the type of algorithm to use, depending on whether the input data has
+            continuous or binary features.
 
         Raises
-        ----------
-        * TypeError
+        ------
+        TypeError
             If X is not an ndarray or list.
-        * FeatureDimensionMismatch
+        FeatureDimensionMismatch
             If the number of features in X does not match the expected number.
-        * ValueError
+        ValueError
             If _class_ is BNSA and X contains values that are not composed only of 0 and 1.
         """
         if not isinstance(X, (np.ndarray, list)):
