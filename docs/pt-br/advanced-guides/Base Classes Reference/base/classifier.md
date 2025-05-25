@@ -67,6 +67,7 @@ Implementação:
 
 - [RNSA](../../../classes/Negative%20Selection/RNSA.md#Método-fit)
 - [BNSA](../../../classes/Negative%20Selection/BNSA.md#Método-fit)
+- [AIRS](../../../classes/Clonal%20Selection%20Algorithms/AIRS.md#Método-fit)
 
 ### def predict(...)
 
@@ -80,6 +81,7 @@ Implementação:
 
 - [RNSA](../../../classes/Negative%20Selection/RNSA.md#Método-predict)
 - [BNSA](../../../classes/Negative%20Selection/BNSA.md#Método-predict)
+- [AIRS](../../../classes/Clonal%20Selection%20Algorithms/AIRS.md#Método-predict)
 
 # Classe Detector
 

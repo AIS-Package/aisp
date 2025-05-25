@@ -14,14 +14,15 @@
 
 O **AISP** é um pacote python que implementa as técnicas dos sistemas imunológicos artificiais, distribuído sob a licença GNU Lesser General Public License v3.0 (LGPLv3).
 
-O pacote teve início no ano de **2022** como um pacote de pesquisa no instituto federal do norte de minas gerais - campus salinas (**IFNMG - Salinas**).
+O pacote foi iniciado no ano de 2022, como parte de um projeto de pesquisa desenvolvido no Instituto Federal do Norte de Minas Gerais – Campus Salinas (IFNMG – Salinas).
 
 Os sistemas imunológicos artificiais (SIA) inspiram-se no sistema imunológico dos vertebrados, criando metáforas que aplicam a capacidade de reconhecer e catalogar os patógenos, entre outras características desse sistema.
 
 ### Algoritmos implementados:
 
 > - [x] [**Seleção Negativa.**](https://ais-package.github.io/docs/aisp-techniques/Negative%20Selection/)
-> - [ ] *Algoritmos de Seleção Clonal.*
+> - [x] *Algoritmos de Seleção Clonal.*
+>     * [AIRS - Artificial Immune Recognition System](https://ais-package.github.io/docs/aisp-techniques/Clonal%20Selection%20Algorithms/)
 > - [ ] *Células Dendríticas.*
 > - [ ] *Teoria da Rede Imune.*
 
@@ -39,12 +40,12 @@ O módulo requer a instalação do [python 3.10](https://www.python.org/download
 ### **Dependências:**
 <div align = center> 
 
-|    Pacotes    |     Versão    |
+|    Pacotes    |    Versão     |
 |:-------------:|:-------------:|
-|    numpy      |    ≥ 1.22.4   |
-|    scipy      |    ≥ 1.8.1    |
-|    tqdm       |    ≥ 4.64.1   |
-|    numba      |    ≥ 0.59.0   |
+|     numpy     |   ≥ 1.22.4    |
+|     scipy     |    ≥ 1.8.1    |
+|     tqdm      |   ≥ 4.64.1    |
+|     numba     |   ≥ 0.59.0    |
 
 </div>
 </section>
@@ -68,21 +69,15 @@ pip install aisp
 
 ---
 
-### Exemplo utilizando a técnica de seleção negativa (**nsa**):
+Explore os notebooks de exemplo disponíveis no repositório [AIS-Package/aisp](https://github.com/AIS-Package/aisp/tree/main/examples).
+Esses notebooks demonstram como utilizar as funcionalidades do pacote em diferentes cenários, incluindo aplicações com os algoritmos
+RNSA, BNSA e AIRS em conjuntos de dados como Iris, Geyser e Cogumelos.
 
-No exemplo presente nesse [notebook](https://github.com/AIS-Package/aisp/blob/main/examples/RNSA/example_with_randomly_generated_dataset-pt.ipynb), gerando **500** amostras aleatórias dispostas em dois grupos um para cada classe.
+Você pode executar os notebooks diretamente no seu navegador, sem necessidade de instalação local, utilizando o Binder:
 
-A seguir alguns exemplos que utiliza-se de base de dados para classificação com a ferramenta [Jupyter notebook](https://jupyter.org/).
+[![Executar no Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AIS-Package/aisp/HEAD?labpath=%2Fexamples)
 
-## **Seleção Negativa:**
-
-+ **RNSA** Aplicação das tecnica de seleção negativa para classificação utilizando a base de dados de flores da família Iris e Old Faithful Geyser:
-    + [iris_dataBase_example](https://github.com/AIS-Package/aisp/blob/main/examples/RNSA/iris_dataBase_example_pt-br.ipynb)
-    + [geyser_dataBase_example](https://github.com/AIS-Package/aisp/blob/main/examples/RNSA/geyser_dataBase_example_pt-br.ipynb)
-
-+ **BNSA** 
-    + [mushrooms_dataBase_example](https://github.com/AIS-Package/aisp/blob/main/examples/BNSA/mushrooms_dataBase_example_en.ipynb)
-
+> 💡 **Dica**: O Binder pode levar alguns minutos para carregar o ambiente, especialmente na primeira vez.
 
 ---
 

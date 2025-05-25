@@ -20,11 +20,11 @@ class BaseAIRS(BaseClassifier, ABC):
 
     @staticmethod
     def _check_and_raise_exceptions_fit(
-            X: npt.NDArray = None,
-            y: npt.NDArray = None,
-            algorithm: Literal[
-                "continuous-features", "binary-features"
-            ] = "continuous-features"
+        X: npt.NDArray = None,
+        y: npt.NDArray = None,
+        algorithm: Literal[
+            "continuous-features", "binary-features"
+        ] = "continuous-features"
     ):
         """
         Verify the fit parameters and throw exceptions if the verification is not successful.
@@ -45,7 +45,8 @@ class BaseAIRS(BaseClassifier, ABC):
         TypeError:
             If X or y are not ndarrays or have incompatible shapes.
         ValueError
-            If _class_ is BNSA and X contains values that are not composed only of 0 and 1.
+            If algorithm is binary-features and X contains values that are not composed only
+            of 0 and 1.
         """
         if not isinstance(X, np.ndarray):
             if isinstance(X, list):
@@ -69,11 +70,11 @@ class BaseAIRS(BaseClassifier, ABC):
 
     @staticmethod
     def _check_and_raise_exceptions_predict(
-            X: npt.NDArray = None,
-            expected: int = 0,
-            algorithm: Literal[
-                "continuous-features", "binary-features"
-            ] = "continuous-features"
+        X: npt.NDArray = None,
+        expected: int = 0,
+        algorithm: Literal[
+            "continuous-features", "binary-features"
+        ] = "continuous-features"
     ) -> None:
         """
         Verify the predict parameters and throw exceptions if the verification is not successful.
@@ -96,7 +97,8 @@ class BaseAIRS(BaseClassifier, ABC):
         FeatureDimensionMismatch
             If the number of features in X does not match the expected number.
         ValueError
-            If _class_ is BNSA and X contains values that are not composed only of 0 and 1.
+            If algorithm is binary-features and X contains values that are not composed only
+            of 0 and 1.
         """
         if not isinstance(X, (np.ndarray, list)):
             raise TypeError("X is not an ndarray or list")

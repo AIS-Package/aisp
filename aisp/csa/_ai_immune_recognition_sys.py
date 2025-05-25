@@ -200,9 +200,8 @@ class AIRS(BaseAIRS):
                 metric, ["manhattan", "minkowski"], "euclidean"
             )
 
-        # Obtém as variáveis do kwargs.
         self.p: np.float64 = np.float64(kwargs.get("p", 2.0))
-        # Conjunto de células de memórias
+
         self._cells_memory = None
         self.affinity_threshold = 0.0
         self.classes = None

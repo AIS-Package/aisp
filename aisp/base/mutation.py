@@ -1,6 +1,8 @@
-"""airs: Artificial Immune Recognition System.
+"""
+The functions perform utilize Numba decorators for Just-In-Time compilation.
 
-The functions perform utilize Numba decorators for Just-In-Time compilation
+Contains functions that generate sets of mutated clones from continuous or binary vectors,
+simulating the clonal expansion process in artificial immune systems.
 """
 
 import numpy as np
