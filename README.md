@@ -49,7 +49,8 @@ Artificial Immune Systems (AIS) are inspired by the vertebrate immune system, cr
 ##### Algorithms implemented:
 
 > - [x] [**Negative Selection.**](https://ais-package.github.io/docs/aisp-techniques/Negative%20Selection/)
-> - [ ] *Clonal Selection Algorithms.*
+> - [x] **Clonal Selection Algorithms.**
+>     * [AIRS - Artificial Immune Recognition System](https://ais-package.github.io/docs/aisp-techniques/Clonal%20Selection%20Algorithms/)
 > - [ ] *Dendritic Cells.*
 > - [ ] *Immune Network Theory.*
 
@@ -96,22 +97,14 @@ pip install aisp
 
 ---
 
-##### Example using the negative selection technique (**nsa**):
+Explore the example notebooks available in the [AIS-Package/aisp repository](https://github.com/AIS-Package/aisp/tree/main/examples).
+These notebooks demonstrate how to utilize the package's functionalities in various scenarios, including applications of the RNSA,
+BNSA and AIRS algorithms on datasets such as Iris, Geyser, and Mushrooms.
 
-In the example present in this [notebook](https://github.com/AIS-Package/aisp/blob/main/examples/RNSA/example_with_randomly_generated_dataset-en.ipynb), **500** random samples were generated, arranged in two groups, one for each class.
+You can run the notebooks directly in your browser without any local installation using Binder:
 
-Below are some examples that use a database for classification with the [Jupyter notebook](https://jupyter.org/) tool.
+[![Launch on Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AIS-Package/aisp/HEAD?labpath=%2Fexamples)
 
-
-##### **Negative Selection:**
-
-+ **RNSA** Application of negative selection techniques for classification using the Iris family flower database and Old Faithful Geyser:
-    + [iris_dataBase_example](https://github.com/AIS-Package/aisp/blob/main/examples/RNSA/iris_dataBase_example_en.ipynb)
-    + [geyser_dataBase_example](https://github.com/AIS-Package/aisp/blob/main/examples/RNSA/geyser_dataBase_example_en.ipynb)
-+ **BNSA** 
-    + [mushrooms_dataBase_example](https://github.com/AIS-Package/aisp/blob/main/examples/BNSA/mushrooms_dataBase_example_en.ipynb)
-
----
-
+> 💡 **Tip**: Binder may take a few minutes to load the environment, especially on the first launch.
 </section>
 </section>

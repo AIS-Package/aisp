@@ -64,6 +64,7 @@ Implementation:
 
 - [RNSA](../../../classes/Negative%20Selection/RNSA.md#function-fit)
 - [BNSA](../../../classes/Negative%20Selection/BNSA.md#function-fit)
+- [AIRS](../../../classes/Clonal%20Selection%20Algorithms/AIRS.md#function-fit)
 
 
 
@@ -79,7 +80,7 @@ Implementation:
 
 - [RNSA](../../../classes/Negative%20Selection/RNSA.md#function-predict)
 - [BNSA](../../../classes/Negative%20Selection/BNSA.md#function-predict)
-
+- [AIRS](../../../classes/Clonal%20Selection%20Algorithms/AIRS.md#function-predict)
 
 # Detector class
 
