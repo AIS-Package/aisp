@@ -18,7 +18,7 @@ class BaseAiNet(BaseClusterer, ABC):
 
     @staticmethod
     def _check_and_raise_exceptions_fit(
-        X: npt.NDArray = None,
+        X: npt.NDArray,
         feature_type: Literal[
             "continuous-features", "binary-features"
         ] = "continuous-features"
@@ -56,7 +56,7 @@ class BaseAiNet(BaseClusterer, ABC):
 
     @staticmethod
     def _check_and_raise_exceptions_predict(
-        X: npt.NDArray = None,
+        X: npt.NDArray,
         expected: int = 0,
         feature_type: Literal[
             "continuous-features", "binary-features"
