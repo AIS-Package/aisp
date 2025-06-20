@@ -190,7 +190,6 @@ class AiNet(BaseAiNet):
         Predictions : Optional[npt.NDArray]
             Predicted values for each input sample, or ``None`` if the prediction fails.
         """
-
         if self._memory_network is None:
             return None
 
@@ -211,7 +210,6 @@ class AiNet(BaseAiNet):
         npt.NDArray
             List of initialized memories.
         """
-
         return self._generate_random_antibodies(
             self.N,
             self._n_features,
@@ -319,14 +317,13 @@ class AiNet(BaseAiNet):
 
     def _diversity_introduction(self):
         """
-       Introduce diversity into the antibody population.
+        Introduce diversity into the antibody population.
 
-       Returns
-       -------
-       npt.NDArray
-           Array of new random antibodies for diversity introduction.
-       """
-
+        Returns
+        -------
+        npt.NDArray
+            Array of new random antibodies for diversity introduction.
+        """
         return self._generate_random_antibodies(
             self.n_diversity_injection,
             self._n_features,
