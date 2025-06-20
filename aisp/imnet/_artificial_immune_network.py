@@ -21,15 +21,16 @@ class AiNet(BaseAiNet):
         Number of memory cells (antibodies) in the population.
     n_clone : int, default=10
         Number of clones generated for each selected memory cell.
-    n_clonal_memory_size : int, default=5
-        Size of the clonal memory for each class.
+    top_clonal_memory_size : Optional[int], default=5
+       Number of highest-affinity antibodies selected per antigen for cloning and mutation.
+       If set to None or 0, all antibodies are cloned, following the original aiNet algorithm.
     n_diversity_injection : int, default=5
         Number of new random memory cells injected to maintain diversity.
     affinity_threshold : float, default=0.5
         Threshold for affinity (similarity) to determine cell suppression or selection.
     suppression_threshold : float, default=0.5
         Threshold for suppressing similar memory cells.
-    max_iters : int, default=10
+    max_iterations : int, default=10
         Maximum number of training iterations.
     metric : Literal["manhattan", "minkowski", "euclidean"], default="euclidean"
         Way to calculate the distance between the detector and the sample:
@@ -43,13 +44,13 @@ class AiNet(BaseAiNet):
         * ``'manhattan'`` ➜ The calculation of the distance is given by the expression:
             ( |x₁ – x₂| + |y₁ – y₂| + ... + |yn – yn|).
 
-    algorithm : {"continuous-features", "binary-features"}, default="continuous-features"
-        Specifies the type of algorithm to use based on the nature of the input features:
+    feature_type : {"continuous-features", "binary-features"}, default="continuous-features"
+        Specifies the type of feature_type to use based on the nature of the input features:
 
-        * ``continuous-features``: selects an algorithm designed for continuous data, which should
-            be normalized within the range [0, 1].
+        * ``continuous-features``: selects an feature_type designed for continuous data,
+        which should be normalized within the range [0, 1].
 
-        * ``binary-features``: selects an algorithm specialized for handling binary variables.
+        * ``binary-features``: selects an feature_type specialized for handling binary variables.
 
     seed : Optional[int]
         Seed for the random generation of detector values. Defaults to None.
@@ -64,13 +65,13 @@ class AiNet(BaseAiNet):
         self,
         N: int = 50,
         n_clone: int = 10,
-        n_clonal_memory_size: int = 5,
+        top_clonal_memory_size: int = 5,
         n_diversity_injection: int = 5,
         affinity_threshold: float = 0.5,
         suppression_threshold: float = 0.5,
-        max_iters: int = 10,
+        max_iterations: int = 10,
         metric: Literal["manhattan", "minkowski", "euclidean"] = "euclidean",
-        algorithm: Literal[
+        feature_type: Literal[
             "continuous-features", "binary-features"
         ] = "continuous-features",
         seed: Optional[int] = None,
@@ -78,8 +79,8 @@ class AiNet(BaseAiNet):
     ):
         self.N: int = sanitize_param(N, 50, lambda x: x > 0)
         self.n_clone: int = sanitize_param(n_clone, 10, lambda x: x > 0)
-        self.n_clonal_memory_size: int = sanitize_param(
-            n_clonal_memory_size, 5, lambda x: x > 0
+        self.top_clonal_memory_size: int = sanitize_param(
+            top_clonal_memory_size, 5, lambda x: x > 0
         )
         self.n_diversity_injection: int = sanitize_param(
             n_diversity_injection, 5, lambda x: x > 0
@@ -90,18 +91,18 @@ class AiNet(BaseAiNet):
         self.suppression_threshold: float = sanitize_param(
             suppression_threshold, 0.5, lambda x: x > 0
         )
-        self.max_iters: int = sanitize_param(max_iters, 100, lambda x: x > 0)
+        self.max_iterations: int = sanitize_param(max_iterations, 100, lambda x: x > 0)
         self.seed: Optional[int] = sanitize_seed(seed)
         if self.seed is not None:
             np.random.seed(self.seed)
 
-        self.algorithm: Literal["continuous-features", "binary-features"] = (
+        self.feature_type: Literal["continuous-features", "binary-features"] = (
             sanitize_param(
-                algorithm, "continuous-features", lambda x: x == "binary-features"
+                feature_type, "continuous-features", lambda x: x == "binary-features"
             )
         )
 
-        if algorithm == "binary-features":
+        if feature_type == "binary-features":
             self.metric: str = "hamming"
         else:
             self.metric: str = sanitize_choice(
@@ -128,7 +129,7 @@ class AiNet(BaseAiNet):
         X : npt.NDArray
             Input data used for training the model.
         verbose : bool, default=True
-            Flag to enable or disable detailed output during training.
+            Feedback from the progress bar showing current training interaction details.
 
         Returns
         -------
@@ -137,16 +138,16 @@ class AiNet(BaseAiNet):
         """
         progress = None
 
-        super()._check_and_raise_exceptions_fit(X, self.algorithm)
+        super()._check_and_raise_exceptions_fit(X, self.feature_type)
 
-        if self.algorithm == "binary-features":
+        if self.feature_type == "binary-features":
             X = X.astype(np.bool_)
 
         self._n_features = X.shape[1]
 
         if verbose:
             progress = tqdm(
-                total=self.max_iters,
+                total=self.max_iterations,
                 postfix="\n",
                 bar_format="{desc} ┇{bar}┇ {n}/{total} total training interactions",
             )
@@ -155,12 +156,12 @@ class AiNet(BaseAiNet):
         memory = []
 
         t: int = 1
-        while t <= self.max_iters:
+        while t <= self.max_iterations:
             clonal_memory = []
             permutations = np.random.permutation(X.shape[0])
             for antigen in X[permutations]:
                 affinities = [self._affinity(antigen, antibody) for antibody in population_p]
-                best_idxs = np.argsort(affinities)[:self.n_clonal_memory_size]
+                best_idxs = np.argsort(affinities)[:self.top_clonal_memory_size]
                 # Gera clones proporcionalmente à afinidade
                 for i in best_idxs:
                     clones = self._clone_and_mutate(
@@ -211,7 +212,7 @@ class AiNet(BaseAiNet):
             return None
 
         super()._check_and_raise_exceptions_predict(
-            X, len(self._memory_network[self.classes[0]][0]), self.algorithm
+            X, len(self._memory_network[self.classes[0]][0]), self.feature_type
         )
 
         c: list = []
@@ -231,7 +232,7 @@ class AiNet(BaseAiNet):
         return self._generate_random_antibodies(
             self.N,
             self._n_features,
-            self.algorithm
+            self.feature_type
         )
 
     def _diversity_introduction(self):
@@ -247,7 +248,7 @@ class AiNet(BaseAiNet):
         return self._generate_random_antibodies(
             self.n_diversity_injection,
             self._n_features,
-            self.algorithm
+            self.feature_type
         )
 
     def _affinity(self, u: npt.NDArray, v: npt.NDArray) -> float:
@@ -266,12 +267,12 @@ class AiNet(BaseAiNet):
         float
             The stimulus rate between the vectors.
         """
-        if self.algorithm == "binary-features":
+        if self.feature_type == "binary-features":
             return hamming(u, v)
         return compute_metric_distance(u, v, get_metric_code(self.metric), self.p)
 
     def _clone_and_mutate(self, antibody: npt.NDArray, n_clone: int):
-        if self.algorithm == "continuous-features":
+        if self.feature_type == "continuous-features":
             return clone_and_mutate_continuous(antibody, n_clone)
 
         return clone_and_mutate_binary(antibody, n_clone)
