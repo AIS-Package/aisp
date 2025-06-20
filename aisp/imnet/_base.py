@@ -12,9 +12,7 @@ from ..exceptions import FeatureDimensionMismatch
 
 
 class BaseAiNet(BaseClusterer, ABC):
-    """
-    Abstract base class for AiNet-based clustering algorithms.
-    """
+    """Abstract base class for AiNet-based clustering algorithms."""
 
     @staticmethod
     def _check_and_raise_exceptions_fit(
@@ -114,7 +112,7 @@ class BaseAiNet(BaseClusterer, ABC):
         ] = "continuous-features"
     ) -> npt.NDArray:
         """
-        Generates a random antibody population.
+        Generate a random antibody population.
 
         Parameters
         ----------
