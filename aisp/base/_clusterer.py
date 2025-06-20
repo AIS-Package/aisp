@@ -1,6 +1,7 @@
 """Base class for clustering algorithms."""
 
 from abc import ABC, abstractmethod
+from typing import Optional
 
 import numpy.typing as npt
 
@@ -34,7 +35,7 @@ class BaseClusterer(ABC):
         """
 
     @abstractmethod
-    def predict(self, X: npt.NDArray):
+    def predict(self, X: npt.NDArray) -> Optional[npt.NDArray]:
         """
         Generate predictions based on the input data X.
 

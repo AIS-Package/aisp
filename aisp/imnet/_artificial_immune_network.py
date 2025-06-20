@@ -153,39 +153,22 @@ class AiNet(BaseAiNet):
             )
 
         population_p = self._init_population_antibodies()
-        memory = []
 
         t: int = 1
         while t <= self.max_iterations:
-            clonal_memory = []
+            pool_memory = []
             permutations = np.random.permutation(X.shape[0])
             for antigen in X[permutations]:
-                affinities = [self._affinity(antigen, antibody) for antibody in population_p]
-                best_idxs = np.argsort(affinities)[:self.top_clonal_memory_size]
-                # Gera clones proporcionalmente à afinidade
-                for i in best_idxs:
-                    clones = self._clone_and_mutate(
-                        population_p[i],
-                        int(self.n_clone * (1.0 / (1 + affinities[i])))
-                    )
-                    clonal_memory.extend(clones)
-
-                # Supressão clonal
-                clonal_memory = [
-                    clone for clone in clonal_memory
-                    if self.suppression_threshold < self._affinity(
-                        clone, antigen
-                    ) < self.affinity_threshold
-                ]
-                memory.extend(clonal_memory)
-
-            print(clonal_memory)
-            memory.extend(self._diversity_introduction())
-            population_p = np.array(memory)
+                clonal_memory = self._select_and_clone_population(antigen, population_p)
+                pool_memory.extend(self._clonal_suppression(antigen, clonal_memory))
+            pool_memory = self._memory_suppression(pool_memory)
             t += 1
+            if t == self.max_iterations:
+                pool_memory.extend(self._diversity_introduction())
+            population_p = np.asarray(pool_memory)
             if verbose:
                 progress.update(1)
-        self._memory_network = memory
+        self._memory_network = population_p
         if verbose:
             progress.set_description(
                 f"\033[92m✔ Set of memory antibodies for classes "
@@ -235,6 +218,105 @@ class AiNet(BaseAiNet):
             self.feature_type
         )
 
+    def _select_and_clone_population(self, antigen: npt.NDArray, population: npt.NDArray) -> list:
+        """
+        We select the best antibodies and apply hypermutation.
+
+        Parameters
+        ----------
+        antigen : npt.NDArray
+            The antigen for which affinities will be calculated.
+        population: list
+            The list of antibodies (solutions) to be evaluated and cloned.
+
+        Returns
+        -------
+        list
+            mutated clones
+        """
+        affinities = np.asarray([self._affinity(antigen, antibody) for antibody in population])
+
+        if self.top_clonal_memory_size is not None and self.top_clonal_memory_size > 0:
+            selected_idxs = np.argsort(-affinities)[:self.top_clonal_memory_size]
+        else:
+            selected_idxs = np.arange(affinities.shape[0])
+
+        clonal_m = []
+        for i in selected_idxs:
+            clones = self._clone_and_mutate(
+                population[i],
+                int(self.n_clone * affinities[i])
+            )
+            clonal_m.extend(clones)
+
+        return clonal_m
+
+    def _clonal_suppression(self, antigen: npt.NDArray, clones: list):
+        """
+        Suppresses redundant clones based on affinity thresholds.
+
+        This function removes clones whose affinity with the antigen is lower than the defined
+        threshold (affinity_threshold) and eliminates redundant clones whose similarity with the
+        clones already selected exceeds the suppression threshold (suppression_threshold).
+
+        Parameters
+        ----------
+        antigen : npt.NDArray
+            The antigen for which affinities will be calculated.
+        clones : list
+            The list of candidate clones to be suppressed.
+
+        Returns
+        -------
+        list
+            A list of non-redundant clones after suppression.
+        """
+        suppression_affinity = [
+            clone for clone in clones
+            if self._affinity(clone, antigen) > self.affinity_threshold
+        ]
+        suppressed_clones = []
+        for candidate in suppression_affinity:
+            is_redundant = False
+            for existing in suppressed_clones:
+                if self._affinity(candidate, existing) > self.suppression_threshold:
+                    is_redundant = True
+                    break
+            if not is_redundant:
+                suppressed_clones.append(candidate)
+
+        return suppressed_clones
+
+    def _memory_suppression(self, pool_memory: list) -> list:
+        """
+        Remove redundant antibodies whose similarity exceeds the suppression threshold.
+
+        Calculate the affinity between all memory antibodies and remove redundant antibodies
+        whose similarity exceeds the suppression threshold.
+
+        Parameters
+        ----------
+        pool_memory : list
+            antibodies memory.
+
+        Returns
+        -------
+        list
+            Updated memory, without redundancies.
+        """
+        suppressed_memory = []
+
+        for antibody in pool_memory:
+            is_similar = False
+            for existing in suppressed_memory:
+                if self._affinity(antibody, existing) > self.suppression_threshold:
+                    is_similar = True
+                    break
+            if not is_similar:
+                suppressed_memory.append(antibody)
+
+        return suppressed_memory
+
     def _diversity_introduction(self):
         """
        Introduce diversity into the antibody population.
@@ -267,9 +349,14 @@ class AiNet(BaseAiNet):
         float
             The stimulus rate between the vectors.
         """
+        distance: float
         if self.feature_type == "binary-features":
-            return hamming(u, v)
-        return compute_metric_distance(u, v, get_metric_code(self.metric), self.p)
+            distance = hamming(u, v)
+        else:
+            distance = compute_metric_distance(
+                u, v, get_metric_code(self.metric), self.p
+            )
+        return 1 - (distance / (1 + distance))
 
     def _clone_and_mutate(self, antibody: npt.NDArray, n_clone: int):
         if self.feature_type == "continuous-features":
