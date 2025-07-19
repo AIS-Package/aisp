@@ -56,6 +56,14 @@ Documentation = "https://ais-package.github.io/docs/intro"
 "Source Code" = "https://github.com/AIS-Package/aisp"
 Tracker = "https://github.com/AIS-Package/aisp/issues"
 
+[project.optional-dependencies]
+dev = [
+  "build>=1.2.2.post1",
+  "ipykernel>=6.29.5",
+  "twine>=5.1.1",
+  "pytest>=8.3.5",
+]
+
 [tool.setuptools]
 packages = { find = { exclude = [
   "*test*",
