@@ -5,8 +5,10 @@ from typing import Optional
 
 import numpy.typing as npt
 
+from ._base import Base
 
-class BaseClusterer(ABC):
+
+class BaseClusterer(ABC, Base):
     """Abstract base class for clustering algorithms.
 
     This class defines the core interface for clustering models. It enforces
@@ -70,15 +72,3 @@ class BaseClusterer(ABC):
         """
         self.fit(X)
         return self.predict(X)
-
-    def get_params(self, deep: bool = True) -> dict:  # pylint: disable=W0613
-        """
-        Return a dictionary with the object's main parameters.
-
-        This method is required to ensure compatibility with scikit-learn functions.
-        """
-        return {
-            key: value
-            for key, value in self.__dict__.items()
-            if not key.startswith("_")
-        }
