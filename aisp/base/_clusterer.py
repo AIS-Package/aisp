@@ -54,7 +54,7 @@ class BaseClusterer(ABC, Base):
             Predicted values for each input sample, or ``None`` if the prediction fails.
         """
 
-    def fit_predict(self, X):
+    def fit_predict(self, X, verbose: bool = True):
         """Fit the clustering model to the data and return cluster labels.
 
         This is a convenience method that combines `fit` and `predict`
@@ -64,11 +64,13 @@ class BaseClusterer(ABC, Base):
         ----------
         X : npt.NDArray
             Input data for which predictions will be generated.
+        verbose : bool, default=True
+            Flag to enable or disable detailed output during training.
 
         Returns
         -------
         Predictions : Optional[npt.NDArray]
             Predicted values for each input sample, or ``None`` if the prediction fails.
         """
-        self.fit(X)
+        self.fit(X, verbose)
         return self.predict(X)
