@@ -79,7 +79,7 @@ class TestAIRSRealValue:
         X, y, seed = r_airs_data
         model = AIRS(seed=seed)
         model.fit(X, y, verbose=False)
-        x_invalid = np.random.rand(5, 5)
+        x_invalid = np.random.random((5, 5))
         with pytest.raises(FeatureDimensionMismatch):
             model.predict(x_invalid)
 
