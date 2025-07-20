@@ -1,9 +1,12 @@
 """Artificial Immune Network."""
-
+from collections import Counter
+from heapq import nlargest
 from typing import Optional, Literal
 
 import numpy as np
 import numpy.typing as npt
+from scipy.sparse.csgraph import minimum_spanning_tree, connected_components
+from scipy.spatial.distance import squareform, pdist
 from tqdm import tqdm
 
 from ._base import BaseAiNet
@@ -30,8 +33,13 @@ class AiNet(BaseAiNet):
         Threshold for affinity (similarity) to determine cell suppression or selection.
     suppression_threshold : float, default=0.5
         Threshold for suppressing similar memory cells.
+    mst_pruning_threshold : float, default=0.9
+        Fraction of the maximum **Minimum Spanning Tree** (MST) edge weight used as a pruning
+        threshold to disconnect clusters in the antibody network.
     max_iterations : int, default=10
         Maximum number of training iterations.
+    k : int, default=3
+        The number of K nearest neighbors that will be used to choose a label in the prediction.
     metric : Literal["manhattan", "minkowski", "euclidean"], default="euclidean"
         Way to calculate the distance between the detector and the sample:
 
@@ -69,7 +77,9 @@ class AiNet(BaseAiNet):
         n_diversity_injection: int = 5,
         affinity_threshold: float = 0.5,
         suppression_threshold: float = 0.5,
+        mst_pruning_threshold: float = 0.90,
         max_iterations: int = 10,
+        k: int = 3,
         metric: Literal["manhattan", "minkowski", "euclidean"] = "euclidean",
         feature_type: Literal[
             "continuous-features", "binary-features"
@@ -91,7 +101,11 @@ class AiNet(BaseAiNet):
         self.suppression_threshold: float = sanitize_param(
             suppression_threshold, 0.5, lambda x: x > 0
         )
+        self.mst_pruning_threshold: float = sanitize_param(
+            mst_pruning_threshold, 0.99, lambda x: x > 0
+        )
         self.max_iterations: int = sanitize_param(max_iterations, 100, lambda x: x > 0)
+        self.k: int = sanitize_param(k, 3, lambda x: x > 3)
         self.seed: Optional[int] = sanitize_seed(seed)
         if self.seed is not None:
             np.random.seed(self.seed)
@@ -113,12 +127,18 @@ class AiNet(BaseAiNet):
 
         self.classes = []
         self._memory_network: dict = {}
+        self._population_antibodies: Optional[npt.NDArray] = None
         self._n_features: int = 0
 
     @property
-    def memory_network(self):
-        """Return the set of memory antibodies."""
+    def memory_network(self) -> dict:
+        """Return the immune network representing clusters or graph structure."""
         return self._memory_network
+
+    @property
+    def population_antibodies(self) -> Optional[npt.NDArray]:
+        """Return the set of memory antibodies."""
+        return self._population_antibodies
 
     def fit(self, X: npt.NDArray, verbose: bool = True):
         """
@@ -168,12 +188,14 @@ class AiNet(BaseAiNet):
             population_p = np.asarray(pool_memory)
             if verbose:
                 progress.update(1)
-        self._memory_network = population_p
+        self._population_antibodies = population_p
+        self._separate_clusters_by_mst()
         if verbose:
             progress.set_description(
                 f"\033[92m✔ Set of memory antibodies for classes "
                 f"({', '.join(map(str, self.classes))}) successfully generated\033[0m"
             )
+
         return self
 
     def predict(self, X) -> Optional[npt.NDArray]:
@@ -199,6 +221,21 @@ class AiNet(BaseAiNet):
 
         c: list = []
 
+        all_cells_memory = [
+            (class_name, cell.vector)
+            for class_name in self.classes
+            for cell in self._memory_network[class_name]
+        ]
+
+        for line in X:
+            label_stim_list = [
+                (class_name, self._affinity(memory, line))
+                for class_name, memory in all_cells_memory
+            ]
+            # Create the list with the k nearest neighbors and select the class with the most votes
+            k_nearest = nlargest(self.k, label_stim_list, key=lambda x: x[1])
+            votes = Counter(label for label, _ in k_nearest)
+            c.append(votes.most_common(1)[0][0])
         return np.array(c)
 
     def _init_population_antibodies(self) -> npt.NDArray:
@@ -360,3 +397,31 @@ class AiNet(BaseAiNet):
             return clone_and_mutate_continuous(antibody, n_clone)
 
         return clone_and_mutate_binary(antibody, n_clone)
+
+    def _separate_clusters_by_mst(self):
+        """Clusters the antibodies using the Minimum Spanning Tree (MST).
+
+        Builds a Minimum Spanning Tree (MST) based on the distance matrix
+        between the antibodies in the population. Then, it removes the edges
+        whose weight exceeds a threshold proportional to the maximum weight
+        in the MST. Each resulting component represents a cluster.
+        """
+        if self._population_antibodies is None:
+            return
+
+        kwargs = {'p': self.p} if self.metric == 'minkowski' else {}
+        antibodies_matrix = squareform(
+            pdist(self._population_antibodies, metric=self.metric, **kwargs)
+        )
+
+        antibodies_mst = minimum_spanning_tree(csgraph=antibodies_matrix).toarray()
+        threshold = self.mst_pruning_threshold * antibodies_mst.max()
+
+        antibodies_mst[antibodies_mst >= threshold] = 0
+        n_antibodies, labels = connected_components(csgraph=antibodies_mst, directed=False)
+
+        self._memory_network = {
+            label: self._population_antibodies[labels == label]
+            for label in range(n_antibodies)
+        }
+        self.classes = self._memory_network.keys()

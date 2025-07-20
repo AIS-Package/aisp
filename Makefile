@@ -1,9 +1,17 @@
 PKG = aisp
 
-.PHONY: dev test lint docstyle check
+.PHONY: install install-dev dev test lint docstyle check
+
+# Install production dependencies
+install:
+	pip install -r requirements.txt
+
+# Install development dependencies
+install-dev:
+	pip install -r requirements-dev.txt
 
 # Installs development dependencies to set up the environment
-dev:
+dev: install-dev
 	pip install -e .[dev]
 
 # Runs tests with detailed output
