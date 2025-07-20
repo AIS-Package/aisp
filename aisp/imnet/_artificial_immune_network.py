@@ -216,13 +216,13 @@ class AiNet(BaseAiNet):
             return None
 
         super()._check_and_raise_exceptions_predict(
-            X, len(self._memory_network[self.classes[0]][0]), self.feature_type
+            X, self._n_features, self.feature_type
         )
 
         c: list = []
 
         all_cells_memory = [
-            (class_name, cell.vector)
+            (class_name, cell)
             for class_name in self.classes
             for cell in self._memory_network[class_name]
         ]
