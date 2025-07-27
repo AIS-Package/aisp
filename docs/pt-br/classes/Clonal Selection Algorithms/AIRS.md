@@ -38,12 +38,6 @@ Estudos relacionados de destaque: [2](#ref2).
     ( |x₁ – x₂| + |y₁ – y₂| + ... + |nₙ – nₙ| ).
     O padrão é "euclidean".
 
-* **algorithm** (Literal["continuous-features", "binary-features"]):
-  Especifica o tipo de algoritmo a ser usado com base na natureza das entradas:
-
-  * `continuous-features`: seleciona um algoritmo projetado para dados contínuos, que devem estar normalizados no intervalo [0, 1].
-  * `binary-features`: seleciona um algoritmo especializado em lidar com variáveis binárias.
-
 * **seed** (int): Semente para geração aleatória de valores dos detectores. O padrão é None.
 
 - `**kwargs`:

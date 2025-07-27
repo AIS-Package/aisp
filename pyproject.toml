@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aisp"
-version = "0.2.0"
+version = "0.2.1"
 authors = [
   { name="João Paulo da Silva Barros", email="jpsilvabarr@gmail.com" },
 ]
@@ -55,6 +55,14 @@ Homepage = "https://ais-package.github.io/"
 Documentation = "https://ais-package.github.io/docs/intro"
 "Source Code" = "https://github.com/AIS-Package/aisp"
 Tracker = "https://github.com/AIS-Package/aisp/issues"
+
+[project.optional-dependencies]
+dev = [
+  "build>=1.2.2.post1",
+  "ipykernel>=6.29.5",
+  "twine>=5.1.1",
+  "pytest>=8.3.5",
+]
 
 [tool.setuptools]
 packages = { find = { exclude = [

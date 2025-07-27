@@ -16,16 +16,18 @@ Parâmetros:
 Parâmetros:
 
 * n (`int`): O número de clones a serem gerados a partir de mutações da célula original.
-* algorithm (`Literal["continuous-features", "binary-features"]`): Especifica o tipo de algoritmo com base na natureza das características de entrada.
-
+* feature_type (`Literal["continuous-features", "binary-features", "ranged-features"]`): Especifica o tipo de algoritmo com base na natureza das características de entrada.
+* bounds (``np.ndarray``): Array (n_features, 2) com mínimo e máximo por dimensão.
 ```python
 def hyper_clonal_mutate(
     self,
     n: int,
-    algorithm: Literal[
-      "continuous-features",
-      "binary-features"
-    ] = "continuous-features"
+    feature_type: Literal[
+        "binary-features",
+        "continuous-features",
+        "ranged-features"
+    ],
+    bounds: Optional[npt.NDArray[np.float64]] = None
 ) -> npt.NDArray
 ```
 

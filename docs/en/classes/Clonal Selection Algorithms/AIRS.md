@@ -29,11 +29,6 @@ Related and noteworthy works: access here [2](#ref2).
     * ``'manhattan'`` ➜ The calculation of the distance is given by the expression:  
     ( |x₁ – x₂| + |y₁ – y₂| + ... + |yn – yn|).  
     Defaults to "Euclidean".
-* **algorithm** (Literal["continuous-features", "binary-features"]): 
-  Specifies the type of algorithm to use based on the nature of the input features:
-    * ``continuous-features``: selects an algorithm designed for continuous data, which should
-              be normalized within the range [0, 1].
-    * ``binary-features``: selects an algorithm specialized for handling binary variables.
 
 * **seed** (int): Seed for the random generation of detector values. Defaults to None.
 

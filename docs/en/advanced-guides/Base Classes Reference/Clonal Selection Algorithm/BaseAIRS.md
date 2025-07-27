@@ -14,11 +14,8 @@ therefore are considered essential for the overall functioning of the system.
 ```python
 @staticmethod
 def _check_and_raise_exceptions_fit(
-    X: npt.NDArray = None,
-    y: npt.NDArray = None,
-    algorithm: Literal[
-        "continuous-features", "binary-features"
-    ] = "continuous-features"
+    X: npt.NDArray,
+    y: npt.NDArray
 ):
 ```
 
@@ -26,14 +23,10 @@ def _check_and_raise_exceptions_fit(
 **Parameters**:
 * ***X*** (``npt.NDArray``): Training array, containing the samples and their characteristics, [``N samples`` (rows)][``N features`` (columns)].
 * ***y*** (``npt.NDArray``): Array of target classes of ``X`` with [``N samples`` (lines)].
-* ***algorithm*** (``Literal["continuous-features", "binary-features"], optional``): Specifies the type of algorithm to use, depending 
-on whether the input data has continuous or binary features.
 
 **Raises**
 * `TypeError`:
     If X or y are not ndarrays or have incompatible shapes.
-* `ValueError`
-    If _class_ is BNSA and X contains values that are not composed only of 0 and 1.
 ---
 
 ---
@@ -45,11 +38,9 @@ on whether the input data has continuous or binary features.
 ```python
 @staticmethod
 def _check_and_raise_exceptions_predict(
-    X: npt.NDArray = None,
+    X: npt.NDArray,
     expected: int = 0,
-    algorithm: Literal[
-        "continuous-features", "binary-features"
-    ] = "continuous-features"
+    feature_type: FeatureType = "continuous-features"
 ) -> None:
 ```
 
@@ -57,7 +48,7 @@ def _check_and_raise_exceptions_predict(
 **Parameters**:
 * ***X*** (``npt.NDArray``): Training array, containing the samples and their characteristics, [``N samples`` (rows)][``N features`` (columns)].
 * ***expected*** (``int``):  Expected number of features per sample (columns in X).
-* ***algorithm*** (``Literal["continuous-features", "binary-features"], optional``): Specifies the type of algorithm to use, depending 
+* ***feature_type*** (``Literal["continuous-features", "binary-features", "ranged-features"], optional``): Specifies the type of algorithm to use, depending 
 on whether the input data has continuous or binary features.
 
 **Raises**
