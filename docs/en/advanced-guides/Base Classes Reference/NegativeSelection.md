@@ -14,8 +14,8 @@ The ``_Base`` class contains utility functions with the ``protected`` modifier t
 ### Function _check_and_raise_exceptions_fit(...):
 ```python
 def _check_and_raise_exceptions_fit(
-    X: npt.NDArray = None,
-    y: npt.NDArray = None,
+    X: npt.NDArray,
+    y: npt.NDArray,
     _class_: Literal["RNSA", "BNSA"] = "RNSA",
 ) -> None:
 ```
@@ -35,7 +35,7 @@ Function responsible for verifying fit function parameters and throwing exceptio
 ### Function _check_and_raise_exceptions_predict(...):
 ```python
 def _check_and_raise_exceptions_predict(
-    X: npt.NDArray = None,
+    X: npt.NDArray,
     expected: int = 0,
     _class_: Literal["RNSA", "BNSA"] = "RNSA",
 ) -> None:

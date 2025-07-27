@@ -20,8 +20,8 @@ class BaseNSA(BaseClassifier, ABC):
 
     @staticmethod
     def _check_and_raise_exceptions_fit(
-        X: npt.NDArray = None,
-        y: npt.NDArray = None,
+        X: npt.NDArray,
+        y: npt.NDArray,
         _class_: Literal["RNSA", "BNSA"] = "RNSA",
     ) -> None:
         """Verify fit function parameters.
@@ -67,7 +67,7 @@ class BaseNSA(BaseClassifier, ABC):
 
     @staticmethod
     def _check_and_raise_exceptions_predict(
-        X: npt.NDArray = None,
+        X: npt.NDArray,
         expected: int = 0,
         _class_: Literal["RNSA", "BNSA"] = "RNSA",
     ) -> None:

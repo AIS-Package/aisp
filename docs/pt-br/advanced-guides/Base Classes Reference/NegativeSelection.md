@@ -16,8 +16,8 @@ precisão e realizar outras tarefas necessárias.
 
 ```python
 def _check_and_raise_exceptions_fit(
-    X: npt.NDArray = None,
-    y: npt.NDArray = None,
+    X: npt.NDArray,
+    y: npt.NDArray,
     _class_: Literal["RNSA", "BNSA"] = "RNSA",
 ) -> None:
 ```
@@ -39,7 +39,7 @@ a maturação. Verifique o valor do raio definido e considere reduzi-lo.
 
 ```python
 def _check_and_raise_exceptions_predict(
-    X: npt.NDArray = None,
+    X: npt.NDArray,
     expected: int = 0,
     _class_: Literal["RNSA", "BNSA"] = "RNSA",
 ) -> None:

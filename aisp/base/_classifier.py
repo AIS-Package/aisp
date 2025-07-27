@@ -16,10 +16,10 @@ class BaseClassifier(ABC):
     ``get_params`` method.
     """
 
-    classes: Optional[Union[npt.NDArray, list]] = None
+    classes: Union[npt.NDArray, list] = []
 
     @abstractmethod
-    def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True):
+    def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True) -> "BaseClassifier":
         """
         Train the model using the input data X and corresponding labels y.
 
@@ -83,6 +83,10 @@ class BaseClassifier(ABC):
         if len(y) == 0:
             return 0
         y_pred = self.predict(X)
+
+        if y_pred is None:
+            return 0
+
         return accuracy_score(y, y_pred)
 
     def _slice_index_list_by_class(self, y: npt.NDArray) -> dict:
