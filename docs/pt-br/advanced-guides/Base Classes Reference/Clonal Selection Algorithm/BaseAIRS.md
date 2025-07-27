@@ -13,11 +13,8 @@ Verifica os parâmetros de ajuste (*fit*) e lança exceções caso a verificaç�
 ```python
 @staticmethod
 def _check_and_raise_exceptions_fit(
-    X: npt.NDArray = None,
-    y: npt.NDArray = None,
-    algorithm: Literal[
-        "continuous-features", "binary-features"
-    ] = "continuous-features"
+    X: npt.NDArray,
+    y: npt.NDArray
 ):
 ```
 
@@ -25,14 +22,11 @@ def _check_and_raise_exceptions_fit(
 
 * ***X*** (`npt.NDArray`): Array de treinamento, contendo as amostras e suas características, com formato [`N amostras` (linhas)][`N características` (colunas)].
 * ***y*** (`npt.NDArray`): Array das classes alvo de `X` com [`N amostras` (linhas)].
-* ***algorithm*** (`Literal["continuous-features", "binary-features"], opcional`): Especifica o tipo de algoritmo a ser usado, dependendo se os dados de entrada possuem características contínuas ou binárias.
 
 **Exceções**:
 
 * `TypeError`:
   Se X ou y não forem ndarrays ou tiverem formatos incompatíveis.
-* `ValueError`:
-  Se a *classe* for BNSA e X contiver valores que não sejam compostos apenas por 0 e 1.
 
 ---
 
@@ -43,11 +37,9 @@ Verifica os parâmetros de predição e lança exceções caso a verificação n
 ```python
 @staticmethod
 def _check_and_raise_exceptions_predict(
-    X: npt.NDArray = None,
+    X: npt.NDArray,
     expected: int = 0,
-    algorithm: Literal[
-        "continuous-features", "binary-features"
-    ] = "continuous-features"
+    feature_type: FeatureType = "continuous-features"
 ) -> None:
 ```
 
@@ -55,7 +47,7 @@ def _check_and_raise_exceptions_predict(
 
 * ***X*** (`npt.NDArray`): Array de entrada, contendo as amostras e suas características, com formato [`N amostras` (linhas)][`N características` (colunas)].
 * ***expected*** (`int`): Número esperado de características por amostra (colunas de X).
-* ***algorithm*** (`Literal["continuous-features", "binary-features"], opcional`): Especifica o tipo de algoritmo a ser usado, dependendo se os dados de entrada possuem características contínuas ou binárias.
+* ***feature_type*** (`Literal["continuous-features", "binary-features", "ranged-features"], opcional`): Especifica o tipo de algoritmo a ser usado, dependendo se os dados de entrada possuem características contínuas ou binárias.
 
 **Exceções**:
 

@@ -1,5 +1,7 @@
 """Custom warnings and errors."""
 
+from typing import Optional
+
 
 class MaxDiscardsReachedError(Exception):
     """Exception thrown when the maximum number of detector discards is reached."""
@@ -27,7 +29,7 @@ class FeatureDimensionMismatch(Exception):
         self,
         expected: int,
         received: int,
-        variable_name: str = None
+        variable_name: Optional[str] = None
     ):
         parts = []
         if variable_name:
@@ -40,4 +42,18 @@ class FeatureDimensionMismatch(Exception):
             "Please ensure the input data has the correct number of features "
             "and matches the expected shape for the model."
         )
+        super().__init__(message)
+
+
+class UnsupportedTypeError(Exception):
+    """
+    Exception raised when the input vector type is not supported.
+
+    This exception is thrown when the vector data type does not match any of the supported.
+    """
+
+    def __init__(self, message=None):
+        if message is None:
+            message = ("Type is not supported. Provide a binary, normalized, or bounded "
+                       "continuous vector.")
         super().__init__(message)

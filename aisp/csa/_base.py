@@ -1,12 +1,12 @@
 """Base Class for Clonal Selection Algorithm."""
 
 from abc import ABC
-from typing import Literal
 
 import numpy as np
 import numpy.typing as npt
 
-from aisp.exceptions import FeatureDimensionMismatch
+from ..exceptions import FeatureDimensionMismatch
+from ..utils.types import FeatureType
 from ..base import BaseClassifier
 
 
@@ -20,11 +20,8 @@ class BaseAIRS(BaseClassifier, ABC):
 
     @staticmethod
     def _check_and_raise_exceptions_fit(
-        X: npt.NDArray = None,
-        y: npt.NDArray = None,
-        algorithm: Literal[
-            "continuous-features", "binary-features"
-        ] = "continuous-features"
+        X: npt.NDArray,
+        y: npt.NDArray
     ):
         """
         Verify the fit parameters and throw exceptions if the verification is not successful.
@@ -36,17 +33,11 @@ class BaseAIRS(BaseClassifier, ABC):
             [``N samples`` (rows)][``N features`` (columns)].
         y : npt.NDArray
             Array of target classes of ``X`` with [``N samples`` (lines)].
-        algorithm : Literal["continuous-features", "binary-features"], default="continuous-features"
-            Specifies the type of algorithm to use, depending on whether the input data has
-            continuous or binary features.
 
         Raises
         ------
         TypeError:
             If X or y are not ndarrays or have incompatible shapes.
-        ValueError
-            If algorithm is binary-features and X contains values that are not composed only
-            of 0 and 1.
         """
         if not isinstance(X, np.ndarray):
             if isinstance(X, list):
@@ -63,18 +54,12 @@ class BaseAIRS(BaseClassifier, ABC):
                 "X does not have the same amount of sample for the output classes in y."
             )
 
-        if algorithm == "binary-features" and not np.isin(X, [0, 1]).all():
-            raise ValueError(
-                "The array X contains values that are not composed only of 0 and 1."
-            )
 
     @staticmethod
     def _check_and_raise_exceptions_predict(
-        X: npt.NDArray = None,
+        X: npt.NDArray,
         expected: int = 0,
-        algorithm: Literal[
-            "continuous-features", "binary-features"
-        ] = "continuous-features"
+        feature_type: FeatureType = "continuous-features"
     ) -> None:
         """
         Verify the predict parameters and throw exceptions if the verification is not successful.
@@ -86,8 +71,8 @@ class BaseAIRS(BaseClassifier, ABC):
             [``N samples`` (rows)][``N features`` (columns)].
         expected : int, default=0
             Expected number of features per sample (columns in X).
-        algorithm : Literal["continuous-features", "binary-features"], default="continuous-features"
-            Specifies the type of algorithm to use, depending on whether the input data has
+        feature_type : FeatureType, default="continuous-features"
+            Specifies the type of feature_type to use, depending on whether the input data has
             continuous or binary features.
 
         Raises
@@ -97,7 +82,7 @@ class BaseAIRS(BaseClassifier, ABC):
         FeatureDimensionMismatch
             If the number of features in X does not match the expected number.
         ValueError
-            If algorithm is binary-features and X contains values that are not composed only
+            If feature_type is binary-features and X contains values that are not composed only
             of 0 and 1.
         """
         if not isinstance(X, (np.ndarray, list)):
@@ -109,7 +94,7 @@ class BaseAIRS(BaseClassifier, ABC):
                 "X"
             )
 
-        if algorithm != "binary-features":
+        if feature_type != "binary-features":
             return
 
         # Checks if matrix X contains only binary samples. Otherwise, raises an exception.

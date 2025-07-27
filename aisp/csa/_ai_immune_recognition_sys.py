@@ -4,16 +4,19 @@ import random
 from collections import Counter
 from heapq import nlargest
 from operator import attrgetter
-from typing import List, Literal, Optional, Dict
+from typing import List, Optional, Dict
 
 import numpy as np
 import numpy.typing as npt
 from scipy.spatial.distance import pdist
 from tqdm import tqdm
 
+
 from ._cell import Cell
 from ..utils.sanitizers import sanitize_param, sanitize_seed, sanitize_choice
 from ..utils.distance import hamming, compute_metric_distance, get_metric_code
+from ..utils.types import FeatureType, MetricType
+from ..utils.validation import detect_vector_data_type
 from ._base import BaseAIRS
 
 
@@ -114,20 +117,12 @@ class AIRS(BaseAIRS):
         * ``'manhattan'`` ➜ The calculation of the distance is given by the expression:
             ( |x₁ – x₂| + |y₁ – y₂| + ... + |yn – yn|).
 
-    algorithm : Literal["continuous-features", "binary-features"], default="continuous-features"
-        Specifies the type of algorithm to use based on the nature of the input features:
-
-        * ``continuous-features``: selects an algorithm designed for continuous data, which should
-            be normalized within the range [0, 1].
-
-        * ``binary-features``: selects an algorithm specialized for handling binary variables.
-
     seed : int
         Seed for the random generation of detector values. Defaults to None.
 
     **kwargs
         p : float
-            This parameter stores the value of ``p`` used in the Minkowsks distance. The default
+            This parameter stores the value of ``p`` used in the Minkowski distance. The default
             is ``2``, which represents normalized Euclidean distance.\
             Different values of p lead to different variants of the Minkowski Distance.
 
@@ -160,11 +155,8 @@ class AIRS(BaseAIRS):
         k: int = 3,
         max_iters: int = 100,
         resource_amplified: float = 1.0,
-        metric: Literal["manhattan", "minkowski", "euclidean"] = "euclidean",
-        algorithm: Literal[
-            "continuous-features", "binary-features"
-        ] = "continuous-features",
-        seed: int = None,
+        metric: MetricType = "euclidean",
+        seed: Optional[int] = None,
         **kwargs,
     ) -> None:
         self.n_resources: float = sanitize_param(n_resources, 10, lambda x: x >= 1)
@@ -183,35 +175,29 @@ class AIRS(BaseAIRS):
         )
         self.k: int = sanitize_param(k, 3, lambda x: x > 3)
         self.max_iters: int = sanitize_param(max_iters, 100, lambda x: x > 0)
-        self.seed: int = sanitize_seed(seed)
+        self.seed: Optional[int] = sanitize_seed(seed)
         if self.seed is not None:
             np.random.seed(self.seed)
 
-        self.algorithm: Literal["continuous-features", "binary-features"] = (
-            sanitize_param(
-                algorithm, "continuous-features", lambda x: x == "binary-features"
-            )
-        )
+        self._feature_type: FeatureType = "continuous-features"
 
-        if algorithm == "binary-features":
-            self.metric: str = "hamming"
-        else:
-            self.metric: str = sanitize_choice(
-                metric, ["manhattan", "minkowski"], "euclidean"
-            )
+        self.metric = sanitize_choice(
+            metric, ["manhattan", "minkowski"], "euclidean"
+        )
 
         self.p: np.float64 = np.float64(kwargs.get("p", 2.0))
 
         self._cells_memory = None
         self.affinity_threshold = 0.0
-        self.classes = None
+        self.classes = []
+        self._bounds: Optional[npt.NDArray[np.float64]] = None
 
     @property
-    def cells_memory(self) -> Dict[str, list[Cell]]:
+    def cells_memory(self) -> Optional[Dict[str, list[Cell]]]:
         """Returns the trained cells memory, organized by class."""
         return self._cells_memory
 
-    def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True):
+    def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True) -> "AIRS":
         """
         Fit the model to the training data using the AIRS.
 
@@ -235,10 +221,16 @@ class AIRS(BaseAIRS):
         """
         progress = None
 
-        super()._check_and_raise_exceptions_fit(X, y, self.algorithm)
+        self._feature_type = detect_vector_data_type(X)
 
-        if self.algorithm == "binary-features":
-            X = X.astype(np.bool_)
+        super()._check_and_raise_exceptions_fit(X, y)
+
+        match self._feature_type:
+            case "binary-features":
+                X = X.astype(np.bool_)
+                self.metric = "hamming"
+            case "ranged-features":
+                self._bounds = np.vstack([np.min(X, axis=0), np.max(X, axis=0)])
 
         self.classes = np.unique(y)
         sample_index = self._slice_index_list_by_class(y)
@@ -250,7 +242,7 @@ class AIRS(BaseAIRS):
             )
         pool_cells_classes = {}
         for _class_ in self.classes:
-            if verbose:
+            if verbose and progress is not None:
                 progress.set_description_str(
                     f"Generating the memory cells for the {_class_} class:"
                 )
@@ -267,7 +259,7 @@ class AIRS(BaseAIRS):
             for ai in x_class:
                 # Calculating the stimulation of memory cells with aᵢ and selecting the largest
                 # stimulation from the memory set.
-                c_match = None
+                c_match = pool_c[0]
                 match_stimulation = -1
                 for cell in pool_c:
                     stimulation = self._affinity(cell.vector, ai)
@@ -284,7 +276,7 @@ class AIRS(BaseAIRS):
 
                 set_clones: npt.NDArray = c_match.hyper_clonal_mutate(
                     int(self.rate_hypermutation * self.rate_clonal * match_stimulation),
-                    self.algorithm
+                    self._feature_type
                 )
 
                 for clone in set_clones:
@@ -302,11 +294,11 @@ class AIRS(BaseAIRS):
                     if self._affinity(c_candidate.vector, c_match.vector) < sufficiently_similar:
                         pool_c.remove(c_match)
 
-                if verbose:
+                if verbose and progress is not None:
                     progress.update(1)
             pool_cells_classes[_class_] = pool_c
 
-        if verbose:
+        if verbose and progress is not None:
             progress.set_description(
                 f"\033[92m✔ Set of memory cells for classes ({', '.join(map(str, self.classes))}) "
                 f"successfully generated\033[0m"
@@ -337,7 +329,7 @@ class AIRS(BaseAIRS):
             return None
 
         super()._check_and_raise_exceptions_predict(
-            X, len(self._cells_memory[self.classes[0]][0].vector), self.algorithm
+            X, len(self._cells_memory[self.classes[0]][0].vector), self._feature_type
         )
 
         c: list = []
@@ -417,7 +409,7 @@ class AIRS(BaseAIRS):
             random_index = random.randint(0, len(arb_list) - 1)
             clone_arb = arb_list[random_index].hyper_clonal_mutate(
                 int(self.rate_clonal * c_match_stimulation),
-                self.algorithm
+                self._feature_type
             )
 
             arb_list = [
@@ -446,12 +438,12 @@ class AIRS(BaseAIRS):
         antigens_list : npt.NDArray
             List of training antigens.
         """
-        if self.algorithm == "binary-features":
+        if self._feature_type == "binary-features":
             distances = pdist(antigens_list, metric="hamming")
-        elif self.metric == "minkowski":
-            distances = pdist(antigens_list, metric="minkowski", p=self.p)
         else:
-            distances = pdist(antigens_list, metric=self.metric)
+            metric_kwargs = {'p': self.p} if self.metric == 'minkowski' else {}
+            distances = pdist(antigens_list, metric=self.metric, **metric_kwargs)
+
         n = antigens_list.shape[0]
         sum_affinity = np.sum(1.0 - (distances / (1.0 + distances)))
         self.affinity_threshold = 1.0 - (sum_affinity / ((n * (n - 1)) / 2))
@@ -473,7 +465,7 @@ class AIRS(BaseAIRS):
             The stimulus rate between the vectors.
         """
         distance: float
-        if self.algorithm == "binary-features":
+        if self._feature_type == "binary-features":
             distance = hamming(u, v)
         else:
             distance = compute_metric_distance(

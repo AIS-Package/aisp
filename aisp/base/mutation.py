@@ -84,3 +84,47 @@ def clone_and_mutate_binary(
         clone_set[i] = clone
 
     return clone_set
+
+
+@njit([(types.float64[:], types.int64, types.float64[:, :])], cache=True)
+def clone_and_mutate_ranged(
+    vector: npt.NDArray[np.float64],
+    n: int,
+    bounds: npt.NDArray[np.float64]
+) -> npt.NDArray[np.float64]:
+    """
+    Generate a set of mutated clones from a cell represented by custom ranges per dimension.
+
+    This function creates `n` clones of the input vector and applies random mutations to each of
+    them, simulating the process of clonal expansion in artificial immune systems. Each clone
+    will have a random number of mutations applied in distinct positions of the original vector.
+
+    Parameters
+    ----------
+    vector : npt.NDArray[np.bool_]
+        The original immune cell with binary values to be cloned and mutated.
+    n : int
+        The number of mutated clones to be generated.
+    bounds : np.ndarray
+        Array (n_features, 2) with min and max per dimension.
+
+    Returns
+    -------
+    clone_set : npt.NDArray
+        An Array(n, len(vector)) containing the `n` mutated clones of the original vector.
+    """
+    n_features = vector.shape[0]
+    clone_set = np.empty((n, n_features), dtype=np.float64)
+
+    for i in range(n):
+        n_mutations = np.random.randint(1, n_features)
+        clone = vector.copy()
+        position_mutations = np.random.permutation(n_features)[:n_mutations]
+        for j in range(n_mutations):
+            idx = position_mutations[j]
+            min_limit = bounds[idx, 0]
+            max_limit = bounds[idx, 1]
+            clone[idx] = np.random.uniform(min_limit, max_limit)
+        clone_set[i] = clone
+
+    return clone_set
