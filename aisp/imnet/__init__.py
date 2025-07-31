@@ -8,7 +8,7 @@ AiNet
     Artificial Immune Network implementation for clustering.
 """
 
-from ._artificial_immune_network import AiNet
+from ._ai_network import AiNet
 
 __author__ = 'João Paulo da Silva Barros'
 __all__ = ['AiNet']

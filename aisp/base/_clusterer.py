@@ -17,7 +17,7 @@ class BaseClusterer(ABC, Base):
     """
 
     @abstractmethod
-    def fit(self, X: npt.NDArray, verbose: bool = True):
+    def fit(self, X: npt.NDArray, verbose: bool = True) -> "BaseClusterer":
         """
         Train the model using the input data X.
 

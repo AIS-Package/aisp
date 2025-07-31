@@ -1,7 +1,7 @@
 """Artificial Immune Network."""
 from collections import Counter
 from heapq import nlargest
-from typing import Optional, Literal
+from typing import Optional
 
 import numpy as np
 import numpy.typing as npt
@@ -13,6 +13,8 @@ from ._base import BaseAiNet
 from ..base.mutation import clone_and_mutate_binary, clone_and_mutate_continuous
 from ..utils.sanitizers import sanitize_choice, sanitize_param, sanitize_seed
 from ..utils.distance import hamming, compute_metric_distance, get_metric_code
+from ..utils.types import FeatureType, MetricType
+from ..utils.validation import detect_vector_data_type
 
 
 class AiNet(BaseAiNet):
@@ -52,14 +54,6 @@ class AiNet(BaseAiNet):
         * ``'manhattan'`` ➜ The calculation of the distance is given by the expression:
             ( |x₁ – x₂| + |y₁ – y₂| + ... + |yn – yn|).
 
-    feature_type : {"continuous-features", "binary-features"}, default="continuous-features"
-        Specifies the type of feature_type to use based on the nature of the input features:
-
-        * ``continuous-features``: selects an feature_type designed for continuous data,
-        which should be normalized within the range [0, 1].
-
-        * ``binary-features``: selects an feature_type specialized for handling binary variables.
-
     seed : Optional[int]
         Seed for the random generation of detector values. Defaults to None.
     **kwargs
@@ -80,10 +74,7 @@ class AiNet(BaseAiNet):
         mst_pruning_threshold: float = 0.90,
         max_iterations: int = 10,
         k: int = 3,
-        metric: Literal["manhattan", "minkowski", "euclidean"] = "euclidean",
-        feature_type: Literal[
-            "continuous-features", "binary-features"
-        ] = "continuous-features",
+        metric: MetricType = "euclidean",
         seed: Optional[int] = None,
         **kwargs
     ):
@@ -110,18 +101,11 @@ class AiNet(BaseAiNet):
         if self.seed is not None:
             np.random.seed(self.seed)
 
-        self.feature_type: Literal["continuous-features", "binary-features"] = (
-            sanitize_param(
-                feature_type, "continuous-features", lambda x: x == "binary-features"
-            )
-        )
+        self._feature_type: FeatureType = "continuous-features"
 
-        if feature_type == "binary-features":
-            self.metric: str = "hamming"
-        else:
-            self.metric: str = sanitize_choice(
-                metric, ["manhattan", "minkowski"], "euclidean"
-            )
+        self.metric: str = sanitize_choice(
+            metric, ["manhattan", "minkowski"], "euclidean"
+        )
 
         self.p: np.float64 = np.float64(kwargs.get("p", 2.0))
 
@@ -158,10 +142,13 @@ class AiNet(BaseAiNet):
         """
         progress = None
 
-        super()._check_and_raise_exceptions_fit(X, self.feature_type)
+        self._feature_type = detect_vector_data_type(X)
 
-        if self.feature_type == "binary-features":
+        super()._check_and_raise_exceptions_fit(X, self._feature_type)
+
+        if self._feature_type == "binary-features":
             X = X.astype(np.bool_)
+            self.metric = "hamming"
 
         self._n_features = X.shape[1]
 
@@ -186,14 +173,17 @@ class AiNet(BaseAiNet):
             if t == self.max_iterations:
                 pool_memory.extend(self._diversity_introduction())
             population_p = np.asarray(pool_memory)
-            if verbose:
+
+            if verbose and progress is not None:
                 progress.update(1)
         self._population_antibodies = population_p
         self._separate_clusters_by_mst()
-        if verbose:
+        if verbose and progress is not None:
             progress.set_description(
                 f"\033[92m✔ Set of memory antibodies for classes "
-                f"({', '.join(map(str, self.classes))}) successfully generated\033[0m"
+                f"({', '.join(map(str, self.classes))}) successfully generated | "
+                f"Clusters: {len(self.classes)} | Population of antibodies size: "
+                f"{len(self._population_antibodies)}\033[0m"
             )
 
         return self
@@ -216,7 +206,7 @@ class AiNet(BaseAiNet):
             return None
 
         super()._check_and_raise_exceptions_predict(
-            X, self._n_features, self.feature_type
+            X, self._n_features, self._feature_type
         )
 
         c: list = []
@@ -250,7 +240,7 @@ class AiNet(BaseAiNet):
         return self._generate_random_antibodies(
             self.N,
             self._n_features,
-            self.feature_type
+            self._feature_type
         )
 
     def _select_and_clone_population(self, antigen: npt.NDArray, population: npt.NDArray) -> list:
@@ -364,7 +354,7 @@ class AiNet(BaseAiNet):
         return self._generate_random_antibodies(
             self.n_diversity_injection,
             self._n_features,
-            self.feature_type
+            self._feature_type
         )
 
     def _affinity(self, u: npt.NDArray, v: npt.NDArray) -> float:
@@ -384,19 +374,38 @@ class AiNet(BaseAiNet):
             The stimulus rate between the vectors.
         """
         distance: float
-        if self.feature_type == "binary-features":
+        if self._feature_type == "binary-features":
             distance = hamming(u, v)
         else:
             distance = compute_metric_distance(
                 u, v, get_metric_code(self.metric), self.p
             )
+
         return 1 - (distance / (1 + distance))
 
-    def _clone_and_mutate(self, antibody: npt.NDArray, n_clone: int):
-        if self.feature_type == "continuous-features":
-            return clone_and_mutate_continuous(antibody, n_clone)
+    def _clone_and_mutate(self, antibody: npt.NDArray, n_clone: int) -> npt.NDArray:
+        """
+        Generate mutated clones from an antigen, based on the data type (binary or continuous).
 
-        return clone_and_mutate_binary(antibody, n_clone)
+        The number of clones generated is defined by `n_clone`, and each clone is a modified version
+        of the original `antibody` vector. The mutation method applied depends on the sample type.
+
+        Parameters
+        ----------
+        antibody : npt.NDArray
+            Original vector (antigen) from which clones will be generated.
+        n_clone : int
+            Number of clones to generate.
+
+        Returns
+        -------
+        npt.NDArray
+            Array of the form (n_clone, len(antibody)) containing the mutated clones of the
+            original vector.
+        """
+        if self._feature_type == "binary-features":
+            return clone_and_mutate_binary(antibody, n_clone)
+        return clone_and_mutate_continuous(antibody, n_clone)
 
     def _separate_clusters_by_mst(self):
         """Clusters the antibodies using the Minimum Spanning Tree (MST).
@@ -406,8 +415,8 @@ class AiNet(BaseAiNet):
         whose weight exceeds a threshold proportional to the maximum weight
         in the MST. Each resulting component represents a cluster.
         """
-        if self._population_antibodies is None:
-            return
+        if self._population_antibodies is None or len(self._population_antibodies) == 0:
+            raise ValueError("Population of antibodies is empty")
 
         kwargs = {'p': self.p} if self.metric == 'minkowski' else {}
         antibodies_matrix = squareform(
