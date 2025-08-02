@@ -1,4 +1,4 @@
-"""Artificial Immune Network."""
+"""Artificial Immune Network (AiNet)."""
 from collections import Counter
 from heapq import nlargest
 from typing import Optional
@@ -18,7 +18,14 @@ from ..utils.validation import detect_vector_data_type
 
 
 class AiNet(BaseAiNet):
-    """Artificial Immune Network.
+    """Artificial Immune Network for Compression and Clustering .
+
+    This class implements the aiNet algorithm, an artificial immune network model designed for
+    clustering and data compression tasks. The aiNet algorithm uses principles from immune
+    network theory, clonal selection, and affinity maturation to compress high-dimensional
+    datasets. [1]_
+    For clustering, the class uses SciPy’s implementation of the **Minimum Spanning Tree**
+    (MST) to remove the most distant nodes and separate the groups. [2]_
 
     Parameters
     ----------
@@ -56,11 +63,27 @@ class AiNet(BaseAiNet):
 
     seed : Optional[int]
         Seed for the random generation of detector values. Defaults to None.
+    use_mst_clustering : bool, default=True
+        If ``True``, performs clustering with **Minimum Spanning Tree** (MST). If ``False``,
+        does not perform clustering and predict returns None.
     **kwargs
         p : float
             This parameter stores the value of ``p`` used in the Minkowski distance. The default
             is ``2``, which represents normalized Euclidean distance.\
             Different values of p lead to different variants of the Minkowski Distance.
+
+    References
+    ----------
+    .. [1] de Castro, L. N., & Von Zuben, F. J. (2001).
+           *aiNet: An Artificial Immune Network for Data Analysis*.
+           Draft Chapter XII of the book *Data Mining: A Heuristic Approach*.
+           Department of Computer and Automation Engineering, University of Campinas.
+           Available at:
+             https://www.dca.fee.unicamp.br/~vonzuben/research/lnunes_dout/
+             artigos/DMHA.PDF
+    .. [2] SciPy Documentation. *Minimum Spanning Tree*.
+           https://docs.scipy.org/doc/scipy/reference/generated/
+           scipy.sparse.csgraph.minimum_spanning_tree
     """
 
     def __init__(
@@ -76,6 +99,7 @@ class AiNet(BaseAiNet):
         k: int = 3,
         metric: MetricType = "euclidean",
         seed: Optional[int] = None,
+        use_mst_clustering: bool = True,
         **kwargs
     ):
         self.N: int = sanitize_param(N, 50, lambda x: x > 0)
@@ -98,6 +122,7 @@ class AiNet(BaseAiNet):
         self.max_iterations: int = sanitize_param(max_iterations, 100, lambda x: x > 0)
         self.k: int = sanitize_param(k, 3, lambda x: x > 3)
         self.seed: Optional[int] = sanitize_seed(seed)
+        self.use_mst_clustering: bool = use_mst_clustering
         if self.seed is not None:
             np.random.seed(self.seed)
 
@@ -177,7 +202,8 @@ class AiNet(BaseAiNet):
             if verbose and progress is not None:
                 progress.update(1)
         self._population_antibodies = population_p
-        self._separate_clusters_by_mst()
+        if self.use_mst_clustering:
+            self._separate_clusters_by_mst()
         if verbose and progress is not None:
             progress.set_description(
                 f"\033[92m✔ Set of memory antibodies for classes "
@@ -202,7 +228,7 @@ class AiNet(BaseAiNet):
         Predictions : Optional[npt.NDArray]
             Predicted values for each input sample, or ``None`` if the prediction fails.
         """
-        if self._memory_network is None:
+        if not self.use_mst_clustering or self._memory_network is None:
             return None
 
         super()._check_and_raise_exceptions_predict(
