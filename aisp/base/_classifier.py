@@ -5,15 +5,15 @@ from typing import Optional, Union
 
 import numpy.typing as npt
 
+from ._base import Base
 from ..utils import slice_index_list_by_class
 from ..utils.metrics import accuracy_score
 
 
-class BaseClassifier(ABC):
+class BaseClassifier(ABC, Base):
     """Base class for classification algorithms.
 
-    Defines the abstract methods ``fit`` and ``predict``, and implements the ``score``,
-    ``get_params`` method.
+    Defines the abstract methods ``fit`` and ``predict``, and implements the ``score`` method.
     """
 
     classes: Union[npt.NDArray, list] = []
@@ -106,15 +106,3 @@ class BaseClassifier(ABC):
             A dictionary with the list of array positions(``y``), with the classes as key.
         """
         return slice_index_list_by_class(self.classes, y)
-
-    def get_params(self, deep: bool = True) -> dict:  # pylint: disable=W0613
-        """
-        Return a dictionary with the object's main parameters.
-
-        This method is required to ensure compatibility with scikit-learn functions.
-        """
-        return {
-            key: value
-            for key, value in self.__dict__.items()
-            if not key.startswith("_")
-        }
