@@ -1,13 +1,14 @@
 """Base Class for Network Theory Algorithms."""
 
 from abc import ABC
+from typing import Optional
 
 from numpy import typing as npt
 
 import numpy as np
 
 from ..base import BaseClusterer
-from ..exceptions import FeatureDimensionMismatch, UnsupportedTypeError
+from ..exceptions import FeatureDimensionMismatch
 from ..utils.types import FeatureType
 
 
@@ -16,8 +17,7 @@ class BaseAiNet(BaseClusterer, ABC):
 
     @staticmethod
     def _check_and_raise_exceptions_fit(
-        X: npt.NDArray,
-        feature_type: FeatureType = "continuous-features"
+        X: npt.NDArray
     ):
         """
         Verify the fit parameters and throw exceptions if the verification is not successful.
@@ -36,12 +36,6 @@ class BaseAiNet(BaseClusterer, ABC):
         if not isinstance(X, np.ndarray):
             if not isinstance(X, list):
                 raise TypeError("X is not an ndarray or list.")
-            X = np.array(X)
-
-        if feature_type == "ranged-features":
-            raise UnsupportedTypeError(
-                "Continuous data values must be normalized to the range [0, 1]."
-            )
 
     @staticmethod
     def _check_and_raise_exceptions_predict(
@@ -96,7 +90,8 @@ class BaseAiNet(BaseClusterer, ABC):
     def _generate_random_antibodies(
         n_samples: int,
         n_features: int,
-        feature_type: FeatureType = "continuous-features"
+        feature_type: FeatureType = "continuous-features",
+        bounds: Optional[npt.NDArray[np.float64]] = None
     ) -> npt.NDArray:
         """
         Generate a random antibody population.
@@ -107,6 +102,12 @@ class BaseAiNet(BaseClusterer, ABC):
             Number of antibodies (samples) to generate.
         n_features : int
             Number of features (dimensions) for each antibody.
+        feature_type : Literal["continuous-features", "binary-features"],
+        default="continuous-features"
+            Specifies the type of feature_type to use, depending on whether the input data has
+            continuous or binary features.
+        bounds : np.ndarray
+            Array (n_features, 2) with min and max per dimension.
 
         Returns
         -------
@@ -119,5 +120,7 @@ class BaseAiNet(BaseClusterer, ABC):
 
         if feature_type == "binary-features":
             return np.random.randint(0, 2, size=(n_samples, n_features)).astype(np.bool_)
+        if feature_type == "ranged-features" and bounds is not None:
+            return np.random.uniform(low=bounds[0], high=bounds[1], size=(n_samples, n_features))
 
         return np.random.random_sample(size=(n_samples, n_features))

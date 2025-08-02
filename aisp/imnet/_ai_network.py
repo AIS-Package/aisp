@@ -10,7 +10,8 @@ from scipy.spatial.distance import squareform, pdist
 from tqdm import tqdm
 
 from ._base import BaseAiNet
-from ..base.mutation import clone_and_mutate_binary, clone_and_mutate_continuous
+from ..base.mutation import clone_and_mutate_binary, clone_and_mutate_continuous, \
+    clone_and_mutate_ranged
 from ..utils.sanitizers import sanitize_choice, sanitize_param, sanitize_seed
 from ..utils.distance import hamming, compute_metric_distance, get_metric_code
 from ..utils.types import FeatureType, MetricType
@@ -42,7 +43,7 @@ class AiNet(BaseAiNet):
         Threshold for affinity (similarity) to determine cell suppression or selection.
     suppression_threshold : float, default=0.5
         Threshold for suppressing similar memory cells.
-    mst_pruning_threshold : float, default=0.9
+    mst_pruning_threshold : float, default=0.95
         Fraction of the maximum **Minimum Spanning Tree** (MST) edge weight used as a pruning
         threshold to disconnect clusters in the antibody network.
     max_iterations : int, default=10
@@ -94,7 +95,7 @@ class AiNet(BaseAiNet):
         n_diversity_injection: int = 5,
         affinity_threshold: float = 0.5,
         suppression_threshold: float = 0.5,
-        mst_pruning_threshold: float = 0.90,
+        mst_pruning_threshold: float = 0.95,
         max_iterations: int = 10,
         k: int = 3,
         metric: MetricType = "euclidean",
@@ -117,10 +118,10 @@ class AiNet(BaseAiNet):
             suppression_threshold, 0.5, lambda x: x > 0
         )
         self.mst_pruning_threshold: float = sanitize_param(
-            mst_pruning_threshold, 0.99, lambda x: x > 0
+            mst_pruning_threshold, 0.95, lambda x: x > 0
         )
         self.max_iterations: int = sanitize_param(max_iterations, 100, lambda x: x > 0)
-        self.k: int = sanitize_param(k, 3, lambda x: x > 3)
+        self.k: int = sanitize_param(k, 1, lambda x: x > 1)
         self.seed: Optional[int] = sanitize_seed(seed)
         self.use_mst_clustering: bool = use_mst_clustering
         if self.seed is not None:
@@ -138,6 +139,7 @@ class AiNet(BaseAiNet):
         self._memory_network: dict = {}
         self._population_antibodies: Optional[npt.NDArray] = None
         self._n_features: int = 0
+        self._bounds: Optional[npt.NDArray[np.float64]] = None
 
     @property
     def memory_network(self) -> dict:
@@ -169,11 +171,14 @@ class AiNet(BaseAiNet):
 
         self._feature_type = detect_vector_data_type(X)
 
-        super()._check_and_raise_exceptions_fit(X, self._feature_type)
+        super()._check_and_raise_exceptions_fit(X)
 
-        if self._feature_type == "binary-features":
-            X = X.astype(np.bool_)
-            self.metric = "hamming"
+        match self._feature_type:
+            case "binary-features":
+                X = X.astype(np.bool_)
+                self.metric = "hamming"
+            case "ranged-features":
+                self._bounds = np.vstack([np.min(X, axis=0), np.max(X, axis=0)])
 
         self._n_features = X.shape[1]
 
@@ -195,13 +200,14 @@ class AiNet(BaseAiNet):
                 pool_memory.extend(self._clonal_suppression(antigen, clonal_memory))
             pool_memory = self._memory_suppression(pool_memory)
             t += 1
-            if t == self.max_iterations:
+            if t < self.max_iterations:
                 pool_memory.extend(self._diversity_introduction())
             population_p = np.asarray(pool_memory)
 
             if verbose and progress is not None:
                 progress.update(1)
         self._population_antibodies = population_p
+
         if self.use_mst_clustering:
             self._separate_clusters_by_mst()
         if verbose and progress is not None:
@@ -266,7 +272,8 @@ class AiNet(BaseAiNet):
         return self._generate_random_antibodies(
             self.N,
             self._n_features,
-            self._feature_type
+            self._feature_type,
+            self._bounds
         )
 
     def _select_and_clone_population(self, antigen: npt.NDArray, population: npt.NDArray) -> list:
@@ -380,7 +387,8 @@ class AiNet(BaseAiNet):
         return self._generate_random_antibodies(
             self.n_diversity_injection,
             self._n_features,
-            self._feature_type
+            self._feature_type,
+            self._bounds
         )
 
     def _affinity(self, u: npt.NDArray, v: npt.NDArray) -> float:
@@ -431,6 +439,8 @@ class AiNet(BaseAiNet):
         """
         if self._feature_type == "binary-features":
             return clone_and_mutate_binary(antibody, n_clone)
+        if self._feature_type == "ranged-features" and self._bounds is not None:
+            return clone_and_mutate_ranged(antibody, n_clone, self._bounds)
         return clone_and_mutate_continuous(antibody, n_clone)
 
     def _separate_clusters_by_mst(self):
