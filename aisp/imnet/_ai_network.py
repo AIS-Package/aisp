@@ -153,7 +153,7 @@ class AiNet(BaseAiNet):
 
     def fit(self, X: npt.NDArray, verbose: bool = True):
         """
-        Train the model using the input data X and corresponding labels y.
+        Train the model using the input data X.
 
         Parameters
         ----------
@@ -199,13 +199,15 @@ class AiNet(BaseAiNet):
                 clonal_memory = self._select_and_clone_population(antigen, population_p)
                 pool_memory.extend(self._clonal_suppression(antigen, clonal_memory))
             pool_memory = self._memory_suppression(pool_memory)
-            t += 1
+
             if t < self.max_iterations:
                 pool_memory.extend(self._diversity_introduction())
             population_p = np.asarray(pool_memory)
 
             if verbose and progress is not None:
                 progress.update(1)
+
+            t += 1
         self._population_antibodies = population_p
 
         if self.use_mst_clustering:
