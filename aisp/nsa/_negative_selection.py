@@ -6,6 +6,7 @@ from tqdm import tqdm
 import numpy as np
 import numpy.typing as npt
 
+from ..base import set_seed_numba
 from ._ns_core import (
     check_detector_bnsa_validity,
     bnsa_class_prediction,
@@ -98,6 +99,7 @@ class RNSA(BaseNSA):
         self.seed: Optional[int] = sanitize_seed(seed)
         if self.seed is not None:
             np.random.seed(seed)
+            set_seed_numba(self.seed)
         self.k: int = sanitize_param(k, 1, lambda x: x > 1)
         self.N: int = sanitize_param(N, 100, lambda x: x >= 1)
         self.r: float = sanitize_param(r, 0.05, lambda x: x > 0)

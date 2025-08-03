@@ -11,7 +11,7 @@ import numpy.typing as npt
 from scipy.spatial.distance import pdist
 from tqdm import tqdm
 
-
+from ..base import set_seed_numba
 from ._cell import Cell
 from ..utils.sanitizers import sanitize_param, sanitize_seed, sanitize_choice
 from ..utils.distance import hamming, compute_metric_distance, get_metric_code
@@ -178,6 +178,7 @@ class AIRS(BaseAIRS):
         self.seed: Optional[int] = sanitize_seed(seed)
         if self.seed is not None:
             np.random.seed(self.seed)
+            set_seed_numba(self.seed)
 
         self._feature_type: FeatureType = "continuous-features"
 

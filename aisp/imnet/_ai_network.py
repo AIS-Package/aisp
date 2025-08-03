@@ -10,6 +10,7 @@ from scipy.spatial.distance import squareform, pdist
 from tqdm import tqdm
 
 from ._base import BaseAiNet
+from ..base import set_seed_numba
 from ..base.mutation import clone_and_mutate_binary, clone_and_mutate_continuous, \
     clone_and_mutate_ranged
 from ..utils.sanitizers import sanitize_choice, sanitize_param, sanitize_seed
@@ -43,9 +44,9 @@ class AiNet(BaseAiNet):
         Threshold for affinity (similarity) to determine cell suppression or selection.
     suppression_threshold : float, default=0.5
         Threshold for suppressing similar memory cells.
-    mst_pruning_threshold : float, default=0.95
-        Fraction of the maximum **Minimum Spanning Tree** (MST) edge weight used as a pruning
-        threshold to disconnect clusters in the antibody network.
+    mst_inconsistency_factor : float, default=2.0
+        Factor used to determine which edges in the **Minimum Spanning Tree (MST)**
+        are considered inconsistent.
     max_iterations : int, default=10
         Maximum number of training iterations.
     k : int, default=3
@@ -95,7 +96,7 @@ class AiNet(BaseAiNet):
         n_diversity_injection: int = 5,
         affinity_threshold: float = 0.5,
         suppression_threshold: float = 0.5,
-        mst_pruning_threshold: float = 0.95,
+        mst_inconsistency_factor: float = 2.0,
         max_iterations: int = 10,
         k: int = 3,
         metric: MetricType = "euclidean",
@@ -117,8 +118,8 @@ class AiNet(BaseAiNet):
         self.suppression_threshold: float = sanitize_param(
             suppression_threshold, 0.5, lambda x: x > 0
         )
-        self.mst_pruning_threshold: float = sanitize_param(
-            mst_pruning_threshold, 0.95, lambda x: x > 0
+        self.mst_inconsistency_factor: float = sanitize_param(
+            mst_inconsistency_factor, 2, lambda x: x > 0
         )
         self.max_iterations: int = sanitize_param(max_iterations, 100, lambda x: x > 0)
         self.k: int = sanitize_param(k, 1, lambda x: x > 1)
@@ -126,6 +127,7 @@ class AiNet(BaseAiNet):
         self.use_mst_clustering: bool = use_mst_clustering
         if self.seed is not None:
             np.random.seed(self.seed)
+            set_seed_numba(self.seed)
 
         self._feature_type: FeatureType = "continuous-features"
 
@@ -448,9 +450,10 @@ class AiNet(BaseAiNet):
     def _separate_clusters_by_mst(self):
         """Cluster antibodies using the Minimum Spanning Tree (MST).
 
-        Constructs an MST from the pairwise distance matrix of antibodies.
-        Edges with weights above a threshold (mst_pruning_threshold * max edge weight)
-        are removed, and each connected component forms a cluster.
+        Constructs a Minimum Spanning Tree (MST) from the pairwise distance matrix of antibodies.
+        Edges whose weights exceed the mean plus `mst_inconsistency_factor` times the standard
+        deviation of all MST edge weights are removed. Each resulting connected component
+        is then treated as a distinct cluster.
 
         Raises
         ------
@@ -473,9 +476,15 @@ class AiNet(BaseAiNet):
         )
 
         antibodies_mst = minimum_spanning_tree(csgraph=antibodies_matrix).toarray()
-        threshold = self.mst_pruning_threshold * antibodies_mst.max()
+        nonzero_edges = antibodies_mst[antibodies_mst > 0]
+        mean_weight = np.mean(nonzero_edges)
+        std_weight = np.std(nonzero_edges)
 
-        antibodies_mst[antibodies_mst >= threshold] = 0
+        thresholds = antibodies_mst > (
+            mean_weight + self.mst_inconsistency_factor * std_weight
+        )
+        antibodies_mst[thresholds] = 0
+
         n_antibodies, labels = connected_components(csgraph=antibodies_mst, directed=False)
 
         self._memory_network = {
