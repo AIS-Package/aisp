@@ -153,7 +153,7 @@ class AiNet(BaseAiNet):
 
     def fit(self, X: npt.NDArray, verbose: bool = True):
         """
-        Train the model using the input data X.
+        Train the AiNet model on input data.
 
         Parameters
         ----------
@@ -224,17 +224,17 @@ class AiNet(BaseAiNet):
 
     def predict(self, X) -> Optional[npt.NDArray]:
         """
-        Generate predictions based on the input data X.
+        Predict cluster labels for input data.
 
         Parameters
         ----------
         X : npt.NDArray
-            Input data for which predictions will be generated.
+            Data to predict.
 
         Returns
         -------
         Predictions : Optional[npt.NDArray]
-            Predicted values for each input sample, or ``None`` if the prediction fails.
+            Predicted cluster labels, or None if clustering is disabled.
         """
         if not self.use_mst_clustering or self._memory_network is None:
             return None
@@ -278,9 +278,13 @@ class AiNet(BaseAiNet):
             self._bounds
         )
 
-    def _select_and_clone_population(self, antigen: npt.NDArray, population: npt.NDArray) -> list:
+    def _select_and_clone_population(
+        self,
+        antigen: npt.NDArray,
+        population: npt.NDArray
+    ) -> list[npt.NDArray]:
         """
-        We select the best antibodies and apply hypermutation.
+        Select top antibodies by affinity and generate mutated clones.
 
         Parameters
         ----------
@@ -291,8 +295,8 @@ class AiNet(BaseAiNet):
 
         Returns
         -------
-        list
-            mutated clones
+        list[npt.NDArray]
+            List of mutated clones.
         """
         affinities = np.asarray([self._affinity(antigen, antibody) for antibody in population])
 
@@ -329,7 +333,7 @@ class AiNet(BaseAiNet):
         Returns
         -------
         list
-            A list of non-redundant clones after suppression.
+            Non-redundant, high-affinity clones.
         """
         suppression_affinity = [
             clone for clone in clones
@@ -349,7 +353,7 @@ class AiNet(BaseAiNet):
 
     def _memory_suppression(self, pool_memory: list) -> list:
         """
-        Remove redundant antibodies whose similarity exceeds the suppression threshold.
+        Remove redundant antibodies from memory pool.
 
         Calculate the affinity between all memory antibodies and remove redundant antibodies
         whose similarity exceeds the suppression threshold.
@@ -362,7 +366,7 @@ class AiNet(BaseAiNet):
         Returns
         -------
         list
-            Updated memory, without redundancies.
+            Memory pool without redundant antibodies.
         """
         suppressed_memory = []
 
@@ -407,7 +411,7 @@ class AiNet(BaseAiNet):
         Returns
         -------
         float
-            The stimulus rate between the vectors.
+            Affinity score in [0, 1], where higher means more similar.
         """
         distance: float
         if self._feature_type == "binary-features":
@@ -421,23 +425,19 @@ class AiNet(BaseAiNet):
 
     def _clone_and_mutate(self, antibody: npt.NDArray, n_clone: int) -> npt.NDArray:
         """
-        Generate mutated clones from an antigen, based on the data type (binary or continuous).
-
-        The number of clones generated is defined by `n_clone`, and each clone is a modified version
-        of the original `antibody` vector. The mutation method applied depends on the sample type.
+        Generate mutated clones from an antibody, based on the feature type.
 
         Parameters
         ----------
         antibody : npt.NDArray
-            Original vector (antigen) from which clones will be generated.
+            Original antibody vector to be cloned and mutated.
         n_clone : int
             Number of clones to generate.
 
         Returns
         -------
         npt.NDArray
-            Array of the form (n_clone, len(antibody)) containing the mutated clones of the
-            original vector.
+            Array of shape (n_clone, len(antibody)) containing mutated clones
         """
         if self._feature_type == "binary-features":
             return clone_and_mutate_binary(antibody, n_clone)
@@ -446,12 +446,23 @@ class AiNet(BaseAiNet):
         return clone_and_mutate_continuous(antibody, n_clone)
 
     def _separate_clusters_by_mst(self):
-        """Clusters the antibodies using the Minimum Spanning Tree (MST).
+        """Cluster antibodies using the Minimum Spanning Tree (MST).
 
-        Builds a Minimum Spanning Tree (MST) based on the distance matrix
-        between the antibodies in the population. Then, it removes the edges
-        whose weight exceeds a threshold proportional to the maximum weight
-        in the MST. Each resulting component represents a cluster.
+        Constructs an MST from the pairwise distance matrix of antibodies.
+        Edges with weights above a threshold (mst_pruning_threshold * max edge weight)
+        are removed, and each connected component forms a cluster.
+
+        Raises
+        ------
+        ValueError
+            If the antibody population is empty.
+
+        Updates
+        -------
+        self._memory_network : dict[int, npt.NDArray]
+            Dictionary mapping cluster labels to antibody arrays.
+        self.classes : list
+            List of cluster labels.
         """
         if self._population_antibodies is None or len(self._population_antibodies) == 0:
             raise ValueError("Population of antibodies is empty")

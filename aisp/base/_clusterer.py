@@ -32,7 +32,7 @@ class BaseClusterer(ABC, Base):
 
         Returns
         -------
-        self : BaseClassifier
+        self : BaseClusterer
             Returns the instance of the class that implements this method.
         """
 
@@ -50,8 +50,8 @@ class BaseClusterer(ABC, Base):
 
         Returns
         -------
-        Predictions : Optional[npt.NDArray]
-            Predicted values for each input sample, or ``None`` if the prediction fails.
+        predictions : Optional[npt.NDArray]
+            Predicted cluster labels for each input sample, or None if prediction is not possible.
         """
 
     def fit_predict(self, X, verbose: bool = True):
@@ -69,8 +69,8 @@ class BaseClusterer(ABC, Base):
 
         Returns
         -------
-        Predictions : Optional[npt.NDArray]
-            Predicted values for each input sample, or ``None`` if the prediction fails.
+        predictions : Optional[npt.NDArray]
+            Predicted cluster labels for each input sample, or None if prediction is not possible.
         """
         self.fit(X, verbose)
         return self.predict(X)

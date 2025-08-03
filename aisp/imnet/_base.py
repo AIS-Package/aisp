@@ -30,12 +30,11 @@ class BaseAiNet(BaseClusterer, ABC):
 
         Raises
         ------
-        TypeError:
-            If X or y are not ndarrays or have incompatible shapes.
+        TypeError
+            If X is not an ndarray or list.
         """
-        if not isinstance(X, np.ndarray):
-            if not isinstance(X, list):
-                raise TypeError("X is not an ndarray or list.")
+        if not isinstance(X, np.ndarray) and not isinstance(X, list):
+            raise TypeError("X is not an ndarray or list.")
 
     @staticmethod
     def _check_and_raise_exceptions_predict(
@@ -53,10 +52,10 @@ class BaseAiNet(BaseClusterer, ABC):
             [``N samples`` (rows)][``N features`` (columns)].
         expected : int, default=0
             Expected number of features per sample (columns in X).
-        feature_type : Literal["continuous-features", "binary-features"],
-        default="continuous-features"
-            Specifies the type of feature_type to use, depending on whether the input data has
-            continuous or binary features.
+        feature_type : FeatureType, default="continuous-features"
+            Specifies the type of features: "continuous-features", "binary-features",
+            or "ranged-features".
+
 
         Raises
         ------
@@ -65,8 +64,7 @@ class BaseAiNet(BaseClusterer, ABC):
         FeatureDimensionMismatch
             If the number of features in X does not match the expected number.
         ValueError
-            If feature_type is binary-features and X contains values that are not composed only
-            of 0 and 1.
+            If feature_type is "binary-features" and X contains values other than 0 and 1.
         """
         if not isinstance(X, (np.ndarray, list)):
             raise TypeError("X is not an ndarray or list")
@@ -102,10 +100,9 @@ class BaseAiNet(BaseClusterer, ABC):
             Number of antibodies (samples) to generate.
         n_features : int
             Number of features (dimensions) for each antibody.
-        feature_type : Literal["continuous-features", "binary-features"],
-        default="continuous-features"
-            Specifies the type of feature_type to use, depending on whether the input data has
-            continuous or binary features.
+        feature_type : FeatureType, default="continuous-features"
+            Specifies the type of features: "continuous-features", "binary-features",
+            or "ranged-features".
         bounds : np.ndarray
             Array (n_features, 2) with min and max per dimension.
 
@@ -113,7 +110,8 @@ class BaseAiNet(BaseClusterer, ABC):
         -------
         npt.NDArray
             Array of shape (n_samples, n_features) containing the generated antibodies.
-            Data type depends on the feature_type type (float for continuous, bool for binary).
+            Data type depends on the feature_type type (float for continuous/ranged, bool for
+            binary).
         """
         if n_features <= 0:
             raise ValueError("Number of features must be greater than zero.")

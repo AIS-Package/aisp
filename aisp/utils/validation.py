@@ -14,9 +14,9 @@ def detect_vector_data_type(
     Detect the type of data in a vector.
 
     The function detects if the vector contains data of type:
-    - "binary": binary data (boolean True/False or integer 0/1)
-    - "continuous": continuous data between 0.0 and 1.0 (float)
-    - "ranged": numerical data with values outside the normalized range (float)
+    - Binary features: boolean values or integers restricted to 0 and 1.
+    - Continuous features: floating-point values in the normalized range [0.0, 1.0].
+    - Ranged features: floating-point values outside the normalized range.
 
     Parameters
     ----------
@@ -25,8 +25,8 @@ def detect_vector_data_type(
 
     Returns
     -------
-    Literal["binary-features", "continuous-features", "ranged-features"]
-        The classified data type of the vector.
+    str
+        The data type of the vector: "binary-features", "continuous-features", or "ranged-features".
 
     Raises
     ------
