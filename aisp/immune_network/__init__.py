@@ -1,4 +1,4 @@
-"""Module (IMNET) Immune Network Theory.
+"""Module (immune_network) Immune Network Theory.
 
 This module implements algorithms based on Immune Network Theory proposed by Jerne.
 

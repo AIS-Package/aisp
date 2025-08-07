@@ -119,7 +119,7 @@ class AiNet(BaseAiNet):
             suppression_threshold, 0.5, lambda x: x > 0
         )
         self.mst_inconsistency_factor: float = sanitize_param(
-            mst_inconsistency_factor, 2, lambda x: x > 0
+            mst_inconsistency_factor, 2, lambda x: x >= 0
         )
         self.max_iterations: int = sanitize_param(max_iterations, 100, lambda x: x > 0)
         self.k: int = sanitize_param(k, 1, lambda x: x > 1)

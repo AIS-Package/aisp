@@ -5,7 +5,7 @@ import numpy as np
 import pytest
 from aisp.exceptions import FeatureDimensionMismatch
 
-from aisp.imnet import AiNet
+from aisp.immune_network import AiNet
 
 
 @pytest.fixture
