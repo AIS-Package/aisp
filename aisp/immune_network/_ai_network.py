@@ -1,4 +1,5 @@
 """Artificial Immune Network (AiNet)."""
+
 from collections import Counter
 from heapq import nlargest
 from typing import Optional
@@ -6,7 +7,7 @@ from typing import Optional
 import numpy as np
 import numpy.typing as npt
 from scipy.sparse.csgraph import minimum_spanning_tree, connected_components
-from scipy.spatial.distance import squareform, pdist
+from scipy.spatial.distance import squareform, pdist, cdist
 from tqdm import tqdm
 
 from ._base import BaseAiNet
@@ -106,9 +107,13 @@ class AiNet(BaseAiNet):
     ):
         self.N: int = sanitize_param(N, 50, lambda x: x > 0)
         self.n_clone: int = sanitize_param(n_clone, 10, lambda x: x > 0)
-        self.top_clonal_memory_size: int = sanitize_param(
-            top_clonal_memory_size, 5, lambda x: x > 0
-        )
+        if top_clonal_memory_size is None:
+            self.top_clonal_memory_size: Optional[int] = None
+        else:
+            self.top_clonal_memory_size: Optional[int] = sanitize_param(
+                top_clonal_memory_size, 5, lambda x: x > 0
+            )
+
         self.n_diversity_injection: int = sanitize_param(
             n_diversity_injection, 5, lambda x: x > 0
         )
@@ -121,8 +126,8 @@ class AiNet(BaseAiNet):
         self.mst_inconsistency_factor: float = sanitize_param(
             mst_inconsistency_factor, 2, lambda x: x >= 0
         )
-        self.max_iterations: int = sanitize_param(max_iterations, 100, lambda x: x > 0)
-        self.k: int = sanitize_param(k, 1, lambda x: x > 1)
+        self.max_iterations: int = sanitize_param(max_iterations, 10, lambda x: x > 0)
+        self.k: int = sanitize_param(k, 1, lambda x: x > 0)
         self.seed: Optional[int] = sanitize_seed(seed)
         self.use_mst_clustering: bool = use_mst_clustering
         if self.seed is not None:
@@ -130,18 +135,26 @@ class AiNet(BaseAiNet):
             set_seed_numba(self.seed)
 
         self._feature_type: FeatureType = "continuous-features"
-
         self.metric: str = sanitize_choice(
-            metric, ["manhattan", "minkowski"], "euclidean"
+            metric, ["euclidean", "manhattan", "minkowski"], "euclidean"
         )
+        if self._feature_type == "binary-features":
+            self.metric = "hamming"
 
         self.p: np.float64 = np.float64(kwargs.get("p", 2.0))
-
+        self._metric_params = {}
+        if self.metric == "minkowski":
+            self._metric_params['p'] = self.p
         self.classes = []
         self._memory_network: dict = {}
         self._population_antibodies: Optional[npt.NDArray] = None
         self._n_features: int = 0
         self._bounds: Optional[npt.NDArray[np.float64]] = None
+        self._mst_structure: Optional[npt.NDArray] = None
+        self._mst_mean_distance: Optional[float] = None
+        self._mst_std_distance: Optional[float] = None
+        self._predict_cells = None
+        self._predict_labels = None
 
     @property
     def memory_network(self) -> dict:
@@ -152,6 +165,15 @@ class AiNet(BaseAiNet):
     def population_antibodies(self) -> Optional[npt.NDArray]:
         """Return the set of memory antibodies."""
         return self._population_antibodies
+
+    @property
+    def mst(self) -> dict:
+        """Returns the Minimum Spanning Tree and its statistics."""
+        return {
+            'graph': self._mst_structure,
+            'mean_distance': self._mst_mean_distance,
+            'std_distance': self._mst_std_distance
+        }
 
     def fit(self, X: npt.NDArray, verbose: bool = True):
         """
@@ -169,8 +191,6 @@ class AiNet(BaseAiNet):
         self : AiNet
             Returns the instance of the class that implements this method.
         """
-        progress = None
-
         self._feature_type = detect_vector_data_type(X)
 
         super()._check_and_raise_exceptions_fit(X)
@@ -184,12 +204,12 @@ class AiNet(BaseAiNet):
 
         self._n_features = X.shape[1]
 
-        if verbose:
-            progress = tqdm(
-                total=self.max_iterations,
-                postfix="\n",
-                bar_format="{desc} ┇{bar}┇ {n}/{total} total training interactions",
-            )
+        progress = tqdm(
+            total=self.max_iterations,
+            postfix="\n",
+            disable=not verbose,
+            bar_format="{desc} ┇{bar}┇ {n}/{total} total training interactions",
+        )
 
         population_p = self._init_population_antibodies()
 
@@ -206,21 +226,21 @@ class AiNet(BaseAiNet):
                 pool_memory.extend(self._diversity_introduction())
             population_p = np.asarray(pool_memory)
 
-            if verbose and progress is not None:
-                progress.update(1)
+            progress.update(1)
 
             t += 1
         self._population_antibodies = population_p
 
         if self.use_mst_clustering:
-            self._separate_clusters_by_mst()
-        if verbose and progress is not None:
-            progress.set_description(
-                f"\033[92m✔ Set of memory antibodies for classes "
-                f"({', '.join(map(str, self.classes))}) successfully generated | "
-                f"Clusters: {len(self.classes)} | Population of antibodies size: "
-                f"{len(self._population_antibodies)}\033[0m"
-            )
+            self._build_mst()
+            self.update_clusters()
+        progress.set_description(
+            f"\033[92m✔ Set of memory antibodies for classes "
+            f"({', '.join(map(str, self.classes))}) successfully generated | "
+            f"Clusters: {len(self.classes)} | Population of antibodies size: "
+            f"{len(self._population_antibodies)}\033[0m"
+        )
+        progress.close()
 
         return self
 
@@ -284,7 +304,7 @@ class AiNet(BaseAiNet):
         self,
         antigen: npt.NDArray,
         population: npt.NDArray
-    ) -> list[npt.NDArray]:
+    ) -> list:
         """
         Select top antibodies by affinity and generate mutated clones.
 
@@ -300,7 +320,7 @@ class AiNet(BaseAiNet):
         list[npt.NDArray]
             List of mutated clones.
         """
-        affinities = np.asarray([self._affinity(antigen, antibody) for antibody in population])
+        affinities = self._calculate_affinities(antigen, population)
 
         if self.top_clonal_memory_size is not None and self.top_clonal_memory_size > 0:
             selected_idxs = np.argsort(-affinities)[:self.top_clonal_memory_size]
@@ -341,17 +361,7 @@ class AiNet(BaseAiNet):
             clone for clone in clones
             if self._affinity(clone, antigen) > self.affinity_threshold
         ]
-        suppressed_clones = []
-        for candidate in suppression_affinity:
-            is_redundant = False
-            for existing in suppressed_clones:
-                if self._affinity(candidate, existing) > self.suppression_threshold:
-                    is_redundant = True
-                    break
-            if not is_redundant:
-                suppressed_clones.append(candidate)
-
-        return suppressed_clones
+        return self._memory_suppression(suppression_affinity)
 
     def _memory_suppression(self, pool_memory: list) -> list:
         """
@@ -370,17 +380,17 @@ class AiNet(BaseAiNet):
         list
             Memory pool without redundant antibodies.
         """
-        suppressed_memory = []
+        if not pool_memory:
+            return []
+        suppressed_memory = [pool_memory[0]]
+        for candidate in pool_memory[1:]:
+            affinities = self._calculate_affinities(
+                candidate.reshape(1, -1),
+                np.asarray(suppressed_memory)
+            )
 
-        for antibody in pool_memory:
-            is_similar = False
-            for existing in suppressed_memory:
-                if self._affinity(antibody, existing) > self.suppression_threshold:
-                    is_similar = True
-                    break
-            if not is_similar:
-                suppressed_memory.append(antibody)
-
+            if not np.any(affinities > self.suppression_threshold):
+                suppressed_memory.append(candidate)
         return suppressed_memory
 
     def _diversity_introduction(self):
@@ -425,6 +435,30 @@ class AiNet(BaseAiNet):
 
         return 1 - (distance / (1 + distance))
 
+    def _calculate_affinities(self, u: npt.NDArray, v: npt.NDArray) -> npt.NDArray:
+        """
+        Calculate the affinity matrix between a reference vector and a set of target vectors.
+
+        Parameters
+        ----------
+        u : npt.NDArray
+            An array with shape (n_features).
+        v : npt.NDArray
+            An array of vectors with shape (n_samples, n_features).
+
+
+        Returns
+        -------
+        npt.NDArray
+            One-dimensional array of shape (n_samples,), containing the affinities between `u`
+            and each vector in `v`.
+        """
+        u = np.reshape(u, (1, -1))
+        v = np.atleast_2d(v)
+        distances = cdist(u, v, metric=self.metric, **self._metric_params)[0]
+
+        return 1 - (distances / (1 + distances))
+
     def _clone_and_mutate(self, antibody: npt.NDArray, n_clone: int) -> npt.NDArray:
         """
         Generate mutated clones from an antibody, based on the feature type.
@@ -447,18 +481,48 @@ class AiNet(BaseAiNet):
             return clone_and_mutate_ranged(antibody, n_clone, self._bounds)
         return clone_and_mutate_continuous(antibody, n_clone)
 
-    def _separate_clusters_by_mst(self):
-        """Cluster antibodies using the Minimum Spanning Tree (MST).
+    def _build_mst(self):
+        """Construct the Minimum Spanning Tree (MST) for the antibody population.
 
-        Constructs a Minimum Spanning Tree (MST) from the pairwise distance matrix of antibodies.
-        Edges whose weights exceed the mean plus `mst_inconsistency_factor` times the standard
-        deviation of all MST edge weights are removed. Each resulting connected component
-        is then treated as a distinct cluster.
+        Computes the pairwise distances between antibodies, builds the MST from
+        these distances, and stores the MST structure along with the mean and
+        standard deviation of its edge weights.
 
         Raises
         ------
         ValueError
             If the antibody population is empty.
+        """
+        if self._population_antibodies is None or len(self._population_antibodies) == 0:
+            raise ValueError("Population of antibodies is empty")
+
+        antibodies_matrix = squareform(
+            pdist(self._population_antibodies, metric=self.metric, **self._metric_params)
+        )
+        antibodies_mst = minimum_spanning_tree(antibodies_matrix).toarray()
+        self._mst_structure = antibodies_mst
+        nonzero_edges = antibodies_mst[antibodies_mst > 0]
+        self._mst_mean_distance = float(np.mean(nonzero_edges)) if nonzero_edges.size else 0.0
+        self._mst_std_distance = float(np.std(nonzero_edges)) if nonzero_edges.size else 0.0
+
+    def update_clusters(self, mst_inconsistency_factor: Optional[float] = None):
+        """Partition the clusters based on the MST inconsistency factor.
+
+        Uses the precomputed Minimum Spanning Tree (MST) of the antibody population
+        to redefine clusters. Edges whose weights exceed the mean plus the
+        `mst_inconsistency_factor` multiplied by the standard deviation of MST edge
+        weights are removed. Each connected component after pruning is treated as a
+        distinct cluster.
+
+        Parameters
+        ----------
+        mst_inconsistency_factor : float, optional
+            If provided, overrides the current inconsistency factor.
+
+        Raises
+        ------
+        ValueError
+            If the Minimum Spanning Tree (MST) has not yet been created
 
         Updates
         -------
@@ -467,21 +531,16 @@ class AiNet(BaseAiNet):
         self.classes : list
             List of cluster labels.
         """
-        if self._population_antibodies is None or len(self._population_antibodies) == 0:
-            raise ValueError("Population of antibodies is empty")
+        if self._mst_structure is None:
+            raise ValueError("The Minimum Spanning Tree (MST) has not yet been created.")
 
-        kwargs = {'p': self.p} if self.metric == 'minkowski' else {}
-        antibodies_matrix = squareform(
-            pdist(self._population_antibodies, metric=self.metric, **kwargs)
-        )
+        if mst_inconsistency_factor is not None:
+            self.mst_inconsistency_factor = mst_inconsistency_factor
 
-        antibodies_mst = minimum_spanning_tree(csgraph=antibodies_matrix).toarray()
-        nonzero_edges = antibodies_mst[antibodies_mst > 0]
-        mean_weight = np.mean(nonzero_edges)
-        std_weight = np.std(nonzero_edges)
+        antibodies_mst = self._mst_structure.copy()
 
         thresholds = antibodies_mst > (
-            mean_weight + self.mst_inconsistency_factor * std_weight
+            self._mst_mean_distance + self.mst_inconsistency_factor * self._mst_std_distance
         )
         antibodies_mst[thresholds] = 0
 
@@ -491,4 +550,4 @@ class AiNet(BaseAiNet):
             label: self._population_antibodies[labels == label]
             for label in range(n_antibodies)
         }
-        self.classes = self._memory_network.keys()
+        self.classes = np.array(list(self._memory_network.keys()))
