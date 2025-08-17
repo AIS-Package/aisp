@@ -1,6 +1,6 @@
-"""Module (immune_network) Immune Network Theory.
+"""Module (ina) Immune Network Algorithm.
 
-This module implements algorithms based on Immune Network Theory proposed by Jerne.
+This module implements algorithms based on Network Theory Algorithms proposed by Jerne.
 
 Classes
 -------
