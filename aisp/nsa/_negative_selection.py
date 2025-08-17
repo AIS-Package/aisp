@@ -150,7 +150,6 @@ class RNSA(BaseNSA):
         self : RNSA
         Returns the instance itself.
         """
-        progress = None
         super()._check_and_raise_exceptions_fit(X, y)
 
         # Identifying the possible classes within the output array `y`.
@@ -160,22 +159,21 @@ class RNSA(BaseNSA):
         # Separates the classes for training.
         sample_index = self._slice_index_list_by_class(y)
         # Progress bar for generating all detectors.
-        if verbose:
-            progress = tqdm(
-                total=int(self.N * (len(self.classes))),
-                bar_format="{desc} ┇{bar}┇ {n}/{total} detectors",
-                postfix="\n",
-            )
+        progress = tqdm(
+            total=int(self.N * (len(self.classes))),
+            bar_format="{desc} ┇{bar}┇ {n}/{total} detectors",
+            postfix="\n",
+            disable=not verbose
+        )
         for _class_ in self.classes:
             # Initializes the empty set that will contain the valid detectors.
             valid_detectors_set = []
             discard_count = 0
             x_class = X[sample_index[_class_]]
             # Indicating which class the algorithm is currently processing for the progress bar.
-            if verbose and progress is not None:
-                progress.set_description_str(
-                    f"Generating the detectors for the {_class_} class:"
-                )
+            progress.set_description_str(
+                f"Generating the detectors for the {_class_} class:"
+            )
             while len(valid_detectors_set) < self.N:
                 # Generates a candidate detector vector randomly with values between 0 and 1.
                 vector_x = np.random.random_sample(size=X.shape[1])
@@ -190,8 +188,7 @@ class RNSA(BaseNSA):
                     else:
                         radius = None
                     valid_detectors_set.append(Detector(vector_x, radius))
-                    if verbose and progress is not None:
-                        progress.update(1)
+                    progress.update(1)
                 else:
                     discard_count += 1
                     if discard_count == self.max_discards:
@@ -200,11 +197,11 @@ class RNSA(BaseNSA):
             # Add detectors, with classes as keys in the dictionary.
             list_detectors_by_class[_class_] = valid_detectors_set
         # Notify completion of detector generation for the classes.
-        if verbose and progress is not None:
-            progress.set_description(
-                f"\033[92m✔ Non-self detectors for classes ({', '.join(map(str, self.classes))}) "
-                f"successfully generated\033[0m"
-            )
+        progress.set_description(
+            f"\033[92m✔ Non-self detectors for classes ({', '.join(map(str, self.classes))}) "
+            f"successfully generated\033[0m"
+        )
+        progress.close()
         # Saves the found detectors in the attribute for the non-self detectors of the trained model
         self._detectors = list_detectors_by_class
         return self
@@ -349,7 +346,6 @@ class RNSA(BaseNSA):
             knn[self.k - 1] = distance
             knn.sort()
 
-
     def __compare_sample_to_detectors(self, line: npt.NDArray) -> Optional[str]:
         """
         Compare a sample with the detectors, verifying if the sample is proper.
@@ -450,7 +446,7 @@ class RNSA(BaseNSA):
                 if (p - new_detector_r) < 0 or (p + new_detector_r) > 1:
                     return False
 
-        return (True, new_detector_r)
+        return True, new_detector_r
 
 
 class BNSA(BaseNSA):
@@ -536,7 +532,6 @@ class BNSA(BaseNSA):
              Returns the instance it self.
         """
         super()._check_and_raise_exceptions_fit(X, y, "BNSA")
-        progress = None
         # Converts the entire array X to boolean
         X = X.astype(np.bool_)
 
@@ -547,22 +542,22 @@ class BNSA(BaseNSA):
         # Separates the classes for training.
         sample_index: dict = self._slice_index_list_by_class(y)
         # Progress bar for generating all detectors.
-        if verbose:
-            progress = tqdm(
-                total=int(self.N * (len(self.classes))),
-                bar_format="{desc} ┇{bar}┇ {n}/{total} detectors",
-                postfix="\n",
-            )
+
+        progress = tqdm(
+            total=int(self.N * (len(self.classes))),
+            bar_format="{desc} ┇{bar}┇ {n}/{total} detectors",
+            postfix="\n",
+            disable=not verbose
+        )
 
         for _class_ in self.classes:
             # Initializes the empty set that will contain the valid detectors.
             valid_detectors_set: list = []
             discard_count: int = 0
             # Updating the progress bar with the current class the algorithm is processing.
-            if verbose and progress is not None:
-                progress.set_description_str(
-                    f"Generating the detectors for the {_class_} class:"
-                )
+            progress.set_description_str(
+                f"Generating the detectors for the {_class_} class:"
+            )
             x_class = X[sample_index[_class_]]
             while len(valid_detectors_set) < self.N:
                 # Generates a candidate detector vector randomly with values 0 and 1.
@@ -571,8 +566,7 @@ class BNSA(BaseNSA):
                 if check_detector_bnsa_validity(x_class, vector_x, self.aff_thresh):
                     discard_count = 0
                     valid_detectors_set.append(vector_x)
-                    if verbose and progress is not None:
-                        progress.update(1)
+                    progress.update(1)
                 else:
                     discard_count += 1
                     if discard_count == self.max_discards:
@@ -582,11 +576,11 @@ class BNSA(BaseNSA):
             list_detectors_by_class[_class_] = np.array(valid_detectors_set)
 
         # Notify the completion of detector generation for the classes.
-        if verbose and progress is not None:
-            progress.set_description(
-                f"\033[92m✔ Non-self detectors for classes ({', '.join(map(str, self.classes))}) "
-                f"successfully generated\033[0m"
-            )
+        progress.set_description(
+            f"\033[92m✔ Non-self detectors for classes ({', '.join(map(str, self.classes))}) "
+            f"successfully generated\033[0m"
+        )
+        progress.close()
         # Saves the found detectors in the attribute for the class detectors.
         self._detectors = list_detectors_by_class
         self._detectors_stack = np.array(

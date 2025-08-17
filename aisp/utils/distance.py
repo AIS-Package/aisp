@@ -5,10 +5,10 @@ import numpy.typing as npt
 from numba import njit, types
 from numpy import float64
 
-EUCLIDEAN = 0
-MANHATTAN = 1
-MINKOWSKI = 2
-HAMMING = 3
+EUCLIDEAN: int = 0
+MANHATTAN: int = 1
+MINKOWSKI: int = 2
+HAMMING: int = 3
 
 
 @njit([(types.boolean[:], types.boolean[:])], cache=True)
