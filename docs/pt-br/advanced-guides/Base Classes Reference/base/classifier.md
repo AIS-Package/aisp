@@ -42,17 +42,6 @@ Retorna um dicionário com as classes como chave e os índices em ``X`` das amos
 
 ---
 
-### def get_params(...)
-
-```python
-def get_params(self, deep: bool = True) -> dict:
-```
-A função get_params retorna um dicionário com os parâmetros principais do objeto.
-
-Esta função é necessária para garantir a compatibilidade com as funções do scikit-learn.
-
----
-
 ## Métodos abstratos
 
 ### def fit(...)

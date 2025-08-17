@@ -4,7 +4,7 @@
 
 ### Class module:
 
-> 1. [**Negative selection** : ``class NegativeSelection``](classes/Negative%20Selection/README.md)
-> 2. **Dendritric Cell** : ``class DendritricCell``
-> 3. **Clonalg** : ``class Clonalg``
-> 4. **Immune Network Theory** : ``class ImmuneNetwork``
+> 1. [**Negative selection**](classes/Negative%20Selection/README.md)
+> 2. **Danger Theory**
+> 3. [**Clonal Selection Algorithms.**](classes/Clonal%20Selection%20Algorithms/README.md)
+> 4. [**Immune Network Theory**](classes/Immune%20Network%20Theory/README.md)

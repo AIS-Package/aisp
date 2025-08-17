@@ -20,11 +20,13 @@ Os sistemas imunológicos artificiais (SIA) inspiram-se no sistema imunológico 
 
 ### Algoritmos implementados:
 
-> - [x] [**Seleção Negativa.**](https://ais-package.github.io/docs/aisp-techniques/Negative%20Selection/)
-> - [x] *Algoritmos de Seleção Clonal.*
->     * [AIRS - Artificial Immune Recognition System](https://ais-package.github.io/docs/aisp-techniques/Clonal%20Selection%20Algorithms/)
-> - [ ] *Células Dendríticas.*
-> - [ ] *Teoria da Rede Imune.*
+> - [x] [**Seleção Negativa.**](https://ais-package.github.io/pt-br/docs/aisp-techniques/Negative%20Selection/)
+> - [x] [**Clonal Selection Algorithms.**](https://ais-package.github.io/pt-br/docs/aisp-techniques/Clonal%20Selection%20Algorithms/)
+>     * [AIRS - Artificial Immune Recognition System](https://ais-package.github.io/pt-br/docs/aisp-techniques/Clonal%20Selection%20Algorithms/airs/)
+> - [ ] *Teoria do Perigo.*
+> - [x] [**Immune Network Theory.**](https://ais-package.github.io/pt-br/docs/aisp-techniques/Immune%20Network%20Theory)
+>   - [AiNet - Artificial Immune Network para Clustering and Compression](https://ais-package.github.io/pt-br/docs/aisp-techniques/Immune%20Network%20Theory/ainet)
+
 
 </section>
 
