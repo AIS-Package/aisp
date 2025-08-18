@@ -115,7 +115,7 @@ def _init_population_antibodies(self) -> npt.NDArray:
 
 ---
 
-### Function \_select\_and\_clone\_population(...)
+### Function _select_and_clone_population(...)
 
 Selects top antibodies and generates mutated clones:
 
@@ -132,7 +132,7 @@ def _select_and_clone_population(self, antigen: npt.NDArray, population: npt.NDA
 
 ---
 
-### Function \_clonal\_suppression(...)
+### Function _clonal_suppression(...)
 
 Suppresses redundant clones based on thresholds:
 
@@ -149,7 +149,7 @@ def _clonal_suppression(self, antigen: npt.NDArray, clones: list):
 
 ---
 
-### Function \_memory\_suppression(...)
+### Function _memory_suppression(...)
 
 Removes redundant antibodies from memory pool:
 
@@ -159,13 +159,13 @@ def _memory_suppression(self, pool_memory: list) -> list:
 
 **Input parameters:**
 
-* **pool\_memory**: List of antibodies currently in memory.
+* **pool_memory**: List of antibodies currently in memory.
 
 **Returns:** Cleaned memory pool (`list`).
 
 ---
 
-### Function \_diversity\_introduction(...)
+### Function _diversity_introduction(...)
 
 Introduces new random antibodies:
 
@@ -179,7 +179,7 @@ def _diversity_introduction(self) -> npt.NDArray:
 
 ---
 
-### Function \_affinity(...)
+### Function _affinity(...)
 
 Calculates stimulus between two vectors:
 
@@ -196,7 +196,7 @@ def _affinity(self, u: npt.NDArray, v: npt.NDArray) -> float:
 
 ---
 
-### Function \_calculate\_affinities(...)
+### Function _calculate_affinities(...)
 
 Calculates affinity matrix between reference and target vectors:
 
@@ -213,7 +213,7 @@ def _calculate_affinities(self, u: npt.NDArray, v: npt.NDArray) -> npt.NDArray:
 
 ---
 
-### Function \_clone\_and\_mutate(...)
+### Function _clone_and_mutate(...)
 
 Generates mutated clones:
 
@@ -224,13 +224,13 @@ def _clone_and_mutate(self, antibody: npt.NDArray, n_clone: int) -> npt.NDArray:
 **Input parameters:**
 
 * **antibody**: Original antibody vector to clone and mutate.
-* **n\_clone**: Number of clones to generate.
+* **n_clone**: Number of clones to generate.
 
 **Returns:** Array of mutated clones (`npt.NDArray`) of shape `(n_clone, len(antibody))`.
 
 ---
 
-### Function \_build\_mst(...)
+### Function _build_mst(...)
 
 Constructs the MST and stores statistics.
 
@@ -244,9 +244,9 @@ def _build_mst(self):
 
 **Updates internal variables:**
 
-* **\_mst\_structure**: MST adjacency structure.
-* **\_mst\_mean\_distance**: Mean edge distance.
-* **\_mst\_std\_distance**: Standard deviation of MST edge distances.
+* **_mst_structure**: MST adjacency structure.
+* **_mst_mean_distance**: Mean edge distance.
+* **_mst_std_distance**: Standard deviation of MST edge distances.
 
 ---
 
