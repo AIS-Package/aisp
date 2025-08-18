@@ -18,15 +18,12 @@ Esta função realiza a previsão de X e verifica quantos elementos são iguais 
 Esta função foi adicionada para compatibilidade com algumas funções do scikit-learn.
 
 **Parâmetros**:
-+ ***X***: np.ndarray
-    Conjunto de características com formato (n_amostras, n_características).
-+ ***y***: np.ndarray
-    Valores verdadeiros com formato (n_amostras,).
++ ***X***: np.ndarray - Conjunto de características com formato (n_amostras, n_características).
++ ***y***: np.ndarray - Valores verdadeiros com formato (n_amostras,).
 
 **Retorna**:
 
-+ precisão: float
-    A precisão do modelo.
++ precisão: float - A precisão do modelo.
 
 ---
 

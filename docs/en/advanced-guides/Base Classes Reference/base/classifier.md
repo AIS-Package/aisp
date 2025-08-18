@@ -16,8 +16,8 @@ This function performs the prediction of X and checks how many elements are equa
 This function was added for compatibility with some scikit-learn functions.
 
 **Parameters**:
-+ ***X***: ``np.ndarray`` _ Feature set with shape (n_samples, n_features).
-+ ***y***: ``np.ndarray`` _ True values with shape (n_samples,).
++ ***X***: ``np.ndarray`` - Feature set with shape (n_samples, n_features).
++ ***y***: ``np.ndarray`` - True values with shape (n_samples,).
 
 **Returns**:
 

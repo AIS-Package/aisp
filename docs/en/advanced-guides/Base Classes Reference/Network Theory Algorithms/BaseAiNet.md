@@ -122,24 +122,3 @@ Must be implemented by subclasses.
 
 * `Optional[npt.NDArray]`: Predicted cluster labels for each input sample, or None if prediction is not possible.
 
-#### fit_predict(...)
-
-```python
-def fit_predict(self, X: npt.NDArray, verbose: bool = True) -> Optional[npt.NDArray]
-```
-
-Convenience method combining `fit` and `predict` in a single call.
-
-**Parameters**:
-
-* ***X*** (`npt.NDArray`): Input data for which predictions will be generated.
-* ***verbose*** (`bool`, default=True): Flag to enable or disable detailed output during training.
-
-**Returns**:
-
-* `Optional[npt.NDArray]`: Predicted cluster labels for each input sample, or None if prediction is not possible.
-
-**Implementation**:
-
-* Calls `fit` internally, then `predict`.
-* Used by AiNet-based algorithms in Immune Network Theory.
