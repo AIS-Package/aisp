@@ -192,7 +192,7 @@ def _affinity(self, u: npt.NDArray, v: npt.NDArray) -> float:
 * **u**: Array representing the first point.
 * **v**: Array representing the second point.
 
-**Returns:** Affinity score (`float`) in \[0,1].
+**Returns:** Affinity score (`float`) in [0,1].
 
 ---
 
@@ -253,7 +253,7 @@ def _build_mst(self):
 # References
 
 > 1. DE CASTRO, L. N.; VON ZUBEN, F. J. aiNet: An Artificial Immune Network for Data Analysis. Draft Chapter XII of *Data Mining: A Heuristic Approach*, 2001.
->    Available at: [https://www.dca.fee.unicamp.br/\~vonzuben/research/lnunes_dout/artigos/DMHA.PDF](https://www.dca.fee.unicamp.br/~vonzuben/research/lnunes_dout/artigos/DMHA.PDF)
+>    Available at: [https://www.dca.fee.unicamp.br/~vonzuben/research/lnunes_dout/artigos/DMHA.PDF](https://www.dca.fee.unicamp.br/~vonzuben/research/lnunes_dout/artigos/DMHA.PDF)
 
 > 2. SciPy Documentation. *Minimum Spanning Tree*.
 >    Available at: [https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csgraph.minimum_spanning_tree](https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csgraph.minimum_spanning_tree)

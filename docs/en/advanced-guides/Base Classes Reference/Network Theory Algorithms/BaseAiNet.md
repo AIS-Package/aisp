@@ -18,7 +18,7 @@ def _check_and_raise_exceptions_fit(X: npt.NDArray)
 
 **Parameters**:
 
-* ***X*** (`npt.NDArray`): Training array, containing the samples and their characteristics, \[`N samples` (rows)]\[`N features` (columns)].
+* ***X*** (`npt.NDArray`): Training array, containing the samples and their characteristics, [`N samples` (rows)][`N features` (columns)].
 
 **Raises**:
 
@@ -41,7 +41,7 @@ def _check_and_raise_exceptions_predict(
 
 **Parameters**:
 
-* ***X*** (`npt.NDArray`): Input array for prediction, containing the samples and their characteristics, \[`N samples` (rows)]\[`N features` (columns)].
+* ***X*** (`npt.NDArray`): Input array for prediction, containing the samples and their characteristics, [`N samples` (rows)][`N features` (columns)].
 * ***expected*** (`int`, default=0): Expected number of features per sample (columns in X).
 * ***feature_type*** (`FeatureType`, default="continuous-features"): Specifies the type of features: "continuous-features", "binary-features", or "ranged-features".
 

@@ -29,7 +29,7 @@ Para clustering, pode opcionalmente utilizar uma **Árvore Geradora Mínima (MST
 
 * **k** (`int`): Número de vizinhos mais próximos usados para predição de rótulos. Padrão: 3.
 
-* **metric** (Literal\["manhattan", "minkowski", "euclidean"]): Forma de calcular a distância entre o detector e a amostra:
+* **metric** (Literal["manhattan", "minkowski", "euclidean"]): Forma de calcular a distância entre o detector e a amostra:
 
   * `'euclidean'` ➜ Distância dada pela expressão:
     √( (x₁ – x₂)² + (y₁ – y₂)² + ... + (yn – yn)²).
@@ -207,7 +207,7 @@ def _affinity(self, u: npt.NDArray, v: npt.NDArray) -> float:
 * **u**: Vetor representando o primeiro ponto.
 * **v**: Vetor representando o segundo ponto.
 
-**Retorna:** Valor de afinidade (`float`) no intervalo \[0,1].
+**Retorna:** Valor de afinidade (`float`) no intervalo [0,1].
 
 ---
 
@@ -268,7 +268,7 @@ def _build_mst(self):
 # Referências
 
 > 1. DE CASTRO, L. N.; VON ZUBEN, F. J. aiNet: An Artificial Immune Network for Data Analysis. Draft Chapter XII of *Data Mining: A Heuristic Approach*, 2001.
->    Disponível em: [https://www.dca.fee.unicamp.br/\~vonzuben/research/lnunes_dout/artigos/DMHA.PDF](https://www.dca.fee.unicamp.br/~vonzuben/research/lnunes_dout/artigos/DMHA.PDF)
+>    Disponível em: [https://www.dca.fee.unicamp.br/~vonzuben/research/lnunes_dout/artigos/DMHA.PDF](https://www.dca.fee.unicamp.br/~vonzuben/research/lnunes_dout/artigos/DMHA.PDF)
 
 > 2. SciPy Documentation. *Minimum Spanning Tree*.
 >    Disponível em: [https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csgraph.minimum_spanning_tree](https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csgraph.minimum_spanning_tree)
