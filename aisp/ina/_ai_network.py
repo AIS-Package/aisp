@@ -77,13 +77,11 @@ class AiNet(BaseAiNet):
 
     References
     ----------
-    .. [1] de Castro, L. N., & Von Zuben, F. J. (2001).
-           *aiNet: An Artificial Immune Network for Data Analysis*.
-           Draft Chapter XII of the book *Data Mining: A Heuristic Approach*.
-           Department of Computer and Automation Engineering, University of Campinas.
+    .. [1] De Castro, Leandro & José, Fernando & von Zuben, Antonio Augusto. (2001). aiNet: An
+           Artificial Immune Network for Data Analysis.
            Available at:
-             https://www.dca.fee.unicamp.br/~vonzuben/research/lnunes_dout/
-             artigos/DMHA.PDF
+             https://www.researchgate.net/publication/
+             228378350_aiNet_An_Artificial_Immune_Network_for_Data_Analysis
     .. [2] SciPy Documentation. *Minimum Spanning Tree*.
            https://docs.scipy.org/doc/scipy/reference/generated/
            scipy.sparse.csgraph.minimum_spanning_tree
