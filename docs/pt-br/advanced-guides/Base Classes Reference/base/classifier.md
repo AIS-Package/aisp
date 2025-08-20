@@ -18,15 +18,12 @@ Esta função realiza a previsão de X e verifica quantos elementos são iguais 
 Esta função foi adicionada para compatibilidade com algumas funções do scikit-learn.
 
 **Parâmetros**:
-+ ***X***: np.ndarray
-    Conjunto de características com formato (n_amostras, n_características).
-+ ***y***: np.ndarray
-    Valores verdadeiros com formato (n_amostras,).
++ ***X***: np.ndarray - Conjunto de características com formato (n_amostras, n_características).
++ ***y***: np.ndarray - Valores verdadeiros com formato (n_amostras,).
 
 **Retorna**:
 
-+ precisão: float
-    A precisão do modelo.
++ precisão: float - A precisão do modelo.
 
 ---
 
@@ -39,17 +36,6 @@ def _slice_index_list_by_class(self, y: npt.NDArray) -> dict:
 ```
 
 Retorna um dicionário com as classes como chave e os índices em ``X`` das amostras.
-
----
-
-### def get_params(...)
-
-```python
-def get_params(self, deep: bool = True) -> dict:
-```
-A função get_params retorna um dicionário com os parâmetros principais do objeto.
-
-Esta função é necessária para garantir a compatibilidade com as funções do scikit-learn.
 
 ---
 

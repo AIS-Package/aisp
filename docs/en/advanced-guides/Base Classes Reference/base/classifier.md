@@ -16,10 +16,8 @@ This function performs the prediction of X and checks how many elements are equa
 This function was added for compatibility with some scikit-learn functions.
 
 **Parameters**:
-+ ***X***: ``np.ndarray``
-    Feature set with shape (n_samples, n_features).
-+ ***y***: ``np.ndarray``
-    True values with shape (n_samples,).
++ ***X***: ``np.ndarray`` - Feature set with shape (n_samples, n_features).
++ ***y***: ``np.ndarray`` - True values with shape (n_samples,).
 
 **Returns**:
 
@@ -36,17 +34,6 @@ def _slice_index_list_by_class(self, y: npt.NDArray) -> dict:
 ```
 
 Returns a dictionary with the classes as key and the indices in ``X`` of the samples.
-
----
-
-### Function get_params(...)
-
-```python
-def get_params(self, deep: bool = True) -> dict:
-```
-The get_params function Returns a dictionary with the object's main parameters.
-
-This function is required to ensure compatibility with scikit-learn functions.
 
 ---
 

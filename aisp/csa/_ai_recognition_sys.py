@@ -11,7 +11,7 @@ import numpy.typing as npt
 from scipy.spatial.distance import pdist
 from tqdm import tqdm
 
-
+from ..base import set_seed_numba
 from ._cell import Cell
 from ..utils.sanitizers import sanitize_param, sanitize_seed, sanitize_choice
 from ..utils.distance import hamming, compute_metric_distance, get_metric_code
@@ -178,6 +178,7 @@ class AIRS(BaseAIRS):
         self.seed: Optional[int] = sanitize_seed(seed)
         if self.seed is not None:
             np.random.seed(self.seed)
+            set_seed_numba(self.seed)
 
         self._feature_type: FeatureType = "continuous-features"
 
@@ -219,8 +220,6 @@ class AIRS(BaseAIRS):
         AIRS
             Returns the instance itself.
         """
-        progress = None
-
         self._feature_type = detect_vector_data_type(X)
 
         super()._check_and_raise_exceptions_fit(X, y)
@@ -234,18 +233,17 @@ class AIRS(BaseAIRS):
 
         self.classes = np.unique(y)
         sample_index = self._slice_index_list_by_class(y)
-        if verbose:
-            progress = tqdm(
-                total=len(y),
-                postfix="\n",
-                bar_format="{desc} ┇{bar}┇ {n}/{total} memory cells for each aᵢ",
-            )
+        progress = tqdm(
+            total=len(y),
+            postfix="\n",
+            disable=not verbose,
+            bar_format="{desc} ┇{bar}┇ {n}/{total} memory cells for each aᵢ",
+        )
         pool_cells_classes = {}
         for _class_ in self.classes:
-            if verbose and progress is not None:
-                progress.set_description_str(
-                    f"Generating the memory cells for the {_class_} class:"
-                )
+            progress.set_description_str(
+                f"Generating the memory cells for the {_class_} class:"
+            )
 
             x_class = X[sample_index[_class_]]
             # Calculating the similarity threshold between antigens
@@ -294,15 +292,14 @@ class AIRS(BaseAIRS):
                     if self._affinity(c_candidate.vector, c_match.vector) < sufficiently_similar:
                         pool_c.remove(c_match)
 
-                if verbose and progress is not None:
-                    progress.update(1)
+                progress.update(1)
             pool_cells_classes[_class_] = pool_c
 
-        if verbose and progress is not None:
-            progress.set_description(
-                f"\033[92m✔ Set of memory cells for classes ({', '.join(map(str, self.classes))}) "
-                f"successfully generated\033[0m"
-            )
+        progress.set_description(
+            f"\033[92m✔ Set of memory cells for classes ({', '.join(map(str, self.classes))}) "
+            f"successfully generated\033[0m"
+        )
+        progress.close()
         self._cells_memory = pool_cells_classes
         return self
 
