@@ -1,5 +1,6 @@
 """Artificial Immune Network (AiNet)."""
 
+from __future__ import annotations
 from collections import Counter
 from heapq import nlargest
 from typing import Optional
@@ -173,7 +174,7 @@ class AiNet(BaseAiNet):
             'std_distance': self._mst_std_distance
         }
 
-    def fit(self, X: npt.NDArray, verbose: bool = True):
+    def fit(self, X: npt.NDArray, verbose: bool = True) -> AiNet:
         """
         Train the AiNet model on input data.
 

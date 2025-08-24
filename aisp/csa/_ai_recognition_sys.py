@@ -1,5 +1,6 @@
 """Artificial Immune Recognition System (AIRS)."""
 
+from __future__ import annotations
 import random
 from collections import Counter
 from heapq import nlargest
@@ -189,6 +190,7 @@ class AIRS(BaseAIRS):
         self.p: np.float64 = np.float64(kwargs.get("p", 2.0))
 
         self._cells_memory = None
+        self._all_class_cell_vectors = None
         self.affinity_threshold = 0.0
         self.classes = []
         self._bounds: Optional[npt.NDArray[np.float64]] = None
@@ -198,7 +200,7 @@ class AIRS(BaseAIRS):
         """Returns the trained cells memory, organized by class."""
         return self._cells_memory
 
-    def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True) -> "AIRS":
+    def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True) -> AIRS:
         """
         Fit the model to the training data using the AIRS.
 
@@ -301,6 +303,11 @@ class AIRS(BaseAIRS):
         )
         progress.close()
         self._cells_memory = pool_cells_classes
+        self._all_class_cell_vectors = [
+            (class_name, cell.vector)
+            for class_name in self.classes
+            for cell in self._cells_memory[class_name]
+        ]
         return self
 
     def predict(self, X: npt.NDArray) -> Optional[npt.NDArray]:
@@ -322,7 +329,7 @@ class AIRS(BaseAIRS):
             An ndarray of the form ``C`` [``N samples``], containing the predicted classes for
             ``X``. or ``None``: If there are no detectors for the prediction.
         """
-        if self._cells_memory is None:
+        if self._all_class_cell_vectors is None:
             return None
 
         super()._check_and_raise_exceptions_predict(
@@ -331,16 +338,10 @@ class AIRS(BaseAIRS):
 
         c: list = []
 
-        all_cells_memory = [
-            (class_name, cell.vector)
-            for class_name in self.classes
-            for cell in self._cells_memory[class_name]
-        ]
-
         for line in X:
             label_stim_list = [
                 (class_name, self._affinity(memory, line))
-                for class_name, memory in all_cells_memory
+                for class_name, memory in self._all_class_cell_vectors
             ]
             # Create the list with the k nearest neighbors and select the class with the most votes
             k_nearest = nlargest(self.k, label_stim_list, key=lambda x: x[1])
