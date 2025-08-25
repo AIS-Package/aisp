@@ -90,7 +90,7 @@ def _generate_random_antibodies(
 #### fit(...)
 
 ```python
-def fit(self, X: npt.NDArray, verbose: bool = True) -> "BaseAiNet"
+def fit(self, X: npt.NDArray, verbose: bool = True) -> BaseAiNet
 ```
 
 Treina o modelo de clustering AiNet.
