@@ -5,7 +5,8 @@ distinguish between self and non-self. Only T-cells capable of recognizing non-s
 preserved.
 """
 
-from ._negative_selection import BNSA, RNSA
+from ._binary_negative_selection import BNSA
+from ._negative_selection import RNSA
 
 __author__ = "João Paulo da Silva Barros"
 __all__ = ["RNSA", "BNSA"]

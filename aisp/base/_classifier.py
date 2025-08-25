@@ -1,5 +1,6 @@
 """Base class for classification algorithm."""
 
+from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Optional, Union
 
@@ -19,7 +20,7 @@ class BaseClassifier(ABC, Base):
     classes: Union[npt.NDArray, list] = []
 
     @abstractmethod
-    def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True) -> "BaseClassifier":
+    def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True) -> BaseClassifier:
         """
         Train the model using the input data X and corresponding labels y.
 

@@ -1,5 +1,6 @@
 """Base class for clustering algorithms."""
 
+from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Optional
 
@@ -17,7 +18,7 @@ class BaseClusterer(ABC, Base):
     """
 
     @abstractmethod
-    def fit(self, X: npt.NDArray, verbose: bool = True) -> "BaseClusterer":
+    def fit(self, X: npt.NDArray, verbose: bool = True) -> BaseClusterer:
         """
         Train the model using the input data X.
 

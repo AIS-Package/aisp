@@ -54,7 +54,6 @@ class BaseAIRS(BaseClassifier, ABC):
                 "X does not have the same amount of sample for the output classes in y."
             )
 
-
     @staticmethod
     def _check_and_raise_exceptions_predict(
         X: npt.NDArray,
