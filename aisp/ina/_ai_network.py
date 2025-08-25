@@ -22,7 +22,7 @@ from ..utils.validation import detect_vector_data_type
 
 
 class AiNet(BaseAiNet):
-    """Artificial Immune Network for Compression and Clustering .
+    """Artificial Immune Network for Compression and Clustering.
 
     This class implements the aiNet algorithm, an artificial immune network model designed for
     clustering and data compression tasks. The aiNet algorithm uses principles from immune
