@@ -1,19 +1,20 @@
 """Negative Selection Algorithm."""
 
 from __future__ import annotations
+
 from typing import Dict, Literal, Optional, Union
-from tqdm import tqdm
 
 import numpy as np
 import numpy.typing as npt
+from tqdm import tqdm
 
+from ._base import BaseNSA
 from ._ns_core import (
     check_detector_bnsa_validity,
     bnsa_class_prediction
 )
 from ..exceptions import MaxDiscardsReachedError
 from ..utils.sanitizers import sanitize_seed, sanitize_param
-from ._base import BaseNSA
 
 
 class BNSA(BaseNSA):

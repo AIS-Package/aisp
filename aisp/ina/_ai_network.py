@@ -1,6 +1,7 @@
 """Artificial Immune Network (AiNet)."""
 
 from __future__ import annotations
+
 from collections import Counter
 from heapq import nlargest
 from typing import Optional
@@ -15,8 +16,8 @@ from ._base import BaseAiNet
 from ..base import set_seed_numba
 from ..base.mutation import clone_and_mutate_binary, clone_and_mutate_continuous, \
     clone_and_mutate_ranged
-from ..utils.sanitizers import sanitize_choice, sanitize_param, sanitize_seed
 from ..utils.distance import hamming, compute_metric_distance, get_metric_code
+from ..utils.sanitizers import sanitize_choice, sanitize_param, sanitize_seed
 from ..utils.types import FeatureType, MetricType
 from ..utils.validation import detect_vector_data_type
 

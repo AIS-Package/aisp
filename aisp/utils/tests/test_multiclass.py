@@ -1,5 +1,6 @@
 """Tests Utility functions for handling classes with multiple categories."""
 import numpy as np
+
 from aisp.utils import slice_index_list_by_class
 
 

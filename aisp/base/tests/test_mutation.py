@@ -1,7 +1,8 @@
 """Utility function tests for immune mutation"""
 
-import pytest
 import numpy as np
+import pytest
+
 from aisp.base.mutation import (
     clone_and_mutate_continuous,
     clone_and_mutate_binary,

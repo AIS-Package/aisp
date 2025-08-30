@@ -1,7 +1,8 @@
 """Test utility functions to measure normalized distance between vectors."""
 
-import pytest
 import numpy as np
+import pytest
+
 from aisp.utils.distance import euclidean, hamming, cityblock, minkowski
 
 

@@ -3,8 +3,8 @@
 
 import numpy as np
 import pytest
-from aisp.exceptions import FeatureDimensionMismatch, MaxDiscardsReachedError
 
+from aisp.exceptions import FeatureDimensionMismatch, MaxDiscardsReachedError
 from aisp.nsa import BNSA, RNSA
 
 

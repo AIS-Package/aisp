@@ -5,9 +5,9 @@ from abc import ABC
 import numpy as np
 import numpy.typing as npt
 
+from ..base import BaseClassifier
 from ..exceptions import FeatureDimensionMismatch
 from ..utils.types import FeatureType
-from ..base import BaseClassifier
 
 
 class BaseAIRS(BaseClassifier, ABC):
