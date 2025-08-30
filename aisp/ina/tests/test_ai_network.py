@@ -3,8 +3,8 @@
 
 import numpy as np
 import pytest
-from aisp.exceptions import FeatureDimensionMismatch
 
+from aisp.exceptions import FeatureDimensionMismatch
 from aisp.ina import AiNet
 
 

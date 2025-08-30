@@ -3,9 +3,9 @@
 
 import numpy as np
 import pytest
-from aisp.exceptions import FeatureDimensionMismatch
 
 from aisp.csa import AIRS
+from aisp.exceptions import FeatureDimensionMismatch
 
 
 @pytest.fixture

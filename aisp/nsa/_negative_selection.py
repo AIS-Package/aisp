@@ -1,14 +1,16 @@
 """Negative Selection Algorithm."""
 
 from __future__ import annotations
+
 from typing import Any, Dict, Literal, Optional, Union
-from tqdm import tqdm
 
 import numpy as np
 import numpy.typing as npt
+from tqdm import tqdm
 
-from ..base import set_seed_numba
+from ._base import BaseNSA, Detector
 from ._ns_core import check_detector_rnsa_validity
+from ..base import set_seed_numba
 from ..exceptions import MaxDiscardsReachedError
 from ..utils.distance import (
     min_distance_to_class_vectors,
@@ -16,7 +18,6 @@ from ..utils.distance import (
     compute_metric_distance,
 )
 from ..utils.sanitizers import sanitize_seed, sanitize_choice, sanitize_param
-from ._base import BaseNSA, Detector
 
 
 class RNSA(BaseNSA):

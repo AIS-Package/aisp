@@ -1,7 +1,7 @@
 """Unit tests for the detector validity checking functions implementation."""
 
-import pytest
 import numpy as np
+import pytest
 
 from aisp.nsa._ns_core import bnsa_class_prediction, check_detector_bnsa_validity
 

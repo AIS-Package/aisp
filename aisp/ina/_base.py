@@ -3,9 +3,8 @@
 from abc import ABC
 from typing import Optional
 
-from numpy import typing as npt
-
 import numpy as np
+from numpy import typing as npt
 
 from ..base import BaseClusterer
 from ..exceptions import FeatureDimensionMismatch

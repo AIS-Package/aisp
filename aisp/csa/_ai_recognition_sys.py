@@ -1,6 +1,7 @@
 """Artificial Immune Recognition System (AIRS)."""
 
 from __future__ import annotations
+
 import random
 from collections import Counter
 from heapq import nlargest
@@ -12,13 +13,13 @@ import numpy.typing as npt
 from scipy.spatial.distance import pdist
 from tqdm import tqdm
 
-from ..base import set_seed_numba
+from ._base import BaseAIRS
 from ._cell import Cell
-from ..utils.sanitizers import sanitize_param, sanitize_seed, sanitize_choice
+from ..base import set_seed_numba
 from ..utils.distance import hamming, compute_metric_distance, get_metric_code
+from ..utils.sanitizers import sanitize_param, sanitize_seed, sanitize_choice
 from ..utils.types import FeatureType, MetricType
 from ..utils.validation import detect_vector_data_type
-from ._base import BaseAIRS
 
 
 class _ARB(Cell):

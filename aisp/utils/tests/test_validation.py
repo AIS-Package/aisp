@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from aisp.exceptions import UnsupportedTypeError
 from aisp.utils.validation import detect_vector_data_type
 

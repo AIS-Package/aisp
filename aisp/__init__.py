@@ -14,8 +14,8 @@ https://ais-package.github.io/docs/intro
 """
 
 from . import csa
-from . import nsa
 from . import ina
+from . import nsa
 
 __author__ = "AISP Development Team"
 __version__ = "0.3.1"

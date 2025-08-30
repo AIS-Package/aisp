@@ -1,6 +1,7 @@
 """Tests Utility functions to sanitizers variables"""
 
 import pytest
+
 from aisp.utils.sanitizers import sanitize_choice, sanitize_param, sanitize_seed
 
 
