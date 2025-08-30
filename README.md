@@ -48,12 +48,12 @@ Artificial Immune Systems (AIS) are inspired by the vertebrate immune system, cr
 
 ##### Algorithms implemented:
 
-> - [x] [**Negative Selection.**](https://ais-package.github.io/docs/aisp-techniques/Negative%20Selection/)
-> - [x] [**Clonal Selection Algorithms.**](https://ais-package.github.io/docs/aisp-techniques/Clonal%20Selection%20Algorithms/)
->     * [AIRS - Artificial Immune Recognition System](https://ais-package.github.io/docs/aisp-techniques/Clonal%20Selection%20Algorithms/airs/)
+> - [x] [**Negative Selection.**](https://ais-package.github.io/docs/aisp-techniques/negative-selection/)
+> - [x] [**Clonal Selection Algorithms.**](https://ais-package.github.io/docs/aisp-techniques/clonal-selection-algorithms/)
+>     * [AIRS - Artificial Immune Recognition System](https://ais-package.github.io/docs/aisp-techniques/clonal-selection-algorithms/airs/)
 > - [ ] *Danger Theory.*
-> - [x] [*Immune Network Theory.*](https://ais-package.github.io/docs/aisp-techniques/Immune%20Network%20Theory)
->   - [AiNet - Artificial Immune Network para Clustering and Compression](https://ais-package.github.io/docs/aisp-techniques/Immune%20Network%20Theory/ainet)
+> - [x] [*Immune Network Theory.*](https://ais-package.github.io/docs/aisp-techniques/immune-network-theory/)
+>   - [AiNet - Artificial Immune Network para Clustering and Compression](https://ais-package.github.io/docs/aisp-techniques/immune-network-theory/ainet)
 
 </section>
 
