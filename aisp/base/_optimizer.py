@@ -108,7 +108,6 @@ class BaseOptimizer(ABC):
         best_solution : Any
             The best solution found by the optimization algorithm.
         """
-        pass
 
     @abstractmethod
     def affinity_function(self, solution: Any) -> float:
@@ -126,7 +125,6 @@ class BaseOptimizer(ABC):
         cost : float
             Cost value associated with the given solution.
         """
-        pass
 
     def register(self, alias: str, function: Callable[..., Any], overwrite: bool = True) -> None:
         """Register a function dynamically in the optimizer instance.
