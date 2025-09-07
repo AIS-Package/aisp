@@ -19,6 +19,12 @@ class BaseOptimizer(ABC):
         self._solution_history: list = []
         self._best_solution: Optional[Any] = None
         self._best_cost: Optional[float] = None
+        self._protected_aliases = [
+            "__init__",
+            "optimize",
+            "register",
+            "get_report"
+        ]
 
     @property
     def cost_history(self) -> List[float]:
@@ -126,7 +132,7 @@ class BaseOptimizer(ABC):
             Cost value associated with the given solution.
         """
 
-    def register(self, alias: str, function: Callable[..., Any], overwrite: bool = True) -> None:
+    def register(self, alias: str, function: Callable[..., Any]) -> None:
         """Register a function dynamically in the optimizer instance.
 
         Parameters
@@ -135,18 +141,21 @@ class BaseOptimizer(ABC):
             Name used to access the function as an attribute.
         function : Callable[..., Any]
             Callable to be registered.
-        overwrite : bool, default=True
-            If True, overwrites an existing function with the same alias.
 
         Raises
         ------
         TypeError
             If `function` is not callable.
         AttributeError
-            If `alias` already exists and `overwrite` is False.
+            If `alias` is protected and cannot be modified. Or if `alias` does not exist in the
+            optimizer class.
         """
         if not callable(function):
             raise TypeError(f"Expected a function for '{alias}', got {type(function).__name__}")
-        if hasattr(self, alias) and not overwrite:
-            raise AttributeError(f"The alias '{alias}' is already registered")
+        if alias in self._protected_aliases:
+            raise AttributeError(f"The alias '{alias}' is protected and cannot be modified.")
+        if not hasattr(self, alias):
+            raise AttributeError(
+                f"Alias '{alias}' is not a valid method of {self.__class__.__name__}"
+            )
         setattr(self, alias, function)
