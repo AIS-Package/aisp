@@ -1,6 +1,6 @@
 """Utility functions for validation and treatment of parameters."""
 
-from typing import TypeVar, Iterable, Callable, Any, Optional
+from typing import TypeVar, Iterable, Callable, Any, Optional, Dict
 
 T = TypeVar('T')
 
@@ -62,3 +62,45 @@ def sanitize_seed(seed: Any) -> Optional[int]:
         The original seed if it is a non-negative integer, or None if it is invalid.
     """
     return seed if isinstance(seed, int) and seed >= 0 else None
+
+
+def sanitize_bounds(bounds: Any, problem_size: int) -> Dict[str, list]:
+    """Validate and normalize feature bounds.
+
+    Parameters
+    ----------
+    bounds : Any
+        The input bounds, which must be either None or a dictionary with 'min'
+        and 'max' keys.
+    problem_size : int
+        The expected length for the normalized bounds lists, corresponding to
+        the number of features in the problem.
+
+    Returns
+    -------
+    Dict[str, list]
+        Dictionary {'min': [min_1, ..., min_N], 'max': [max_1, ..., max_N]}.
+
+    Raises
+    ------
+    TypeError
+        If `bounds` is not None and not a dict with 'min'/'max', or if items are non-numeric.
+    ValueError
+        If provided iterables have the wrong length, or any min > max elementwise.
+    """
+    if bounds is None or not isinstance(bounds, dict) or set(bounds.keys()) != {'min', 'max'}:
+        raise ValueError("bounds expects a dict with keys 'min' and 'max'")
+    result = {}
+
+    for key in ['min', 'max']:
+        value = bounds[key]
+        if isinstance(value, (float, int)):
+            result[key] = [value] * problem_size
+        else:
+            value = list(value)
+            if len(value) != problem_size:
+                raise ValueError(
+                    f"The size of {key} must be equal to the size of the problem ({problem_size})"
+                )
+            result[key] = value
+    return result

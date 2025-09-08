@@ -16,6 +16,7 @@ from ._base import BaseAiNet
 from ..base import set_seed_numba
 from ..base.mutation import clone_and_mutate_binary, clone_and_mutate_continuous, \
     clone_and_mutate_ranged
+from ..base.populations import generate_random_antibodies
 from ..utils.distance import hamming, compute_metric_distance, get_metric_code
 from ..utils.sanitizers import sanitize_choice, sanitize_param, sanitize_seed
 from ..utils.types import FeatureType, MetricType
@@ -293,7 +294,7 @@ class AiNet(BaseAiNet):
         npt.NDArray
             List of initialized memories.
         """
-        return self._generate_random_antibodies(
+        return generate_random_antibodies(
             self.N,
             self._n_features,
             self._feature_type,
@@ -402,7 +403,7 @@ class AiNet(BaseAiNet):
         npt.NDArray
             Array of new random antibodies for diversity introduction.
         """
-        return self._generate_random_antibodies(
+        return generate_random_antibodies(
             self.n_diversity_injection,
             self._n_features,
             self._feature_type,

@@ -79,24 +79,24 @@ class BaseOptimizer(ABC):
             header,
             f"{'Optimization Summary':^45}",
             header,
-            f"Best cost      : {self.best_cost:.6f}",
+            f"Best cost      : {self.best_cost:.6f}\n",
             f"Best solution  : {self.best_solution}\n",
-            "Cost History per Iteration:"
+            "Cost History per Iteration:\n"
         ]
 
-        table_header = f"┃{'Iteration':^12}┃{'Cost':^28}┃"
-        table_sep = "┣" + "━" * 12 + "╋" + "━" * 28 + "┫"
-        table_footer = "┗" + "━" * 12 + "┻" + "━" * 28 + "┛"
+        table_header = f"┃{'Iteration':^12}┃{'Cost':^28}┃\n"
+        table_sep = "┣" + "━" * 12 + "╋" + "━" * 28 + "┫\n"
+        table_footer = "┗" + "━" * 12 + "┻" + "━" * 28 + "┛\n"
         report_parts.extend([table_header, table_sep])
 
         for i, cost in enumerate(self._cost_history, start=1):
-            report_parts.append(f"┃{i:>11} ┃{cost:>27.6f} ┃")
+            report_parts.append(f"┃{i:>11} ┃{cost:>27.6f} ┃\n")
 
         report_parts.append(table_footer)
         return "".join(report_parts)
 
     @abstractmethod
-    def optimize(self, *args, verbose: bool = True) -> Any:
+    def optimize(self, max_iters: int = 50, n_iter_no_change=10, verbose: bool = True) -> Any:
         """Execute the optimization process.
 
         This abstract method must be implemented by the subclass, defining
@@ -104,8 +104,10 @@ class BaseOptimizer(ABC):
 
         Parameters
         ----------
-        *args : tuple
-            Variable arguments required by the specific optimization algorithm.
+        max_iters : int
+            Maximum number of interactions
+        n_iter_no_change: int, default=10
+            the maximum number of iterations without updating the best
         verbose : bool, default=True
             Flag to enable or disable detailed output during optimization.
 
@@ -152,7 +154,7 @@ class BaseOptimizer(ABC):
         """
         if not callable(function):
             raise TypeError(f"Expected a function for '{alias}', got {type(function).__name__}")
-        if alias in self._protected_aliases:
+        if alias in self._protected_aliases or alias.startswith("_"):
             raise AttributeError(f"The alias '{alias}' is protected and cannot be modified.")
         if not hasattr(self, alias):
             raise AttributeError(
