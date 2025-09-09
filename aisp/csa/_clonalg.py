@@ -277,10 +277,22 @@ class Clonalg(BaseOptimizer):
             List of mutated clones.
         """
         clonal_m = []
+        min_affinity = min(item[1] for item in population)
+        max_affinity = max(item[1] for item in population)
+        affinity_range = max_affinity - min_affinity
+
         for antibody, affinity in population:
+            if affinity_range == 0:
+                num_clones = self.rate_clonal
+            else:
+                normalized_affinity = 1.0 - np.clip(
+                    (affinity - min_affinity) / affinity_range,
+                    0.0, 1.0
+                )
+                num_clones = int(self.rate_clonal * normalized_affinity)
             clones = self._clone_and_mutate(
                 antibody,
-                abs(int(self.rate_clonal * affinity * self.rate_hypermutation))
+                num_clones,
             )
             for clone in clones:
                 clonal_m.append(

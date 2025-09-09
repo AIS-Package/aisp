@@ -84,10 +84,11 @@ class BaseOptimizer(ABC):
             "Cost History per Iteration:\n"
         ]
 
+        table_top = "┏" + "━" * 12 + "┳" + "━" * 28 + "┓\n"
         table_header = f"┃{'Iteration':^12}┃{'Cost':^28}┃\n"
         table_sep = "┣" + "━" * 12 + "╋" + "━" * 28 + "┫\n"
         table_footer = "┗" + "━" * 12 + "┻" + "━" * 28 + "┛\n"
-        report_parts.extend([table_header, table_sep])
+        report_parts.extend([table_top, table_header, table_sep])
 
         for i, cost in enumerate(self._cost_history, start=1):
             report_parts.append(f"┃{i:>11} ┃{cost:>27.6f} ┃\n")

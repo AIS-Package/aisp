@@ -2,6 +2,9 @@
 
 from typing import TypeVar, Iterable, Callable, Any, Optional, Dict
 
+import numpy as np
+import numpy.typing as npt
+
 T = TypeVar('T')
 
 
@@ -64,7 +67,7 @@ def sanitize_seed(seed: Any) -> Optional[int]:
     return seed if isinstance(seed, int) and seed >= 0 else None
 
 
-def sanitize_bounds(bounds: Any, problem_size: int) -> Dict[str, list]:
+def sanitize_bounds(bounds: Any, problem_size: int) -> Dict[str, npt.NDArray[np.float64]]:
     """Validate and normalize feature bounds.
 
     Parameters
@@ -95,9 +98,9 @@ def sanitize_bounds(bounds: Any, problem_size: int) -> Dict[str, list]:
     for key in ['min', 'max']:
         value = bounds[key]
         if isinstance(value, (float, int)):
-            result[key] = [value] * problem_size
+            result[key] = np.array([value] * problem_size).astype(dtype=np.float64)
         else:
-            value = list(value)
+            value = np.array(value).astype(dtype=np.float64)
             if len(value) != problem_size:
                 raise ValueError(
                     f"The size of {key} must be equal to the size of the problem ({problem_size})"
