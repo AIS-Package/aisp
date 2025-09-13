@@ -33,9 +33,9 @@ class Clonalg(BaseOptimizer):
         Number of memory cells (antibodies) in the population.
     rate_clonal : float, default=10
         Maximum number of possible clones of a cell. This value is multiplied by
-        (cell_stimulus * rate_hypermutation) to determine the number of clones.
+        cell_affinity to determine the number of clones.
     rate_hypermutation : float, default=0.75
-        Rate of mutated clones derived from `rate_clonal`, used as a scalar factor.
+        Rate of mutated clones, used as a scalar factor.
     n_diversity_injection : int, default=5
         Number of new random memory cells injected to maintain diversity.
     selection_size : int, default=5
@@ -85,8 +85,10 @@ class Clonalg(BaseOptimizer):
         self.problem_size = sanitize_param(problem_size, 1, lambda x: x > 0)
         self.N: int = sanitize_param(N, 50, lambda x: x > 0)
         self.rate_clonal: int = sanitize_param(rate_clonal, 10, lambda x: x > 0)
-        self.rate_hypermutation: float = sanitize_param(
-            rate_hypermutation, 0.75, lambda x: x > 0
+        self.rate_hypermutation: np.float64 = np.float64(
+            sanitize_param(
+                rate_hypermutation, 0.75, lambda x: x > 0
+            )
         )
         self.n_diversity_injection: int = sanitize_param(
             n_diversity_injection, 5, lambda x: x > 0
@@ -151,36 +153,38 @@ class Clonalg(BaseOptimizer):
         antibodies = [(antibody, self.affinity_function(antibody)) for antibody in population]
         best_cost = None
         stop = 0
+
         while t <= max_iters:
             p_select = heapq.nsmallest(self.selection_size, antibodies, key=lambda x: x[1])
             self._record_best(p_select[0][1], p_select[0][0])
 
             clones = self._clone_and_hypermutation(p_select)
-            p_select.extend(clones)
-            p_select = heapq.nsmallest(
-                self.N - self.n_diversity_injection,
-                p_select,
-                key=lambda x: x[1]
-            )
+
             p_rand = [
                 (antibody, self.affinity_function(antibody))
                 for antibody in self._diversity_introduction()
             ]
-            antibodies = p_select + p_rand
+            antibodies = p_select
+            antibodies.extend(clones)
+            antibodies = heapq.nsmallest(
+                self.N - self.n_diversity_injection, antibodies, key=lambda x: x[1]
+            )
+            antibodies.extend(p_rand)
+            if len(antibodies) > self.N:
+                antibodies = heapq.nsmallest(self.N, antibodies, key=lambda x: x[1])
             if best_cost == self.best_cost:
                 stop += 1
             else:
-                stop = 1
+                stop = 0
                 best_cost = self.best_cost
 
             if stop == n_iter_no_change:
                 break
 
             t += 1
-
         return np.array([antibody for antibody, _ in antibodies])
 
-    def affinity_function(self, solution: npt.NDArray) -> float:
+    def affinity_function(self, solution: npt.NDArray) -> np.float64:
         """
         Evaluate the affinity of a candidate cell.
 
@@ -203,7 +207,7 @@ class Clonalg(BaseOptimizer):
             raise NotImplementedError(
                 "No objective function to evaluate the candidate cell was provided."
             )
-        return float(self._affinity_function(solution))
+        return np.float64(self._affinity_function(solution))
 
     def _init_population_antibodies(self) -> npt.NDArray:
         """Initialize the antibody set of the population randomly.
@@ -254,8 +258,10 @@ class Clonalg(BaseOptimizer):
         if self.feature_type == "binary-features":
             return clone_and_mutate_binary(antibody, n_clone)
         if self.feature_type == "ranged-features" and self._bounds_extend_cache is not None:
-            return clone_and_mutate_ranged(antibody, n_clone, self._bounds_extend_cache)
-        return clone_and_mutate_continuous(antibody, n_clone)
+            return clone_and_mutate_ranged(
+                antibody, n_clone, self._bounds_extend_cache, self.rate_hypermutation
+                )
+        return clone_and_mutate_continuous(antibody, n_clone, self.rate_hypermutation)
 
     def _clone_and_hypermutation(
         self,
@@ -283,20 +289,16 @@ class Clonalg(BaseOptimizer):
 
         for antibody, affinity in population:
             if affinity_range == 0:
-                num_clones = self.rate_clonal
+                normalized_affinity = 1
             else:
-                normalized_affinity = 1.0 - np.clip(
-                    (affinity - min_affinity) / affinity_range,
-                    0.0, 1.0
-                )
-                num_clones = int(self.rate_clonal * normalized_affinity)
+                normalized_affinity = (affinity - min_affinity) / affinity_range
+
+            num_clones = max(1, int(self.rate_clonal * normalized_affinity))
+
             clones = self._clone_and_mutate(
                 antibody,
                 num_clones,
             )
-            for clone in clones:
-                clonal_m.append(
-                    (clone, self.affinity_function(clone))
-                )
+            clonal_m.extend(clones)
 
-        return clonal_m
+        return [(clone, self.affinity_function(clone)) for clone in np.unique(clonal_m, axis=0)]

@@ -79,7 +79,7 @@ class BaseOptimizer(ABC):
             header,
             f"{'Optimization Summary':^45}",
             header,
-            f"Best cost      : {self.best_cost:.6f}\n",
+            f"Best cost      : {self.best_cost}\n",
             f"Best solution  : {self.best_solution}\n",
             "Cost History per Iteration:\n"
         ]
