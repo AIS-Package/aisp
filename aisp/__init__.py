@@ -5,9 +5,22 @@ immune system to pattern recognition and optimization tasks.
 
 The package is organized into specialized modules, each dedicated to a family of Artificial
 Immune Systems algorithms:
-- csa: Clonal Selection Algorithms
-- nsa: Negative Selection Algorithms
-- ina: Immune Network Algorithms
+
+Modules
+-------
+csa : Clonal Selection Algorithms.
+    Inspired by the processes of antibody proliferation and mutation.
+    - AIRS: Artificial Immune Recognition System for classification.
+    - Clonalg: Clonal Selection Algorithm for optimization.
+
+nsa : Negative Selection Algorithms
+    Simulates T cell maturation and is capable of detecting non-self cells.
+    - RNSA: Real-value Negative Selection Algorithm for classification.
+    - BNSA: Binary Negative Selection Algorithm for classification.
+
+ina : Immune Network Algorithms
+    Based on immune network theory.
+    - AiNet: Artificial Immune Network for clustering.
 
 For detailed documentation and examples, visit:
 https://ais-package.github.io/docs/intro
