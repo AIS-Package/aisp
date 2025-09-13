@@ -32,9 +32,9 @@ def test_generate_mutated_clones(vector, n, mutate_as_binary):
         result = clone_and_mutate_binary(vector, n)
     else:
         if np.all(vector >= 0.0) and np.all(vector <= 1.0):
-            result = clone_and_mutate_continuous(vector, n)
+            result = clone_and_mutate_continuous(vector, n,np.float64(1.0))
         else:
             result = clone_and_mutate_ranged(
-                vector, n, np.vstack([np.min(vector), np.max(vector)])
+                vector, n, np.vstack([np.min(vector), np.max(vector)]), np.float64(1.0)
             )
     assert len(result) == n

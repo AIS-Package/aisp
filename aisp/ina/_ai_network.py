@@ -479,8 +479,8 @@ class AiNet(BaseAiNet):
         if self._feature_type == "binary-features":
             return clone_and_mutate_binary(antibody, n_clone)
         if self._feature_type == "ranged-features" and self._bounds is not None:
-            return clone_and_mutate_ranged(antibody, n_clone, self._bounds)
-        return clone_and_mutate_continuous(antibody, n_clone)
+            return clone_and_mutate_ranged(antibody, n_clone, self._bounds, np.float64(1.0))
+        return clone_and_mutate_continuous(antibody, n_clone, np.float64(1.0))
 
     def _build_mst(self):
         """Construct the Minimum Spanning Tree (MST) for the antibody population.
