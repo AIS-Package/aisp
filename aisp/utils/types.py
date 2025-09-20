@@ -8,6 +8,12 @@ FeatureType : Literal["binary-features", "continuous-features", "ranged-features
     - "binary-features": Features with binary values (e.g., 0 or 1).
     - "continuous-features": Features with continuous numeric values.
     - "ranged-features": Features represented by ranges or intervals.
+FeatureTypeAll : Literal["binary-features", "continuous-features", "ranged-features"]
+    Specifies the type of features in the input data. Can be one of:
+    - "binary-features": Features with binary values (e.g., 0 or 1).
+    - "continuous-features": Features with continuous numeric values.
+    - "ranged-features": Features represented by ranges or intervals.
+    - "permutation-features": Features represented by permutation.
 
 MetricType : Literal["manhattan", "minkowski", "euclidean"]
     Specifies the distance metric to use for calculations. Possible values:
@@ -20,12 +26,14 @@ MetricType : Literal["manhattan", "minkowski", "euclidean"]
 """
 
 
-from typing import Literal, TypeAlias
-
+from typing import Literal, TypeAlias, Union
 
 FeatureType: TypeAlias = Literal[
     "binary-features",
     "continuous-features",
     "ranged-features"
 ]
+
+FeatureTypeAll: TypeAlias = Union[FeatureType, Literal["permutation-features"]]
+
 MetricType: TypeAlias = Literal["manhattan", "minkowski", "euclidean"]

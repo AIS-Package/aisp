@@ -5,6 +5,8 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Optional, List, Any, Callable
 
+from ..utils.display import TableFormatter
+
 
 class BaseOptimizer(ABC):
     """Abstract base class for optimization algorithms.
@@ -25,6 +27,7 @@ class BaseOptimizer(ABC):
             "register",
             "get_report"
         ]
+        self.mode = "min"
 
     @property
     def cost_history(self) -> List[float]:
@@ -56,7 +59,12 @@ class BaseOptimizer(ABC):
         """
         self._solution_history.append(best_solution)
         self._cost_history.append(cost)
-        if self._best_cost is None or cost < self._best_cost:
+        is_better = (
+            self._best_cost is None or
+            (self.mode == "min" and cost < self._best_cost) or
+            (self.mode == "max" and cost > self._best_cost)
+        )
+        if is_better:
             self._best_solution = best_solution
             self._best_cost = cost
 
@@ -83,17 +91,26 @@ class BaseOptimizer(ABC):
             f"Best solution  : {self.best_solution}\n",
             "Cost History per Iteration:\n"
         ]
+        table_formatter = TableFormatter(
+            {
+                'Iteration': 12,
+                'Cost': 28
+            }
+        )
 
-        table_top = "┏" + "━" * 12 + "┳" + "━" * 28 + "┓\n"
-        table_header = f"┃{'Iteration':^12}┃{'Cost':^28}┃\n"
-        table_sep = "┣" + "━" * 12 + "╋" + "━" * 28 + "┫\n"
-        table_footer = "┗" + "━" * 12 + "┻" + "━" * 28 + "┛\n"
-        report_parts.extend([table_top, table_header, table_sep])
+        report_parts.extend([table_formatter.get_header()])
 
         for i, cost in enumerate(self._cost_history, start=1):
-            report_parts.append(f"┃{i:>11} ┃{cost:>27.6f} ┃\n")
+            report_parts.append(
+                '\n' + table_formatter.get_row(
+                    {
+                        'Iteration': f"{i:>11} ",
+                        'Cost': f"{cost:>27.6f} "
+                    }
+                )
+            )
 
-        report_parts.append(table_footer)
+        report_parts.append(table_formatter.get_bottom(True))
         return "".join(report_parts)
 
     @abstractmethod
@@ -162,3 +179,10 @@ class BaseOptimizer(ABC):
                 f"Alias '{alias}' is not a valid method of {self.__class__.__name__}"
             )
         setattr(self, alias, function)
+
+    def reset(self):
+        """Reset the object's internal state, clearing history and resetting values."""
+        self._cost_history: List[float] = []
+        self._solution_history: list = []
+        self._best_solution: Optional[Any] = None
+        self._best_cost: Optional[float] = None

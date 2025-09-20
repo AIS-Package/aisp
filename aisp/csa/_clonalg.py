@@ -3,17 +3,18 @@
 from __future__ import annotations
 
 import heapq
-from typing import Optional, Callable, Dict
+from typing import Optional, Callable, Dict, Literal
 
 import numpy as np
 import numpy.typing as npt
 
+from ..utils.display import ProgressTable
 from ..base import BaseOptimizer, set_seed_numba
 from ..base.mutation import clone_and_mutate_binary, clone_and_mutate_ranged, \
-    clone_and_mutate_continuous
+    clone_and_mutate_continuous, clone_and_mutate_permutation
 from ..base.populations import generate_random_antibodies
 from ..utils.sanitizers import sanitize_seed, sanitize_param, sanitize_bounds
-from ..utils.types import FeatureType
+from ..utils.types import FeatureTypeAll
 
 
 class Clonalg(BaseOptimizer):
@@ -21,8 +22,8 @@ class Clonalg(BaseOptimizer):
 
     The Clonal Selection Algorithm (CSA) is an optimization algorithm inspired by the biological
     process of clonal selection and expansion of antibodies in the immune system [1]_. This
-    implementation of CLONALG has been adapted for the minimization of cost functions in binary,
-    continuous, and ranged-value problems.
+    implementation of CLONALG has been adapted for the minimization or maximization of cost
+    functions in binary, continuous, ranged-value, and permutation problems.
 
 
     Parameters
@@ -42,10 +43,10 @@ class Clonalg(BaseOptimizer):
         Number of the best antibodies selected for cloning.
     affinity_function : Optional[Callable[..., npt.NDArray]], default=None
         Objective function to evaluate candidate solutions in minimizing the problem.
-    feature_type : FeatureType, default='ranged-features'
+    feature_type : FeatureTypeAll, default='ranged-features'
         Type of problem samples: binary, continuous, or based on value ranges.
         Specifies the type of features: "continuous-features", "binary-features",
-        or "ranged-features".
+        "ranged-features", or "permutation-features".
     bounds : Optional[Dict], default=None
         Definition of search limits when ``feature_type='ranged-features'``.
         Can be provided in two ways:
@@ -57,6 +58,8 @@ class Clonalg(BaseOptimizer):
             Each dimension has specific limits. Both arrays must be
             ``problem_size``.
 
+    mode : Literal["min", "max"], default="min"
+        Defines whether the algorithm minimizes or maximizes the cost function.
     seed : Optional[int], default=None
         Seed for random generation of detector values. If None, the value is random.
 
@@ -77,8 +80,9 @@ class Clonalg(BaseOptimizer):
         n_diversity_injection: int = 5,
         selection_size: int = 5,
         affinity_function: Optional[Callable[..., npt.NDArray]] = None,
-        feature_type: FeatureType = 'ranged-features',
+        feature_type: FeatureTypeAll = 'ranged-features',
         bounds: Optional[Dict] = None,
+        mode: Literal["min", "max"] = "min",
         seed: Optional[int] = None
     ):
         super().__init__()
@@ -97,16 +101,24 @@ class Clonalg(BaseOptimizer):
             selection_size, 5, lambda x: x > 0
         )
         self._affinity_function = affinity_function
-        self.feature_type: FeatureType = feature_type
+        self.feature_type: FeatureTypeAll = feature_type
 
         self._bounds = None
         self._bounds_extend_cache = None
         self.bounds = bounds
 
+        self.mode: Literal["min", "max"] = sanitize_param(
+            mode,
+            "min",
+            lambda x: x == "max"
+        )
+
         self.seed: Optional[int] = sanitize_seed(seed)
         if self.seed is not None:
             np.random.seed(self.seed)
             set_seed_numba(self.seed)
+
+        self.population = None
 
     @property
     def bounds(self) -> Optional[Dict]:
@@ -147,15 +159,24 @@ class Clonalg(BaseOptimizer):
         population : npt.NDArray
             Antibody population after clonal expansion.
         """
-        population = self._init_population_antibodies()
+        self.reset()
+        self.population = self._init_population_antibodies()
 
         t = 1
-        antibodies = [(antibody, self.affinity_function(antibody)) for antibody in population]
+        antibodies = [(antibody, self.affinity_function(antibody)) for antibody in self.population]
         best_cost = None
         stop = 0
+        progress = ProgressTable(
+            {
+                "Iteration": 11,
+                f"Best Affinity ({self.mode})": 25,
+                "Worse Affinity": 20,
+                "Stagnation": 17},
+            verbose
+        )
 
         while t <= max_iters:
-            p_select = heapq.nsmallest(self.selection_size, antibodies, key=lambda x: x[1])
+            p_select = self._select_top_antibodies(self.selection_size, antibodies)
             self._record_best(p_select[0][1], p_select[0][0])
 
             clones = self._clone_and_hypermutation(p_select)
@@ -166,23 +187,52 @@ class Clonalg(BaseOptimizer):
             ]
             antibodies = p_select
             antibodies.extend(clones)
-            antibodies = heapq.nsmallest(
-                self.N - self.n_diversity_injection, antibodies, key=lambda x: x[1]
+            antibodies = self._select_top_antibodies(
+                self.N - self.n_diversity_injection, antibodies
             )
             antibodies.extend(p_rand)
             if len(antibodies) > self.N:
-                antibodies = heapq.nsmallest(self.N, antibodies, key=lambda x: x[1])
+                antibodies = self._select_top_antibodies(self.N, antibodies)
             if best_cost == self.best_cost:
                 stop += 1
             else:
                 stop = 0
                 best_cost = self.best_cost
-
+            progress.update(
+                {
+                    "Iteration": t,
+                    f"Best Affinity ({self.mode})": f"{self.best_cost:>25.6f}",
+                    "Worse Affinity": f"{antibodies[-1][1]:>20.6f}",
+                    "Stagnation": stop
+                }
+            )
             if stop == n_iter_no_change:
                 break
 
             t += 1
-        return np.array([antibody for antibody, _ in antibodies])
+        progress.finish()
+        self.population = np.array([antibody for antibody, _ in antibodies]).astype(dtype=float)
+        return self.population
+
+    def _select_top_antibodies(self, n: int, antibodies: list[tuple]) -> list[tuple]:
+        """Select the antibodies with the highest or lowest values, depending on the mode.
+
+        Parameters
+        ----------
+        n : int
+            Number of antibodies to select.
+        antibodies : list[tuple]
+            Representing the antibodies and their associated score.
+
+        Returns
+        -------
+            List containing the `n` antibodies selected according to the defined min or max
+            criterion.
+        """
+        if self.mode == "max":
+            return heapq.nlargest(n, antibodies, key=lambda x: x[1])
+
+        return heapq.nsmallest(n, antibodies, key=lambda x: x[1])
 
     def affinity_function(self, solution: npt.NDArray) -> np.float64:
         """
@@ -239,7 +289,12 @@ class Clonalg(BaseOptimizer):
             self._bounds_extend_cache
         )
 
-    def _clone_and_mutate(self, antibody: npt.NDArray, n_clone: int) -> npt.NDArray:
+    def _clone_and_mutate(
+        self,
+        antibody: npt.NDArray,
+        n_clone: int,
+        rate_hypermutation: float
+    ) -> npt.NDArray:
         """
         Generate mutated clones from an antibody, based on the feature type.
 
@@ -258,10 +313,14 @@ class Clonalg(BaseOptimizer):
         if self.feature_type == "binary-features":
             return clone_and_mutate_binary(antibody, n_clone)
         if self.feature_type == "ranged-features" and self._bounds_extend_cache is not None:
-            return clone_and_mutate_ranged(
-                antibody, n_clone, self._bounds_extend_cache, self.rate_hypermutation
-                )
-        return clone_and_mutate_continuous(antibody, n_clone, self.rate_hypermutation)
+
+            teste = clone_and_mutate_ranged(
+                antibody, n_clone, self._bounds_extend_cache, rate_hypermutation
+            )
+            return teste
+        if self.feature_type == "permutation-features":
+            return clone_and_mutate_permutation(antibody, n_clone, rate_hypermutation)
+        return clone_and_mutate_continuous(antibody, n_clone, rate_hypermutation)
 
     def _clone_and_hypermutation(
         self,
@@ -292,13 +351,15 @@ class Clonalg(BaseOptimizer):
                 normalized_affinity = 1
             else:
                 normalized_affinity = (affinity - min_affinity) / affinity_range
+                if self.mode == "min":
+                    normalized_affinity = max(0.0, 1.0 - normalized_affinity)
 
-            num_clones = max(1, int(self.rate_clonal * normalized_affinity))
-
+            num_clones = max(0, int(self.rate_clonal * normalized_affinity))
             clones = self._clone_and_mutate(
                 antibody,
                 num_clones,
+                1 - np.exp(-self.rate_hypermutation * normalized_affinity)
             )
             clonal_m.extend(clones)
 
-        return [(clone, self.affinity_function(clone)) for clone in np.unique(clonal_m, axis=0)]
+        return [(clone, self.affinity_function(clone)) for clone in clonal_m]
