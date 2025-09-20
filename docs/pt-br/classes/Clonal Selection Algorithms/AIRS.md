@@ -31,11 +31,11 @@ Estudos relacionados de destaque: [2](#ref2).
 * **metric** (Literal["manhattan", "minkowski", "euclidean"]): Forma de calcular a distância entre o detector e a amostra:
 
   * `'euclidean'` ➜ O cálculo da distância é dado pela expressão:
-    √( (x₁ – x₂)² + (y₁ – y₂)² + ... + (nₙ – nₙ)² ).
+    √( (x₁ - x₂)² + (y₁ - y₂)² + ... + (nₙ - nₙ)² ).
   * `'minkowski'` ➜ O cálculo da distância é dado pela expressão:
-    ( |X₁ – Y₁|ᵖ + |X₂ – Y₂|ᵖ + ... + |Xₙ – Yₙ|ᵖ )¹/ᵖ.
+    ( |X₁ - Y₁|ᵖ + |X₂ - Y₂|ᵖ + ... + |Xₙ - Yₙ|ᵖ )¹/ᵖ.
   * `'manhattan'` ➜ O cálculo da distância é dado pela expressão:
-    ( |x₁ – x₂| + |y₁ – y₂| + ... + |nₙ – nₙ| ).
+    ( |x₁ - x₂| + |y₁ - y₂| + ... + |nₙ - nₙ| ).
     O padrão é "euclidean".
 
 * **seed** (int): Semente para geração aleatória de valores dos detectores. O padrão é None.

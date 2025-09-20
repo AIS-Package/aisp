@@ -23,11 +23,11 @@ Related and noteworthy works: access here [2](#ref2).
 * **resource_amplified** (``float``): Resource consumption amplifier is multiplied with the incentive to subtract resources. Defaults to 1.0 without amplification.
 * **metric** (Literal["manhattan", "minkowski", "euclidean"]): Way to calculate the distance between the detector and the sample:
     * ``'Euclidean'`` ➜ The calculation of the distance is given by the expression:  
-    √( (x₁ – x₂)² + (y₁ – y₂)² + ... + (yn – yn)²).
+    √( (x₁ - x₂)² + (y₁ - y₂)² + ... + (yn - yn)²).
     * ``'minkowski'`` ➜ The calculation of the distance is given by the expression:  
-    ( |X₁ – Y₁|p + |X₂ – Y₂|p + ... + |Xn – Yn|p) ¹/ₚ.
+    ( |X₁ - Y₁|p + |X₂ - Y₂|p + ... + |Xn - Yn|p) ¹/ₚ.
     * ``'manhattan'`` ➜ The calculation of the distance is given by the expression:  
-    ( |x₁ – x₂| + |y₁ – y₂| + ... + |yn – yn|).  
+    ( |x₁ - x₂| + |y₁ - y₂| + ... + |yn - yn|).  
     Defaults to "Euclidean".
 
 * **seed** (int): Seed for the random generation of detector values. Defaults to None.

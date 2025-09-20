@@ -12,11 +12,11 @@ FeatureType : Literal["binary-features", "continuous-features", "ranged-features
 MetricType : Literal["manhattan", "minkowski", "euclidean"]
     Specifies the distance metric to use for calculations. Possible values:
     - "manhattan": The calculation of the distance is given by the expression:
-            √( (x₁ – x₂)² + (y₁ – y₂)² + ... + (yn – yn)²).
+            √( (x₁ - x₂)² + (y₁ - y₂)² + ... + (yn - yn)²).
     - "minkowski": The calculation of the distance is given by the expression:
-            ( |X₁ – Y₁|p + |X₂ – Y₂|p + ... + |Xn – Yn|p) ¹/ₚ.
+            ( |X₁ - Y₁|p + |X₂ - Y₂|p + ... + |Xn - Yn|p) ¹/ₚ.
     - "euclidean": The calculation of the distance is given by the expression:
-            ( |x₁ – x₂| + |y₁ – y₂| + ... + |yn – yn|).
+            ( |x₁ - x₂| + |y₁ - y₂| + ... + |yn - yn|).
 """
 
 

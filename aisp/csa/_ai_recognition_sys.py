@@ -111,13 +111,13 @@ class AIRS(BaseAIRS):
         Way to calculate the distance between the detector and the sample:
 
         * ``'Euclidean'`` ➜ The calculation of the distance is given by the expression:
-            √( (x₁ – x₂)² + (y₁ – y₂)² + ... + (yn – yn)²).
+            √( (x₁ - x₂)² + (y₁ - y₂)² + ... + (yn - yn)²).
 
         * ``'minkowski'`` ➜ The calculation of the distance is given by the expression:
-            ( |X₁ – Y₁|p + |X₂ – Y₂|p + ... + |Xn – Yn|p) ¹/ₚ.
+            ( |X₁ - Y₁|p + |X₂ - Y₂|p + ... + |Xn - Yn|p) ¹/ₚ.
 
         * ``'manhattan'`` ➜ The calculation of the distance is given by the expression:
-            ( |x₁ – x₂| + |y₁ – y₂| + ... + |yn – yn|).
+            ( |x₁ - x₂| + |y₁ - y₂| + ... + |yn - yn|).
 
     seed : int
         Seed for the random generation of detector values. Defaults to None.
@@ -139,7 +139,7 @@ class AIRS(BaseAIRS):
 
     References
     ----------
-    .. [1] Brabazon, A., O’Neill, M., & McGarraghy, S. (2015). Natural Computing Algorithms. In
+    .. [1] Brabazon, A., O'Neill, M., & McGarraghy, S. (2015). Natural Computing Algorithms. In
         Natural Computing Series. Springer Berlin Heidelberg.
         https://doi.org/10.1007/978-3-662-43631-8
 
@@ -195,6 +195,7 @@ class AIRS(BaseAIRS):
         self.affinity_threshold = 0.0
         self.classes = []
         self._bounds: Optional[npt.NDArray[np.float64]] = None
+        self._n_features: Optional[int] = None
 
     @property
     def cells_memory(self) -> Optional[Dict[str, list[Cell]]]:
@@ -235,6 +236,7 @@ class AIRS(BaseAIRS):
                 self._bounds = np.vstack([np.min(X, axis=0), np.max(X, axis=0)])
 
         self.classes = np.unique(y)
+        self._n_features = X.shape[1]
         sample_index = self._slice_index_list_by_class(y)
         progress = tqdm(
             total=len(y),
@@ -330,11 +332,11 @@ class AIRS(BaseAIRS):
             An ndarray of the form ``C`` [``N samples``], containing the predicted classes for
             ``X``. or ``None``: If there are no detectors for the prediction.
         """
-        if self._all_class_cell_vectors is None:
+        if self._all_class_cell_vectors is None or self._n_features is None:
             return None
 
         super()._check_and_raise_exceptions_predict(
-            X, len(self._cells_memory[self.classes[0]][0].vector), self._feature_type
+            X, self._n_features, self._feature_type
         )
 
         c: list = []
@@ -380,7 +382,7 @@ class AIRS(BaseAIRS):
 
         References
         ----------
-        .. [1] Brabazon, A., O’Neill, M., & McGarraghy, S. (2015).
+        .. [1] Brabazon, A., O'Neill, M., & McGarraghy, S. (2015).
                 Natural Computing Algorithms. Natural Computing Series.
                 Springer Berlin Heidelberg. https://doi.org/10.1007/978-3-662-43631-8
         """
@@ -441,7 +443,7 @@ class AIRS(BaseAIRS):
             distances = pdist(antigens_list, metric="hamming")
         else:
             metric_kwargs = {'p': self.p} if self.metric == 'minkowski' else {}
-            distances = pdist(antigens_list, metric=self.metric, **metric_kwargs)
+            distances = pdist(antigens_list, metric=self.metric, **metric_kwargs) # type: ignore
 
         n = antigens_list.shape[0]
         sum_affinity = np.sum(1.0 - (distances / (1.0 + distances)))

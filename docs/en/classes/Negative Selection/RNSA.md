@@ -15,10 +15,10 @@ The ``RNSA`` class has the purpose of classifying and identifying anomalies thro
 * *k* (``int``): Number of neighbors near the randomly generated detectors to perform the distance average calculation. Defaults to ``1``.
 * *metric* (``str``): Way to calculate the distance between the detector and the sample:
 
-    * ``'Euclidean'`` ➜ The calculation of the distance is given by the expression: √( (X₁ – X₂)² + (Y₁ – Y₂)² + ... + (Yn – Yn)²).
+    * ``'Euclidean'`` ➜ The calculation of the distance is given by the expression: √( (X₁ - X₂)² + (Y₁ - Y₂)² + ... + (Yn - Yn)²).
 
-    * ``'minkowski'`` ➜ The calculation of the distance is given by the expression: ( |X₁ – Y₁|p + |X₂ – Y₂|p + ... |Xn – Yn|p) ¹/ₚ , In this project ``p == 2``.
-    * ``'manhattan'`` ➜ The calculation of the distance is given by the expression: ( |X₁ – X₂| + |Y₁ – Y₂| + ...+ |Yn – Yn₂|) .
+    * ``'minkowski'`` ➜ The calculation of the distance is given by the expression: ( |X₁ - Y₁|p + |X₂ - Y₂|p + ... |Xn - Yn|p) ¹/ₚ , In this project ``p == 2``.
+    * ``'manhattan'`` ➜ The calculation of the distance is given by the expression: ( |X₁ - X₂| + |Y₁ - Y₂| + ...+ |Yn - Yn₂|) .
 
     Defaults to ``'euclidean'``.
 
