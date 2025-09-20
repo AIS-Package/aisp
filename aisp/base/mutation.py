@@ -14,7 +14,7 @@ from numba import njit, types
 def clone_and_mutate_continuous(
     vector: npt.NDArray[np.float64],
     n: int,
-    mutation_rate: np.float64
+    mutation_rate: float
 ) -> npt.NDArray[np.float64]:
     """
     Generate a set of mutated clones from a cell represented by a continuous vector.
@@ -106,7 +106,7 @@ def clone_and_mutate_ranged(
     vector: npt.NDArray[np.float64],
     n: int,
     bounds: npt.NDArray[np.float64],
-    mutation_rate: np.float64
+    mutation_rate: float
 ) -> npt.NDArray[np.float64]:
     """
     Generate a set of mutated clones from a cell represented by custom ranges per dimension.
@@ -142,19 +142,57 @@ def clone_and_mutate_ranged(
             any_mutation = False
             for j in range(n_features):
                 if np.random.random() < mutation_rate:
-                    clone[j] = np.random.uniform(bounds[j, 0], bounds[j, 1])
+                    clone[j] = np.random.uniform(low=bounds[0][j], high=bounds[1][j])
                     any_mutation = True
             if not any_mutation:
                 idx = np.random.randint(0, n_features)
-                clone[idx] = np.random.uniform(bounds[idx, 0], bounds[idx, 1])
+                clone[idx] = np.random.uniform(low=bounds[0][idx], high=bounds[1][idx])
         else:
             n_mutations = np.random.randint(1, n_features)
             position_mutations = np.random.permutation(n_features)[:n_mutations]
             for j in range(n_mutations):
                 idx = position_mutations[j]
-                min_limit = bounds[idx, 0]
-                max_limit = bounds[idx, 1]
-                clone[idx] = np.random.uniform(min_limit, max_limit)
+                min_limit = bounds[0][idx]
+                max_limit = bounds[1][idx]
+                clone[idx] = np.random.uniform(low=min_limit, high=max_limit)
             clone_set[i] = clone
+
+    return clone_set
+
+
+@njit([(types.int64[:], types.int64, types.float64)], cache=True)
+def clone_and_mutate_permutation(
+    vector: npt.NDArray[np.int64],
+    n: int,
+    mutation_rate: float
+) -> npt.NDArray[np.int64]:
+    """Generate a set of mutated clones by random permutation.
+
+    Parameters
+    ----------
+    vector : npt.NDArray[np.int64]
+        The original immune cell with permutation values to be cloned and mutated.
+    n : int
+        The number of mutated clones to be generated.
+    mutation_rate : float
+        Probability of mutating each component 0 <= mutation_rate < 1.
+
+    Returns
+    -------
+    clone_set : npt.NDArray
+        An Array(n, len(vector)) containing the `n` mutated clones of the original vector.
+    """
+    n_features = vector.shape[0]
+    clone_set = np.empty((n, n_features), dtype=np.int64)
+
+    for i in range(n):
+        clone = vector.copy()
+        for j in range(n_features):
+            if np.random.random() < mutation_rate:
+                idx = np.random.randint(0, n_features)
+                tmp = clone[j]
+                clone[j] = clone[idx]
+                clone[idx] = tmp
+        clone_set[i] = clone
 
     return clone_set

@@ -5,13 +5,13 @@ from typing import Optional
 import numpy as np
 import numpy.typing as npt
 
-from ..utils.types import FeatureType
+from ..utils.types import FeatureTypeAll
 
 
 def generate_random_antibodies(
     n_samples: int,
     n_features: int,
-    feature_type: FeatureType = "continuous-features",
+    feature_type: FeatureTypeAll = "continuous-features",
     bounds: Optional[npt.NDArray[np.float64]] = None
 ) -> npt.NDArray:
     """
@@ -25,7 +25,7 @@ def generate_random_antibodies(
         Number of features (dimensions) for each antibody.
     feature_type : FeatureType, default="continuous-features"
         Specifies the type of features: "continuous-features", "binary-features",
-        or "ranged-features".
+        "ranged-features", or "permutation-features".
     bounds : np.ndarray
         Array (n_features, 2) with min and max per dimension.
 
@@ -43,5 +43,9 @@ def generate_random_antibodies(
         return np.random.randint(0, 2, size=(n_samples, n_features)).astype(np.bool_)
     if feature_type == "ranged-features" and bounds is not None:
         return np.random.uniform(low=bounds[0], high=bounds[1], size=(n_samples, n_features))
+    if feature_type == "permutation-features":
+        return np.array(
+            [np.random.permutation(n_features) for _ in range(n_samples)]
+        ).astype(dtype=np.int64)
 
     return np.random.random_sample(size=(n_samples, n_features))
