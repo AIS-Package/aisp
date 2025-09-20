@@ -1,3 +1,4 @@
+# pylint: disable=redefined-outer-name
 """Tests for classes implementing clonalg."""
 
 import numpy as np
