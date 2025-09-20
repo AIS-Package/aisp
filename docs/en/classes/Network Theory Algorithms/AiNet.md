@@ -21,11 +21,11 @@ For clustering, it optionally uses a **Minimum Spanning Tree (MST)** to separate
 * **k** (``int``): Number of nearest neighbors used for label prediction. Defaults to 3.
 * **metric** (Literal["manhattan", "minkowski", "euclidean"]): Way to calculate the distance between the detector and the sample:
     * ``'Euclidean'`` ➜ The calculation of the distance is given by the expression:
-    √( (x₁ – x₂)² + (y₁ – y₂)² + ... + (yn – yn)²).
+    √( (x₁ - x₂)² + (y₁ - y₂)² + ... + (yn - yn)²).
     * ``'minkowski'`` ➜ The calculation of the distance is given by the expression:
-    ( |X₁ – Y₁|p + |X₂ – Y₂|p + ... + |Xn – Yn|p) ¹/ₚ.
+    ( |X₁ - Y₁|p + |X₂ - Y₂|p + ... + |Xn - Yn|p) ¹/ₚ.
     * ``'manhattan'`` ➜ The calculation of the distance is given by the expression:
-    ( |x₁ – x₂| + |y₁ – y₂| + ... + |yn – yn|).
+    ( |x₁ - x₂| + |y₁ - y₂| + ... + |yn - yn|).
     Defaults to "Euclidean".
 
 * **seed** (``Optional[int]``): Seed for random number generation. Defaults to None.

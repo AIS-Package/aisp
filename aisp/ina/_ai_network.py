@@ -29,7 +29,7 @@ class AiNet(BaseAiNet):
     clustering and data compression tasks. The aiNet algorithm uses principles from immune
     network theory, clonal selection, and affinity maturation to compress high-dimensional
     datasets. [1]_
-    For clustering, the class uses SciPy’s implementation of the **Minimum Spanning Tree**
+    For clustering, the class uses SciPy's implementation of the **Minimum Spanning Tree**
     (MST) to remove the most distant nodes and separate the groups. [2]_
 
     Parameters
@@ -58,13 +58,13 @@ class AiNet(BaseAiNet):
         Way to calculate the distance between the detector and the sample:
 
         * ``'Euclidean'`` ➜ The calculation of the distance is given by the expression:
-            √( (x₁ – x₂)² + (y₁ – y₂)² + ... + (yn – yn)²).
+            √( (x₁ - x₂)² + (y₁ - y₂)² + ... + (yn - yn)²).
 
         * ``'minkowski'`` ➜ The calculation of the distance is given by the expression:
-            ( |X₁ – Y₁|p + |X₂ – Y₂|p + ... + |Xn – Yn|p) ¹/ₚ.
+            ( |X₁ - Y₁|p + |X₂ - Y₂|p + ... + |Xn - Yn|p) ¹/ₚ.
 
         * ``'manhattan'`` ➜ The calculation of the distance is given by the expression:
-            ( |x₁ – x₂| + |y₁ – y₂| + ... + |yn – yn|).
+            ( |x₁ - x₂| + |y₁ - y₂| + ... + |yn - yn|).
 
     seed : Optional[int]
         Seed for the random generation of detector values. Defaults to None.
@@ -455,7 +455,7 @@ class AiNet(BaseAiNet):
         """
         u = np.reshape(u, (1, -1))
         v = np.atleast_2d(v)
-        distances = cdist(u, v, metric=self.metric, **self._metric_params)[0]
+        distances = cdist(u, v, metric=self.metric, **self._metric_params)[0] # type: ignore
 
         return 1 - (distances / (1 + distances))
 
@@ -523,6 +523,8 @@ class AiNet(BaseAiNet):
         ------
         ValueError
             If the Minimum Spanning Tree (MST) has not yet been created
+            If Population of antibodies is empty
+            If MST statistics (mean or std) are not available.
 
         Updates
         -------
@@ -533,6 +535,12 @@ class AiNet(BaseAiNet):
         """
         if self._mst_structure is None:
             raise ValueError("The Minimum Spanning Tree (MST) has not yet been created.")
+
+        if self._population_antibodies is None or len(self._population_antibodies) == 0:
+            raise ValueError("Population of antibodies is empty")
+
+        if self._mst_mean_distance is None or self._mst_std_distance is None:
+            raise ValueError("MST statistics (mean or std) are not available.")
 
         if mst_inconsistency_factor is not None:
             self.mst_inconsistency_factor = mst_inconsistency_factor

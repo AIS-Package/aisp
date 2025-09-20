@@ -122,8 +122,8 @@ def clone_and_mutate_ranged(
         position_mutations = np.random.permutation(n_features)[:n_mutations]
         for j in range(n_mutations):
             idx = position_mutations[j]
-            min_limit = bounds[idx, 0]
-            max_limit = bounds[idx, 1]
+            min_limit = bounds[0][idx]
+            max_limit = bounds[1][idx]
             clone[idx] = np.random.uniform(min_limit, max_limit)
         clone_set[i] = clone
 

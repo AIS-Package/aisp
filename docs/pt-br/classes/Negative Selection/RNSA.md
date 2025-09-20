@@ -12,9 +12,9 @@ A classe ``RNSA`` tem a finalidade de classificação e identificação de anoma
 * *k* (``int``): Quantidade de vizinhos próximos dos detectores gerados aleatoriamente para efetuar o cálculo da média da distância. Defaults to ``1``.
 * *metric* (``str``): Forma para se calcular a distância entre o detector e a amostra: 
     
-    * ``'euclidiana'`` ➜ O cálculo da distância dá-se pela expressão:  √( (X₁ – X₂)² + (Y₁ – Y₂)² + ... + (Yn – Yn)²).
-    * ``'minkowski'``  ➜ O cálculo da distância dá-se pela expressão: ( |X₁ – Y₁|p + |X₂ – Y₂|p + ... + |Xn – Yn|p) ¹/ₚ , Neste projeto ``p == 2``.
-    * ``'manhattan'``  ➜ O cálculo da distância dá-se pela expressão:  ( |X₁ – X₂| + |Y₁ – Y₂| + ... + |Yn – Yn₂|).
+    * ``'euclidiana'`` ➜ O cálculo da distância dá-se pela expressão:  √( (X₁ - X₂)² + (Y₁ - Y₂)² + ... + (Yn - Yn)²).
+    * ``'minkowski'``  ➜ O cálculo da distância dá-se pela expressão: ( |X₁ - Y₁|p + |X₂ - Y₂|p + ... + |Xn - Yn|p) ¹/ₚ , Neste projeto ``p == 2``.
+    * ``'manhattan'``  ➜ O cálculo da distância dá-se pela expressão:  ( |X₁ - X₂| + |Y₁ - Y₂| + ... + |Yn - Yn₂|).
 
     Defaults to ``'euclidean'``.
 

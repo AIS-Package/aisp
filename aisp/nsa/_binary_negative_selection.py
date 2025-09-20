@@ -237,4 +237,4 @@ class BNSA(BaseNSA):
             else:
                 class_differences[_class_] = distances.sum() / self.N
 
-        c.append(max(class_differences, key=class_differences.get))
+        c.append(max(class_differences, key=class_differences.get)) # type: ignore

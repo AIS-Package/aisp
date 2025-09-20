@@ -32,11 +32,11 @@ Para clustering, pode opcionalmente utilizar uma **Árvore Geradora Mínima (MST
 * **metric** (Literal["manhattan", "minkowski", "euclidean"]): Forma de calcular a distância entre o detector e a amostra:
 
   * `'euclidean'` ➜ Distância dada pela expressão:
-    √( (x₁ – x₂)² + (y₁ – y₂)² + ... + (yn – yn)²).
+    √( (x₁ - x₂)² + (y₁ - y₂)² + ... + (yn - yn)²).
   * `'minkowski'` ➜ Distância dada pela expressão:
-    ( |X₁ – Y₁|ᵖ + |X₂ – Y₂|ᵖ + ... + |Xn – Yn|ᵖ )^(¹/ₚ).
+    ( |X₁ - Y₁|ᵖ + |X₂ - Y₂|ᵖ + ... + |Xn - Yn|ᵖ )^(¹/ₚ).
   * `'manhattan'` ➜ Distância dada pela expressão:
-    ( |x₁ – x₂| + |y₁ – y₂| + ... + |yn – yn|).
+    ( |x₁ - x₂| + |y₁ - y₂| + ... + |yn - yn|).
     Padrão: "euclidean".
 
 * **seed** (`Optional[int]`): Semente para geração de números aleatórios. Padrão: None.

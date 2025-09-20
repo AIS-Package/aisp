@@ -40,11 +40,11 @@ class RNSA(BaseNSA):
         Way to calculate the distance between the detector and the sample:
 
         + ``'Euclidean'`` ➜ The calculation of the distance is given by the expression:
-            √( (x₁ – x₂)² + (y₁ – y₂)² + ... + (yn – yn)²).
+            √( (x₁ - x₂)² + (y₁ - y₂)² + ... + (yn - yn)²).
         + ``'minkowski'`` ➜ The calculation of the distance is given by the expression:
-            ( |X₁ – Y₁|p + |X₂ – Y₂|p + ... + |Xn – Yn|p) ¹/ₚ.
+            ( |X₁ - Y₁|p + |X₂ - Y₂|p + ... + |Xn - Yn|p) ¹/ₚ.
         + ``'manhattan'`` ➜ The calculation of the distance is given by the expression:
-            ( |x₁ – x₂| + |y₁ – y₂| + ... + |yn – yn|) .
+            ( |x₁ - x₂| + |y₁ - y₂| + ... + |yn - yn|) .
     max_discards : int, default=1000
         This parameter indicates the maximum number of consecutive detector discards, aimed at
         preventing a possible infinite loop in case a radius is defined that cannot generate
@@ -260,7 +260,7 @@ class RNSA(BaseNSA):
                     average_distance[_class_] = np.average(
                         [self.__distance(detector, line) for detector in detectores]
                     )
-                c.append(max(average_distance, key=average_distance.get))
+                c.append(max(average_distance, key=average_distance.get)) # type: ignore
         return np.array(c)
 
     def __checks_valid_detector(

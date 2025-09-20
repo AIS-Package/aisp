@@ -1,5 +1,5 @@
 # pylint: disable=redefined-outer-name
-"""Tests for classes implementing negative selection."""
+"""Tests for classes implementing Artificial Immune Recognition System."""
 
 import numpy as np
 import pytest
