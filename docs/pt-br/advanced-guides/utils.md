@@ -336,16 +336,6 @@ Classe para formatar dados tabulares em strings para exibição no console.
 
 * ***headers*** (`Mapping[str, int]`): Mapeamento dos nomes das colunas para suas larguras respectivas, no formato `{nome_coluna: largura_coluna}`.
 
----
-
-### def ****init****(headers)
-
-```python
-def __init__(self, headers: Mapping[str, int]) -> None
-```
-
-Construtor da classe TableFormatter.
-
 **Exceções**:
 
 * `ValueError`: Se `headers` estiver vazio ou não for um mapeamento válido.
@@ -432,16 +422,6 @@ Classe para exibir uma tabela formatada no console para acompanhar o progresso d
 
 * ***headers*** (`Mapping[str, int]`): Mapeamento `{nome_coluna: largura_coluna}`.
 * ***verbose*** (`bool`, padrão=True): Se False, não imprime nada no terminal.
-
----
-
-### def ****init****(headers, verbose=True)
-
-```python
-def __init__(self, headers: Mapping[str, int], verbose: bool = True) -> None
-```
-
-Construtor da classe ProgressTable.
 
 **Exceções**:
 

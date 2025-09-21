@@ -2,7 +2,14 @@ Clonal Selection Algorithm (CLONALG).
 
 # Clonalg
 
-The `Clonalg` class is an **optimization algorithm** inspired by the biological process of clonal selection in the immune system. This implementation is designed for minimizing or maximizing cost functions in various problem types, including binary, continuous, ranged-value, and permutation problems.
+The `Clonalg` class is an **optimization algorithm** inspired by the biological process of clonal selection in the
+immune system. This implementation is designed for minimizing or maximizing cost functions in various problem types,
+including binary, continuous, ranged-value, and permutation problems.
+
+This CLONALG implementation contains some changes based on the AISP context, for general
+application to various problems, which may produce results different from the standard or
+specific implementation. This adaptation aims to generalize CLONALG to minimization and
+maximization tasks, in addition to supporting continuous, discrete, and permutation problems.
 
 ---
 

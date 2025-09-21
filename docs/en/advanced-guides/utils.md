@@ -337,16 +337,6 @@ Class to format tabular data into strings for display in the console.
 
 * ***headers*** (`Mapping[str, int]`): Mapping of column names to their respective widths, in the format `{column_name: column_width}`.
 
----
-
-### def **init**(headers)
-
-```python
-def __init__(self, headers: Mapping[str, int]) -> None
-```
-
-Constructor for TableFormatter.
-
 **Raises**:
 
 * `ValueError`: If `headers` is empty or not a valid mapping.
@@ -433,16 +423,6 @@ Class to display a formatted table in the console to track the algorithm's progr
 
 * ***headers*** (`Mapping[str, int]`): Mapping `{column_name: column_width}`.
 * ***verbose*** (`bool`, default=True): If False, prints nothing to the terminal.
-
----
-
-### def **init**(headers, verbose=True)
-
-```python
-def __init__(self, headers: Mapping[str, int], verbose: bool = True) -> None
-```
-
-Constructor for ProgressTable.
 
 **Raises**:
 

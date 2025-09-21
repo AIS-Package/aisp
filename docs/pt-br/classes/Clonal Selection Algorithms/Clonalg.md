@@ -2,7 +2,14 @@
 
 ## Clonalg
 
-A classe `Clonalg` é um **algoritmo de otimização** inspirado no processo biológico de seleção clonal do sistema imunológico. Esta implementação é projetada para minimizar ou maximizar funções de custo em diversos tipos de problemas, incluindo problemas binários, contínuos, com valores limitados (ranged) e de permutação.
+A classe `Clonalg` é um **algoritmo de otimização** inspirado no processo biológico de seleção clonal do sistema
+imunológico. Esta implementação é projetada para minimizar ou maximizar funções de custo em diversos tipos de
+problemas, incluindo problemas binários, contínuos, com valores limitados (ranged) e de permutação.
+
+Esta implementação do CLONALG contém algumas alterações baseadas no contexto do AISP, para aplicação geral
+a diversos problemas, que podem produzir resultados diferentes da implementação padrão ou
+específica. Esta adaptação visa generalizar o CLONALG para tarefas de minimização e
+maximização, além de suportar problemas contínuos, discretos e de permutação.
 
 ---
 
