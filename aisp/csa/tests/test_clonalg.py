@@ -19,7 +19,7 @@ def clonalg():
         problem_size=3,
         N=10,
         affinity_function=affinity,
-        bounds={'min': 1.0, 'max': 10.0},
+        bounds={'low': 1.0, 'high': 10.0},
         seed=42
     )
 
@@ -35,7 +35,7 @@ class TestClonalg:
 
     def test_optimize_without_affinity_function_raises_error(self):
         """Should raise NotImplementedError if affinity_function is not provided."""
-        model = Clonalg(3, bounds={'min': 1, 'max': 2})
+        model = Clonalg(3, bounds={'low': 1, 'high': 2})
         with pytest.raises(NotImplementedError):
             model.optimize(verbose=False)
 
