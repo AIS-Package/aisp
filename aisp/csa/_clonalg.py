@@ -51,10 +51,10 @@ class Clonalg(BaseOptimizer):
         Definition of search limits when ``feature_type='ranged-features'``.
         Can be provided in two ways:
 
-        * Fixed values: ``{'min': float, 'max': float}``
+        * Fixed values: ``{'low': float, 'high': float}``
             Values are replicated across all dimensions, generating equal limits for each
             dimension.
-        * Arrays: ``{'min': list, 'max': list}``
+        * Arrays: ``{'low': list, 'high': list}``
             Each dimension has specific limits. Both arrays must be
             ``problem_size``.
 
@@ -63,6 +63,12 @@ class Clonalg(BaseOptimizer):
     seed : Optional[int], default=None
         Seed for random generation of detector values. If None, the value is random.
 
+    Notes
+    -----
+    This CLONALG implementation contains some changes based on the AISP context, for general
+    application to various problems, which may produce results different from the standard or
+    specific implementation. This adaptation aims to generalize CLONALG to minimization and
+    maximization tasks, in addition to supporting continuous, discrete, and permutation problems.
 
     References
     ----------
@@ -130,9 +136,9 @@ class Clonalg(BaseOptimizer):
         """Setter for the bounds attribute."""
         if self.feature_type == 'ranged-features':
             self._bounds = sanitize_bounds(value, self.problem_size)
-            min_bounds = np.array(self._bounds['min'])
-            max_bounds = np.array(self._bounds['max'])
-            self._bounds_extend_cache = np.array([min_bounds, max_bounds])
+            low_bounds = np.array(self._bounds['low'])
+            high_bounds = np.array(self._bounds['high'])
+            self._bounds_extend_cache = np.array([low_bounds, high_bounds])
         else:
             self._bounds = None
             self._bounds_extend_cache = None
@@ -143,7 +149,7 @@ class Clonalg(BaseOptimizer):
         n_iter_no_change=10,
         verbose: bool = True
     ) -> npt.NDArray:
-        """Execute the optimization process and return the best solution.
+        """Execute the optimization process and return the population.
 
         Parameters
         ----------
@@ -313,11 +319,9 @@ class Clonalg(BaseOptimizer):
         if self.feature_type == "binary-features":
             return clone_and_mutate_binary(antibody, n_clone)
         if self.feature_type == "ranged-features" and self._bounds_extend_cache is not None:
-
-            teste = clone_and_mutate_ranged(
+            return clone_and_mutate_ranged(
                 antibody, n_clone, self._bounds_extend_cache, rate_hypermutation
             )
-            return teste
         if self.feature_type == "permutation-features":
             return clone_and_mutate_permutation(antibody, n_clone, rate_hypermutation)
         return clone_and_mutate_continuous(antibody, n_clone, rate_hypermutation)

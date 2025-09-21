@@ -9,8 +9,8 @@ AIRS : Artificial Immune Recognition System.
     A supervised learning algorithm for classification tasks based on the clonal
     selection principle.
 Clonalg : Clonal Selection Algorithm.
-    Classical implementation of the clonal selection algorithm, adapted for minimizing cost
-    functions in binary, continuous, and interval-valued problem
+    Implementation of the clonal selection algorithm, adapted for the minimization and
+    maximization of cost functions in binary, continuous and permutation problems.
 """
 from ._ai_recognition_sys import AIRS
 from ._clonalg import Clonalg

@@ -73,8 +73,8 @@ def sanitize_bounds(bounds: Any, problem_size: int) -> Dict[str, npt.NDArray[np.
     Parameters
     ----------
     bounds : Any
-        The input bounds, which must be either None or a dictionary with 'min'
-        and 'max' keys.
+        The input bounds, which must be either None or a dictionary with 'low'
+        and 'high' keys.
     problem_size : int
         The expected length for the normalized bounds lists, corresponding to
         the number of features in the problem.
@@ -82,20 +82,20 @@ def sanitize_bounds(bounds: Any, problem_size: int) -> Dict[str, npt.NDArray[np.
     Returns
     -------
     Dict[str, list]
-        Dictionary {'min': [min_1, ..., min_N], 'max': [max_1, ..., max_N]}.
+        Dictionary {'low': [low_1, ..., low_N], 'high': [high_1, ..., high_N]}.
 
     Raises
     ------
     TypeError
-        If `bounds` is not None and not a dict with 'min'/'max', or if items are non-numeric.
+        If `bounds` is not None and not a dict with 'low'/'high', or if items are non-numeric.
     ValueError
-        If provided iterables have the wrong length, or any min > max elementwise.
+        If provided iterables have the wrong length.
     """
-    if bounds is None or not isinstance(bounds, dict) or set(bounds.keys()) != {'min', 'max'}:
-        raise ValueError("bounds expects a dict with keys 'min' and 'max'")
+    if bounds is None or not isinstance(bounds, dict) or set(bounds.keys()) != {'low', 'high'}:
+        raise ValueError("bounds expects a dict with keys 'low' and 'high'")
     result = {}
 
-    for key in ['min', 'max']:
+    for key in ['low', 'high']:
         value = bounds[key]
         if isinstance(value, (float, int)):
             result[key] = np.array([value] * problem_size).astype(dtype=np.float64)
