@@ -16,8 +16,12 @@ de reconhecimento do patógeno.
 > Esta implementação é inspirada no AIRS2, uma versão simplificada do algoritmo original, com adaptações que permitem
 > lidar tanto com conjuntos de dados contínuos quanto binários.
 
+3. **[Clonal Selection Algorithm (CLONALG)](Clonalg.md)**
+> Implementação do algoritmo de seleção clonal para otimização, adaptado
+> para minimização e maximização das funções de custo em binário,
+> Problemas contínuos e de permutação.
 ---
 
 #### Referência
 
-> BRABAZON, Anthony; O’NEILL, Michael; MCGARRAGHY, Seán. *Natural Computing Algorithms*. Springer Berlin Heidelberg, 2015. DOI: 10.1007/978-3-662-43631-8. Disponível em: [http://dx.doi.org/10.1007/978-3-662-43631-8](http://dx.doi.org/10.1007/978-3-662-43631-8).
+> BRABAZON, Anthony; O'NEILL, Michael; MCGARRAGHY, Seán. *Natural Computing Algorithms*. Springer Berlin Heidelberg, 2015. DOI: 10.1007/978-3-662-43631-8. Disponível em: [http://dx.doi.org/10.1007/978-3-662-43631-8](http://dx.doi.org/10.1007/978-3-662-43631-8).

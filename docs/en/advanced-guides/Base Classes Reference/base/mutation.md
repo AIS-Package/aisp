@@ -76,3 +76,32 @@ This function creates `n` clones of the input vector and applies random mutation
 ### Returns
 
 * `clone_set` (`npt.NDArray[np.float64]`): Array with shape `(n, len(vector))` containing the `n` mutated clones of the original vector.
+
+---
+
+## clone_and_mutate_permutation
+
+```python
+@njit([(types.int64[:], types.int64, types.float64)], cache=True)
+def clone_and_mutate_permutation(
+    vector: npt.NDArray[np.int64],
+    n: int,
+    mutation_rate: float
+) -> npt.NDArray[np.int64]:
+```
+
+Generates a set of mutated clones from a permutation vector.
+
+This function creates `n` clones of the input permutation vector and applies random mutations to each one, simulating clonal expansion in artificial immune systems with discrete permutations. Each clone receives a random number of swaps according to the mutation rate.
+
+### Parameters
+
+* `vector` (`npt.NDArray[np.int64]`): The original immune cell with permutation values to be cloned and mutated.
+* `n` (`int`): Number of mutated clones to be generated.
+* `mutation_rate` (`float`): Probability of mutating each component (0 <= mutation_rate < 1).
+
+### Returns
+
+* `clone_set` (`npt.NDArray[np.int64]`): Array with shape `(n, len(vector))` containing the `n` mutated clones of the original vector.
+
+---
