@@ -151,7 +151,7 @@ class ProgressTable(TableFormatter):
     def __init__(self, headers: Mapping[str, int], verbose: bool = True) -> None:
         super().__init__(headers)
         if not headers or not isinstance(headers, Mapping):
-            raise ValueError("O parâmetro 'headers' deve ser um dicionario não vazio.")
+            raise ValueError("'headers' must be a non-empty dictionary.")
         self.verbose: bool = verbose
         self.headers: Mapping[str, int] = headers
         self._ascii_only = not _supports_box_drawing()

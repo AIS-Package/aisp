@@ -16,7 +16,6 @@ Functions
 ---------
 set_seed_numba
     Set Random Seed for Numba JIT Compilation.
-
 """
 
 from ._base import set_seed_numba

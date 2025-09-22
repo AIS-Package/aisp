@@ -8,7 +8,8 @@ Contains functions that generate sets of mutated clones from continuous or binar
 @njit([(types.float64[:], types.int64)], cache=True)
 def clone_and_mutate_continuous(
     vector: npt.NDArray[np.float64],
-    n: int
+    n: int,
+    mutation_rate: float
 ) -> npt.NDArray[np.float64]:
 ```
 
@@ -20,6 +21,9 @@ This function creates `n` clones of the input vector and applies random mutation
 
 * `vector` (`npt.NDArray[np.float64]`): The original immune cell with continuous values to be cloned and mutated.
 * `n` (`int`): Number of mutated clones to be generated.
+* ``mutation_rate`` : (``float``)  If 0 <= mutation_rate < 1: probability of mutating each component.
+  If mutation_rate >= 1 or mutation_rate <= 0: the mutation randomizes
+  number of components between 1 and len(vector).
 
 ### Returns
 
@@ -59,7 +63,8 @@ This function creates `n` clones of the input binary vector and applies random m
 def clone_and_mutate_ranged(
     vector: npt.NDArray[np.float64],
     n: int,
-    bounds: npt.NDArray[np.float64]
+    bounds: npt.NDArray[np.float64],
+    mutation_rate: float
 ) -> npt.NDArray[np.float64]:
 ```
 
@@ -72,6 +77,9 @@ This function creates `n` clones of the input vector and applies random mutation
 * `vector` (`npt.NDArray[np.float64]`): The original immune cell with continuous values to be cloned and mutated.
 * `n` (`int`): Number of mutated clones to be generated.
 * `bounds` (`npt.NDArray[np.float64]`): A 2D array with shape `(len(vector), 2)` containing the minimum and maximum values for each dimension.
+* ``mutation_rate`` : (``float``)  If 0 <= mutation_rate < 1: probability of mutating each component.
+  If mutation_rate >= 1 or mutation_rate <= 0: the mutation randomizes
+  number of components between 1 and len(vector).
 
 ### Returns
 

@@ -33,8 +33,6 @@ def generate_random_antibodies(
     -------
     npt.NDArray
         Array of shape (n_samples, n_features) containing the generated antibodies.
-        Data type depends on the feature_type type (float for continuous/ranged, bool for
-        binary).
     """
     if n_features <= 0:
         raise ValueError("Number of features must be greater than zero.")

@@ -13,7 +13,7 @@ class BaseOptimizer(ABC):
 
     This class defines the core interface for optimization strategies. It keeps track of cost
     history, evaluated solutions, and the best solution found during the optimization process.
-    Subclasses must implement ``optimize`` and ``objective_function``.
+    Subclasses must implement ``optimize`` and ``affinity_function``.
     """
 
     def __init__(self) -> None:

@@ -2,7 +2,8 @@
 
 ## BaseOptimizer
 
-Esta classe define a interface central para estratégias de otimização e mantém o histórico de custos, soluções avaliadas e a melhor solução encontrada. Subclasses devem implementar os métodos `optimize` e `objective_function`.
+Esta classe define a interface central para estratégias de otimização e mantém o histórico de custos, soluções
+avaliadas e a melhor solução encontrada. Subclasses devem implementar os métodos `optimize` e `affinity_function`.
 
 ---
 
@@ -74,7 +75,8 @@ Registra um novo valor de custo e atualiza a melhor solução se houver melhoria
 def get_report(self) -> str
 ```
 
-Gera um relatório resumido e formatado do processo de otimização. O relatório inclui a melhor solução, seu custo associado e a evolução dos valores de custo por iteração.
+Gera um relatório resumido e formatado do processo de otimização. O relatório inclui a melhor solução, seu custo
+associado e a evolução dos valores de custo por iteração.
 
 **Retorna**:
 
@@ -97,7 +99,7 @@ Registra dinamicamente uma função na instância do otimizador.
 
 **Exceções**:
 
-* **TypeError**: Se `function` não for chamável.
+* **TypeError**: Se `function` não for Callable.
 * **AttributeError**: Se `alias` for protegido e não puder ser modificado, ou se `alias` não existir na classe do otimizador.
 
 ---
@@ -120,7 +122,8 @@ Reinicia o estado interno do objeto, limpando o histórico e resetando os valore
 def optimize(self, max_iters: int = 50, n_iter_no_change=10, verbose: bool = True) -> Any
 ```
 
-Executa o processo de otimização. Este método deve ser implementado pela subclasse para definir como a estratégia de otimização explora o espaço de busca.
+Executa o processo de otimização. Este método deve ser implementado pela subclasse para definir como a estratégia de
+otimização explora o espaço de busca.
 
 **Parâmetros**:
 

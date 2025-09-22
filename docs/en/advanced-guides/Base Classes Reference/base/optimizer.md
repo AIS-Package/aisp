@@ -4,7 +4,7 @@ Base class for optimization algorithms.
 
 This class defines the core interface for optimization strategies and
 keeps track of the cost history, evaluated solutions, and the best solution found. Subclasses must implement
-``optimize`` and ``objective_function``.
+``optimize`` and ``affinity_function``.
 
 ---
 

@@ -261,7 +261,7 @@ class Clonalg(BaseOptimizer):
         """
         if not callable(self._affinity_function):
             raise NotImplementedError(
-                "No objective function to evaluate the candidate cell was provided."
+                "No affinity function to evaluate the candidate cell was provided."
             )
         return np.float64(self._affinity_function(solution))
 
