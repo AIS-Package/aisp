@@ -29,7 +29,7 @@ from aisp.utils.types import FeatureTypeAll
         "Generates a population with shape (5, 5) and permutation-features."
     ]
 )
-def test_generate_random_antibodies_valid_parametrized(
+def test_generate_random_antibodies(
     n_samples,
     n_features,
     feature_type: FeatureTypeAll,
@@ -37,6 +37,9 @@ def test_generate_random_antibodies_valid_parametrized(
     expected_shape,
     expected_dtype
 ):
+    """
+    Test whether a random population of valid antigens is generated.
+    """
     antibodies = generate_random_antibodies(
         n_samples, n_features, feature_type, bounds
     )
