@@ -100,6 +100,13 @@ def sanitize_bounds(bounds: Any, problem_size: int) -> Dict[str, npt.NDArray[np.
         if isinstance(value, (float, int)):
             result[key] = np.array([value] * problem_size).astype(dtype=np.float64)
         else:
+            if not isinstance(value, (list, np.ndarray)):
+                raise TypeError(
+                    f"{key} must be a list or numpy array, got {type(value).__name__}"
+                )
+            if not all(isinstance(i, (float, int)) for i in value):
+                raise TypeError(f"All elements of {key} must be numeric")
+
             value = np.array(value).astype(dtype=np.float64)
             if len(value) != problem_size:
                 raise ValueError(
