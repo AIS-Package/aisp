@@ -13,9 +13,11 @@ from ..utils.metrics import accuracy_score
 
 
 class BaseClassifier(ABC, Base):
-    """Base class for classification algorithms.
+    """Abstract base class for classification algorithms.
 
-    Defines the abstract methods ``fit`` and ``predict``, and implements the ``score`` method.
+    This class defines the core interface for classification models. It enforces the
+    implementation of the ``fit`` and ``predict`` methods in all derived classes,
+    and provides a default implementation of ``score`` and utility functions.
     """
 
     classes: Union[npt.NDArray, list] = []

@@ -1,8 +1,9 @@
 """Tests Utility functions to sanitizers variables"""
 
+import numpy as np
 import pytest
 
-from aisp.utils.sanitizers import sanitize_choice, sanitize_param, sanitize_seed
+from aisp.utils.sanitizers import sanitize_bounds, sanitize_choice, sanitize_param, sanitize_seed
 
 
 @pytest.mark.parametrize(
@@ -70,3 +71,29 @@ def test_sanitize_seed(input_value, expected_output):
     """
     result = sanitize_seed(input_value)
     assert result == expected_output
+
+@pytest.mark.parametrize(
+    "bounds, problem_size, expected_result, expected_exception",
+    [
+        ({'low': [0.0, 1.0], 'high': [10.0, 11.0]}, 2, {'low': [0., 1.], 'high': [10., 11.]}, None),
+        ({'low': -5, 'high': 5}, 3, {'low': [-5., -5., -5.], 'high': [5., 5., 5.]}, None),
+        ({'low': [0, 1], 'high': [10, 11]}, 2, {'low': [0., 1.], 'high': [10., 11.]}, None),
+        ("not_dict", 2, None, ValueError),
+        ({'low': [0, 1]}, 2, None, ValueError),
+        ({'low': [0, 1, 2], 'high': [10, 11, 12]}, 2, None, ValueError),
+        ({'low': [0, 1], 'high': [10, 'err']}, 2, None, TypeError),
+        (None, 2, None, ValueError)
+    ]
+)
+def test_sanitize_bounds(bounds, problem_size, expected_result, expected_exception):
+    """
+    Tests whether the sanitize_bounds function correctly returns.
+    """
+    if expected_exception:
+        with pytest.raises(expected_exception):
+            sanitize_bounds(bounds, problem_size)
+    else:
+        result = sanitize_bounds(bounds, problem_size)
+        assert 'low' in result and 'high' in result
+        assert np.array_equal(result['low'], expected_result['low'])
+        assert np.array_equal(result['high'], expected_result['high'])

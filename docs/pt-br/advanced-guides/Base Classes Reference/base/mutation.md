@@ -76,3 +76,30 @@ Esta função cria `n` clones do vetor de entrada e aplica mutações aleatória
 ### Retorna
 
 * `clone_set` (`npt.NDArray[np.float64]`): Array com forma `(n, len(vector))` contendo os `n` clones mutados do vetor original.
+
+---
+
+## clone_and_mutate_permutation
+
+```python
+@njit([(types.int64[:], types.int64, types.float64)], cache=True)
+def clone_and_mutate_permutation(
+    vector: npt.NDArray[np.int64],
+    n: int,
+    mutation_rate: float
+) -> npt.NDArray[np.int64]:
+```
+
+Gera um conjunto de clones mutados a partir de um vetor de permutação.
+
+Esta função cria `n` clones do vetor de permutação de entrada e aplica mutações aleatórias em cada um, simulando a expansão clonal em sistemas imunes artificiais com permutações discretas. Cada clone recebe um número aleatório de trocas de elementos de acordo com a taxa de mutação.
+
+### Parâmetros
+
+* `vector` (`npt.NDArray[np.int64]`): A célula imune original com valores de permutação a serem clonados e mutados.
+* `n` (`int`): Número de clones mutados a serem gerados.
+* `mutation_rate` (`float`): Probabilidade de mutação de cada componente (0 <= mutation_rate < 1).
+
+### Retorna
+
+* `clone_set` (`npt.NDArray[np.int64]`): Array com dimensão `(n, len(vector))` contendo os `n` clones mutados do vetor original.
