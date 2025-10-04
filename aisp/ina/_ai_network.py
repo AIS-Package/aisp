@@ -12,18 +12,26 @@ from scipy.sparse.csgraph import minimum_spanning_tree, connected_components
 from scipy.spatial.distance import squareform, pdist, cdist
 from tqdm import tqdm
 
-from ._base import BaseAiNet
-from ..base import set_seed_numba
-from ..base.mutation import clone_and_mutate_binary, clone_and_mutate_continuous, \
+from ..base import BaseClusterer
+from ..base.core._base import set_seed_numba
+from ..base.immune.mutation import (
+    clone_and_mutate_binary,
+    clone_and_mutate_continuous,
     clone_and_mutate_ranged
-from ..base.populations import generate_random_antibodies
+)
+from ..base.immune.populations import generate_random_antibodies
 from ..utils.distance import hamming, compute_metric_distance, get_metric_code
 from ..utils.sanitizers import sanitize_choice, sanitize_param, sanitize_seed
 from ..utils.types import FeatureType, MetricType
-from ..utils.validation import detect_vector_data_type
+from ..utils.validation import (
+    detect_vector_data_type,
+    check_array_type,
+    check_feature_dimension,
+    check_binary_array
+)
 
 
-class AiNet(BaseAiNet):
+class AiNet(BaseClusterer):
     """Artificial Immune Network for Compression and Clustering.
 
     This class implements the aiNet algorithm, an artificial immune network model designed for
@@ -194,7 +202,7 @@ class AiNet(BaseAiNet):
         """
         self._feature_type = detect_vector_data_type(X)
 
-        super()._check_and_raise_exceptions_fit(X)
+        check_array_type(X)
 
         match self._feature_type:
             case "binary-features":
@@ -227,7 +235,7 @@ class AiNet(BaseAiNet):
                 pool_memory.extend(self._diversity_introduction())
             population_p = np.asarray(pool_memory)
 
-            progress.update(1)
+            progress.update()
 
             t += 1
         self._population_antibodies = population_p
@@ -262,9 +270,9 @@ class AiNet(BaseAiNet):
         if not self.use_mst_clustering or self._memory_network is None:
             return None
 
-        super()._check_and_raise_exceptions_predict(
-            X, self._n_features, self._feature_type
-        )
+        check_feature_dimension(X, self._n_features)
+        if self._feature_type == "binary-features":
+            check_binary_array(X)
 
         c: list = []
 

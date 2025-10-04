@@ -1,7 +1,7 @@
 # pylint: disable=attribute-defined-outside-init
 """Unit tests for the Base class."""
 
-from aisp.base._base import Base
+from aisp.base.core._base import Base
 
 
 class TestBase:

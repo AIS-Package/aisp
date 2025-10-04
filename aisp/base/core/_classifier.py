@@ -8,8 +8,8 @@ from typing import Optional, Union
 import numpy.typing as npt
 
 from ._base import Base
-from ..utils import slice_index_list_by_class
-from ..utils.metrics import accuracy_score
+from ...utils import slice_index_list_by_class
+from ...utils.metrics import accuracy_score
 
 
 class BaseClassifier(ABC, Base):

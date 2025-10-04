@@ -8,9 +8,10 @@ import numpy as np
 import numpy.typing as npt
 from tqdm import tqdm
 
-from ._base import BaseNSA, Detector
-from ._ns_core import check_detector_rnsa_validity
-from ..base import set_seed_numba
+from ._base import check_detector_rnsa_validity
+from ..base import BaseClassifier
+from ..base.core._base import set_seed_numba
+from ..base.immune.cell import Detector
 from ..exceptions import MaxDiscardsReachedError
 from ..utils.distance import (
     min_distance_to_class_vectors,
@@ -18,9 +19,14 @@ from ..utils.distance import (
     compute_metric_distance,
 )
 from ..utils.sanitizers import sanitize_seed, sanitize_choice, sanitize_param
+from ..utils.validation import (
+    check_array_type,
+    check_shape_match,
+    check_feature_dimension
+)
 
 
-class RNSA(BaseNSA):
+class RNSA(BaseClassifier):
     """Real-Valued Negative Selection Algorithm (RNSA) for classification and anomaly detection.
 
     Uses the self and non-self method to identify anomalies.
@@ -148,7 +154,9 @@ class RNSA(BaseNSA):
         self : RNSA
         Returns the instance itself.
         """
-        super()._check_and_raise_exceptions_fit(X, y)
+        X = check_array_type(X)
+        y = check_array_type(y, "y")
+        check_shape_match(X, y)
 
         # Identifying the possible classes within the output array `y`.
         self.classes = np.unique(y)
@@ -186,7 +194,7 @@ class RNSA(BaseNSA):
                     else:
                         radius = None
                     valid_detectors_set.append(Detector(vector_x, radius))
-                    progress.update(1)
+                    progress.update()
                 else:
                     discard_count += 1
                     if discard_count == self.max_discards:
@@ -230,10 +238,8 @@ class RNSA(BaseNSA):
         # If there are no detectors, Returns None.
         if self._detectors is None:
             return None
-
-        super()._check_and_raise_exceptions_predict(
-            X, len(self._detectors[self.classes[0]][0].position)
-        )
+        X = check_array_type(X)
+        check_feature_dimension(X, len(self._detectors[self.classes[0]][0].position))
 
         # Initializes an empty array that will store the predictions.
         c = []

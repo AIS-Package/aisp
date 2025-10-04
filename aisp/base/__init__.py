@@ -12,15 +12,15 @@ BaseClusterer
 BaseOptimizer
     Abstract Base Class for optimization algorithms.
 
-Functions
----------
-set_seed_numba
-    Set Random Seed for Numba JIT Compilation.
+Module
+------
+immune
+    Support Module for Artificial Immune Systems
 """
 
-from ._base import set_seed_numba
-from ._classifier import BaseClassifier
-from ._clusterer import BaseClusterer
-from ._optimizer import BaseOptimizer
+from . import immune
+from .core import BaseClassifier
+from .core import BaseClusterer
+from .core import BaseOptimizer
 
-__all__ = ['BaseClassifier', 'BaseClusterer', 'BaseOptimizer', 'set_seed_numba']
+__all__ = ['BaseClassifier', 'BaseClusterer', 'BaseOptimizer', 'immune']

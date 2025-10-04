@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from aisp.base.mutation import (
+from aisp.base.immune.mutation import (
     clone_and_mutate_continuous,
     clone_and_mutate_binary,
     clone_and_mutate_ranged,

@@ -8,11 +8,17 @@ from typing import Optional, Callable, Dict, Literal
 import numpy as np
 import numpy.typing as npt
 
+from ..base import BaseOptimizer
+from ..base.core._base import set_seed_numba
+from ..base.immune.cell import Antibody
+from ..base.immune.mutation import (
+    clone_and_mutate_binary,
+    clone_and_mutate_ranged,
+    clone_and_mutate_continuous,
+    clone_and_mutate_permutation
+)
+from ..base.immune.populations import generate_random_antibodies
 from ..utils.display import ProgressTable
-from ..base import BaseOptimizer, set_seed_numba
-from ..base.mutation import clone_and_mutate_binary, clone_and_mutate_ranged, \
-    clone_and_mutate_continuous, clone_and_mutate_permutation
-from ..base.populations import generate_random_antibodies
 from ..utils.sanitizers import sanitize_seed, sanitize_param, sanitize_bounds
 from ..utils.types import FeatureTypeAll
 
@@ -148,7 +154,7 @@ class Clonalg(BaseOptimizer):
         max_iters: int = 50,
         n_iter_no_change=10,
         verbose: bool = True
-    ) -> npt.NDArray:
+    ) -> npt.NDArray[Antibody]:
         """Execute the optimization process and return the population.
 
         Parameters
@@ -169,7 +175,10 @@ class Clonalg(BaseOptimizer):
         self.population = self._init_population_antibodies()
 
         t = 1
-        antibodies = [(antibody, self.affinity_function(antibody)) for antibody in self.population]
+        antibodies = [
+            Antibody(antibody, self.affinity_function(antibody))
+            for antibody in self.population
+        ]
         best_cost = None
         stop = 0
         progress = ProgressTable(
@@ -183,12 +192,12 @@ class Clonalg(BaseOptimizer):
 
         while t <= max_iters:
             p_select = self._select_top_antibodies(self.selection_size, antibodies)
-            self._record_best(p_select[0][1], p_select[0][0])
+            self._record_best(p_select[0].affinity, p_select[0].vector)
 
             clones = self._clone_and_hypermutation(p_select)
 
             p_rand = [
-                (antibody, self.affinity_function(antibody))
+                Antibody(antibody, self.affinity_function(antibody))
                 for antibody in self._diversity_introduction()
             ]
             antibodies = p_select
@@ -208,7 +217,7 @@ class Clonalg(BaseOptimizer):
                 {
                     "Iteration": t,
                     f"Best Affinity ({self.mode})": f"{self.best_cost:>25.6f}",
-                    "Worse Affinity": f"{antibodies[-1][1]:>20.6f}",
+                    "Worse Affinity": f"{antibodies[-1].affinity:>20.6f}",
                     "Stagnation": stop
                 }
             )
@@ -217,17 +226,17 @@ class Clonalg(BaseOptimizer):
 
             t += 1
         progress.finish()
-        self.population = np.array([antibody for antibody, _ in antibodies]).astype(dtype=float)
+        self.population = np.array(antibodies)
         return self.population
 
-    def _select_top_antibodies(self, n: int, antibodies: list[tuple]) -> list[tuple]:
+    def _select_top_antibodies(self, n: int, antibodies: list[Antibody]) -> list[Antibody]:
         """Select the antibodies with the highest or lowest values, depending on the mode.
 
         Parameters
         ----------
         n : int
             Number of antibodies to select.
-        antibodies : list[tuple]
+        antibodies : list[Antibody]
             Representing the antibodies and their associated score.
 
         Returns
@@ -236,9 +245,9 @@ class Clonalg(BaseOptimizer):
             criterion.
         """
         if self.mode == "max":
-            return heapq.nlargest(n, antibodies, key=lambda x: x[1])
+            return heapq.nlargest(n, antibodies)
 
-        return heapq.nsmallest(n, antibodies, key=lambda x: x[1])
+        return heapq.nsmallest(n, antibodies)
 
     def affinity_function(self, solution: npt.NDArray) -> np.float64:
         """
@@ -328,8 +337,8 @@ class Clonalg(BaseOptimizer):
 
     def _clone_and_hypermutation(
         self,
-        population: list[tuple]
-    ) -> list:
+        population: list[Antibody]
+    ) -> list[Antibody]:
         """Clone and hypermutate the population's antibodies.
 
         The clone list is returned with the clones and their affinities with respect to the cost
@@ -342,28 +351,28 @@ class Clonalg(BaseOptimizer):
 
         Returns
         -------
-        list[npt.NDArray]
+        list[Antibody]
             List of mutated clones.
         """
         clonal_m = []
-        min_affinity = min(item[1] for item in population)
-        max_affinity = max(item[1] for item in population)
+        min_affinity = min(item.affinity for item in population)
+        max_affinity = max(item.affinity for item in population)
         affinity_range = max_affinity - min_affinity
 
-        for antibody, affinity in population:
+        for antibody in population:
             if affinity_range == 0:
                 normalized_affinity = 1
             else:
-                normalized_affinity = (affinity - min_affinity) / affinity_range
+                normalized_affinity = (antibody.affinity - min_affinity) / affinity_range
                 if self.mode == "min":
                     normalized_affinity = max(0.0, 1.0 - normalized_affinity)
 
             num_clones = max(0, int(self.rate_clonal * normalized_affinity))
             clones = self._clone_and_mutate(
-                antibody,
+                antibody.vector,
                 num_clones,
                 1 - np.exp(-self.rate_hypermutation * normalized_affinity)
             )
             clonal_m.extend(clones)
 
-        return [(clone, self.affinity_function(clone)) for clone in clonal_m]
+        return [Antibody(clone, self.affinity_function(clone)) for clone in clonal_m]

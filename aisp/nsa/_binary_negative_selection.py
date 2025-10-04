@@ -8,16 +8,22 @@ import numpy as np
 import numpy.typing as npt
 from tqdm import tqdm
 
-from ._base import BaseNSA
-from ._ns_core import (
+from ._base import (
     check_detector_bnsa_validity,
     bnsa_class_prediction
 )
+from ..base import BaseClassifier
 from ..exceptions import MaxDiscardsReachedError
 from ..utils.sanitizers import sanitize_seed, sanitize_param
+from ..utils.validation import (
+    check_array_type,
+    check_shape_match,
+    check_binary_array,
+    check_feature_dimension
+)
 
 
-class BNSA(BaseNSA):
+class BNSA(BaseClassifier):
     """BNSA (Binary Negative Selection Algorithm).
     
     Class is for classification and identification purposes of anomalies through the self and not
@@ -99,7 +105,11 @@ class BNSA(BaseNSA):
         self : BNSA
              Returns the instance it self.
         """
-        super()._check_and_raise_exceptions_fit(X, y, "BNSA")
+        X = check_array_type(X)
+        y = check_array_type(y, "y")
+        check_shape_match(X, y)
+        check_binary_array(X)
+
         # Converts the entire array X to boolean
         X = X.astype(np.bool_)
 
@@ -134,7 +144,7 @@ class BNSA(BaseNSA):
                 if check_detector_bnsa_validity(x_class, vector_x, self.aff_thresh):
                     discard_count = 0
                     valid_detectors_set.append(vector_x)
-                    progress.update(1)
+                    progress.update()
                 else:
                     discard_count += 1
                     if discard_count == self.max_discards:
@@ -174,10 +184,9 @@ class BNSA(BaseNSA):
         # If there are no detectors, Returns None.
         if self._detectors is None or self._detectors_stack is None:
             return None
-
-        super()._check_and_raise_exceptions_predict(
-            X, len(self._detectors[self.classes[0]][0]), "BNSA"
-        )
+        X = check_array_type(X)
+        check_feature_dimension(X, len(self._detectors[self.classes[0]][0]))
+        check_binary_array(X)
 
         # Converts the entire array X to boolean.
         if X.dtype != bool:
@@ -237,4 +246,4 @@ class BNSA(BaseNSA):
             else:
                 class_differences[_class_] = distances.sum() / self.N
 
-        c.append(max(class_differences, key=class_differences.get)) # type: ignore
+        c.append(max(class_differences, key=class_differences.get))  # type: ignore

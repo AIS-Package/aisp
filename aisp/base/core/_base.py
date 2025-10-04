@@ -1,4 +1,5 @@
 """Base class for parameter introspection compatible with the scikit-learn API."""
+
 import random
 
 import numpy as np

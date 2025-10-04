@@ -13,16 +13,22 @@ import numpy.typing as npt
 from scipy.spatial.distance import pdist
 from tqdm import tqdm
 
-from ._base import BaseAIRS
-from ._cell import Cell
-from ..base import set_seed_numba
+from ..base import BaseClassifier
+from ..base.core._base import set_seed_numba
+from ..base.immune.cell import BCell
 from ..utils.distance import hamming, compute_metric_distance, get_metric_code
 from ..utils.sanitizers import sanitize_param, sanitize_seed, sanitize_choice
 from ..utils.types import FeatureType, MetricType
-from ..utils.validation import detect_vector_data_type
+from ..utils.validation import (
+    detect_vector_data_type,
+    check_array_type,
+    check_shape_match,
+    check_feature_dimension,
+    check_binary_array
+)
 
 
-class _ARB(Cell):
+class _ARB(BCell):
     """ARB (Artificial recognition ball).
 
     Individual from the set of recognizing cells (ARB), inherits characteristics from a B-cell,
@@ -74,12 +80,12 @@ class _ARB(Cell):
         self.resource = consumption
         return n_resource
 
-    def to_cell(self) -> Cell:
-        """Convert this _ARB into a pure Cell object."""
-        return Cell(self.vector)
+    def to_cell(self) -> BCell:
+        """Convert this _ARB into a pure BCell object."""
+        return BCell(self.vector)
 
 
-class AIRS(BaseAIRS):
+class AIRS(BaseClassifier):
     """Artificial Immune Recognition System (AIRS).
 
     The Artificial Immune Recognition System (AIRS) is a classification algorithm inspired by the
@@ -198,7 +204,7 @@ class AIRS(BaseAIRS):
         self._n_features: Optional[int] = None
 
     @property
-    def cells_memory(self) -> Optional[Dict[str, list[Cell]]]:
+    def cells_memory(self) -> Optional[Dict[str, list[BCell]]]:
         """Returns the trained cells memory, organized by class."""
         return self._cells_memory
 
@@ -226,7 +232,9 @@ class AIRS(BaseAIRS):
         """
         self._feature_type = detect_vector_data_type(X)
 
-        super()._check_and_raise_exceptions_fit(X, y)
+        X = check_array_type(X)
+        y = check_array_type(y, "y")
+        check_shape_match(X, y)
 
         match self._feature_type:
             case "binary-features":
@@ -257,7 +265,7 @@ class AIRS(BaseAIRS):
                 self.affinity_threshold * self.affinity_threshold_scalar
             )
             # Initialize memory cells for a class.
-            pool_c: list[Cell] = self._init_memory_c(x_class)
+            pool_c: list[BCell] = self._init_memory_c(x_class)
 
             for ai in x_class:
                 # Calculating the stimulation of memory cells with aᵢ and selecting the largest
@@ -297,7 +305,7 @@ class AIRS(BaseAIRS):
                     if self._affinity(c_candidate.vector, c_match.vector) < sufficiently_similar:
                         pool_c.remove(c_match)
 
-                progress.update(1)
+                progress.update()
             pool_cells_classes[_class_] = pool_c
 
         progress.set_description(
@@ -335,9 +343,11 @@ class AIRS(BaseAIRS):
         if self._all_class_cell_vectors is None or self._n_features is None:
             return None
 
-        super()._check_and_raise_exceptions_predict(
-            X, self._n_features, self._feature_type
-        )
+        X = check_array_type(X)
+        check_feature_dimension(X, self._n_features)
+
+        if self._feature_type == "binary-features":
+            check_binary_array(X)
 
         c: list = []
 
@@ -443,7 +453,7 @@ class AIRS(BaseAIRS):
             distances = pdist(antigens_list, metric="hamming")
         else:
             metric_kwargs = {'p': self.p} if self.metric == 'minkowski' else {}
-            distances = pdist(antigens_list, metric=self.metric, **metric_kwargs) # type: ignore
+            distances = pdist(antigens_list, metric=self.metric, **metric_kwargs)  # type: ignore
 
         n = antigens_list.shape[0]
         sum_affinity = np.sum(1.0 - (distances / (1.0 + distances)))
@@ -474,7 +484,7 @@ class AIRS(BaseAIRS):
             )
         return 1 - (distance / (1 + distance))
 
-    def _init_memory_c(self, antigens_list: npt.NDArray) -> List[Cell]:
+    def _init_memory_c(self, antigens_list: npt.NDArray) -> List[BCell]:
         """
         Initialize memory cells by randomly selecting `rate_mc_init` antigens.
 
@@ -485,7 +495,7 @@ class AIRS(BaseAIRS):
 
         Returns
         -------
-        List[Cell]
+        List[BCell]
             List of initialized memories.
         """
         n = antigens_list.shape[0]
@@ -496,4 +506,4 @@ class AIRS(BaseAIRS):
 
         permutation = np.random.permutation(n)
         selected = antigens_list[permutation[:n_cells]]
-        return [Cell(ai) for ai in selected]
+        return [BCell(ai) for ai in selected]

@@ -5,7 +5,7 @@ from typing import Optional
 import numpy as np
 import numpy.typing as npt
 
-from ..utils.types import FeatureTypeAll
+from ...utils.types import FeatureTypeAll
 
 
 def generate_random_antibodies(

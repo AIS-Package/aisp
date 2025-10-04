@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from aisp.base.populations import generate_random_antibodies
+from aisp.base.immune.populations import generate_random_antibodies
 from aisp.utils.types import FeatureTypeAll
 
 
