@@ -16,5 +16,4 @@ Clonalg : Clonal Selection Algorithm.
 from ._ai_recognition_sys import AIRS
 from ._clonalg import Clonalg
 
-__author__ = 'João Paulo da Silva Barros'
 __all__ = ['AIRS', 'Clonalg']
