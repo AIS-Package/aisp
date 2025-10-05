@@ -85,7 +85,7 @@ def bnsa_class_prediction(
     """
     n_classes, n_detectors, _ = class_detectors.shape
     best_class_idx = -1
-    best_avg_distance = 0
+    best_avg_distance = 0.0
 
     for class_index in range(n_classes):
         total_distance = 0.0

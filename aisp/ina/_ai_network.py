@@ -442,7 +442,7 @@ class AiNet(BaseClusterer):
                 u, v, get_metric_code(self.metric), self.p
             )
 
-        return 1 - (distance / (1 + distance))
+        return float(1 - (distance / (1 + distance)))
 
     def _calculate_affinities(self, u: npt.NDArray, v: npt.NDArray) -> npt.NDArray:
         """

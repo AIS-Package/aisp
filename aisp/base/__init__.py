@@ -23,4 +23,4 @@ from .core import BaseClassifier
 from .core import BaseClusterer
 from .core import BaseOptimizer
 
-__all__ = ['BaseClassifier', 'BaseClusterer', 'BaseOptimizer', 'immune']
+__all__ = ["BaseClassifier", "BaseClusterer", "BaseOptimizer", "immune"]

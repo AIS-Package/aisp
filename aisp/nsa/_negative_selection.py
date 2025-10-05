@@ -372,7 +372,7 @@ class RNSA(BaseClassifier):
         for _class_ in self.classes:
             # Variable to indicate if the class was found with the detectors.
             class_found: bool = True
-            sum_distance = 0
+            sum_distance = 0.0
             for detector in self._detectors[_class_]:
                 distance = self.__distance(detector.position, line)
                 sum_distance += distance

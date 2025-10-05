@@ -2,8 +2,4 @@
 
 from . import cell, mutation, populations
 
-__all__ = [
-    'cell',
-    'mutation',
-    'populations'
-]
+__all__ = ["cell", "mutation", "populations"]

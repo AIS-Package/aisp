@@ -271,7 +271,7 @@ class AIRS(BaseClassifier):
                 # Calculating the stimulation of memory cells with aᵢ and selecting the largest
                 # stimulation from the memory set.
                 c_match = pool_c[0]
-                match_stimulation = -1
+                match_stimulation = -1.0
                 for cell in pool_c:
                     stimulation = self._affinity(cell.vector, ai)
                     if stimulation > match_stimulation:
@@ -482,7 +482,7 @@ class AIRS(BaseClassifier):
             distance = compute_metric_distance(
                 u, v, get_metric_code(self.metric), self.p
             )
-        return 1 - (distance / (1 + distance))
+        return float(1 - (distance / (1 + distance)))
 
     def _init_memory_c(self, antigens_list: npt.NDArray) -> List[BCell]:
         """

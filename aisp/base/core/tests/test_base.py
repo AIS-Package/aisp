@@ -15,7 +15,7 @@ class TestBase:
 
     def test_set_and_get_params_basic(self):
         """Test setting parameters using set_params and retrieving them with get_params."""
-        params_dict = {'alpha': 10, 'beta': 'test'}
+        params_dict = {"alpha": 10, "beta": "test"}
         self.obj.set_params(**params_dict)
 
         params = self.obj.get_params()
@@ -24,12 +24,12 @@ class TestBase:
     def test_get_params_excludes_private(self):
         """Test that get_params excludes attributes starting with an underscore."""
         self.obj._private = 123  # pylint: disable=protected-access
-        self.obj.public = 'ok'
+        self.obj.public = "ok"
 
         params = self.obj.get_params()
-        assert '_private' not in params
-        assert 'public' in params
-        assert params['public'] == 'ok'
+        assert "_private" not in params
+        assert "public" in params
+        assert params["public"] == "ok"
 
     def test_set_params_updates_existing(self):
         """Test that set_params updates existing attributes correctly."""

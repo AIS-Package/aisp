@@ -7,9 +7,7 @@ from .types import FeatureType
 from ..exceptions import UnsupportedTypeError, FeatureDimensionMismatch
 
 
-def detect_vector_data_type(
-    vector: npt.NDArray
-) -> FeatureType:
+def detect_vector_data_type(vector: npt.NDArray) -> FeatureType:
     """
     Detect the type of data in a vector.
 
@@ -47,7 +45,7 @@ def detect_vector_data_type(
     raise UnsupportedTypeError()
 
 
-def check_array_type(x, name: str = 'X') -> npt.NDArray:
+def check_array_type(x, name: str = "X") -> npt.NDArray:
     """Ensure X is a numpy array. Convert from list if needed.
 
     Parameters
@@ -125,4 +123,6 @@ def check_binary_array(x: npt.NDArray):
         of 0 and 1.
     """
     if not np.isin(x, [0, 1]).all():
-        raise ValueError("The array x contains values that are not composed only of 0 and 1.")
+        raise ValueError(
+            "The array x contains values that are not composed only of 0 and 1."
+        )

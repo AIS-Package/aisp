@@ -14,4 +14,4 @@ from ._classifier import BaseClassifier
 from ._clusterer import BaseClusterer
 from ._optimizer import BaseOptimizer
 
-__all__ = ['BaseClassifier', 'BaseClusterer', 'BaseOptimizer']
+__all__ = ["BaseClassifier", "BaseClusterer", "BaseOptimizer"]

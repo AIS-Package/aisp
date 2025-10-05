@@ -12,9 +12,7 @@ from numba import njit, types
 
 @njit([(types.float64[:], types.int64, types.float64)], cache=True)
 def clone_and_mutate_continuous(
-    vector: npt.NDArray[np.float64],
-    n: int,
-    mutation_rate: float
+    vector: npt.NDArray[np.float64], n: int, mutation_rate: float
 ) -> npt.NDArray[np.float64]:
     """
     Generate a set of mutated clones from a cell represented by a continuous vector.
@@ -65,8 +63,7 @@ def clone_and_mutate_continuous(
 
 @njit([(types.boolean[:], types.int64)], cache=True)
 def clone_and_mutate_binary(
-    vector: npt.NDArray[np.bool_],
-    n: int
+    vector: npt.NDArray[np.bool_], n: int
 ) -> npt.NDArray[np.bool_]:
     """
     Generate a set of mutated clones from a cell represented by a binary vector.
@@ -106,7 +103,7 @@ def clone_and_mutate_ranged(
     vector: npt.NDArray[np.float64],
     n: int,
     bounds: npt.NDArray[np.float64],
-    mutation_rate: float
+    mutation_rate: float,
 ) -> npt.NDArray[np.float64]:
     """
     Generate a set of mutated clones from a cell represented by custom ranges per dimension.
@@ -162,9 +159,7 @@ def clone_and_mutate_ranged(
 
 @njit([(types.int64[:], types.int64, types.float64)], cache=True)
 def clone_and_mutate_permutation(
-    vector: npt.NDArray[np.int64],
-    n: int,
-    mutation_rate: float
+    vector: npt.NDArray[np.int64], n: int, mutation_rate: float
 ) -> npt.NDArray[np.int64]:
     """Generate a set of mutated clones by random permutation.
 

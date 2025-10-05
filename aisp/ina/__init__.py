@@ -10,4 +10,4 @@ AiNet : Artificial Immune Network.
 
 from ._ai_network import AiNet
 
-__all__ = ['AiNet']
+__all__ = ["AiNet"]
