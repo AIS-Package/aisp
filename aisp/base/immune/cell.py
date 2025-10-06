@@ -45,31 +45,7 @@ class Cell:
         return NotImplemented
 
 
-@dataclass(slots=True)
-class Detector:
-    """
-    Represents a non-self detector of the RNSA class.
-
-    Attributes
-    ----------
-    position : npt.NDArray[np.float64]
-        Detector feature vector.
-    radius : float, optional
-        Detector radius, used in the V-detector algorithm.
-    """
-
-    position: npt.NDArray[np.float64] = field(
-        metadata={"description": "Detector feature vector."}
-    )
-    radius: Optional[float] = None
-
-    def __post_init__(self):
-        """Validate the Antibody instance after initialization."""
-        if self.position is None:
-            raise ValueError("vector is required.")
-
-
-@dataclass(slots=True)
+@dataclass(slots=True, eq=False)
 class BCell(Cell):
     """
     Represents a memory B-cell.
@@ -149,3 +125,27 @@ class Antibody(Cell):
         if isinstance(other, (float, int, np.floating)):
             return self.affinity == other
         return NotImplemented
+
+
+@dataclass(slots=True)
+class Detector:
+    """
+    Represents a non-self detector of the RNSA class.
+
+    Attributes
+    ----------
+    position : npt.NDArray[np.float64]
+        Detector feature vector.
+    radius : float, optional
+        Detector radius, used in the V-detector algorithm.
+    """
+
+    position: npt.NDArray[np.float64] = field(
+        metadata={"description": "Detector feature vector."}
+    )
+    radius: Optional[float] = None
+
+    def __post_init__(self):
+        """Validate the Antibody instance after initialization."""
+        if self.position is None:
+            raise ValueError("vector is required.")
