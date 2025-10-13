@@ -58,7 +58,7 @@ def clone_and_mutate_continuous(
             for j in range(n_mutations):
                 idx = position_mutations[j]
                 clone[idx] = np.float64(np.random.random())
-            clone_set[i] = clone
+        clone_set[i] = clone
 
     return clone_set
 
@@ -155,7 +155,7 @@ def clone_and_mutate_ranged(
                 min_limit = bounds[0][idx]
                 max_limit = bounds[1][idx]
                 clone[idx] = np.random.uniform(low=min_limit, high=max_limit)
-            clone_set[i] = clone
+        clone_set[i] = clone
 
     return clone_set
 
