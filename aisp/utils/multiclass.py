@@ -44,7 +44,7 @@ def predict_knn_affinity(
     all_cell_vectors: List[Tuple[Union[str, int], npt.NDArray]],
     affinity_func: Callable[[npt.NDArray, npt.NDArray], float]
 ) -> npt.NDArray:
-    """Utility function to predict classes using k-nearest neighbors using trained cells.
+    """Predict classes using k-nearest neighbors and trained cells.
 
     Parameters
     ----------
