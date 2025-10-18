@@ -13,8 +13,8 @@ import numpy.typing as npt
 from scipy.spatial.distance import pdist
 from tqdm import tqdm
 
+from ..utils.random import set_seed_numba
 from ..base import BaseClassifier
-from ..base.core._base import set_seed_numba
 from ..base.immune.cell import BCell
 from ..utils.distance import hamming, compute_metric_distance, get_metric_code
 from ..utils.sanitizers import sanitize_param, sanitize_seed, sanitize_choice

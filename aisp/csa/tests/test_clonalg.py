@@ -31,9 +31,9 @@ class TestClonalg:
     def test_optimize_returns_valid_population(self, clonalg):
         """Should return a valid population with correct shape and within bounds."""
         pop = clonalg.optimize(max_iters=5, verbose=False)
-        assert isinstance(pop, np.ndarray)
+        assert isinstance(pop, list)
         assert isinstance(pop[0], Antibody)
-        assert pop.shape == (10,)
+        assert len(pop) == 10
         assert pop[0].vector.shape[0] == 3
 
     def test_optimize_without_affinity_function_raises_error(self):

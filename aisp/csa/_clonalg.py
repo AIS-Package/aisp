@@ -3,13 +3,13 @@
 from __future__ import annotations
 
 import heapq
-from typing import Optional, Callable, Dict, Literal
+from typing import Optional, Callable, Dict, Literal, List
 
 import numpy as np
 import numpy.typing as npt
 
 from ..base import BaseOptimizer
-from ..base.core._base import set_seed_numba
+from ..utils.random import set_seed_numba
 from ..base.immune.cell import Antibody
 from ..base.immune.mutation import (
     clone_and_mutate_binary,
@@ -154,7 +154,7 @@ class Clonalg(BaseOptimizer):
         max_iters: int = 50,
         n_iter_no_change=10,
         verbose: bool = True
-    ) -> npt.NDArray[Antibody]:
+    ) -> List[Antibody]:
         """Execute the optimization process and return the population.
 
         Parameters
@@ -168,7 +168,7 @@ class Clonalg(BaseOptimizer):
 
         Returns
         -------
-        population : npt.NDArray
+        population : List[Antibody]
             Antibody population after clonal expansion.
         """
         self.reset()
@@ -226,7 +226,7 @@ class Clonalg(BaseOptimizer):
 
             t += 1
         progress.finish()
-        self.population = np.array(antibodies)
+        self.population = antibodies
         return self.population
 
     def _select_top_antibodies(self, n: int, antibodies: list[Antibody]) -> list[Antibody]:
@@ -375,4 +375,4 @@ class Clonalg(BaseOptimizer):
             )
             clonal_m.extend(clones)
 
-        return [Antibody(clone, self.affinity_function(clone)) for clone in clonal_m]
+        return [Antibody(clone, self.affinity_function(clone)) for clone in np.asarray(clonal_m)]

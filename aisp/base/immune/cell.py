@@ -44,6 +44,22 @@ class Cell:
 
         return NotImplemented
 
+    def __array__(self) -> np.ndarray:
+        """Array interface to Numpy.
+
+        Allows the instance to be treated as a np.ndarray by NumPy functions.
+
+        Returns
+        -------
+        np.ndarray
+            The cell's feature vector (self.vector).
+        """
+        return self.vector
+
+    def __getitem__(self, item):
+        """Get the index of the NumPy vector."""
+        return self.vector[item]
+
 
 @dataclass(slots=True, eq=False)
 class BCell(Cell):

@@ -5,7 +5,7 @@ from typing import TypeVar, Iterable, Callable, Any, Optional, Dict
 import numpy as np
 import numpy.typing as npt
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 def sanitize_choice(value: T, valid_choices: Iterable[T], default: T) -> T:
@@ -67,7 +67,9 @@ def sanitize_seed(seed: Any) -> Optional[int]:
     return seed if isinstance(seed, int) and seed >= 0 else None
 
 
-def sanitize_bounds(bounds: Any, problem_size: int) -> Dict[str, npt.NDArray[np.float64]]:
+def sanitize_bounds(
+    bounds: Any, problem_size: int
+) -> Dict[str, npt.NDArray[np.float64]]:
     """Validate and normalize feature bounds.
 
     Parameters
@@ -91,11 +93,15 @@ def sanitize_bounds(bounds: Any, problem_size: int) -> Dict[str, npt.NDArray[np.
     ValueError
         If provided iterables have the wrong length.
     """
-    if bounds is None or not isinstance(bounds, dict) or set(bounds.keys()) != {'low', 'high'}:
+    if (
+        bounds is None
+        or not isinstance(bounds, dict)
+        or set(bounds.keys()) != {"low", "high"}
+    ):
         raise ValueError("bounds expects a dict with keys 'low' and 'high'")
     result = {}
 
-    for key in ['low', 'high']:
+    for key in ["low", "high"]:
         value = bounds[key]
         if isinstance(value, (float, int)):
             result[key] = np.array([value] * problem_size).astype(dtype=np.float64)

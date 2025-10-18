@@ -1,10 +1,5 @@
 """Base class for parameter introspection compatible with the scikit-learn API."""
 
-import random
-
-import numpy as np
-from numba import njit
-
 
 class Base:
     """
@@ -50,17 +45,3 @@ class Base:
             for key, value in self.__dict__.items()
             if not key.startswith("_")
         }
-
-
-@njit(cache=True)
-def set_seed_numba(seed: int):
-    """
-    Set the seed for random numbers used by functions compiled with Numba.
-
-    Parameters
-    ----------
-    seed : int
-        Integer value used to initialize Numba's random number generator.
-    """
-    np.random.seed(seed)
-    random.seed(seed)

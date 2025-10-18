@@ -10,7 +10,7 @@ from tqdm import tqdm
 
 from ._base import check_detector_rnsa_validity
 from ..base import BaseClassifier
-from ..base.core._base import set_seed_numba
+from ..utils.random import set_seed_numba
 from ..base.immune.cell import Detector
 from ..exceptions import MaxDiscardsReachedError
 from ..utils.distance import (

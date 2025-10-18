@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections import Counter
 from heapq import nlargest
-from typing import Optional
+from typing import Optional, Dict, List
 
 import numpy as np
 import numpy.typing as npt
@@ -12,8 +12,9 @@ from scipy.sparse.csgraph import minimum_spanning_tree, connected_components
 from scipy.spatial.distance import squareform, pdist, cdist
 from tqdm import tqdm
 
+from ..base.immune.cell import Cell
 from ..base import BaseClusterer
-from ..base.core._base import set_seed_numba
+from ..utils.random import set_seed_numba
 from ..base.immune.mutation import (
     clone_and_mutate_binary,
     clone_and_mutate_continuous,
@@ -155,7 +156,7 @@ class AiNet(BaseClusterer):
         if self.metric == "minkowski":
             self._metric_params['p'] = self.p
         self.classes = []
-        self._memory_network: dict = {}
+        self._memory_network: Dict[int, List[Cell]] = {}
         self._population_antibodies: Optional[npt.NDArray] = None
         self._n_features: int = 0
         self._bounds: Optional[npt.NDArray[np.float64]] = None
@@ -166,7 +167,7 @@ class AiNet(BaseClusterer):
         self._predict_labels = None
 
     @property
-    def memory_network(self) -> dict:
+    def memory_network(self) -> Dict[int, List[Cell]]:
         """Return the immune network representing clusters or graph structure."""
         return self._memory_network
 
@@ -284,7 +285,7 @@ class AiNet(BaseClusterer):
 
         for line in X:
             label_stim_list = [
-                (class_name, self._affinity(memory, line))
+                (class_name, self._affinity(memory.vector, line))
                 for class_name, memory in all_cells_memory
             ]
             # Create the list with the k nearest neighbors and select the class with the most votes
@@ -564,7 +565,7 @@ class AiNet(BaseClusterer):
         n_antibodies, labels = connected_components(csgraph=antibodies_mst, directed=False)
 
         self._memory_network = {
-            label: self._population_antibodies[labels == label]
+            label: [Cell(a) for a in self._population_antibodies[labels == label]]
             for label in range(n_antibodies)
         }
         self.classes = np.array(list(self._memory_network.keys()))
