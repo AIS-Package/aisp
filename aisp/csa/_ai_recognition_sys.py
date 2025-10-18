@@ -3,8 +3,6 @@
 from __future__ import annotations
 
 import random
-from collections import Counter
-from heapq import nlargest
 from operator import attrgetter
 from typing import List, Optional, Dict
 
@@ -13,10 +11,11 @@ import numpy.typing as npt
 from scipy.spatial.distance import pdist
 from tqdm import tqdm
 
-from ..utils.random import set_seed_numba
 from ..base import BaseClassifier
 from ..base.immune.cell import BCell
 from ..utils.distance import hamming, compute_metric_distance, get_metric_code
+from ..utils.multiclass import predict_knn_affinity
+from ..utils.random import set_seed_numba
 from ..utils.sanitizers import sanitize_param, sanitize_seed, sanitize_choice
 from ..utils.types import FeatureType, MetricType
 from ..utils.validation import (
@@ -349,18 +348,7 @@ class AIRS(BaseClassifier):
         if self._feature_type == "binary-features":
             check_binary_array(X)
 
-        c: list = []
-
-        for line in X:
-            label_stim_list = [
-                (class_name, self._affinity(memory, line))
-                for class_name, memory in self._all_class_cell_vectors
-            ]
-            # Create the list with the k nearest neighbors and select the class with the most votes
-            k_nearest = nlargest(self.k, label_stim_list, key=lambda x: x[1])
-            votes = Counter(label for label, _ in k_nearest)
-            c.append(votes.most_common(1)[0][0])
-        return np.array(c)
+        return predict_knn_affinity(X, self.k,  self._all_class_cell_vectors, self._affinity)
 
     def _refinement_arb(
         self, ai: npt.NDArray, c_match_stimulation: float, arb_list: List[_ARB]

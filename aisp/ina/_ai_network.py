@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from collections import Counter
-from heapq import nlargest
 from typing import Optional, Dict, List
 
 import numpy as np
@@ -12,9 +10,8 @@ from scipy.sparse.csgraph import minimum_spanning_tree, connected_components
 from scipy.spatial.distance import squareform, pdist, cdist
 from tqdm import tqdm
 
-from ..base.immune.cell import Cell
 from ..base import BaseClusterer
-from ..utils.random import set_seed_numba
+from ..base.immune.cell import Cell
 from ..base.immune.mutation import (
     clone_and_mutate_binary,
     clone_and_mutate_continuous,
@@ -22,6 +19,8 @@ from ..base.immune.mutation import (
 )
 from ..base.immune.populations import generate_random_antibodies
 from ..utils.distance import hamming, compute_metric_distance, get_metric_code
+from ..utils.multiclass import predict_knn_affinity
+from ..utils.random import set_seed_numba
 from ..utils.sanitizers import sanitize_choice, sanitize_param, sanitize_seed
 from ..utils.types import FeatureType, MetricType
 from ..utils.validation import (
@@ -165,6 +164,7 @@ class AiNet(BaseClusterer):
         self._mst_std_distance: Optional[float] = None
         self._predict_cells = None
         self._predict_labels = None
+        self._all_cells_memory_vectors = None
 
     @property
     def memory_network(self) -> Dict[int, List[Cell]]:
@@ -275,24 +275,7 @@ class AiNet(BaseClusterer):
         if self._feature_type == "binary-features":
             check_binary_array(X)
 
-        c: list = []
-
-        all_cells_memory = [
-            (class_name, cell)
-            for class_name in self.classes
-            for cell in self._memory_network[class_name]
-        ]
-
-        for line in X:
-            label_stim_list = [
-                (class_name, self._affinity(memory.vector, line))
-                for class_name, memory in all_cells_memory
-            ]
-            # Create the list with the k nearest neighbors and select the class with the most votes
-            k_nearest = nlargest(self.k, label_stim_list, key=lambda x: x[1])
-            votes = Counter(label for label, _ in k_nearest)
-            c.append(votes.most_common(1)[0][0])
-        return np.array(c)
+        return predict_knn_affinity(X, self.k, self._all_cells_memory_vectors, self._affinity)
 
     def _init_population_antibodies(self) -> npt.NDArray:
         """
@@ -569,3 +552,9 @@ class AiNet(BaseClusterer):
             for label in range(n_antibodies)
         }
         self.classes = np.array(list(self._memory_network.keys()))
+
+        self._all_cells_memory_vectors = [
+            (class_name, cell.vector)
+            for class_name in self.classes
+            for cell in self._memory_network[class_name]
+        ]
