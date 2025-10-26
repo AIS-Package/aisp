@@ -1,8 +1,9 @@
 """Negative Selection Algorithm."""
 
+
 from __future__ import annotations
 
-from typing import Any, Dict, Literal, Optional, Union
+from typing import Any, Dict, Literal, Optional, Union, List
 
 import numpy as np
 import numpy.typing as npt
@@ -120,7 +121,7 @@ class RNSA(BaseClassifier):
 
         # Initializes the other class variables as None.
         self._detectors: Union[dict, None] = None
-        self.classes: Union[npt.NDArray, list] = []
+        self.classes: Optional[npt.NDArray] = None
 
     @property
     def detectors(self) -> Optional[Dict[str, list[Detector]]]:
@@ -173,7 +174,7 @@ class RNSA(BaseClassifier):
         )
         for _class_ in self.classes:
             # Initializes the empty set that will contain the valid detectors.
-            valid_detectors_set = []
+            valid_detectors_set: List[Detector] = []
             discard_count = 0
             x_class = X[sample_index[_class_]]
             # Indicating which class the algorithm is currently processing for the progress bar.
@@ -182,17 +183,16 @@ class RNSA(BaseClassifier):
             )
             while len(valid_detectors_set) < self.N:
                 # Generates a candidate detector vector randomly with values between 0 and 1.
-                vector_x = np.random.random_sample(size=X.shape[1])
+                vector_x = np.random.random_sample(size=(X.shape[1],))
                 # Checks the validity of the detector for non-self with respect to the class samples
                 valid_detector = self.__checks_valid_detector(x_class, vector_x)
 
                 # If the detector is valid, add it to the list of valid detectors.
                 if valid_detector is not False:
                     discard_count = 0
+                    radius: Optional[float] = None
                     if self.algorithm == "V-detector" and isinstance(valid_detector, tuple):
                         radius = valid_detector[1]
-                    else:
-                        radius = None
                     valid_detectors_set.append(Detector(vector_x, radius))
                     progress.update()
                 else:
@@ -225,18 +225,18 @@ class RNSA(BaseClassifier):
         Raises
         ------
         TypeError
-            If X is not an ndarray or list.
+            If X is not a ndarray or list.
         FeatureDimensionMismatch
             If the number of features in X does not match the expected number.
 
         Returns
         -------
         C : npt.NDArray or None
-            an ndarray of the form ``C`` [``N samples``], containing the predicted classes
+            a ndarray of the form ``C`` [``N samples``], containing the predicted classes
             for ``X``. Returns `None` if no detectors are available for prediction.
         """
         # If there are no detectors, Returns None.
-        if self._detectors is None:
+        if self._detectors is None or self.classes is None:
             return None
         X = check_array_type(X)
         check_feature_dimension(X, len(self._detectors[self.classes[0]][0].position))
@@ -266,7 +266,7 @@ class RNSA(BaseClassifier):
                     average_distance[_class_] = np.average(
                         [self.__distance(detector, line) for detector in detectores]
                     )
-                c.append(max(average_distance, key=average_distance.get)) # type: ignore
+                c.append(max(average_distance, key=average_distance.get))  # type: ignore
         return np.array(c)
 
     def __checks_valid_detector(
@@ -364,7 +364,7 @@ class RNSA(BaseClassifier):
             Returns the predicted class with the detectors or None if the sample does not qualify
             for any class.
         """
-        if self._detectors is None:
+        if self._detectors is None or self.classes is None:
             return None
 
         # List to store the classes and the average distance between the detectors and the sample.

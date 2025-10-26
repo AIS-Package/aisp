@@ -15,8 +15,7 @@ from aisp.utils.types import FeatureTypeAll
         (
             5, 5,
             "ranged-features",
-            np.array([[1, 1, 1, 1, 1],
-            [10, 10, 10, 10, 10]]),
+            np.array([[1, 1, 1, 1, 1], [10, 10, 10, 10, 10]]),
             (5, 5),
             float
         ),

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import random
 from operator import attrgetter
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Tuple, Any
 
 import numpy as np
 import numpy.typing as npt
@@ -195,10 +195,10 @@ class AIRS(BaseClassifier):
 
         self.p: np.float64 = np.float64(kwargs.get("p", 2.0))
 
-        self._cells_memory = None
-        self._all_class_cell_vectors = None
-        self.affinity_threshold = 0.0
-        self.classes = []
+        self._cells_memory: Optional[Dict[str, list[BCell]]] = None
+        self._all_class_cell_vectors: Optional[List[Tuple[Any, np.ndarray]]] = None
+        self.affinity_threshold: float = 0.0
+        self.classes: Optional[npt.NDArray] = None
         self._bounds: Optional[npt.NDArray[np.float64]] = None
         self._n_features: Optional[int] = None
 
@@ -430,7 +430,7 @@ class AIRS(BaseClassifier):
         is measured by distance (Euclidean, Manhattan, Minkowski, Hamming).
         Following the formula:
 
-        > affinity_threshold = (Σᵢ=₁ⁿ⁻¹ Σⱼ=ᵢ₊₁ⁿ affinity(aᵢ, aⱼ)) / (n(n-1)/2
+        > affinity_threshold = (Σᵢ=₁ⁿ⁻¹ Σⱼ=ᵢ₊₁ⁿ affinity(aᵢ, aⱼ)) / (n(n-1)/2)
 
         Parameters
         ----------

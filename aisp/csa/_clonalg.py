@@ -9,7 +9,6 @@ import numpy as np
 import numpy.typing as npt
 
 from ..base import BaseOptimizer
-from ..utils.random import set_seed_numba
 from ..base.immune.cell import Antibody
 from ..base.immune.mutation import (
     clone_and_mutate_binary,
@@ -19,6 +18,7 @@ from ..base.immune.mutation import (
 )
 from ..base.immune.populations import generate_random_antibodies
 from ..utils.display import ProgressTable
+from ..utils.random import set_seed_numba
 from ..utils.sanitizers import sanitize_seed, sanitize_param, sanitize_bounds
 from ..utils.types import FeatureTypeAll
 
@@ -115,8 +115,8 @@ class Clonalg(BaseOptimizer):
         self._affinity_function = affinity_function
         self.feature_type: FeatureTypeAll = feature_type
 
-        self._bounds = None
-        self._bounds_extend_cache = None
+        self._bounds: Optional[Dict] = None
+        self._bounds_extend_cache: Optional[np.ndarray] = None
         self.bounds = bounds
 
         self.mode: Literal["min", "max"] = sanitize_param(
@@ -130,7 +130,7 @@ class Clonalg(BaseOptimizer):
             np.random.seed(self.seed)
             set_seed_numba(self.seed)
 
-        self.population = None
+        self.population: Optional[List[Antibody]] = None
 
     @property
     def bounds(self) -> Optional[Dict]:
@@ -172,12 +172,11 @@ class Clonalg(BaseOptimizer):
             Antibody population after clonal expansion.
         """
         self.reset()
-        self.population = self._init_population_antibodies()
 
         t = 1
         antibodies = [
             Antibody(antibody, self.affinity_function(antibody))
-            for antibody in self.population
+            for antibody in self._init_population_antibodies()
         ]
         best_cost = None
         stop = 0
@@ -186,7 +185,8 @@ class Clonalg(BaseOptimizer):
                 "Iteration": 11,
                 f"Best Affinity ({self.mode})": 25,
                 "Worse Affinity": 20,
-                "Stagnation": 17},
+                "Stagnation": 17
+            },
             verbose
         )
 
@@ -354,14 +354,14 @@ class Clonalg(BaseOptimizer):
         list[Antibody]
             List of mutated clones.
         """
-        clonal_m = []
+        clonal_m: list = []
         min_affinity = min(item.affinity for item in population)
         max_affinity = max(item.affinity for item in population)
         affinity_range = max_affinity - min_affinity
 
         for antibody in population:
             if affinity_range == 0:
-                normalized_affinity = 1
+                normalized_affinity = 1.0
             else:
                 normalized_affinity = (antibody.affinity - min_affinity) / affinity_range
                 if self.mode == "min":

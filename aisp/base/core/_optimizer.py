@@ -182,7 +182,7 @@ class BaseOptimizer(ABC):
 
     def reset(self):
         """Reset the object's internal state, clearing history and resetting values."""
-        self._cost_history: List[float] = []
-        self._solution_history: list = []
-        self._best_solution: Optional[Any] = None
-        self._best_cost: Optional[float] = None
+        self._cost_history = []
+        self._solution_history = []
+        self._best_solution = None
+        self._best_cost = None

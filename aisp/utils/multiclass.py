@@ -2,13 +2,13 @@
 
 from collections import Counter
 from heapq import nlargest
-from typing import Union, Callable, List, Tuple
+from typing import Union, Callable, List, Tuple, Optional
 
 import numpy as np
 import numpy.typing as npt
 
 
-def slice_index_list_by_class(classes: Union[npt.NDArray, list], y: npt.NDArray) -> dict:
+def slice_index_list_by_class(classes: Optional[Union[npt.NDArray, list]], y: npt.NDArray) -> dict:
     """Separate indices of samples by class for targeted iteration.
 
     Parameters
@@ -31,7 +31,11 @@ def slice_index_list_by_class(classes: Union[npt.NDArray, list], y: npt.NDArray)
     >>> slice_index_list_by_class(labels, y)
     {'a': [0, 3], 1: [2, 5], 2: [1, 4]}
     """
+    if classes is None:
+        return {}
+
     position_samples = {}
+
     for _class_ in classes:
         # Gets the sample positions by class from y.
         position_samples[_class_] = np.flatnonzero(y == _class_).tolist()

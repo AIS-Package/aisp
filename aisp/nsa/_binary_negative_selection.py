@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Dict, Literal, Optional, Union
+from typing import Dict, Literal, Optional
 
 import numpy as np
 import numpy.typing as npt
@@ -78,7 +78,7 @@ class BNSA(BaseClassifier):
             lambda x: x == "nearest_difference",
         )
 
-        self.classes: Union[npt.NDArray, list] = []
+        self.classes: Optional[npt.NDArray] = None
         self._detectors: Optional[dict] = None
         self._detectors_stack: Optional[npt.NDArray] = None
 
@@ -103,7 +103,7 @@ class BNSA(BaseClassifier):
         Returns
         -------
         self : BNSA
-             Returns the instance it self.
+             Returns the instance itself.
         """
         X = check_array_type(X)
         y = check_array_type(y, "y")
@@ -116,7 +116,7 @@ class BNSA(BaseClassifier):
         # Identifying the possible classes within the output array `y`.
         self.classes = np.unique(y)
         # Dictionary that will store detectors with classes as keys.
-        list_detectors_by_class = {}
+        list_detectors_by_class: dict = {}
         # Separates the classes for training.
         sample_index: dict = self._slice_index_list_by_class(y)
         # Progress bar for generating all detectors.
@@ -139,7 +139,7 @@ class BNSA(BaseClassifier):
             x_class = X[sample_index[_class_]]
             while len(valid_detectors_set) < self.N:
                 # Generates a candidate detector vector randomly with values 0 and 1.
-                vector_x = np.random.randint(0, 2, size=X.shape[1]).astype(np.bool_)
+                vector_x = np.random.randint(0, 2, size=(X.shape[1],)).astype(np.bool_)
                 # If the detector is valid, add it to the list of valid detectors.
                 if check_detector_bnsa_validity(x_class, vector_x, self.aff_thresh):
                     discard_count = 0
@@ -182,7 +182,7 @@ class BNSA(BaseClassifier):
             ``X``. Returns``None``: If there are no detectors for the prediction.
         """
         # If there are no detectors, Returns None.
-        if self._detectors is None or self._detectors_stack is None:
+        if self._detectors is None or self._detectors_stack is None or self.classes is None:
             return None
         X = check_array_type(X)
         check_feature_dimension(X, len(self._detectors[self.classes[0]][0]))
@@ -232,7 +232,7 @@ class BNSA(BaseClassifier):
         c : list
             List of predictions to be updated with the new classification.
         """
-        if self._detectors is None:
+        if self._detectors is None or self.classes is None:
             raise ValueError("Detectors is not initialized.")
 
         class_differences: dict = {}

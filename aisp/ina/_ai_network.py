@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Optional, Dict, List
+from typing import Optional, Dict, List, Tuple
 
 import numpy as np
 import numpy.typing as npt
@@ -116,10 +116,10 @@ class AiNet(BaseClusterer):
     ):
         self.N: int = sanitize_param(N, 50, lambda x: x > 0)
         self.n_clone: int = sanitize_param(n_clone, 10, lambda x: x > 0)
-        if top_clonal_memory_size is None:
-            self.top_clonal_memory_size: Optional[int] = None
-        else:
-            self.top_clonal_memory_size: Optional[int] = sanitize_param(
+
+        self.top_clonal_memory_size: Optional[int] = None
+        if top_clonal_memory_size is not None:
+            self.top_clonal_memory_size = sanitize_param(
                 top_clonal_memory_size, 5, lambda x: x > 0
             )
 
@@ -154,7 +154,8 @@ class AiNet(BaseClusterer):
         self._metric_params = {}
         if self.metric == "minkowski":
             self._metric_params['p'] = self.p
-        self.classes = []
+
+        self.classes: Optional[npt.NDArray] = None
         self._memory_network: Dict[int, List[Cell]] = {}
         self._population_antibodies: Optional[npt.NDArray] = None
         self._n_features: int = 0
@@ -162,9 +163,7 @@ class AiNet(BaseClusterer):
         self._mst_structure: Optional[npt.NDArray] = None
         self._mst_mean_distance: Optional[float] = None
         self._mst_std_distance: Optional[float] = None
-        self._predict_cells = None
-        self._predict_labels = None
-        self._all_cells_memory_vectors = None
+        self._all_cells_memory_vectors: Optional[List[Tuple[str | int, npt.NDArray]]] = None
 
     @property
     def memory_network(self) -> Dict[int, List[Cell]]:
@@ -244,17 +243,23 @@ class AiNet(BaseClusterer):
         if self.use_mst_clustering:
             self._build_mst()
             self.update_clusters()
-        progress.set_description(
-            f"\033[92m✔ Set of memory antibodies for classes "
-            f"({', '.join(map(str, self.classes))}) successfully generated | "
-            f"Clusters: {len(self.classes)} | Population of antibodies size: "
-            f"{len(self._population_antibodies)}\033[0m"
-        )
+            labels = self.classes.tolist() if self.classes is not None else []
+            progress.set_description(
+                f"\033[92m✔ Set of memory antibodies for classes "
+                f"({', '.join(map(str, labels))}) successfully generated | "
+                f"Clusters: {len(labels)} | Population of antibodies size: "
+                f"{len(self._population_antibodies)}\033[0m"
+            )
+        else:
+            progress.set_description(
+                f"\033[92m✔ Set of memory antibodies successfully generated | "
+                f"Population of antibodies size: {len(self._population_antibodies)}\033[0m"
+            )
         progress.close()
 
         return self
 
-    def predict(self, X) -> Optional[npt.NDArray]:
+    def predict(self, X) -> Optional[np.ndarray]:
         """
         Predict cluster labels for input data.
 
@@ -268,7 +273,8 @@ class AiNet(BaseClusterer):
         Predictions : Optional[npt.NDArray]
             Predicted cluster labels, or None if clustering is disabled.
         """
-        if not self.use_mst_clustering or self._memory_network is None:
+        if (not self.use_mst_clustering or self._memory_network is None
+                or self._all_cells_memory_vectors is None):
             return None
 
         check_feature_dimension(X, self._n_features)
@@ -320,7 +326,7 @@ class AiNet(BaseClusterer):
         else:
             selected_idxs = np.arange(affinities.shape[0])
 
-        clonal_m = []
+        clonal_m: list = []
         for i in selected_idxs:
             clones = self._clone_and_mutate(
                 population[i],
@@ -448,7 +454,7 @@ class AiNet(BaseClusterer):
         """
         u = np.reshape(u, (1, -1))
         v = np.atleast_2d(v)
-        distances = cdist(u, v, metric=self.metric, **self._metric_params)[0] # type: ignore
+        distances = cdist(u, v, metric=self.metric, **self._metric_params)[0]  # type: ignore
 
         return 1 - (distances / (1 + distances))
 

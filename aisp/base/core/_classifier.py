@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Optional, Union
+from typing import Optional
 
 import numpy.typing as npt
 
@@ -20,7 +20,7 @@ class BaseClassifier(ABC, Base):
     and provides a default implementation of ``score`` and utility functions.
     """
 
-    classes: Union[npt.NDArray, list] = []
+    classes: Optional[npt.NDArray] = None
 
     @abstractmethod
     def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True) -> BaseClassifier:
