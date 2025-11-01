@@ -28,7 +28,7 @@ def detect_vector_data_type(vector: npt.NDArray) -> FeatureType:
 
     Raises
     ------
-    UnsupportedDataTypeError
+    UnsupportedTypeError
         If the data type of the vector is not supported by the function.
     """
     if vector.dtype == np.bool_:
