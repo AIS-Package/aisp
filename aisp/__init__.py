@@ -31,5 +31,5 @@ from . import ina
 from . import nsa
 
 __author__ = "AISP Development Team"
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 __all__ = ["csa", "nsa", "ina"]
