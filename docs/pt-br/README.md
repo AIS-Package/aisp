@@ -8,7 +8,7 @@
 
 ---
 
-<section id='introdução'>
+<section id='introdução.'>
 
 ## Introdução
 
@@ -21,17 +21,17 @@ Os sistemas imunológicos artificiais (SIA) inspiram-se no sistema imunológico 
 ### Algoritmos implementados:
 
 > - [x] [**Seleção Negativa.**](https://ais-package.github.io/pt-br/docs/aisp-techniques/negative-selection/)
-> - [x] [**Clonal Selection Algorithms.**](https://ais-package.github.io/pt-br/docs/aisp-techniques/clonal-selection-algorithms/)
+> - [x] [**Algoritmo de Seleção Clonal.**](https://ais-package.github.io/pt-br/docs/aisp-techniques/clonal-selection-algorithms/)
 >     * [AIRS - Artificial Immune Recognition System](https://ais-package.github.io/pt-br/docs/aisp-techniques/clonal-selection-algorithms/airs/)
 >     * [CLONALG - Clonal Selection Algorithm](https://ais-package.github.io/pt-br/docs/aisp-techniques/clonal-selection-algorithms/clonalg)
 > - [ ] *Teoria do Perigo.*
-> - [x] [**Immune Network Theory.**](https://ais-package.github.io/pt-br/docs/aisp-techniques/immune-network-theory/)
+> - [x] [**Teoria da Rede Imune.**](https://ais-package.github.io/pt-br/docs/aisp-techniques/immune-network-theory/)
 >   - [AiNet - Artificial Immune Network para Clustering and Compression](https://ais-package.github.io/pt-br/docs/aisp-techniques/immune-network-theory/ainet)
 
 
 </section>
 
-<section id='introdução'>
+<section id='instalação'>
 
 ## **Instalação**
 

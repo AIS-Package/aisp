@@ -10,7 +10,7 @@ A **seleção negativa** é o processo em que o sistema imunológico faz a matur
 2. **[Real-Valued version:](RNSA.md)**
 >Este algoritmo possui duas versões diferentes: uma baseada na versão canônica [[1]](#1) e outra com detectores de raio variável [[3]](#3). Ambas estão adaptadas para trabalhar com múltiplas classes e possuem métodos para previsão de dados presentes na região não-self de todos os detectores e classes.
 
-# References
+# Referências
 
 ---
 
