@@ -1,8 +1,8 @@
 # AIRS (Sistema de Reconhecimento Imune Artificial)
 
-Esta classe estende a classe [**Base**](../../advanced-guides/Base%20Classes%20Reference/Clonal%20Selection%20Algorithm/BaseAIRS.md).
+Esta classe estende a classe [**Base**](../../advanced-guides/base/classifier.md).
 
-## Construtor AIRS:
+## Construtor AIRS
 
 A classe `AIRS` tem como objetivo realizar classificação utilizando metáforas de seleção e expansão clonal.
 
@@ -40,7 +40,7 @@ Estudos relacionados de destaque: [2](#ref2).
 
 * **seed** (int): Semente para geração aleatória de valores dos detectores. O padrão é None.
 
-- `**kwargs`:
+* `**kwargs`:
 
   * **p** (`float`): Este parâmetro armazena o valor de `p` usado na distância de Minkowski.
     O padrão é `2`, que corresponde à distância euclidiana normalizada. Diferentes valores de p resultam em variantes distintas da distância de Minkowski. [Saiba mais](https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.minkowski.html).
@@ -94,7 +94,7 @@ def predict(self, X: npt.NDArray) -> npt.NDArray:
 
 ---
 
-### Método score(...):
+### Método score(...)
 
 A função `score(...)` calcula a acurácia do modelo treinado realizando predições e calculando a precisão.
 
@@ -108,7 +108,7 @@ Retorna a acurácia como um `float`.
 
 ## Métodos Privados
 
-### Método _refinement_arb(...):
+### Método _refinement_arb(...)
 
 A função "_refinement_arb(...)" refina o conjunto ARB até que o valor médio de estímulo ultrapasse o limiar definido (`affinity_threshold_scalar`).
 
@@ -125,7 +125,7 @@ Retorna a célula (_ARB) com o maior estímulo ARB.
 
 ---
 
-### Método _cells_affinity_threshold(...):
+### Método _cells_affinity_threshold(...)
 
 A função "_cells_affinity_threshold(...)" calcula o limiar de afinidade com base na afinidade média entre instâncias de treinamento, onde aᵢ e aⱼ são um par de antígenos, e a afinidade é medida pela distância (Euclidiana, Manhattan, Minkowski, Hamming).
 **Seguindo a fórmula:**
@@ -145,7 +145,7 @@ def _cells_affinity_threshold(self, antigens_list: npt.NDArray):
 
 ---
 
-### Método _affinity(...):
+### Método _affinity(...)
 
 A função "_affinity(...)" calcula o estímulo entre dois vetores usando métricas.
 
@@ -162,7 +162,7 @@ Retorna a taxa de estímulo entre os vetores.
 
 ---
 
-### Método _init_memory_c(...):
+### Método _init_memory_c(...)
 
 A função "_init_memory_c(...)" inicializa células de memória selecionando aleatoriamente `n_antigens_selected` da lista de antígenos de treinamento.
 
@@ -176,13 +176,13 @@ def _init_memory_c(self, antigens_list: npt.NDArray) -> List[Cell]:
 
 ---
 
-# Classes Auxiliares:
+# Classes Auxiliares
 
 ---
 
-## Classe _ARB (Herdada de [Cell](Cell.md))
+## Classe _ARB (Herdada de [BCell](../../advanced-guides/base/immune/cell.md#bcell))
 
-### Construtor:
+### Construtor
 
 Parâmetros:
 
@@ -190,7 +190,7 @@ Parâmetros:
 
 ---
 
-### Método consume_resource(...):
+### Método consume_resource(...)
 
 Parâmetros:
 
@@ -209,7 +209,7 @@ Retorna a quantidade restante de recursos após o consumo.
 
 <br id='ref1'/>
 
-> 1. BRABAZON, Anthony; O’NEILL, Michael; MCGARRAGHY, Seán. Natural Computing Algorithms. [S. l.]: Springer Berlin Heidelberg, 2015. DOI 10.1007/978-3-662-43631-8. Disponível em: [http://dx.doi.org/10.1007/978-3-662-43631-8](http://dx.doi.org/10.1007/978-3-662-43631-8).
+> 1. BRABAZON, Anthony; O'NEILL, Michael; MCGARRAGHY, Seán. Natural Computing Algorithms. [S. l.]: Springer Berlin Heidelberg, 2015. DOI 10.1007/978-3-662-43631-8. Disponível em: [http://dx.doi.org/10.1007/978-3-662-43631-8](http://dx.doi.org/10.1007/978-3-662-43631-8).
 
 <br id='ref2'/>
 

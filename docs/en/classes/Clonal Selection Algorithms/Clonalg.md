@@ -1,6 +1,6 @@
-Clonal Selection Algorithm (CLONALG).
+# Clonal Selection Algorithm (CLONALG).
 
-# Clonalg
+## Clonalg
 
 The `Clonalg` class is an **optimization algorithm** inspired by the biological process of clonal selection in the
 immune system. This implementation is designed for minimizing or maximizing cost functions in various problem types,
@@ -46,11 +46,13 @@ def optimize(self, max_iters: int = 50, n_iter_no_change=10, verbose: bool = Tru
 This method execute the optimization process and return the population.
 
 **Input parameters:**
+
 * **max_iters**: `int`, default=50 - The maximum number of interactions.
 * **n_iter_no_change**: `int`, default=10 - The maximum number of iterations without an improvement in the best solution.
 * **verbose**: `bool`, default=True - A flag to enable or disable detailed output during the optimization process.
 
 **Returns:**
+
 * `npt.NDArray`: The best antibody population after clonal expansion.
 
 ---
@@ -64,9 +66,11 @@ def affinity_function(self, solution: npt.NDArray) -> np.float64:
 This method evaluates the affinity of a candidate solution. It raises a `NotImplementedError` if no affinity function has been provided to the class instance.
 
 **Input parameters:**
+
 * **solution**: `npt.NDArray` - The candidate solution to be evaluated.
 
 **Returns:**
+
 * `np.float64`: The affinity value associated with the solution.
 
 ---
@@ -82,10 +86,12 @@ def _select_top_antibodies(self, n: int, antibodies: list[tuple]) -> list[tuple]
 This method selects the top `n` antibodies based on their affinity scores, according to the `mode` (`'min'` or `'max'`).
 
 **Input parameters:**
+
 * **n**: `int` - The number of antibodies to select.
 * **antibodies**: `list[tuple]` - A list of tuples, where each tuple represents an antibody and its associated score.
 
 **Returns:**
+
 * `list[tuple]`: A list containing the `n` selected antibodies.
 
 ---
@@ -99,6 +105,7 @@ def _init_population_antibodies(self) -> npt.NDArray:
 This method initializes the initial population of antibodies randomly.
 
 **Returns:**
+
 * `npt.NDArray`: A list of the initialized antibodies.
 
 ---
@@ -112,6 +119,7 @@ def _diversity_introduction(self):
 This method introduces new random antibodies into the population to maintain genetic diversity and help prevent premature convergence.
 
 **Returns:**
+
 * `npt.NDArray`: An array of new random antibodies.
 
 ---
@@ -125,6 +133,7 @@ def _clone_and_mutate(self, antibody: npt.NDArray, n_clone: int, rate_hypermutat
 This method generates mutated clones from a single antibody. The mutation strategy depends on the `feature_type` specified during initialization (`'binary-features'`, `'continuous-features'`, `'ranged-features'`, or `'permutation-features'`).
 
 **Input parameters:**
+
 * **antibody**: `npt.NDArray` - The original antibody vector to be cloned and mutated.
 * **n_clone**: `int` - The number of clones to generate.
 * **rate_hypermutation**: `float` - The hypermutation rate.
@@ -144,14 +153,16 @@ def _clone_and_hypermutation(self, population: list[tuple]) -> list:
 This method clones and hypermutates a population of antibodies. It returns a list of all clones and their affinities with respect to the cost function.
 
 **Input parameters:**
+
 * **population**: `list[tuple]` - The list of antibodies to be evaluated and cloned.
 
 **Returns:**
+
 * `list`: A list of mutated clones.
 
 ---
 
-# References
+## References
 
 <br id='ref1'/>
 

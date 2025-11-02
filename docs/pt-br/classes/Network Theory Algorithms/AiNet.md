@@ -1,6 +1,6 @@
 # AiNet (Artificial Immune Network)
 
-Esta classe estende a classe [**BaseAiNet**](../../advanced-guides/Base%20Classes%20Reference/Network%20Theory%20Algorithms/BaseAiNet.md).
+Esta classe estende a classe [**Base**](../../advanced-guides/base/clusterer.md).
 
 ## Construtor AiNet:
 
