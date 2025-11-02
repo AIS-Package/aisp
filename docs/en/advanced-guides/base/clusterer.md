@@ -28,7 +28,7 @@ This abstract method must be implemented by subclasses.
 
 **Implementation**:
 
-* [AiNet](../../../classes/Network%20Theory%20Algorithms/AiNet.md#function-fit)
+* [AiNet](../../classes/Network%20Theory%20Algorithms/AiNet.md#function-fit)
 
 ---
 
@@ -51,7 +51,7 @@ This abstract method must be implemented by subclasses.
 
 **Implementation**:
 
-* [AiNet](../../../classes/Network%20Theory%20Algorithms/AiNet.md#function-predict)
+* [AiNet](../../classes/Network%20Theory%20Algorithms/AiNet.md#function-predict)
 
 ---
 

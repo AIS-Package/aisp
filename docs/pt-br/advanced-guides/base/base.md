@@ -43,18 +43,3 @@ Retorna um dicionário com os principais parâmetros do objeto. Garante compatib
 * params: `dict` - Dicionário contendo os atributos do objeto que não começam com "_".
 
 ---
-
-## Funções utilitárias
-
-### Função set_seed_numba(...)
-
-```python
-@njit(cache=True)
-def set_seed_numba(seed: int)
-```
-
-Define a semente para números aleatórios usados por funções compiladas com Numba.
-
-**Parâmetros**:
-
-* **seed**: `int` - Valor inteiro usado para inicializar o gerador de números aleatórios do Numba.

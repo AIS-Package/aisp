@@ -16,6 +16,7 @@ This function performs the prediction of X and checks how many elements are equa
 This function was added for compatibility with some scikit-learn functions.
 
 **Parameters**:
+
 + ***X***: ``np.ndarray`` - Feature set with shape (n_samples, n_features).
 + ***y***: ``np.ndarray`` - True values with shape (n_samples,).
 
@@ -49,10 +50,9 @@ Fit the model to the training data.
 
 Implementation:
 
-- [RNSA](../../../classes/Negative%20Selection/RNSA.md#function-fit)
-- [BNSA](../../../classes/Negative%20Selection/BNSA.md#function-fit)
-- [AIRS](../../../classes/Clonal%20Selection%20Algorithms/AIRS.md#function-fit)
-
+- [RNSA](../../classes/Negative%20Selection/RNSA.md#function-fit)
+- [BNSA](../../classes/Negative%20Selection/BNSA.md#function-fit)
+- [AIRS](../../classes/Clonal%20Selection%20Algorithms/AIRS.md#function-fit)
 
 
 ### Function predict(...)
@@ -65,16 +65,15 @@ Performs label prediction for the given data.
 
 Implementation:
 
-- [RNSA](../../../classes/Negative%20Selection/RNSA.md#function-predict)
-- [BNSA](../../../classes/Negative%20Selection/BNSA.md#function-predict)
-- [AIRS](../../../classes/Clonal%20Selection%20Algorithms/AIRS.md#function-predict)
+- [RNSA](../../classes/Negative%20Selection/RNSA.md#function-predict)
+- [BNSA](../../classes/Negative%20Selection/BNSA.md#function-predict)
+- [AIRS](../../classes/Clonal%20Selection%20Algorithms/AIRS.md#function-predict)
 
 # Detector class
 
 Represents a non-self detector of the RNSA class.
 
 Attributes
-----------
+
 * ***position*** (``np.ndarray``): Detector feature vector.
 * ***radius*** (``float, optional``): Detector radius, used in the V-detector algorithm.
-

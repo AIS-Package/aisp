@@ -18,7 +18,7 @@ from ...utils.types import FeatureType
 
 @dataclass(slots=True)
 class Cell:
-    """Represents a cell.
+    """Represents a basic immune cell.
 
     Attributes
     ----------
@@ -105,7 +105,7 @@ class Antibody(Cell):
     vector : npt.NDArray
         A vector of cell features.
     affinity : np.floating
-        Affinity value.
+        Affinity value for the antibody.
     """
 
     affinity: float

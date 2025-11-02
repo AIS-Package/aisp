@@ -58,3 +58,5 @@ Set the seed for random numbers used by functions compiled with Numba.
 **Parameters**:
 
 * **seed**: `int` - Integer value used to initialize Numba's random number generator.
+
+---
