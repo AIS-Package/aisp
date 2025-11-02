@@ -12,7 +12,7 @@ def generate_random_antibodies(
     n_samples: int,
     n_features: int,
     feature_type: FeatureTypeAll = "continuous-features",
-    bounds: Optional[npt.NDArray[np.float64]] = None
+    bounds: Optional[npt.NDArray[np.float64]] = None,
 ) -> npt.NDArray:
     """
     Generate a random antibody population.
@@ -40,7 +40,9 @@ def generate_random_antibodies(
     if feature_type == "binary-features":
         return np.random.randint(0, 2, size=(n_samples, n_features)).astype(np.bool_)
     if feature_type == "ranged-features" and bounds is not None:
-        return np.random.uniform(low=bounds[0], high=bounds[1], size=(n_samples, n_features))
+        return np.random.uniform(
+            low=bounds[0], high=bounds[1], size=(n_samples, n_features)
+        )
     if feature_type == "permutation-features":
         return np.array(
             [np.random.permutation(n_features) for _ in range(n_samples)]

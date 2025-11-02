@@ -1,6 +1,5 @@
 """Tests Utility functions for handling classes with multiple categories."""
 
-
 import numpy as np
 import pytest
 
@@ -11,12 +10,9 @@ def test_slice_index_list_by_class():
     """
     Tests whether the slice_index_list_by_class function correctly returns indexes.
     """
-    classes = ['a', 'b']
-    y = np.array(['a', 'b', 'a', 'a'])
-    expected = {
-        'a': [0, 2, 3],
-        'b': [1]
-    }
+    classes = ["a", "b"]
+    y = np.array(["a", "b", "a", "a"])
+    expected = {"a": [0, 2, 3], "b": [1]}
     result = slice_index_list_by_class(classes, y)
     assert result == expected
 
@@ -35,7 +31,7 @@ def test_slice_index_list_by_class():
                 ("C", np.array([5, 5])),
             ],
             lambda a, b: -np.linalg.norm(a - b),
-            ["A", "B"]
+            ["A", "B"],
         ),
         (
             np.array([[1, 1]]),
@@ -45,7 +41,7 @@ def test_slice_index_list_by_class():
                 ("B", np.array([1, 1])),
             ],
             lambda a, b: -np.linalg.norm(a - b),
-            ["A"]
+            ["A"],
         ),
         (
             np.array([[1, 1], [4, 4]]),
@@ -58,14 +54,10 @@ def test_slice_index_list_by_class():
                 (3, np.array([5, 5])),
             ],
             lambda a, b: -np.linalg.norm(a - b),
-            [1, 2]
+            [1, 2],
         ),
     ],
-    ids=[
-        "Multiple samples.",
-        "Tie votes counter.",
-        "Numeric labels."
-    ]
+    ids=["Multiple samples.", "Tie votes counter.", "Numeric labels."],
 )
 def test_predict_knn_affinity(X, k, all_cells, affinity, expected):
     """Test different KNN predictions."""

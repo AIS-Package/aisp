@@ -1,6 +1,5 @@
 """Negative Selection Algorithm."""
 
-
 from __future__ import annotations
 
 from typing import Any, Dict, Literal, Optional, Union, List
@@ -11,7 +10,6 @@ from tqdm import tqdm
 
 from ._base import check_detector_rnsa_validity
 from ..base import BaseClassifier
-from ..utils.random import set_seed_numba
 from ..base.immune.cell import Detector
 from ..exceptions import MaxDiscardsReachedError
 from ..utils.distance import (
@@ -19,11 +17,12 @@ from ..utils.distance import (
     get_metric_code,
     compute_metric_distance,
 )
+from ..utils.random import set_seed_numba
 from ..utils.sanitizers import sanitize_seed, sanitize_choice, sanitize_param
 from ..utils.validation import (
     check_array_type,
     check_shape_match,
-    check_feature_dimension
+    check_feature_dimension,
 )
 
 
@@ -100,7 +99,9 @@ class RNSA(BaseClassifier):
         algorithm: Literal["default-NSA", "V-detector"] = "default-NSA",
         **kwargs: Any,
     ):
-        self.metric: str = sanitize_choice(metric, ["manhattan", "minkowski"], "euclidean")
+        self.metric: str = sanitize_choice(
+            metric, ["manhattan", "minkowski"], "euclidean"
+        )
         self.seed: Optional[int] = sanitize_seed(seed)
         if self.seed is not None:
             np.random.seed(seed)
@@ -170,7 +171,7 @@ class RNSA(BaseClassifier):
             total=int(self.N * (len(self.classes))),
             bar_format="{desc} ┇{bar}┇ {n}/{total} detectors",
             postfix="\n",
-            disable=not verbose
+            disable=not verbose,
         )
         for _class_ in self.classes:
             # Initializes the empty set that will contain the valid detectors.
@@ -191,7 +192,9 @@ class RNSA(BaseClassifier):
                 if valid_detector is not False:
                     discard_count = 0
                     radius: Optional[float] = None
-                    if self.algorithm == "V-detector" and isinstance(valid_detector, tuple):
+                    if self.algorithm == "V-detector" and isinstance(
+                        valid_detector, tuple
+                    ):
                         radius = valid_detector[1]
                     valid_detectors_set.append(Detector(vector_x, radius))
                     progress.update()
@@ -303,7 +306,9 @@ class RNSA(BaseClassifier):
             # If the average of the distances in the kNN list is less than the radius, Returns true.
             distance_mean = np.mean(knn_list)
             if self.algorithm == "V-detector":
-                return self.__detector_is_valid_to_vdetector(float(distance_mean), vector_x)
+                return self.__detector_is_valid_to_vdetector(
+                    float(distance_mean), vector_x
+                )
             if distance_mean > (self.r + self.r_s):
                 return True
         else:
@@ -324,9 +329,7 @@ class RNSA(BaseClassifier):
 
         return False  # Detector is not valid!
 
-    def __compare_knearest_neighbors_list(
-        self, knn: list, distance: float
-    ) -> None:
+    def __compare_knearest_neighbors_list(self, knn: list, distance: float) -> None:
         """
         Compare the k-nearest neighbor distance at position k=1 in the list knn.
 
@@ -419,7 +422,7 @@ class RNSA(BaseClassifier):
         self, distance: float, vector_x: npt.NDArray
     ) -> Union[bool, tuple[bool, float]]:
         """Validate the detector against the vdetector.
-        
+
         Check if the distance between the detector and the samples, minus the radius of the
         samples, is greater than the minimum radius.
 

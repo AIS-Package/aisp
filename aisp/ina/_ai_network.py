@@ -15,7 +15,7 @@ from ..base.immune.cell import Cell
 from ..base.immune.mutation import (
     clone_and_mutate_binary,
     clone_and_mutate_continuous,
-    clone_and_mutate_ranged
+    clone_and_mutate_ranged,
 )
 from ..base.immune.populations import generate_random_antibodies
 from ..utils.distance import hamming, compute_metric_distance, get_metric_code
@@ -27,7 +27,7 @@ from ..utils.validation import (
     detect_vector_data_type,
     check_array_type,
     check_feature_dimension,
-    check_binary_array
+    check_binary_array,
 )
 
 
@@ -112,7 +112,7 @@ class AiNet(BaseClusterer):
         metric: MetricType = "euclidean",
         seed: Optional[int] = None,
         use_mst_clustering: bool = True,
-        **kwargs
+        **kwargs,
     ):
         self.N: int = sanitize_param(N, 50, lambda x: x > 0)
         self.n_clone: int = sanitize_param(n_clone, 10, lambda x: x > 0)
@@ -153,7 +153,7 @@ class AiNet(BaseClusterer):
         self.p: np.float64 = np.float64(kwargs.get("p", 2.0))
         self._metric_params = {}
         if self.metric == "minkowski":
-            self._metric_params['p'] = self.p
+            self._metric_params["p"] = self.p
 
         self.classes: Optional[npt.NDArray] = None
         self._memory_network: Dict[int, List[Cell]] = {}
@@ -163,7 +163,9 @@ class AiNet(BaseClusterer):
         self._mst_structure: Optional[npt.NDArray] = None
         self._mst_mean_distance: Optional[float] = None
         self._mst_std_distance: Optional[float] = None
-        self._all_cells_memory_vectors: Optional[List[Tuple[str | int, npt.NDArray]]] = None
+        self._all_cells_memory_vectors: Optional[
+            List[Tuple[str | int, npt.NDArray]]
+        ] = None
 
     @property
     def memory_network(self) -> Dict[int, List[Cell]]:
@@ -179,9 +181,9 @@ class AiNet(BaseClusterer):
     def mst(self) -> dict:
         """Returns the Minimum Spanning Tree and its statistics."""
         return {
-            'graph': self._mst_structure,
-            'mean_distance': self._mst_mean_distance,
-            'std_distance': self._mst_std_distance
+            "graph": self._mst_structure,
+            "mean_distance": self._mst_mean_distance,
+            "std_distance": self._mst_std_distance,
         }
 
     def fit(self, X: npt.NDArray, verbose: bool = True) -> AiNet:
@@ -273,15 +275,20 @@ class AiNet(BaseClusterer):
         Predictions : Optional[npt.NDArray]
             Predicted cluster labels, or None if clustering is disabled.
         """
-        if (not self.use_mst_clustering or self._memory_network is None
-                or self._all_cells_memory_vectors is None):
+        if (
+            not self.use_mst_clustering
+            or self._memory_network is None
+            or self._all_cells_memory_vectors is None
+        ):
             return None
 
         check_feature_dimension(X, self._n_features)
         if self._feature_type == "binary-features":
             check_binary_array(X)
 
-        return predict_knn_affinity(X, self.k, self._all_cells_memory_vectors, self._affinity)
+        return predict_knn_affinity(
+            X, self.k, self._all_cells_memory_vectors, self._affinity
+        )
 
     def _init_population_antibodies(self) -> npt.NDArray:
         """
@@ -293,16 +300,11 @@ class AiNet(BaseClusterer):
             List of initialized memories.
         """
         return generate_random_antibodies(
-            self.N,
-            self._n_features,
-            self._feature_type,
-            self._bounds
+            self.N, self._n_features, self._feature_type, self._bounds
         )
 
     def _select_and_clone_population(
-        self,
-        antigen: npt.NDArray,
-        population: npt.NDArray
+        self, antigen: npt.NDArray, population: npt.NDArray
     ) -> list:
         """
         Select top antibodies by affinity and generate mutated clones.
@@ -322,15 +324,14 @@ class AiNet(BaseClusterer):
         affinities = self._calculate_affinities(antigen, population)
 
         if self.top_clonal_memory_size is not None and self.top_clonal_memory_size > 0:
-            selected_idxs = np.argsort(-affinities)[:self.top_clonal_memory_size]
+            selected_idxs = np.argsort(-affinities)[: self.top_clonal_memory_size]
         else:
             selected_idxs = np.arange(affinities.shape[0])
 
         clonal_m: list = []
         for i in selected_idxs:
             clones = self._clone_and_mutate(
-                population[i],
-                int(self.n_clone * affinities[i])
+                population[i], int(self.n_clone * affinities[i])
             )
             clonal_m.extend(clones)
 
@@ -357,7 +358,8 @@ class AiNet(BaseClusterer):
             Non-redundant, high-affinity clones.
         """
         suppression_affinity = [
-            clone for clone in clones
+            clone
+            for clone in clones
             if self._affinity(clone, antigen) > self.affinity_threshold
         ]
         return self._memory_suppression(suppression_affinity)
@@ -384,8 +386,7 @@ class AiNet(BaseClusterer):
         suppressed_memory = [pool_memory[0]]
         for candidate in pool_memory[1:]:
             affinities = self._calculate_affinities(
-                candidate.reshape(1, -1),
-                np.asarray(suppressed_memory)
+                candidate.reshape(1, -1), np.asarray(suppressed_memory)
             )
 
             if not np.any(affinities > self.suppression_threshold):
@@ -405,7 +406,7 @@ class AiNet(BaseClusterer):
             self.n_diversity_injection,
             self._n_features,
             self._feature_type,
-            self._bounds
+            self._bounds,
         )
 
     def _affinity(self, u: npt.NDArray, v: npt.NDArray) -> float:
@@ -477,7 +478,9 @@ class AiNet(BaseClusterer):
         if self._feature_type == "binary-features":
             return clone_and_mutate_binary(antibody, n_clone)
         if self._feature_type == "ranged-features" and self._bounds is not None:
-            return clone_and_mutate_ranged(antibody, n_clone, self._bounds, np.float64(1.0))
+            return clone_and_mutate_ranged(
+                antibody, n_clone, self._bounds, np.float64(1.0)
+            )
         return clone_and_mutate_continuous(antibody, n_clone, np.float64(1.0))
 
     def _build_mst(self):
@@ -496,13 +499,19 @@ class AiNet(BaseClusterer):
             raise ValueError("Population of antibodies is empty")
 
         antibodies_matrix = squareform(
-            pdist(self._population_antibodies, metric=self.metric, **self._metric_params)
+            pdist(
+                self._population_antibodies, metric=self.metric, **self._metric_params
+            )
         )
         antibodies_mst = minimum_spanning_tree(antibodies_matrix).toarray()
         self._mst_structure = antibodies_mst
         nonzero_edges = antibodies_mst[antibodies_mst > 0]
-        self._mst_mean_distance = float(np.mean(nonzero_edges)) if nonzero_edges.size else 0.0
-        self._mst_std_distance = float(np.std(nonzero_edges)) if nonzero_edges.size else 0.0
+        self._mst_mean_distance = (
+            float(np.mean(nonzero_edges)) if nonzero_edges.size else 0.0
+        )
+        self._mst_std_distance = (
+            float(np.std(nonzero_edges)) if nonzero_edges.size else 0.0
+        )
 
     def update_clusters(self, mst_inconsistency_factor: Optional[float] = None):
         """Partition the clusters based on the MST inconsistency factor.
@@ -533,7 +542,9 @@ class AiNet(BaseClusterer):
             List of cluster labels.
         """
         if self._mst_structure is None:
-            raise ValueError("The Minimum Spanning Tree (MST) has not yet been created.")
+            raise ValueError(
+                "The Minimum Spanning Tree (MST) has not yet been created."
+            )
 
         if self._population_antibodies is None or len(self._population_antibodies) == 0:
             raise ValueError("Population of antibodies is empty")
@@ -547,11 +558,14 @@ class AiNet(BaseClusterer):
         antibodies_mst = self._mst_structure.copy()
 
         thresholds = antibodies_mst > (
-            self._mst_mean_distance + self.mst_inconsistency_factor * self._mst_std_distance
+            self._mst_mean_distance
+            + self.mst_inconsistency_factor * self._mst_std_distance
         )
         antibodies_mst[thresholds] = 0
 
-        n_antibodies, labels = connected_components(csgraph=antibodies_mst, directed=False)
+        n_antibodies, labels = connected_components(
+            csgraph=antibodies_mst, directed=False
+        )
 
         self._memory_network = {
             label: [Cell(a) for a in self._population_antibodies[labels == label]]

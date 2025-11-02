@@ -10,22 +10,13 @@ from numba import njit, types
 from ..utils.distance import compute_metric_distance, hamming
 
 
-@njit(
-    [(
-        types.boolean[:, :],
-        types.boolean[:],
-        types.float64
-    )],
-    cache=True
-)
+@njit([(types.boolean[:, :], types.boolean[:], types.float64)], cache=True)
 def check_detector_bnsa_validity(
-    x_class: npt.NDArray[np.bool_],
-    vector_x: npt.NDArray[np.bool_],
-    aff_thresh: float
+    x_class: npt.NDArray[np.bool_], vector_x: npt.NDArray[np.bool_], aff_thresh: float
 ) -> bool:
     """
     Check the validity of a candidate detector using the Hamming distance.
-    
+
     A detector is considered INVALID if its distance to any sample in ``x_class`` is less than or
     equal to ``aff_thresh``.
 
@@ -54,18 +45,11 @@ def check_detector_bnsa_validity(
     return True
 
 
-@njit(
-    [(
-        types.boolean[:],
-        types.boolean[:, :, :],
-        types.float64
-    )],
-    cache=True
-)
+@njit([(types.boolean[:], types.boolean[:, :, :], types.float64)], cache=True)
 def bnsa_class_prediction(
     features: npt.NDArray[np.bool_],
     class_detectors: npt.NDArray[np.bool_],
-    aff_thresh: float
+    aff_thresh: float,
 ) -> int:
     """Define the class of a sample from the non-self detectors.
 
@@ -115,18 +99,23 @@ def bnsa_class_prediction(
 
 
 @njit(
-    [(
-        types.float64[:, :], types.float64[:],
-        types.float64, types.int32, types.float64
-    )],
-    cache=True
+    [
+        (
+            types.float64[:, :],
+            types.float64[:],
+            types.float64,
+            types.int32,
+            types.float64,
+        )
+    ],
+    cache=True,
 )
 def check_detector_rnsa_validity(
     x_class: npt.NDArray[np.float64],
     vector_x: npt.NDArray[np.float64],
     threshold: float,
     metric: int,
-    p: float
+    p: float,
 ) -> bool:
     """Check the validity of a candidate detector using the Hamming distance.
 

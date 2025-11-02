@@ -8,10 +8,7 @@ import numpy as np
 import numpy.typing as npt
 from tqdm import tqdm
 
-from ._base import (
-    check_detector_bnsa_validity,
-    bnsa_class_prediction
-)
+from ._base import check_detector_bnsa_validity, bnsa_class_prediction
 from ..base import BaseClassifier
 from ..exceptions import MaxDiscardsReachedError
 from ..utils.sanitizers import sanitize_seed, sanitize_param
@@ -19,13 +16,13 @@ from ..utils.validation import (
     check_array_type,
     check_shape_match,
     check_binary_array,
-    check_feature_dimension
+    check_feature_dimension,
 )
 
 
 class BNSA(BaseClassifier):
     """BNSA (Binary Negative Selection Algorithm).
-    
+
     Class is for classification and identification purposes of anomalies through the self and not
     self method.
 
@@ -125,7 +122,7 @@ class BNSA(BaseClassifier):
             total=int(self.N * (len(self.classes))),
             bar_format="{desc} ┇{bar}┇ {n}/{total} detectors",
             postfix="\n",
-            disable=not verbose
+            disable=not verbose,
         )
 
         for _class_ in self.classes:
@@ -182,7 +179,11 @@ class BNSA(BaseClassifier):
             ``X``. Returns``None``: If there are no detectors for the prediction.
         """
         # If there are no detectors, Returns None.
-        if self._detectors is None or self._detectors_stack is None or self.classes is None:
+        if (
+            self._detectors is None
+            or self._detectors_stack is None
+            or self.classes is None
+        ):
             return None
         X = check_array_type(X)
         check_feature_dimension(X, len(self._detectors[self.classes[0]][0]))
@@ -221,7 +222,7 @@ class BNSA(BaseClassifier):
 
     def __assign_class_to_non_self_sample(self, line: npt.NDArray, c: list):
         """Determine the class of a sample when all detectors classify it as "non-self".
-        
+
         Classification is performed using the ``max_average_difference`` and
         ``max_nearest_difference`` methods.
 

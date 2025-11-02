@@ -23,7 +23,7 @@ from ..utils.validation import (
     check_array_type,
     check_shape_match,
     check_feature_dimension,
-    check_binary_array
+    check_binary_array,
 )
 
 
@@ -42,9 +42,7 @@ class _ARB(BCell):
     """
 
     def __init__(
-        self,
-        vector: npt.NDArray,
-        stimulation: Optional[float] = None
+        self, vector: npt.NDArray, stimulation: Optional[float] = None
     ) -> None:
         super().__init__(vector)
         self.resource: float = 0.0
@@ -189,9 +187,7 @@ class AIRS(BaseClassifier):
 
         self._feature_type: FeatureType = "continuous-features"
 
-        self.metric = sanitize_choice(
-            metric, ["manhattan", "minkowski"], "euclidean"
-        )
+        self.metric = sanitize_choice(metric, ["manhattan", "minkowski"], "euclidean")
 
         self.p: np.float64 = np.float64(kwargs.get("p", 2.0))
 
@@ -278,15 +274,12 @@ class AIRS(BaseClassifier):
                         c_match = cell
 
                 arb_list: list[_ARB] = [
-                    _ARB(
-                        vector=c_match.vector,
-                        stimulation=match_stimulation
-                    )
+                    _ARB(vector=c_match.vector, stimulation=match_stimulation)
                 ]
 
                 set_clones: npt.NDArray = c_match.hyper_clonal_mutate(
                     int(self.rate_hypermutation * self.rate_clonal * match_stimulation),
-                    self._feature_type
+                    self._feature_type,
                 )
 
                 for clone in set_clones:
@@ -301,7 +294,10 @@ class AIRS(BaseClassifier):
 
                 if c_candidate.stimulation > match_stimulation:
                     pool_c.append(c_candidate.to_cell())
-                    if self._affinity(c_candidate.vector, c_match.vector) < sufficiently_similar:
+                    if (
+                        self._affinity(c_candidate.vector, c_match.vector)
+                        < sufficiently_similar
+                    ):
                         pool_c.remove(c_match)
 
                 progress.update()
@@ -348,7 +344,9 @@ class AIRS(BaseClassifier):
         if self._feature_type == "binary-features":
             check_binary_array(X)
 
-        return predict_knn_affinity(X, self.k,  self._all_class_cell_vectors, self._affinity)
+        return predict_knn_affinity(
+            X, self.k, self._all_class_cell_vectors, self._affinity
+        )
 
     def _refinement_arb(
         self, ai: npt.NDArray, c_match_stimulation: float, arb_list: List[_ARB]
@@ -407,15 +405,11 @@ class AIRS(BaseClassifier):
             # pick a random cell for mutations.
             random_index = random.randint(0, len(arb_list) - 1)
             clone_arb = arb_list[random_index].hyper_clonal_mutate(
-                int(self.rate_clonal * c_match_stimulation),
-                self._feature_type
+                int(self.rate_clonal * c_match_stimulation), self._feature_type
             )
 
             arb_list = [
-                _ARB(
-                    vector=clone,
-                    stimulation=self._affinity(clone, ai)
-                )
+                _ARB(vector=clone, stimulation=self._affinity(clone, ai))
                 for clone in clone_arb
             ]
 
@@ -440,7 +434,7 @@ class AIRS(BaseClassifier):
         if self._feature_type == "binary-features":
             distances = pdist(antigens_list, metric="hamming")
         else:
-            metric_kwargs = {'p': self.p} if self.metric == 'minkowski' else {}
+            metric_kwargs = {"p": self.p} if self.metric == "minkowski" else {}
             distances = pdist(antigens_list, metric=self.metric, **metric_kwargs)  # type: ignore
 
         n = antigens_list.shape[0]

@@ -4,8 +4,8 @@
 import numpy as np
 import pytest
 
-from aisp.csa import Clonalg
 from aisp.base.immune.cell import Antibody
+from aisp.csa import Clonalg
 
 
 def affinity(x):
