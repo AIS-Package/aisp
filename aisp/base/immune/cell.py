@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Optional
 
 import numpy as np
@@ -26,14 +26,7 @@ class Cell:
         A vector of cell features.
     """
 
-    vector: np.ndarray = field(
-        metadata={"description": "A vector of cell features."}
-    )
-
-    def __post_init__(self):
-        """Validate the Cell instance after initialization."""
-        if self.vector is None:
-            raise ValueError("vector is required.")
+    vector: np.ndarray
 
     def __eq__(self, other):
         """Check if two cells are equal."""
@@ -115,16 +108,7 @@ class Antibody(Cell):
         Affinity value.
     """
 
-    affinity: float = field(
-        metadata={"description": "Affinity value."}
-    )
-
-    def __post_init__(self):
-        """Validate the Antibody instance after initialization."""
-        if self.vector is None:
-            raise ValueError("vector is required.")
-        if self.affinity is None:
-            raise ValueError("affinity is required.")
+    affinity: float
 
     def __lt__(self, other):
         """Compare this cell with another Antibody cell based on affinity."""
@@ -156,12 +140,5 @@ class Detector:
         Detector radius, used in the V-detector algorithm.
     """
 
-    position: npt.NDArray[np.float64] = field(
-        metadata={"description": "Detector feature vector."}
-    )
+    position: npt.NDArray[np.float64]
     radius: Optional[float] = None
-
-    def __post_init__(self):
-        """Validate the Antibody instance after initialization."""
-        if self.position is None:
-            raise ValueError("vector is required.")
