@@ -5,10 +5,11 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Optional, List, Any, Callable
 
+from ._base import Base
 from ...utils.display import TableFormatter
 
 
-class BaseOptimizer(ABC):
+class BaseOptimizer(ABC, Base):
     """Abstract base class for optimization algorithms.
 
     This class defines the core interface for optimization strategies. It keeps track of cost
