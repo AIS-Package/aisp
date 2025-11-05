@@ -1,4 +1,4 @@
-# Clonal Selection Algorithm (CLONALG).
+# Clonal Selection Algorithm (CLONALG)
 
 ## Clonalg
 
@@ -140,7 +140,7 @@ This method generates mutated clones from a single antibody. The mutation strate
 
 **Returns:**
 
-  * `npt.NDArray`: An array containing the mutated clones.
+* `npt.NDArray`: An array containing the mutated clones.
 
 ---
 

@@ -5,17 +5,13 @@ the generated antibodies undergo mutations in an attempt to enhance pathogen rec
 
 ## classes
 
-1. **[Cell](Cell.md)**
-
-> Represents a memory B-cell, responsible for storing and recognizing previously encountered patterns.
-
-2. **[Artificial Immune Recognition System (AIRS)](AIRS.md)**
+1. **[Artificial Immune Recognition System (AIRS)](AIRS.md)**
 
 > The AIRS class aims to perform classification using metaphors of selection and clonal expansion.
 > This implementation is inspired by AIRS2, a simplified version of the original AIRS algorithm.
 > Introducing adaptations to handle continuous and binary datasets.
 
-3. **[Clonal Selection Algorithm (CLONALG)](Clonalg.md)**
+2. **[Clonal Selection Algorithm (CLONALG)](Clonalg.md)**
 
 > Implementation of the clonal selection algorithm for optimization, adapted
 > for both minimization and maximization of cost functions in binary,

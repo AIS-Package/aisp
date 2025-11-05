@@ -6,17 +6,13 @@ de reconhecimento do patógeno.
 
 ## classes
 
-1. **[Cell](Cell.md)**
-
-> Representa uma célula-B de memória, responsável por armazenar e reconhecer padrões previamente encontrados.
-
-2. **[Artificial Immune Recognition System (AIRS)](AIRS.md)**
+1. **[Artificial Immune Recognition System (AIRS)](AIRS.md)**
 
 > O objetivo da classe AIRS é realizar classificação utilizando metáforas de seleção e expansão clonal.
 > Esta implementação é inspirada no AIRS2, uma versão simplificada do algoritmo original, com adaptações que permitem
 > lidar tanto com conjuntos de dados contínuos quanto binários.
 
-3. **[Clonal Selection Algorithm (CLONALG)](Clonalg.md)**
+2. **[Clonal Selection Algorithm (CLONALG)](Clonalg.md)**
 
 > Implementação do algoritmo de seleção clonal para otimização, adaptado
 > para minimização e maximização das funções de custo em binário,

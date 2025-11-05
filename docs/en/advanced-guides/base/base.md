@@ -41,22 +41,3 @@ Return a dictionary with the object's main parameters. Ensures compatibility wit
 **Returns**:
 
 * params: `dict` - Dictionary containing the object's attributes that do not start with "_".
-
----
-
-## Utility Functions
-
-### Function set_seed_numba(...)
-
-```python
-@njit(cache=True)
-def set_seed_numba(seed: int)
-```
-
-Set the seed for random numbers used by functions compiled with Numba.
-
-**Parameters**:
-
-* **seed**: `int` - Integer value used to initialize Numba's random number generator.
-
----

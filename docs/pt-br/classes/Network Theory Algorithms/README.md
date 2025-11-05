@@ -3,9 +3,10 @@
 Esta técnica foi introduzida por **Niels Jerne (1974)** e modela o sistema imunológico como uma rede dinâmica,
 na qual as células e moléculas, capazes de reconhecer umas às outras.
 
-## Classes:
+## Classes
 
 1. **[AiNet](AiNet.md)**
+
 > Rede Imune Artificial para tarefas de clustering e compressão não-supervisionada.
 
 ---
