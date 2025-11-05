@@ -119,6 +119,7 @@ Reinicia o estado interno do objeto, limpando o histórico e resetando os valore
 #### Função optimize(...)
 
 ```python
+@abstractmethod
 def optimize(self, max_iters: int = 50, n_iter_no_change=10, verbose: bool = True) -> Any
 ```
 

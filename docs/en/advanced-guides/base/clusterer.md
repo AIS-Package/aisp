@@ -11,7 +11,8 @@ and provides a default implementation for **`fit_predict`** and **`get_params`**
 ### Function fit(...)
 
 ```python
-def fit(self, X: npt.NDArray, verbose: bool = True) -> BaseClusterer
+@abstractmethod
+def fit(self, X: npt.NDArray, verbose: bool = True) -> BaseClusterer:
 ```
 
 Fit the model to the training data.
@@ -35,7 +36,8 @@ This abstract method must be implemented by subclasses.
 ### Function predict(...)
 
 ```python
-def predict(self, X: npt.NDArray) -> Optional[npt.NDArray]
+@abstractmethod
+def predict(self, X: npt.NDArray) -> Optional[npt.NDArray]:
 ```
 
 Generate predictions based on the input data.

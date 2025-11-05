@@ -56,7 +56,7 @@ class BaseClusterer(ABC, Base):
             Predicted cluster labels for each input sample, or None if prediction is not possible.
         """
 
-    def fit_predict(self, X, verbose: bool = True):
+    def fit_predict(self, X, verbose: bool = True) -> Optional[npt.NDArray]:
         """Fit the clustering model to the data and return cluster labels.
 
         This is a convenience method that combines `fit` and `predict`

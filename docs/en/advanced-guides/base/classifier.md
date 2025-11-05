@@ -43,7 +43,8 @@ Returns a dictionary with the classes as key and the indices in ``X`` of the sam
 ### Function fit(...)
 
 ```python
-def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True)
+@abstractmethod
+def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True) -> BaseClassifier:
 ```
 
 Fit the model to the training data.
@@ -57,6 +58,7 @@ Implementation:
 ### Function predict(...)
 
 ```python
+@abstractmethod
 def predict(self, X) -> Optional[npt.NDArray]:
 ```
 

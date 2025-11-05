@@ -40,7 +40,12 @@ The constructor initializes the CLONALG instance with key parameters that define
 #### Function `optimize(...)`
 
 ```python
-def optimize(self, max_iters: int = 50, n_iter_no_change=10, verbose: bool = True) -> npt.NDArray:
+def optimize(
+    self,
+    max_iters: int = 50,
+    n_iter_no_change=10,
+    verbose: bool = True
+) -> List[Antibody]:
 ```
 
 This method execute the optimization process and return the population.
@@ -80,7 +85,7 @@ This method evaluates the affinity of a candidate solution. It raises a `NotImpl
 #### Function `_select_top_antibodies(...)`
 
 ```python
-def _select_top_antibodies(self, n: int, antibodies: list[tuple]) -> list[tuple]:
+def _select_top_antibodies(self, n: int, antibodies: list[Antibody]) -> list[Antibody]:
 ```
 
 This method selects the top `n` antibodies based on their affinity scores, according to the `mode` (`'min'` or `'max'`).
@@ -147,7 +152,10 @@ This method generates mutated clones from a single antibody. The mutation strate
 #### Function `_clone_and_hypermutation(...)`
 
 ```python
-def _clone_and_hypermutation(self, population: list[tuple]) -> list:
+def _clone_and_hypermutation(
+    self,
+    population: list[Antibody]
+) -> list[Antibody]:
 ```
 
 This method clones and hypermutates a population of antibodies. It returns a list of all clones and their affinities with respect to the cost function.
@@ -158,7 +166,7 @@ This method clones and hypermutates a population of antibodies. It returns a lis
 
 **Returns:**
 
-* `list`: A list of mutated clones.
+* `list[Antibody]`: A list of mutated clones.
 
 ---
 
@@ -167,4 +175,4 @@ This method clones and hypermutates a population of antibodies. It returns a lis
 <br id='ref1'/>
 
 > 1. BROWNLEE, Jason. Clonal Selection Algorithm. Clever Algorithms: Nature-inspired Programming Recipes., 2011.
->   Available at: https://cleveralgorithms.com/nature-inspired/immune/clonal_selection_algorithm.html
+> Available at: https://cleveralgorithms.com/nature-inspired/immune/clonal_selection_algorithm.html

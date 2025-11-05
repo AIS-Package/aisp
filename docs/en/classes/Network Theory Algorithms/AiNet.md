@@ -52,8 +52,8 @@ For clustering, it optionally uses a **Minimum Spanning Tree (MST)** to separate
 Trains the AiNet model on input data:
 
 ```python
-def fit(self, X: npt.NDArray, verbose: bool = True):
-````
+def fit(self, X: npt.NDArray, verbose: bool = True) -> AiNet:
+```
 
 **Input parameters:**
 
@@ -109,7 +109,7 @@ Initializes antibody population randomly.
 
 ```python
 def _init_population_antibodies(self) -> npt.NDArray:
-````
+```
 
 **Input parameters:** None
 

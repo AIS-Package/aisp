@@ -65,7 +65,7 @@ Para clustering, pode opcionalmente utilizar uma **Árvore Geradora Mínima (MST
 Treina o modelo AiNet com os dados de entrada:
 
 ```python
-def fit(self, X: npt.NDArray, verbose: bool = True):
+def fit(self, X: npt.NDArray, verbose: bool = True) -> AiNet:
 ```
 
 **Parâmetros de entrada:**

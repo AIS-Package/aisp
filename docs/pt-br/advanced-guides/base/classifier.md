@@ -45,7 +45,8 @@ Retorna um dicionário com as classes como chave e os índices em ``X`` das amos
 ### def fit(...)
 
 ```python
-def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True)
+@abstractmethod
+def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True) -> BaseClassifier:
 ```
 
 Ajusta o modelo aos dados de treinamento.
@@ -59,6 +60,7 @@ Implementação:
 ### def predict(...)
 
 ```python
+@abstractmethod
 def predict(self, X) -> Optional[npt.NDArray]:
 ```
 

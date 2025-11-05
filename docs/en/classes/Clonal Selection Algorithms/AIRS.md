@@ -39,9 +39,9 @@ Related and noteworthy works: access here [2](#ref2).
 
 **Other initialized variables:**
 
-* **cells_memory** (``dict``): This variable stores a list of memory cells by class.
-* **affinity_threshold** (``dict``): Defines the affinity threshold between antigens.
-* **classes** (``npt.NDArray``): List of output classes.
+* **cells_memory** (``Optional[Dict[str, list[BCell]]]``): This variable stores a list of memory cells by class.
+* **affinity_threshold** (``float``): Defines the affinity threshold between antigens.
+* **classes** (``Optional[npt.NDArray]``): List of output classes.
 
 ---
 
@@ -52,7 +52,7 @@ Related and noteworthy works: access here [2](#ref2).
 The ``fit(...)`` function generates detectors for the non-owners relative to the samples:
 
 ```python
-def fit(self, X: npt.NDArray, y: npt.NDArray):
+def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True) -> AIRS:
 ```
 
 It performs the training according to ``X`` and ``y``, using the method Artificial Immune Recognition System (``AIRS``).
@@ -72,7 +72,7 @@ It performs the training according to ``X`` and ``y``, using the method Artifici
 The ``predict(...)`` function performs class prediction using the generated detectors:
 
 ```python
-def predict(self, X: npt.NDArray) -> npt.NDArray:
+def predict(self, X: npt.NDArray) -> Optional[npt.NDArray]:
 ```
 
 **Input parameter:**
@@ -104,14 +104,14 @@ Returns accuracy as a ``float``.
 
 The function "_refinement_arb(...)" refines the ARB set until the average stimulation value exceeds the defined threshold (``affinity_threshold_scalar``).
 
+```python
+def _refinement_arb(self, ai: npt.NDArray, c_match: Cell, arb_list: List[_ARB]) -> _ARB:
+```
+
 Parameters:
 
 * **c_match** (``Cell``): Cell with the highest stimulation relative to aᵢ.
 * **arb_list** (``List[_ARB]``): ARB set.
-
-```python
-def _refinement_arb(self, ai: npt.NDArray, c_match: Cell, arb_list: List[_ARB]) -> _ARB:
-```
 
 Returns the cell (_ARB) with the highest ARB stimulation.
 

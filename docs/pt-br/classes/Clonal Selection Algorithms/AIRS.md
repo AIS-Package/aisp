@@ -60,7 +60,7 @@ Estudos relacionados de destaque: [2](#ref2).
 A função `fit(...)` gera detectores para os não-pertencentes em relação às amostras:
 
 ```python
-def fit(self, X: npt.NDArray, y: npt.NDArray):
+def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True) -> AIRS:
 ```
 
 Realiza o treinamento conforme `X` e `y`, utilizando o método Sistema de Reconhecimento Imune Artificial (`AIRS`).
@@ -112,14 +112,14 @@ Retorna a acurácia como um `float`.
 
 A função "_refinement_arb(...)" refina o conjunto ARB até que o valor médio de estímulo ultrapasse o limiar definido (`affinity_threshold_scalar`).
 
+```python
+def _refinement_arb(self, ai: npt.NDArray, c_match: Cell, arb_list: List[_ARB]) -> _ARB:
+```
+
 Parâmetros:
 
 * **c_match** (`Cell`): Célula com o maior estímulo em relação a aᵢ.
 * **arb_list** (`List[_ARB]`): Conjunto ARB.
-
-```python
-def _refinement_arb(self, ai: npt.NDArray, c_match: Cell, arb_list: List[_ARB]) -> _ARB:
-```
 
 Retorna a célula (_ARB) com o maior estímulo ARB.
 
@@ -135,13 +135,13 @@ $$
 \sum_{i=1}^{n-1} \sum_{j=i+1}^{n} \text{affinity}(a_i, a_j)}{n(n-1)/2}
 $$
 
-Parâmetros:
-
-* **antigens_list** (`NDArray`): Lista de antígenos de treinamento.
-
 ```python
 def _cells_affinity_threshold(self, antigens_list: npt.NDArray):
 ```
+
+Parâmetros:
+
+* **antigens_list** (`NDArray`): Lista de antígenos de treinamento.
 
 ---
 
@@ -149,14 +149,16 @@ def _cells_affinity_threshold(self, antigens_list: npt.NDArray):
 
 A função "_affinity(...)" calcula o estímulo entre dois vetores usando métricas.
 
+
+```python
+def _affinity(self, u: npt.NDArray, v: npt.NDArray) -> float:
+```
+
 Parâmetros:
 
 * **u** (`npt.NDArray`): Coordenadas do primeiro ponto.
 * **v** (`npt.NDArray`): Coordenadas do segundo ponto.
 
-```python
-def _affinity(self, u: npt.NDArray, v: npt.NDArray) -> float:
-```
 
 Retorna a taxa de estímulo entre os vetores.
 
@@ -166,13 +168,13 @@ Retorna a taxa de estímulo entre os vetores.
 
 A função "_init_memory_c(...)" inicializa células de memória selecionando aleatoriamente `n_antigens_selected` da lista de antígenos de treinamento.
 
-Parâmetros:
-
-* **antigens_list** (`NDArray`): Lista de antígenos de treinamento.
-
 ```python
 def _init_memory_c(self, antigens_list: npt.NDArray) -> List[Cell]:
 ```
+
+Parâmetros:
+
+* **antigens_list** (`NDArray`): Lista de antígenos de treinamento.
 
 ---
 
@@ -192,14 +194,14 @@ Parâmetros:
 
 ### Método consume_resource(...)
 
+```python
+def consume_resource(self, n_resource: float, amplified: float = 1) -> float:
+```
+
 Parâmetros:
 
 * n_resource (`float`) : A quantidade inicial de recursos.
 * amplified (`float`): Amplificador para o consumo de recursos pela célula. É multiplicado pelo estímulo da célula. O padrão é 1.
-
-```python
-def consume_resource(self, n_resource: float, amplified: float = 1) -> float:
-```
 
 Retorna a quantidade restante de recursos após o consumo.
 
