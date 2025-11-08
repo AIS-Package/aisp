@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from aisp.nsa._ns_core import bnsa_class_prediction, check_detector_bnsa_validity
+from aisp.nsa._base import bnsa_class_prediction, check_detector_bnsa_validity
 
 
 @pytest.mark.parametrize(

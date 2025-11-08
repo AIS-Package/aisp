@@ -1,8 +1,8 @@
 # AiNet (Artificial Immune Network)
 
-This class extends the [**BaseAiNet**](../../advanced-guides/Base%20Classes%20Reference/Network%20Theory%20Algorithms/BaseAiNet.md) class.
+This class extends the [**Base**](../../advanced-guides/base/clusterer.md) class.
 
-## AiNet Constructor:
+## AiNet Constructor
 
 The ``AiNet`` class implements the Artificial Immune Network algorithm for **compression** and **clustering**.
 It uses principles from immune network theory, clonal selection, and affinity maturation to compress datasets and find clusters.
@@ -10,6 +10,7 @@ It uses principles from immune network theory, clonal selection, and affinity ma
 For clustering, it optionally uses a **Minimum Spanning Tree (MST)** to separate distant nodes into groups.
 
 **Attributes:**
+
 * **N** (``int``): Number of memory cells (antibodies) in the population. Defaults to 50.
 * **n_clone** (``int``): Number of clones generated per selected memory cell. Defaults to 10.
 * **top_clonal_memory_size** (``Optional[int]``): Number of highest-affinity antibodies selected for cloning. Defaults to 5.
@@ -20,20 +21,21 @@ For clustering, it optionally uses a **Minimum Spanning Tree (MST)** to separate
 * **max_iterations** (``int``): Maximum number of training iterations. Defaults to 10.
 * **k** (``int``): Number of nearest neighbors used for label prediction. Defaults to 3.
 * **metric** (Literal["manhattan", "minkowski", "euclidean"]): Way to calculate the distance between the detector and the sample:
-    * ``'Euclidean'`` ➜ The calculation of the distance is given by the expression:
+  * ``'Euclidean'`` ➜ The calculation of the distance is given by the expression:
     √( (x₁ - x₂)² + (y₁ - y₂)² + ... + (yn - yn)²).
-    * ``'minkowski'`` ➜ The calculation of the distance is given by the expression:
+  * ``'minkowski'`` ➜ The calculation of the distance is given by the expression:
     ( |X₁ - Y₁|p + |X₂ - Y₂|p + ... + |Xn - Yn|p) ¹/ₚ.
-    * ``'manhattan'`` ➜ The calculation of the distance is given by the expression:
+  * ``'manhattan'`` ➜ The calculation of the distance is given by the expression:
     ( |x₁ - x₂| + |y₁ - y₂| + ... + |yn - yn|).
     Defaults to "Euclidean".
 
 * **seed** (``Optional[int]``): Seed for random number generation. Defaults to None.
 * **use_mst_clustering** (``bool``): Whether to perform MST-based clustering. Defaults to True.
 * **kwargs**:
-    * **p** (``float``): Parameter for Minkowski distance. Defaults to 2.
+  * **p** (``float``): Parameter for Minkowski distance. Defaults to 2.
 
 **Other initialized variables:**
+
 * **_population_antibodies** (``npt.NDArray``): Stores the current set of antibodies.
 * **_memory_network** (``dict``): Dictionary mapping clusters to antibodies.
 * **_mst_structure** (``scipy.sparse.csr_matrix``): MST adjacency structure.
@@ -50,8 +52,8 @@ For clustering, it optionally uses a **Minimum Spanning Tree (MST)** to separate
 Trains the AiNet model on input data:
 
 ```python
-def fit(self, X: npt.NDArray, verbose: bool = True):
-````
+def fit(self, X: npt.NDArray, verbose: bool = True) -> AiNet:
+```
 
 **Input parameters:**
 
@@ -107,7 +109,7 @@ Initializes antibody population randomly.
 
 ```python
 def _init_population_antibodies(self) -> npt.NDArray:
-````
+```
 
 **Input parameters:** None
 
@@ -250,7 +252,7 @@ def _build_mst(self):
 
 ---
 
-# References
+## References
 
 > 1. De Castro, Leandro & José, Fernando & von Zuben, Antonio Augusto. (2001). aiNet: An Artificial Immune Network for Data Analysis.
 >    Available at: [https://www.researchgate.net/publication/228378350_aiNet_An_Artificial_Immune_Network_for_Data_Analysis](https://www.researchgate.net/publication/228378350_aiNet_An_Artificial_Immune_Network_for_Data_Analysis)

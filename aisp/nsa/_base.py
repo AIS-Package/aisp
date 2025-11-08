@@ -1,126 +1,152 @@
-"""Base Class for Negative Selection Algorithm."""
+"""nsa - Negative Selection.
 
-from abc import ABC
-from dataclasses import dataclass
-from typing import Literal, Optional
+The functions perform detector checks and utilize Numba decorators for Just-In-Time compilation
+"""
 
 import numpy as np
 import numpy.typing as npt
+from numba import njit, types
 
-from ..base import BaseClassifier
-from ..exceptions import FeatureDimensionMismatch
+from ..utils.distance import compute_metric_distance, hamming
 
 
-class BaseNSA(BaseClassifier, ABC):
+@njit([(types.boolean[:, :], types.boolean[:], types.float64)], cache=True)
+def check_detector_bnsa_validity(
+    x_class: npt.NDArray[np.bool_], vector_x: npt.NDArray[np.bool_], aff_thresh: float
+) -> bool:
     """
-    Base class containing functions used by multiple classes in the package.
+    Check the validity of a candidate detector using the Hamming distance.
 
-    These functions are essential for the overall functioning of the system.
-    """
+    A detector is considered INVALID if its distance to any sample in ``x_class`` is less than or
+    equal to ``aff_thresh``.
 
-    @staticmethod
-    def _check_and_raise_exceptions_fit(
-        X: npt.NDArray,
-        y: npt.NDArray,
-        _class_: Literal["RNSA", "BNSA"] = "RNSA",
-    ) -> None:
-        """Verify fit function parameters.
-
-        Throw exceptions if the verification fails.
-
-        Parameters
-        ----------
-        * X : npt.NDArray
-            Training array, containing the samples and their characteristics, [``N samples`` (
-            rows)][``N features`` (columns)].
-        * y : npt.NDArray
-            Array of target classes of ``X`` with [``N samples`` (lines)].
-        * _class_ : Literal[RNSA, BNSA], default="RNSA"
-            Current class.
-
-        Raises
-        ------
-        TypeError
-            If X or y are not ndarrays or have incompatible shapes.
-        ValueError
-            If _class_ is BNSA and X contains values that are not composed only of 0 and 1.
-        """
-        if isinstance(X, list):
-            X = np.array(X)
-        if isinstance(y, list):
-            y = np.array(y)
-
-        if not isinstance(X, np.ndarray):
-            raise TypeError("X is not an ndarray or list.")
-        if not isinstance(y, np.ndarray):
-            raise TypeError("y is not an ndarray or list.")
-
-        if X.shape[0] != y.shape[0]:
-            raise TypeError(
-                "X does not have the same amount of sample for the output classes in y."
-            )
-
-        if _class_ == "BNSA" and not np.isin(X, [0, 1]).all():
-            raise ValueError(
-                "The array X contains values that are not composed only of 0 and 1."
-            )
-
-    @staticmethod
-    def _check_and_raise_exceptions_predict(
-        X: npt.NDArray,
-        expected: int = 0,
-        _class_: Literal["RNSA", "BNSA"] = "RNSA",
-    ) -> None:
-        """Verify predict function parameters.
-
-        Throw exceptions if the verification fails.
-
-        Parameters
-        ----------
-        X : npt.NDArray
-            Input array for prediction, containing the samples and their characteristics,
-            [``N samples`` (rows)][``N features`` (columns)].
-        expected : int
-            Expected number of features per sample (columns in X).
-        _class_ : Literal[RNSA, BNSA], default="RNSA"
-            Current class. Defaults to 'RNSA'.
-
-        Raises
-        ------
-        TypeError
-            If X is not an numpy.ndarray or list.
-        FeatureDimensionMismatch
-            If the number of features in X does not match the expected number.
-        ValueError
-            If _class_ is BNSA and X contains values that are not composed only of 0 and 1.
-        """
-        if not isinstance(X, (np.ndarray, list)):
-            raise TypeError("X is not an ndarray or list")
-        if expected != len(X[0]):
-            raise FeatureDimensionMismatch(expected, len(X[0]), "X")
-
-        if _class_ != "BNSA":
-            return
-
-        # Checks if matrix X contains only binary samples. Otherwise, raises an exception.
-        if not np.isin(X, [0, 1]).all():
-            raise ValueError(
-                "The array X contains values that are not composed only of 0 and 1."
-            )
-
-
-@dataclass(slots=True)
-class Detector:
-    """
-    Represents a non-self detector of the RNSA class.
-
-    Attributes
+    Parameters
     ----------
-    position : npt.NDArray[np.float64]
-        Detector feature vector.
-    radius : float, optional
-        Detector radius, used in the V-detector algorithm.
-    """
+    x_class : npt.NDArray[np.bool_]
+        Array containing the class samples. Expected shape:  (n_samples, n_features).
+    vector_x : npt.NDArray[np.bool_]
+        Array representing the detector. Expected shape: (n_features,).
+    aff_thresh : float
+        Affinity threshold.
 
-    position: npt.NDArray[np.float64]
-    radius: Optional[float] = None
+    Returns
+    -------
+    valid : bool
+        True if the detector is valid, False otherwise.
+    """
+    n = x_class.shape[1]
+    if n != vector_x.shape[0]:
+        return False
+
+    for i in range(x_class.shape[0]):
+        # Calculate the normalized Hamming Distance
+        if hamming(x_class[i], vector_x) <= aff_thresh:
+            return False
+    return True
+
+
+@njit([(types.boolean[:], types.boolean[:, :, :], types.float64)], cache=True)
+def bnsa_class_prediction(
+    features: npt.NDArray[np.bool_],
+    class_detectors: npt.NDArray[np.bool_],
+    aff_thresh: float,
+) -> int:
+    """Define the class of a sample from the non-self detectors.
+
+    Parameters
+    ----------
+    features : npt.NDArray[np.bool_]
+        binary sample to be classified (shape: [n_features]).
+    class_detectors : npt.NDArray[np.bool_]
+        Array containing the detectors of all classes (shape: [n_classes, n_detectors, n_features]).
+    aff_thresh : float
+        Affinity threshold that determines whether a detector recognizes the sample as non-self.
+
+    Returns
+    -------
+    best_class_index : int
+        Index of the predicted class. Returns -1 if it is non-self for all classes.
+    """
+    n_classes, n_detectors, _ = class_detectors.shape
+    best_class_idx = -1
+    best_avg_distance = 0.0
+
+    for class_index in range(n_classes):
+        total_distance = 0.0
+        class_found = True
+
+        # Calculates the Hamming distance between the row and all detectors.
+        for detector_index in range(n_detectors):
+            # Calculates the normalized Hamming distance between the sample and the detector
+            distance = hamming(features, class_detectors[class_index][detector_index])
+
+            # If the distance is less than or equal to the threshold, the detector recognizes
+            # the sample as non-self.
+            if distance <= aff_thresh:
+                class_found = False
+                break
+            total_distance += distance
+
+        # if the sample is self for the class
+        if class_found:
+            avg_distance = total_distance / n_detectors
+            # Choose the class with the largest average distance.
+            if avg_distance > best_avg_distance:
+                best_avg_distance = avg_distance
+                best_class_idx = class_index
+
+    return best_class_idx
+
+
+@njit(
+    [
+        (
+            types.float64[:, :],
+            types.float64[:],
+            types.float64,
+            types.int32,
+            types.float64,
+        )
+    ],
+    cache=True,
+)
+def check_detector_rnsa_validity(
+    x_class: npt.NDArray[np.float64],
+    vector_x: npt.NDArray[np.float64],
+    threshold: float,
+    metric: int,
+    p: float,
+) -> bool:
+    """Check the validity of a candidate detector using the Hamming distance.
+
+    A detector is considered INVALID if its distance to any sample  in ``x_class`` is less than
+    or equal to ``aff_thresh``.
+
+    Parameters
+    ----------
+    x_class : npt.NDArray[np.float64]
+        Array containing the class samples. Expected shape: (n_samples, n_features).
+    vector_x : npt.NDArray[np.float64]
+        Array representing the detector. Expected shape: (n_features,).
+    threshold : float
+        threshold.
+    metric : int
+        Distance metric to be used. Available options: [0 (Euclidean), 1 (Manhattan),
+        2 (Minkowski)].
+    p : float
+        Parameter for the Minkowski distance (used only if `metric` is "minkowski").
+
+    Returns
+    -------
+    valid : bool
+        True if the detector is valid, False otherwise.
+    """
+    n = x_class.shape[1]
+    if n != vector_x.shape[0]:
+        return False
+
+    for i in range(x_class.shape[0]):
+        distance = compute_metric_distance(vector_x, x_class[i], metric, p)
+        if distance <= threshold:
+            return False
+    return True

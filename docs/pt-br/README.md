@@ -1,4 +1,4 @@
-## Sumário:
+## Sumário
 
 >1. [Introdução.](#introdução)
 >2. [Instalação.](#instalação)
@@ -8,7 +8,7 @@
 
 ---
 
-<section id='introdução'>
+<section id='introdução.'>
 
 ## Introdução
 
@@ -18,30 +18,29 @@ O pacote foi iniciado no ano de 2022, como parte de um projeto de pesquisa desen
 
 Os sistemas imunológicos artificiais (SIA) inspiram-se no sistema imunológico dos vertebrados, criando metáforas que aplicam a capacidade de reconhecer e catalogar os patógenos, entre outras características desse sistema.
 
-### Algoritmos implementados:
+### Algoritmos implementados
 
 > - [x] [**Seleção Negativa.**](https://ais-package.github.io/pt-br/docs/aisp-techniques/negative-selection/)
-> - [x] [**Clonal Selection Algorithms.**](https://ais-package.github.io/pt-br/docs/aisp-techniques/clonal-selection-algorithms/)
->     * [AIRS - Artificial Immune Recognition System](https://ais-package.github.io/pt-br/docs/aisp-techniques/clonal-selection-algorithms/airs/)
->     * [CLONALG - Clonal Selection Algorithm](https://ais-package.github.io/pt-br/docs/aisp-techniques/clonal-selection-algorithms/clonalg)
+> - [x] [**Algoritmo de Seleção Clonal.**](https://ais-package.github.io/pt-br/docs/aisp-techniques/clonal-selection-algorithms/)
+>   - [AIRS - Artificial Immune Recognition System](https://ais-package.github.io/pt-br/docs/aisp-techniques/clonal-selection-algorithms/airs/)
+>   - [CLONALG - Clonal Selection Algorithm](https://ais-package.github.io/pt-br/docs/aisp-techniques/clonal-selection-algorithms/clonalg)
 > - [ ] *Teoria do Perigo.*
-> - [x] [**Immune Network Theory.**](https://ais-package.github.io/pt-br/docs/aisp-techniques/immune-network-theory/)
+> - [x] [**Teoria da Rede Imune.**](https://ais-package.github.io/pt-br/docs/aisp-techniques/immune-network-theory/)
 >   - [AiNet - Artificial Immune Network para Clustering and Compression](https://ais-package.github.io/pt-br/docs/aisp-techniques/immune-network-theory/ainet)
-
 
 </section>
 
-<section id='introdução'>
+<section id='instalação'>
 
 ## **Instalação**
-
 
 O módulo requer a instalação do [python 3.10](https://www.python.org/downloads/) ou superior.
 
 <section id='dependências'>
 
 ### **Dependências:**
-<div align = center> 
+
+<div align = center>
 
 |    Pacotes    |    Versão     |
 |:-------------:|:-------------:|
@@ -68,7 +67,7 @@ pip install aisp
 </section>
 <section id='exemplos'>
 
-## Exemplos:
+## Exemplos
 
 ---
 

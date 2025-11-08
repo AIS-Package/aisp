@@ -13,8 +13,8 @@ Clonalg : Clonal Selection Algorithm.
     for both minimization and maximization of cost functions in binary,
     continuous, and permutation problems.
 """
+
 from ._ai_recognition_sys import AIRS
 from ._clonalg import Clonalg
 
-__author__ = 'João Paulo da Silva Barros'
-__all__ = ['AIRS', 'Clonalg']
+__all__ = ["AIRS", "Clonalg"]

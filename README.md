@@ -1,4 +1,4 @@
-<div align = center> 
+<div align = center>
 
 |    <img src='https://ais-package.github.io/assets/images/logo-7b415c6841a3ed8a760eff38ecd996b8.svg'/>   |     <h1 class='text-title' align=center>**Artificial Immune Systems Package.**</h1>  |
 |:-------------:|:-------------:|
@@ -7,7 +7,7 @@
 
 ---
 
-#### Select the language / Selecione o Idioma:
+#### Select the language / Selecione o Idioma
 
 <div class='language-options'>
 
@@ -16,7 +16,7 @@
 
 </div>
 
-#### Package documentation / Documentação do pacote:
+#### Package documentation / Documentação do pacote
 
 * [Docs.](https://ais-package.github.io/docs/intro)
 
@@ -26,7 +26,7 @@
 
 <section id='english'>
 
-#### Summary:
+#### Summary
 
 > 1. [Introduction.](#introduction)
 > 2. [Installation.](#installation)
@@ -43,18 +43,17 @@ The **AISP** is a python package that implements artificial immune systems techn
 
 The package started in **2022** as a research package at the Federal Institute of Northern Minas Gerais - Salinas campus (**IFNMG - Salinas**).
 
-
 Artificial Immune Systems (AIS) are inspired by the vertebrate immune system, creating metaphors that apply the ability to detect and catalog pathogens, among other features of this system.
 
-##### Algorithms implemented:
+##### Algorithms implemented
 
-> - [x] [**Negative Selection.**](https://ais-package.github.io/docs/aisp-techniques/negative-selection/)
-> - [x] [**Clonal Selection Algorithms.**](https://ais-package.github.io/docs/aisp-techniques/clonal-selection-algorithms/)
->     * [AIRS - Artificial Immune Recognition System](https://ais-package.github.io/docs/aisp-techniques/clonal-selection-algorithms/airs/)
->     * [CLONALG - Clonal Selection Algorithm](https://ais-package.github.io/docs/aisp-techniques/clonal-selection-algorithms/clonalg)
-> - [ ] *Danger Theory.*
-> - [x] [*Immune Network Theory.*](https://ais-package.github.io/docs/aisp-techniques/immune-network-theory/)
->   - [AiNet - Artificial Immune Network para Clustering and Compression](https://ais-package.github.io/docs/aisp-techniques/immune-network-theory/ainet)
+> * [x] [**Negative Selection.**](https://ais-package.github.io/docs/aisp-techniques/negative-selection/)
+> * [x] [**Clonal Selection Algorithms.**](https://ais-package.github.io/docs/aisp-techniques/clonal-selection-algorithms/)
+>   * [AIRS - Artificial Immune Recognition System](https://ais-package.github.io/docs/aisp-techniques/clonal-selection-algorithms/airs/)
+>   * [CLONALG - Clonal Selection Algorithm](https://ais-package.github.io/docs/aisp-techniques/clonal-selection-algorithms/clonalg)
+> * [ ] *Danger Theory.*
+> * [x] [*Immune Network Theory.*](https://ais-package.github.io/docs/aisp-techniques/immune-network-theory/)
+>   * [AiNet - Artificial Immune Network para Clustering and Compression](https://ais-package.github.io/docs/aisp-techniques/immune-network-theory/ainet)
 
 </section>
 
@@ -67,8 +66,8 @@ The module requires installation of [python 3.10](https://www.python.org/downloa
 <section id='dependencies'>
 
 ##### **Dependencies:**
-<div align = center> 
 
+<div align = center>
 
 |    Packages   |     Version   |
 |:-------------:|:-------------:|
@@ -95,7 +94,7 @@ pip install aisp
 </section>
 <section id='examples'>
 
-#### Examples:
+#### Examples
 
 ---
 

@@ -2,24 +2,27 @@
 
 from __future__ import annotations
 
-from typing import Dict, Literal, Optional, Union
+from typing import Dict, Literal, Optional
 
 import numpy as np
 import numpy.typing as npt
 from tqdm import tqdm
 
-from ._base import BaseNSA
-from ._ns_core import (
-    check_detector_bnsa_validity,
-    bnsa_class_prediction
-)
+from ._base import check_detector_bnsa_validity, bnsa_class_prediction
+from ..base import BaseClassifier
 from ..exceptions import MaxDiscardsReachedError
 from ..utils.sanitizers import sanitize_seed, sanitize_param
+from ..utils.validation import (
+    check_array_type,
+    check_shape_match,
+    check_binary_array,
+    check_feature_dimension,
+)
 
 
-class BNSA(BaseNSA):
+class BNSA(BaseClassifier):
     """BNSA (Binary Negative Selection Algorithm).
-    
+
     Class is for classification and identification purposes of anomalies through the self and not
     self method.
 
@@ -72,12 +75,12 @@ class BNSA(BaseNSA):
             lambda x: x == "nearest_difference",
         )
 
-        self.classes: Union[npt.NDArray, list] = []
+        self.classes: Optional[npt.NDArray] = None
         self._detectors: Optional[dict] = None
         self._detectors_stack: Optional[npt.NDArray] = None
 
     @property
-    def detectors(self) -> Optional[Dict[str, npt.NDArray[np.bool_]]]:
+    def detectors(self) -> Optional[Dict[str | int, npt.NDArray[np.bool_]]]:
         """Returns the trained detectors, organized by class."""
         return self._detectors
 
@@ -97,16 +100,20 @@ class BNSA(BaseNSA):
         Returns
         -------
         self : BNSA
-             Returns the instance it self.
+             Returns the instance itself.
         """
-        super()._check_and_raise_exceptions_fit(X, y, "BNSA")
+        X = check_array_type(X)
+        y = check_array_type(y, "y")
+        check_shape_match(X, y)
+        check_binary_array(X)
+
         # Converts the entire array X to boolean
         X = X.astype(np.bool_)
 
         # Identifying the possible classes within the output array `y`.
         self.classes = np.unique(y)
         # Dictionary that will store detectors with classes as keys.
-        list_detectors_by_class = {}
+        list_detectors_by_class: dict = {}
         # Separates the classes for training.
         sample_index: dict = self._slice_index_list_by_class(y)
         # Progress bar for generating all detectors.
@@ -115,7 +122,7 @@ class BNSA(BaseNSA):
             total=int(self.N * (len(self.classes))),
             bar_format="{desc} ┇{bar}┇ {n}/{total} detectors",
             postfix="\n",
-            disable=not verbose
+            disable=not verbose,
         )
 
         for _class_ in self.classes:
@@ -129,12 +136,12 @@ class BNSA(BaseNSA):
             x_class = X[sample_index[_class_]]
             while len(valid_detectors_set) < self.N:
                 # Generates a candidate detector vector randomly with values 0 and 1.
-                vector_x = np.random.randint(0, 2, size=X.shape[1]).astype(np.bool_)
+                vector_x = np.random.randint(0, 2, size=(X.shape[1],)).astype(np.bool_)
                 # If the detector is valid, add it to the list of valid detectors.
                 if check_detector_bnsa_validity(x_class, vector_x, self.aff_thresh):
                     discard_count = 0
                     valid_detectors_set.append(vector_x)
-                    progress.update(1)
+                    progress.update()
                 else:
                     discard_count += 1
                     if discard_count == self.max_discards:
@@ -172,12 +179,15 @@ class BNSA(BaseNSA):
             ``X``. Returns``None``: If there are no detectors for the prediction.
         """
         # If there are no detectors, Returns None.
-        if self._detectors is None or self._detectors_stack is None:
+        if (
+            self._detectors is None
+            or self._detectors_stack is None
+            or self.classes is None
+        ):
             return None
-
-        super()._check_and_raise_exceptions_predict(
-            X, len(self._detectors[self.classes[0]][0]), "BNSA"
-        )
+        X = check_array_type(X)
+        check_feature_dimension(X, len(self._detectors[self.classes[0]][0]))
+        check_binary_array(X)
 
         # Converts the entire array X to boolean.
         if X.dtype != bool:
@@ -212,7 +222,7 @@ class BNSA(BaseNSA):
 
     def __assign_class_to_non_self_sample(self, line: npt.NDArray, c: list):
         """Determine the class of a sample when all detectors classify it as "non-self".
-        
+
         Classification is performed using the ``max_average_difference`` and
         ``max_nearest_difference`` methods.
 
@@ -223,7 +233,7 @@ class BNSA(BaseNSA):
         c : list
             List of predictions to be updated with the new classification.
         """
-        if self._detectors is None:
+        if self._detectors is None or self.classes is None:
             raise ValueError("Detectors is not initialized.")
 
         class_differences: dict = {}
@@ -237,4 +247,4 @@ class BNSA(BaseNSA):
             else:
                 class_differences[_class_] = distances.sum() / self.N
 
-        c.append(max(class_differences, key=class_differences.get)) # type: ignore
+        c.append(max(class_differences, key=class_differences.get))  # type: ignore

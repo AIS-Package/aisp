@@ -72,6 +72,7 @@ def test_sanitize_seed(input_value, expected_output):
     result = sanitize_seed(input_value)
     assert result == expected_output
 
+
 @pytest.mark.parametrize(
     "bounds, problem_size, expected_result, expected_exception",
     [

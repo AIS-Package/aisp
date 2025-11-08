@@ -26,10 +26,7 @@ class FeatureDimensionMismatch(Exception):
     """
 
     def __init__(
-        self,
-        expected: int,
-        received: int,
-        variable_name: Optional[str] = None
+        self, expected: int, received: int, variable_name: Optional[str] = None
     ):
         parts = []
         if variable_name:
@@ -54,6 +51,8 @@ class UnsupportedTypeError(Exception):
 
     def __init__(self, message=None):
         if message is None:
-            message = ("Type is not supported. Provide a binary, normalized, or bounded "
-                       "continuous vector.")
+            message = (
+                "Type is not supported. Provide a binary, normalized, or bounded "
+                "continuous vector."
+            )
         super().__init__(message)

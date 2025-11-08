@@ -1,8 +1,8 @@
 # BNSA (Binary Negative Selection Algorithm)
 
-This class extends the [**Base**](../../advanced-guides/Base%20Classes%20Reference/NegativeSelection.md) class.
+This class extends the [**Base**](../../advanced-guides/base/classifier.md) class.
 
-## Constructor RNSA:
+## Constructor RNSA
 
 The ``BNSA`` (Binary Negative Selection Algorithm) class has the purpose of classifying and identifying anomalies through the self and not self methods.
 
@@ -14,16 +14,14 @@ The ``BNSA`` (Binary Negative Selection Algorithm) class has the purpose of clas
 possible infinite loop if a radius is defined that it is not possible to generate non-self detectors. Defaults to ``100``.
 * *seed* (``int``): Seed for the random generation of values in the detectors. Defaults to ``None``.
 * no_label_sample_selection (``str``): Method for selecting labels for samples designated as non-members by all non-member detectors. **Available method types:**
-    - (``max_average_difference``): Selects the class with the highest average difference among the detectors.
-    - (``max_nearest_difference``): Selects the class with the highest difference between the nearest and farthest detector from the sample.
+  * (``max_average_difference``): Selects the class with the highest average difference among the detectors.
+  * (``max_nearest_difference``): Selects the class with the highest difference between the nearest and farthest detector from the sample.
 
 **Other variables initiated:**
 
 * *detectors* (``dict``): This variable stores a list of detectors by class.
 
 * *classes* (``npt.NDArray``): list of output classes.
-
-
 
 ### Function fit(...)
 
@@ -35,18 +33,19 @@ def fit(self, X: npt.NDArray, y: npt.NDArray):
 
 In it, training is performed according to ``X`` and ``y``, using the negative selection method(``NegativeSelect``).
 
-**The input parameters are:** 
-* ``X``: array with the characteristics of the samples with **N** samples (rows) and **N** characteristics (columns). 
+**The input parameters are:**
+
+* ``X``: array with the characteristics of the samples with **N** samples (rows) and **N** characteristics (columns).
 
 * ``y``: array with the output classes arranged in **N** samples that are related to ``X``.
 
 * ``verbose``: boolean with default value ``True``, determines if the feedback from the detector generation will be printed.
 
 **Raises**
+
 * ``TypeError``: If X or y are not ndarrays or have incompatible shapes.
 * ``MaxDiscardsReachedError``: The maximum number of detector discards was reached during
   maturation. Check the defined radius value and consider reducing it.
-
 
 *Returns the instance of the class.*
 
@@ -60,21 +59,24 @@ The ``predict(...)`` function performs class prediction using the generated dete
 def predict(self, X: npt.NDArray) -> npt.NDArray:
 ```
 
-**The input parameter is:** 
+**The input parameter is:**
+
 * ``X``: array with the characteristics for the prediction, with **N** samples (Rows) and **N** columns.
 
-**Raises:** 
+**Raises:**
+
 * ``TypeError``: If X is not an ndarray or list.
 * ``FeatureDimensionMismatch``: If the number of features in X does not match the expected number.
 * ``ValueError``: X contains values that are not composed only of 0 and 1.
 
-**Returns:** 
+**Returns:**
+
 * ``C``: prediction array, with the output classes for the given characteristics.
 * ``None``: if there are no detectors.
 
 ---
 
-### Function score(...):
+### Function score(...)
 
 The function ``score(...)`` calculates the accuracy of the trained model by making predictions and computing accuracy.
 
@@ -90,18 +92,19 @@ It returns the accuracy as a float type.
 
 ---
 
-### Function __assign_class_to_non_self_sample(...):
+### Function __assign_class_to_non_self_sample(...)
 
 This function determines the class of a sample when all detectors classify it as "non-self". Classification is performed using the ``max_average_difference`` and ``max_nearest_difference`` methods.
 
 ```python
 def __assign_class_to_non_self_sample(self, line, c) -> npt.NDArray:
 ```
-**The input parameter is:** 
+
+**The input parameter is:**
 
 * ***line*** (``list``): Sample to be classified.
 * ***c*** (``npt.NDArray``): List of predictions to be updated with the new classification.
 
-**Returns:** 
+**Returns:**
 
 ``npt.NDArray``: The list of predictions `c` updated with the class assigned to the sample.

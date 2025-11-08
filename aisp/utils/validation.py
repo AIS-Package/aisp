@@ -4,12 +4,10 @@ import numpy as np
 import numpy.typing as npt
 
 from .types import FeatureType
-from ..exceptions import UnsupportedTypeError
+from ..exceptions import UnsupportedTypeError, FeatureDimensionMismatch
 
 
-def detect_vector_data_type(
-    vector: npt.NDArray
-) -> FeatureType:
+def detect_vector_data_type(vector: npt.NDArray) -> FeatureType:
     """
     Detect the type of data in a vector.
 
@@ -30,7 +28,7 @@ def detect_vector_data_type(
 
     Raises
     ------
-    UnsupportedDataTypeError
+    UnsupportedTypeError
         If the data type of the vector is not supported by the function.
     """
     if vector.dtype == np.bool_:
@@ -45,3 +43,86 @@ def detect_vector_data_type(
         return "ranged-features"
 
     raise UnsupportedTypeError()
+
+
+def check_array_type(x, name: str = "X") -> npt.NDArray:
+    """Ensure X is a numpy array. Convert from list if needed.
+
+    Parameters
+    ----------
+    x : Any
+        Array, containing the samples and their characteristics,
+        [``N samples`` (rows)][``N features`` (columns)].
+    name : str, default='X'
+        Variable name used in error messages.
+
+    Returns
+    -------
+    npt.NDArray
+        The converted or validated array.
+
+    Raises
+    ------
+    TypeError:
+        If X or y are not ndarrays or have incompatible shapes.
+    """
+    if isinstance(x, list):
+        x = np.array(x)
+    if not isinstance(x, np.ndarray):
+        raise TypeError(f"{name} is not an ndarray or list.")
+    return x
+
+
+def check_shape_match(x: npt.NDArray, y: npt.NDArray):
+    """Ensure X and y have compatible first dimensions.
+
+    Parameters
+    ----------
+    x : npt.NDArray
+        Array, containing the samples and their characteristics,
+        [``N samples`` (rows)][``N features`` (columns)].
+    y : npt.NDArray
+        Array of target classes of ``x`` with [``N samples`` (lines)].
+
+    Raises
+    ------
+    TypeError:
+        If x or y are not ndarrays or have incompatible shapes.
+    """
+    if x.shape[0] != y.shape[0]:
+        raise TypeError("X does not have the same number of samples as y.")
+
+
+def check_feature_dimension(x: npt.NDArray, expected: int):
+    """Ensure X has the expected number of features.
+
+    Parameters
+    ----------
+    x : npt.NDArray
+        Input array for prediction, containing the samples and their characteristics,
+        [``N samples`` (rows)][``N features`` (columns)].
+    expected : int, default=0
+        Expected number of features per sample (columns in X).
+
+    Raises
+    ------
+    FeatureDimensionMismatch
+        If the number of features in X does not match the expected number.
+    """
+    if expected != len(x[0]):
+        raise FeatureDimensionMismatch(expected, len(x[0]), "X")
+
+
+def check_binary_array(x: npt.NDArray):
+    """Ensure X contains only 0 and 1.
+
+    Raises
+    ------
+    ValueError
+        If feature_type is binary-features and X contains values that are not composed only
+        of 0 and 1.
+    """
+    if not np.isin(x, [0, 1]).all():
+        raise ValueError(
+            "The array x contains values that are not composed only of 0 and 1."
+        )

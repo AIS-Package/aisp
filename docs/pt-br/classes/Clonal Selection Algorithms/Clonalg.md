@@ -40,7 +40,12 @@ O construtor inicializa a instância do CLONALG com os principais parâmetros qu
 #### Função `optimize(...)`
 
 ```python
-def optimize(self, max_iters: int = 50, n_iter_no_change=10, verbose: bool = True) -> npt.NDArray:
+def optimize(
+    self,
+    max_iters: int = 50,
+    n_iter_no_change=10,
+    verbose: bool = True
+) -> List[Antibody]:
 ```
 
 Este método executa o processo de otimização e retorna a população de anticorpos.
@@ -147,7 +152,10 @@ Gera clones mutados a partir de um único anticorpo. A estratégia de mutação 
 #### Função `_clone_and_hypermutation(...)`
 
 ```python
-def _clone_and_hypermutation(self, population: list[tuple]) -> list:
+def _clone_and_hypermutation(
+    self,
+    population: list[Antibody]
+) -> list[Antibody]:
 ```
 
 Clona e aplica hipermutação a uma população de anticorpos. Retorna uma lista de todos os clones e suas afinidades em relação à função de custo.
@@ -158,13 +166,13 @@ Clona e aplica hipermutação a uma população de anticorpos. Retorna uma lista
 
 **Retorna:**
 
-* `list`: Lista contendo os clones mutados.
+* `list[Antibody]`: Lista contendo os clones mutados.
 
 ---
 
-# Referências
+## Referências
 
 <br id='ref1'/>
 
 > 1. BROWNLEE, Jason. Clonal Selection Algorithm. Clever Algorithms: Nature-inspired Programming Recipes., 2011.
->   Available at: https://cleveralgorithms.com/nature-inspired/immune/clonal_selection_algorithm.html
+> Available at: <https://cleveralgorithms.com/nature-inspired/immune/clonal_selection_algorithm.html>

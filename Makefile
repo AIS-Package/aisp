@@ -31,3 +31,7 @@ check:
 	$(MAKE) lint
 	$(MAKE) docstyle
 	$(MAKE) test
+
+# Runs static type checking with MyPy
+typecheck:
+	mypy $(PKG)

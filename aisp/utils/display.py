@@ -44,7 +44,9 @@ class TableFormatter:
         self.headers: Mapping[str, int] = headers
         self._ascii_only = not _supports_box_drawing()
 
-    def _border(self, left: str, middle: str, right: str, line: str, new_line: bool = True) -> str:
+    def _border(
+        self, left: str, middle: str, right: str, line: str, new_line: bool = True
+    ) -> str:
         """
         Create a horizontal border for the table.
 
@@ -66,8 +68,10 @@ class TableFormatter:
         str
             String representing the horizontal border.
         """
-        nl = '\n' if new_line else ''
-        return f"{nl}{left}{middle.join(line * w for w in self.headers.values())}{right}"
+        nl = "\n" if new_line else ""
+        return (
+            f"{nl}{left}{middle.join(line * w for w in self.headers.values())}{right}"
+        )
 
     def get_header(self):
         """
@@ -87,9 +91,12 @@ class TableFormatter:
             sep = self._border("├", "┼", "┤", "─")
             cell_border = "│"
 
-        titles = '\n' + cell_border + cell_border.join(
-            f"{h:^{self.headers[h]}}" for h in self.headers
-        ) + cell_border
+        titles = (
+            "\n"
+            + cell_border
+            + cell_border.join(f"{h:^{self.headers[h]}}" for h in self.headers)
+            + cell_border
+        )
 
         return top + titles + sep
 
@@ -109,9 +116,13 @@ class TableFormatter:
         Formatted string of the table row.
         """
         border = "|" if self._ascii_only else "│"
-        row = border + border.join(
-            f"{values.get(h, ''):^{self.headers[h]}}" for h in self.headers
-        ) + border
+        row = (
+            border
+            + border.join(
+                f"{values.get(h, ''):^{self.headers[h]}}" for h in self.headers
+            )
+            + border
+        )
 
         return row
 

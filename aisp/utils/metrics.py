@@ -7,8 +7,7 @@ import numpy.typing as npt
 
 
 def accuracy_score(
-    y_true: Union[npt.NDArray, list],
-    y_pred: Union[npt.NDArray, list]
+    y_true: Union[npt.NDArray, list], y_pred: Union[npt.NDArray, list]
 ) -> float:
     """Calculate the accuracy score based on true and predicted labels.
 
@@ -31,9 +30,7 @@ def accuracy_score(
     """
     n = len(y_true)
     if n == 0:
-        raise ValueError(
-            "Division by zero: y_true cannot be an empty list or array."
-        )
+        raise ValueError("Division by zero: y_true cannot be an empty list or array.")
     if n != len(y_pred):
         raise ValueError(
             f"Error: The arrays must have the same size. Size of y_true: "

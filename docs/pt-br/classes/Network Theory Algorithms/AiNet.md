@@ -1,8 +1,8 @@
 # AiNet (Artificial Immune Network)
 
-Esta classe estende a classe [**BaseAiNet**](../../advanced-guides/Base%20Classes%20Reference/Network%20Theory%20Algorithms/BaseAiNet.md).
+Esta classe estende a classe [**Base**](../../advanced-guides/base/clusterer.md).
 
-## Construtor AiNet:
+## Construtor AiNet
 
 A classe `AiNet` implementa o algoritmo de Rede Imune Artificial para **compressão** e **clustering**.
 Ela utiliza princípios da teoria de redes imunes, seleção clonal e maturação por afinidade para comprimir conjuntos de dados e encontrar clusters.
@@ -65,7 +65,7 @@ Para clustering, pode opcionalmente utilizar uma **Árvore Geradora Mínima (MST
 Treina o modelo AiNet com os dados de entrada:
 
 ```python
-def fit(self, X: npt.NDArray, verbose: bool = True):
+def fit(self, X: npt.NDArray, verbose: bool = True) -> AiNet:
 ```
 
 **Parâmetros de entrada:**
@@ -265,7 +265,7 @@ def _build_mst(self):
 
 ---
 
-# Referências
+## Referências
 
 > 1. De Castro, Leandro & José, Fernando & von Zuben, Antonio Augusto. (2001). aiNet: An Artificial Immune Network for Data Analysis.
 > 2. Disponível em: [https://www.researchgate.net/publication/228378350_aiNet_An_Artificial_Immune_Network_for_Data_Analysis](https://www.researchgate.net/publication/228378350_aiNet_An_Artificial_Immune_Network_for_Data_Analysis)

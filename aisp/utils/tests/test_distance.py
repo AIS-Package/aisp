@@ -15,7 +15,7 @@ from aisp.utils.distance import euclidean, hamming, cityblock, minkowski
     ids=[
         "Euclidean Distance - 2 dimensions",
         "Euclidean Distance - 3 dimensions",
-    ]
+    ],
 )
 def test_euclidean(u, v, expected_output):
     """Test for Euclidean distance"""
@@ -26,13 +26,21 @@ def test_euclidean(u, v, expected_output):
 @pytest.mark.parametrize(
     "u, v, expected_output",
     [
-        (np.array([1, 0, 1, 1]).astype(np.bool_), np.array([1, 1, 0, 1]).astype(np.bool_), 0.5),
-        (np.array([True, False, True, False]), np.array([True, True, True, False]), 0.25),
+        (
+            np.array([1, 0, 1, 1]).astype(np.bool_),
+            np.array([1, 1, 0, 1]).astype(np.bool_),
+            0.5,
+        ),
+        (
+            np.array([True, False, True, False]),
+            np.array([True, True, True, False]),
+            0.25,
+        ),
     ],
     ids=[
         "Hamming distance between different binary integer vectors",
         "Hamming distance between different binary Boolean vectors",
-    ]
+    ],
 )
 def test_hamming(u, v, expected_output):
     """Hamming distance test"""
@@ -49,7 +57,7 @@ def test_hamming(u, v, expected_output):
     ids=[
         "Manhattan Distance - 3 dimensions",
         "Manhattan Distance - 2 dimensions",
-    ]
+    ],
 )
 def test_cityblock(u, v, expected_output):
     """Manhattan (Cityblock) Distance Test"""
@@ -68,7 +76,7 @@ def test_cityblock(u, v, expected_output):
         "Minkowski p=1 - Manhattan",
         "Minkowski p=2 - Euclidean",
         "Minkowski p=3 - Minkowski",
-    ]
+    ],
 )
 def test_minkowski(u, v, p, expected_output):
     """Minkowski distance test"""

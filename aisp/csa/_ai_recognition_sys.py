@@ -3,26 +3,31 @@
 from __future__ import annotations
 
 import random
-from collections import Counter
-from heapq import nlargest
 from operator import attrgetter
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Tuple, Any
 
 import numpy as np
 import numpy.typing as npt
 from scipy.spatial.distance import pdist
 from tqdm import tqdm
 
-from ._base import BaseAIRS
-from ._cell import Cell
-from ..base import set_seed_numba
+from ..base import BaseClassifier
+from ..base.immune.cell import BCell
 from ..utils.distance import hamming, compute_metric_distance, get_metric_code
+from ..utils.multiclass import predict_knn_affinity
+from ..utils.random import set_seed_numba
 from ..utils.sanitizers import sanitize_param, sanitize_seed, sanitize_choice
 from ..utils.types import FeatureType, MetricType
-from ..utils.validation import detect_vector_data_type
+from ..utils.validation import (
+    detect_vector_data_type,
+    check_array_type,
+    check_shape_match,
+    check_feature_dimension,
+    check_binary_array,
+)
 
 
-class _ARB(Cell):
+class _ARB(BCell):
     """ARB (Artificial recognition ball).
 
     Individual from the set of recognizing cells (ARB), inherits characteristics from a B-cell,
@@ -37,9 +42,7 @@ class _ARB(Cell):
     """
 
     def __init__(
-        self,
-        vector: npt.NDArray,
-        stimulation: Optional[float] = None
+        self, vector: npt.NDArray, stimulation: Optional[float] = None
     ) -> None:
         super().__init__(vector)
         self.resource: float = 0.0
@@ -74,12 +77,12 @@ class _ARB(Cell):
         self.resource = consumption
         return n_resource
 
-    def to_cell(self) -> Cell:
-        """Convert this _ARB into a pure Cell object."""
-        return Cell(self.vector)
+    def to_cell(self) -> BCell:
+        """Convert this _ARB into a pure BCell object."""
+        return BCell(self.vector)
 
 
-class AIRS(BaseAIRS):
+class AIRS(BaseClassifier):
     """Artificial Immune Recognition System (AIRS).
 
     The Artificial Immune Recognition System (AIRS) is a classification algorithm inspired by the
@@ -184,21 +187,19 @@ class AIRS(BaseAIRS):
 
         self._feature_type: FeatureType = "continuous-features"
 
-        self.metric = sanitize_choice(
-            metric, ["manhattan", "minkowski"], "euclidean"
-        )
+        self.metric = sanitize_choice(metric, ["manhattan", "minkowski"], "euclidean")
 
         self.p: np.float64 = np.float64(kwargs.get("p", 2.0))
 
-        self._cells_memory = None
-        self._all_class_cell_vectors = None
-        self.affinity_threshold = 0.0
-        self.classes = []
+        self._cells_memory: Optional[Dict[str | int, list[BCell]]] = None
+        self._all_class_cell_vectors: Optional[List[Tuple[Any, np.ndarray]]] = None
+        self.affinity_threshold: float = 0.0
+        self.classes: Optional[npt.NDArray] = None
         self._bounds: Optional[npt.NDArray[np.float64]] = None
         self._n_features: Optional[int] = None
 
     @property
-    def cells_memory(self) -> Optional[Dict[str, list[Cell]]]:
+    def cells_memory(self) -> Optional[Dict[str | int, list[BCell]]]:
         """Returns the trained cells memory, organized by class."""
         return self._cells_memory
 
@@ -226,7 +227,9 @@ class AIRS(BaseAIRS):
         """
         self._feature_type = detect_vector_data_type(X)
 
-        super()._check_and_raise_exceptions_fit(X, y)
+        X = check_array_type(X)
+        y = check_array_type(y, "y")
+        check_shape_match(X, y)
 
         match self._feature_type:
             case "binary-features":
@@ -257,13 +260,13 @@ class AIRS(BaseAIRS):
                 self.affinity_threshold * self.affinity_threshold_scalar
             )
             # Initialize memory cells for a class.
-            pool_c: list[Cell] = self._init_memory_c(x_class)
+            pool_c: list[BCell] = self._init_memory_c(x_class)
 
             for ai in x_class:
                 # Calculating the stimulation of memory cells with aᵢ and selecting the largest
                 # stimulation from the memory set.
                 c_match = pool_c[0]
-                match_stimulation = -1
+                match_stimulation = -1.0
                 for cell in pool_c:
                     stimulation = self._affinity(cell.vector, ai)
                     if stimulation > match_stimulation:
@@ -271,15 +274,12 @@ class AIRS(BaseAIRS):
                         c_match = cell
 
                 arb_list: list[_ARB] = [
-                    _ARB(
-                        vector=c_match.vector,
-                        stimulation=match_stimulation
-                    )
+                    _ARB(vector=c_match.vector, stimulation=match_stimulation)
                 ]
 
                 set_clones: npt.NDArray = c_match.hyper_clonal_mutate(
                     int(self.rate_hypermutation * self.rate_clonal * match_stimulation),
-                    self._feature_type
+                    self._feature_type,
                 )
 
                 for clone in set_clones:
@@ -294,10 +294,13 @@ class AIRS(BaseAIRS):
 
                 if c_candidate.stimulation > match_stimulation:
                     pool_c.append(c_candidate.to_cell())
-                    if self._affinity(c_candidate.vector, c_match.vector) < sufficiently_similar:
+                    if (
+                        self._affinity(c_candidate.vector, c_match.vector)
+                        < sufficiently_similar
+                    ):
                         pool_c.remove(c_match)
 
-                progress.update(1)
+                progress.update()
             pool_cells_classes[_class_] = pool_c
 
         progress.set_description(
@@ -335,22 +338,15 @@ class AIRS(BaseAIRS):
         if self._all_class_cell_vectors is None or self._n_features is None:
             return None
 
-        super()._check_and_raise_exceptions_predict(
-            X, self._n_features, self._feature_type
+        X = check_array_type(X)
+        check_feature_dimension(X, self._n_features)
+
+        if self._feature_type == "binary-features":
+            check_binary_array(X)
+
+        return predict_knn_affinity(
+            X, self.k, self._all_class_cell_vectors, self._affinity
         )
-
-        c: list = []
-
-        for line in X:
-            label_stim_list = [
-                (class_name, self._affinity(memory, line))
-                for class_name, memory in self._all_class_cell_vectors
-            ]
-            # Create the list with the k nearest neighbors and select the class with the most votes
-            k_nearest = nlargest(self.k, label_stim_list, key=lambda x: x[1])
-            votes = Counter(label for label, _ in k_nearest)
-            c.append(votes.most_common(1)[0][0])
-        return np.array(c)
 
     def _refinement_arb(
         self, ai: npt.NDArray, c_match_stimulation: float, arb_list: List[_ARB]
@@ -409,15 +405,11 @@ class AIRS(BaseAIRS):
             # pick a random cell for mutations.
             random_index = random.randint(0, len(arb_list) - 1)
             clone_arb = arb_list[random_index].hyper_clonal_mutate(
-                int(self.rate_clonal * c_match_stimulation),
-                self._feature_type
+                int(self.rate_clonal * c_match_stimulation), self._feature_type
             )
 
             arb_list = [
-                _ARB(
-                    vector=clone,
-                    stimulation=self._affinity(clone, ai)
-                )
+                _ARB(vector=clone, stimulation=self._affinity(clone, ai))
                 for clone in clone_arb
             ]
 
@@ -432,7 +424,7 @@ class AIRS(BaseAIRS):
         is measured by distance (Euclidean, Manhattan, Minkowski, Hamming).
         Following the formula:
 
-        > affinity_threshold = (Σᵢ=₁ⁿ⁻¹ Σⱼ=ᵢ₊₁ⁿ affinity(aᵢ, aⱼ)) / (n(n-1)/2
+        > affinity_threshold = (Σᵢ=₁ⁿ⁻¹ Σⱼ=ᵢ₊₁ⁿ affinity(aᵢ, aⱼ)) / (n(n-1)/2)
 
         Parameters
         ----------
@@ -442,8 +434,8 @@ class AIRS(BaseAIRS):
         if self._feature_type == "binary-features":
             distances = pdist(antigens_list, metric="hamming")
         else:
-            metric_kwargs = {'p': self.p} if self.metric == 'minkowski' else {}
-            distances = pdist(antigens_list, metric=self.metric, **metric_kwargs) # type: ignore
+            metric_kwargs = {"p": self.p} if self.metric == "minkowski" else {}
+            distances = pdist(antigens_list, metric=self.metric, **metric_kwargs)  # type: ignore
 
         n = antigens_list.shape[0]
         sum_affinity = np.sum(1.0 - (distances / (1.0 + distances)))
@@ -472,9 +464,9 @@ class AIRS(BaseAIRS):
             distance = compute_metric_distance(
                 u, v, get_metric_code(self.metric), self.p
             )
-        return 1 - (distance / (1 + distance))
+        return float(1 - (distance / (1 + distance)))
 
-    def _init_memory_c(self, antigens_list: npt.NDArray) -> List[Cell]:
+    def _init_memory_c(self, antigens_list: npt.NDArray) -> List[BCell]:
         """
         Initialize memory cells by randomly selecting `rate_mc_init` antigens.
 
@@ -485,7 +477,7 @@ class AIRS(BaseAIRS):
 
         Returns
         -------
-        List[Cell]
+        List[BCell]
             List of initialized memories.
         """
         n = antigens_list.shape[0]
@@ -496,4 +488,4 @@ class AIRS(BaseAIRS):
 
         permutation = np.random.permutation(n)
         selected = antigens_list[permutation[:n_cells]]
-        return [Cell(ai) for ai in selected]
+        return [BCell(ai) for ai in selected]

@@ -10,5 +10,4 @@ AiNet : Artificial Immune Network.
 
 from ._ai_network import AiNet
 
-__author__ = 'João Paulo da Silva Barros'
-__all__ = ['AiNet']
+__all__ = ["AiNet"]

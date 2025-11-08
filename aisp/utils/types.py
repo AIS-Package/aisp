@@ -25,13 +25,10 @@ MetricType : Literal["manhattan", "minkowski", "euclidean"]
             ( |x₁ - x₂| + |y₁ - y₂| + ... + |yn - yn|).
 """
 
-
 from typing import Literal, TypeAlias, Union
 
 FeatureType: TypeAlias = Literal[
-    "binary-features",
-    "continuous-features",
-    "ranged-features"
+    "binary-features", "continuous-features", "ranged-features"
 ]
 
 FeatureTypeAll: TypeAlias = Union[FeatureType, Literal["permutation-features"]]
