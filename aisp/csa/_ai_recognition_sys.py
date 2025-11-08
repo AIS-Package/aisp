@@ -191,7 +191,7 @@ class AIRS(BaseClassifier):
 
         self.p: np.float64 = np.float64(kwargs.get("p", 2.0))
 
-        self._cells_memory: Optional[Dict[str, list[BCell]]] = None
+        self._cells_memory: Optional[Dict[str | int, list[BCell]]] = None
         self._all_class_cell_vectors: Optional[List[Tuple[Any, np.ndarray]]] = None
         self.affinity_threshold: float = 0.0
         self.classes: Optional[npt.NDArray] = None
@@ -199,7 +199,7 @@ class AIRS(BaseClassifier):
         self._n_features: Optional[int] = None
 
     @property
-    def cells_memory(self) -> Optional[Dict[str, list[BCell]]]:
+    def cells_memory(self) -> Optional[Dict[str | int, list[BCell]]]:
         """Returns the trained cells memory, organized by class."""
         return self._cells_memory
 

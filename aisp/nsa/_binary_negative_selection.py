@@ -80,7 +80,7 @@ class BNSA(BaseClassifier):
         self._detectors_stack: Optional[npt.NDArray] = None
 
     @property
-    def detectors(self) -> Optional[Dict[str, npt.NDArray[np.bool_]]]:
+    def detectors(self) -> Optional[Dict[str | int, npt.NDArray[np.bool_]]]:
         """Returns the trained detectors, organized by class."""
         return self._detectors
 

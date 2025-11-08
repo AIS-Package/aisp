@@ -121,11 +121,11 @@ class RNSA(BaseClassifier):
         self.non_self_label: str = str(kwargs.get("non_self_label", "non-self"))
 
         # Initializes the other class variables as None.
-        self._detectors: Union[dict, None] = None
+        self._detectors: Optional[Dict[str | int, list[Detector]]] = None
         self.classes: Optional[npt.NDArray] = None
 
     @property
-    def detectors(self) -> Optional[Dict[str, list[Detector]]]:
+    def detectors(self) -> Optional[Dict[str | int, list[Detector]]]:
         """Returns the trained detectors, organized by class."""
         return self._detectors
 
@@ -379,7 +379,7 @@ class RNSA(BaseClassifier):
             for detector in self._detectors[_class_]:
                 distance = self.__distance(detector.position, line)
                 sum_distance += distance
-                if self.algorithm == "V-detector":
+                if self.algorithm == "V-detector" and detector.radius is not None:
                     if distance <= detector.radius:
                         class_found = False
                         break
