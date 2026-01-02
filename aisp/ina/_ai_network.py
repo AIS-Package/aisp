@@ -147,8 +147,6 @@ class AiNet(BaseClusterer):
         self.metric: str = sanitize_choice(
             metric, ["euclidean", "manhattan", "minkowski"], "euclidean"
         )
-        if self._feature_type == "binary-features":
-            self.metric = "hamming"
 
         self.p: np.float64 = np.float64(kwargs.get("p", 2.0))
         self._metric_params = {}
