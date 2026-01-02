@@ -371,7 +371,7 @@ class Clonalg(BaseOptimizer):
             clones = self._clone_and_mutate(
                 antibody.vector,
                 num_clones,
-                1 - np.exp(-self.rate_hypermutation * normalized_affinity)
+                np.exp(-self.rate_hypermutation * normalized_affinity)
             )
             clonal_m.extend(clones)
 
