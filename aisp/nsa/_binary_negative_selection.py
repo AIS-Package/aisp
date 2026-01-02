@@ -238,7 +238,7 @@ class BNSA(BaseClassifier):
 
         class_differences: dict = {}
         for _class_ in self.classes:
-            distances = np.sum(line != self._detectors[_class_]) / self.N
+            distances = np.mean(line != self._detectors[_class_], axis=1)
             # Assign the label to the class with the greatest distance from
             # the nearest detector.
             if self.no_label_sample_selection == "nearest_difference":
