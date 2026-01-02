@@ -91,7 +91,7 @@ class BCell(Cell):
         if feature_type == "binary-features":
             return clone_and_mutate_binary(self.vector, n)
         if feature_type == "ranged-features" and bounds is not None:
-            clone_and_mutate_ranged(self.vector, n, bounds, np.float64(1.0))
+            return clone_and_mutate_ranged(self.vector, n, bounds, np.float64(1.0))
         return clone_and_mutate_continuous(self.vector, n, np.float64(1.0))
 
 
