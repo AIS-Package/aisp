@@ -159,6 +159,7 @@ class RNSA(BaseClassifier):
         X = check_array_type(X)
         y = check_array_type(y, "y")
         check_shape_match(X, y)
+        self._n_features = X.shape[1]
 
         # Identifying the possible classes within the output array `y`.
         self.classes = np.unique(y)
@@ -184,7 +185,7 @@ class RNSA(BaseClassifier):
             )
             while len(valid_detectors_set) < self.N:
                 # Generates a candidate detector vector randomly with values between 0 and 1.
-                vector_x = np.random.random_sample(size=(X.shape[1],))
+                vector_x = np.random.random_sample(size=(self._n_features,))
                 # Checks the validity of the detector for non-self with respect to the class samples
                 valid_detector = self.__checks_valid_detector(x_class, vector_x)
 
@@ -242,7 +243,7 @@ class RNSA(BaseClassifier):
         if self._detectors is None or self.classes is None:
             return None
         X = check_array_type(X)
-        check_feature_dimension(X, len(self._detectors[self.classes[0]][0].position))
+        check_feature_dimension(X, self._n_features)
 
         # Initializes an empty array that will store the predictions.
         c = []

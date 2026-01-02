@@ -21,6 +21,7 @@ class BaseClassifier(ABC, Base):
     """
 
     classes: Optional[npt.NDArray] = None
+    _n_features: int = 0
 
     @abstractmethod
     def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True) -> BaseClassifier:

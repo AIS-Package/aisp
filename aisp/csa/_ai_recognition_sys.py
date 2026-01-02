@@ -196,7 +196,6 @@ class AIRS(BaseClassifier):
         self.affinity_threshold: float = 0.0
         self.classes: Optional[npt.NDArray] = None
         self._bounds: Optional[npt.NDArray[np.float64]] = None
-        self._n_features: Optional[int] = None
 
     @property
     def cells_memory(self) -> Optional[Dict[str | int, list[BCell]]]:
@@ -335,7 +334,7 @@ class AIRS(BaseClassifier):
             An ndarray of the form ``C`` [``N samples``], containing the predicted classes for
             ``X``. or ``None``: If there are no detectors for the prediction.
         """
-        if self._all_class_cell_vectors is None or self._n_features is None:
+        if self._all_class_cell_vectors is None:
             return None
 
         X = check_array_type(X)

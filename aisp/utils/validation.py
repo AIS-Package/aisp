@@ -109,7 +109,7 @@ def check_feature_dimension(x: npt.NDArray, expected: int):
     FeatureDimensionMismatch
         If the number of features in X does not match the expected number.
     """
-    if expected != len(x[0]):
+    if expected <= 0 or expected != len(x[0]):
         raise FeatureDimensionMismatch(expected, len(x[0]), "X")
 
 
