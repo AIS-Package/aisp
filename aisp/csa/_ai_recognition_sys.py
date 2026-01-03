@@ -178,7 +178,7 @@ class AIRS(BaseClassifier):
         self.resource_amplified: float = sanitize_param(
             resource_amplified, 1, lambda x: x > 1
         )
-        self.k: int = sanitize_param(k, 3, lambda x: x > 00)
+        self.k: int = sanitize_param(k, 3, lambda x: x > 0)
         self.max_iters: int = sanitize_param(max_iters, 100, lambda x: x > 0)
         self.seed: Optional[int] = sanitize_seed(seed)
         if self.seed is not None:
