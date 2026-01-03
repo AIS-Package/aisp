@@ -62,7 +62,7 @@ class BNSA(BaseClassifier):
     ):
         self.N: int = sanitize_param(N, 100, lambda x: x > 0)
         self.aff_thresh: float = sanitize_param(aff_thresh, 0.1, lambda x: 0 < x < 1)
-        self.max_discards: float = sanitize_param(max_discards, 1000, lambda x: x > 0)
+        self.max_discards: int = sanitize_param(max_discards, 1000, lambda x: x > 0)
 
         self.seed: Optional[int] = sanitize_seed(seed)
 
