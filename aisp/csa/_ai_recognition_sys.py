@@ -224,21 +224,11 @@ class AIRS(BaseClassifier):
         AIRS
             Returns the instance itself.
         """
-        self._feature_type = detect_vector_data_type(X)
-
-        X = check_array_type(X)
+        X = self._prepare_features(X)
         y = check_array_type(y, "y")
         check_shape_match(X, y)
 
-        match self._feature_type:
-            case "binary-features":
-                X = X.astype(np.bool_)
-                self.metric = "hamming"
-            case "ranged-features":
-                self._bounds = np.vstack([np.min(X, axis=0), np.max(X, axis=0)])
-
         self.classes = np.unique(y)
-        self._n_features = X.shape[1]
         sample_index = self._slice_index_list_by_class(y)
         progress = tqdm(
             total=len(y),
@@ -487,3 +477,41 @@ class AIRS(BaseClassifier):
         permutation = np.random.permutation(n)
         selected = antigens_list[permutation[:n_cells]]
         return [BCell(ai) for ai in selected]
+
+    def _prepare_features(self, X: npt.NDArray) -> npt.NDArray:
+        """
+        Check the samples, specifying the type, quantity of characteristics, and other parameters.
+
+        * This method updates the following attributes:
+            * ``self._feature_type``
+            * ``self.metric`` (only for binary features)
+            * ``self._bounds`` (only for ranged features)
+            * ``self._n_features``
+
+        Parameters
+        ----------
+        X : npt.NDArray
+            Training array, containing the samples and their characteristics,
+            Shape: (n_samples, n_features).
+
+        Returns
+        -------
+        X : npt.NDArray
+            The processed input data.
+        """
+        self._feature_type = detect_vector_data_type(X)
+
+        X = check_array_type(X)
+
+        match self._feature_type:
+            case "binary-features":
+                X = X.astype(np.bool_)
+                self.metric = "hamming"
+            case "ranged-features":
+                self._bounds = np.vstack(
+                    [np.min(X, axis=0), np.max(X, axis=0)]
+                )
+
+        self._n_features = X.shape[1]
+
+        return X
