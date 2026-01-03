@@ -136,10 +136,10 @@ class RNSA(BaseClassifier):
         Parameters
         ----------
         X : npt.NDArray
-            Training array, containing the samples and their characteristics, [``N samples`` (
-            rows)][``N features`` (columns)].
+            Training array, containing the samples and their characteristics.
+            Shape: ``(n_samples, n_features)``
         y : npt.NDArray
-            Array of target classes of ``X`` with [``N samples`` (lines)].
+            Array of target classes of ``X`` with ``n_samples`` (lines).
         verbose: bool, default=True
             Feedback from detector generation to the user.
 
@@ -223,8 +223,7 @@ class RNSA(BaseClassifier):
         Parameters
         ----------
         X : npt.NDArray
-            Array with input samples with [``N_samples`` (Lines)] and [``N_characteristics``
-            (Columns)]
+            Array with input samples with Shape: (n_samples, n_features)
 
         Raises
         ------
@@ -236,7 +235,7 @@ class RNSA(BaseClassifier):
         Returns
         -------
         C : npt.NDArray or None
-            a ndarray of the form ``C`` [``N samples``], containing the predicted classes
+            a ndarray of the form ``C`` (n_samples), containing the predicted classes
             for ``X``. Returns `None` if no detectors are available for prediction.
         """
         # If there are no detectors, Returns None.

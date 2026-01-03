@@ -99,7 +99,7 @@ the output is the class being trained.
 
 **Parameters:**
 
-* **_y_** (npt.NDArray): Receives a ``y``[``N sample``] array with the output classes of the
+* **_y_** (npt.NDArray): Receives a ``y`` (``n_samples``) array with the output classes of the
     ``X`` sample array.
 
 **returns:**
@@ -392,7 +392,7 @@ Ensure X is a numpy array. Convert from list if needed.
 
 #### Parameters
 
-* `x` (`Any`): Array, containing the samples and their characteristics, [`N samples` (rows)][`N features` (columns)].
+* `x` (`Any`): Array, containing the samples and their characteristics. Shape: (``n_samples, n_features``).
 * `name` (`str`, default='X'): Variable name used in error messages.
 
 #### Returns
@@ -415,8 +415,8 @@ Ensure X and y have compatible first dimensions.
 
 #### Parameters
 
-* `x` (`npt.NDArray`): Array, containing the samples and their characteristics, [`N samples` (rows)][`N features` (columns)].
-* `y` (`npt.NDArray`): Array of target classes of `x` with [`N samples` (lines)].
+* `x` (`npt.NDArray`): Array, containing the samples and their characteristics. Shape: (``n_samples, n_features``).
+* `y` (`npt.NDArray`): Array of target classes of `x` with (``n_samples``).
 
 #### Raises
 
@@ -434,7 +434,7 @@ Ensure X has the expected number of features.
 
 #### Parameters
 
-* `x` (`npt.NDArray`): Input array for prediction, containing the samples and their characteristics, [`N samples` (rows)][`N features` (columns)].
+* `x` (`npt.NDArray`): Input array for prediction, containing the samples and their characteristics. Shape: (``n_samples, n_features``).
 * `expected` (`int`): Expected number of features per sample (columns in X).
 
 #### Raises

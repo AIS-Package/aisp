@@ -178,7 +178,7 @@ class AIRS(BaseClassifier):
         self.resource_amplified: float = sanitize_param(
             resource_amplified, 1, lambda x: x > 1
         )
-        self.k: int = sanitize_param(k, 3, lambda x: x > 0)
+        self.k: int = sanitize_param(k, 3, lambda x: x > 00)
         self.max_iters: int = sanitize_param(max_iters, 100, lambda x: x > 0)
         self.seed: Optional[int] = sanitize_seed(seed)
         if self.seed is not None:
@@ -213,9 +213,9 @@ class AIRS(BaseClassifier):
         ----------
         X : npt.NDArray
             Training array, containing the samples and their characteristics,
-            [``N samples`` (rows)][``N features`` (columns)].
+            Shape: (n_samples, n_features).
         y : npt.NDArray
-            Array of target classes of ``X`` with [``N samples`` (lines)].
+            Array of target classes of ``X`` with (``n_samples``).
         verbose : bool
             Feedback on which sample aᵢ the memory cells are being generated.
 
@@ -325,13 +325,12 @@ class AIRS(BaseClassifier):
         Parameters
         ----------
         X : npt.NDArray
-            Array with input samples with [``N samples`` (Lines)] and [``N characteristics``(
-            Columns)]
+            Array with input samples with  Shape: (``n_samples, n_features``)
 
         Returns
         -------
         C : npt.NDArray or None
-            An ndarray of the form ``C`` [``N samples``], containing the predicted classes for
+            An ndarray of the form ``C`` (``n_samples``), containing the predicted classes for
             ``X``. or ``None``: If there are no detectors for the prediction.
         """
         if self._all_class_cell_vectors is None:

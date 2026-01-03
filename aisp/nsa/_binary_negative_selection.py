@@ -90,10 +90,10 @@ class BNSA(BaseClassifier):
         Parameters
         ----------
         X : npt.NDArray
-            Training array, containing the samples and their characteristics, [``N samples`` (
-            rows)][``N features`` (columns)].
+            Training array, containing the samples and their characteristics.
+            Shape: (``n_samples, n_features``)
         y : npt.NDArray
-            Array of target classes of ``X`` with [``N samples`` (lines)].
+            Array of target classes of ``X`` with ``n_samples`` (lines).
         verbose : bool, default=True
             Feedback from detector generation to the user.
 
@@ -170,13 +170,12 @@ class BNSA(BaseClassifier):
         Parameters
         ----------
         X : npt.NDArray
-            Array with input samples with [``N_samples`` (Lines)] and [``N_characteristics``(
-            Columns)]
+            Array with input samples with Shape: (``n_samples, n_features``)
 
         Returns
         -------
         c : Optional[npt.NDArray]
-            an ndarray of the form ``C`` [``N samples``], containing the predicted classes for
+            an ndarray of the form ``C`` (``n_samples``), containing the predicted classes for
             ``X``. Returns``None``: If there are no detectors for the prediction.
         """
         # If there are no detectors, Returns None.

@@ -16,7 +16,7 @@ def slice_index_list_by_class(classes: Optional[Union[npt.NDArray, list]], y: np
     classes: list or npt.NDArray
         list with unique classes.
     y : npt.NDArray
-        Receives a ``y``[``N sample``] array with the output classes of the ``X`` sample array.
+        Receives a ``y`` (``n_samples``) array with the output classes of the ``X`` sample array.
 
     Returns
     -------
