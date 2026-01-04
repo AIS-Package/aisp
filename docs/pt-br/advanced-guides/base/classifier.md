@@ -2,11 +2,11 @@ Classe base para algoritmo de classificação.
 
 # BaseClassifier
 
-Classe base para algoritmos de classificação, definindo os métodos abstratos ``fit`` e ``predict``, e implementando o método ``get_params``.
+Classe base para algoritmos de classificação, definindo os métodos abstratos ``fit`` e ``predict``.
 
-## Funções
+## Métodos
 
-### def score(...)
+### Método `score(...)`
 
 ```python
 def score(self, X: npt.NDArray, y: list) -> float
@@ -19,16 +19,16 @@ Esta função foi adicionada para compatibilidade com algumas funções do sciki
 
 **Parâmetros**:
 
-+ ***X***: np.ndarray - Conjunto de características com formato (n_amostras, n_características).
-+ ***y***: np.ndarray - Valores verdadeiros com formato (n_amostras,).
+* **X** (`npt.NDArray`): Conjunto de características com formato (n_amostras, n_características).
+* **y** (`list`): Valores verdadeiros com formato (n_amostras,).
 
-**Retorna**:
+**Retorna:**
 
-+ precisão: float - A precisão do modelo.
+* precisão (`float`): A precisão do modelo.
 
 ---
 
-### Método _slice_index_list_by_class(...)
+### Método `_slice_index_list_by_class(...)`
 
 A função ``_slice_index_list_by_class(...)``, separa os índices das linhas conforme a classe de saída, para percorrer o array de amostra, apenas nas posições que a saída for a classe que está sendo treinada:
 
@@ -42,7 +42,7 @@ Retorna um dicionário com as classes como chave e os índices em ``X`` das amos
 
 ## Métodos abstratos
 
-### def fit(...)
+### Método `fit(...)`
 
 ```python
 @abstractmethod
@@ -53,11 +53,11 @@ Ajusta o modelo aos dados de treinamento.
 
 Implementação:
 
-+ [RNSA](../../classes/Negative%20Selection/RNSA.md#Método-fit)
-+ [BNSA](../../classes/Negative%20Selection/BNSA.md#Método-fit)
-+ [AIRS](../../classes/Clonal%20Selection%20Algorithms/AIRS.md#Método-fit)
+* [RNSA](../../classes/Negative%20Selection/RNSA.md#método-fit)
+* [BNSA](../../classes/Negative%20Selection/BNSA.md#método-fit)
+* [AIRS](../../classes/Clonal%20Selection%20Algorithms/AIRS.md#método-fit)
 
-### def predict(...)
+### Método `predict(...)`
 
 ```python
 @abstractmethod
@@ -68,6 +68,6 @@ Realiza a previsão dos rótulos para os dados fornecidos.
 
 Implementação:
 
-+ [RNSA](../../classes/Negative%20Selection/RNSA.md#Método-predict)
-+ [BNSA](../../classes/Negative%20Selection/BNSA.md#Método-predict)
-+ [AIRS](../../classes/Clonal%20Selection%20Algorithms/AIRS.md#Método-predict)
+* [RNSA](../../classes/Negative%20Selection/RNSA.md#método-predict)
+* [BNSA](../../classes/Negative%20Selection/BNSA.md#método-predict)
+* [AIRS](../../classes/Clonal%20Selection%20Algorithms/AIRS.md#método-predict)

@@ -4,7 +4,7 @@ Esta classe estende a classe [**Base**](../../advanced-guides/base/classifier.md
 
 ## Construtor AIRS
 
-A classe `AIRS` tem como objetivo realizar classificação utilizando metáforas de seleção e expansão clonal.
+A classe `AIRS` realiza classificação utilizando metáforas de seleção e expansão clonal.
 
 Esta implementação é inspirada no AIRS2, uma versão simplificada do algoritmo AIRS original, introduzindo adaptações para lidar com conjuntos de dados contínuos e binários.
 
@@ -15,21 +15,13 @@ Estudos relacionados de destaque: [2](#ref2).
 **Atributos:**
 
 * **n_resources** (`float`): Quantidade total de recursos disponíveis. O padrão é 10.
-
 * **rate_clonal** (`float`): Número máximo de clones possíveis de uma classe. Esta quantidade é multiplicada por (estímulo da célula * taxa de hipermutação) para definir o número de clones. O padrão é 10.
-
 * **rate_hypermutation** (`int`): Taxa de clones mutados derivada de rate_clonal como um fator escalar. O padrão é 0,75.
-
 * **affinity_threshold_scalar** (`float`): Limiar de afinidade normalizado. O padrão é 0,75.
-
 * **k** (`int`): Número de vizinhos mais próximos (k-NN) que será usado para escolher um rótulo na predição. O padrão é 10.
-
 * **max_iters** (`int`): Número máximo de interações no processo de refinamento do conjunto ARB exposto a aᵢ. O padrão é 100.
-
 * **resource_amplified** (`float`): Amplificador de consumo de recursos, multiplicado com o estímulo para subtrair recursos. O padrão é 1.0 (sem amplificação).
-
-* **metric** (Literal["manhattan", "minkowski", "euclidean"]): Forma de calcular a distância entre o detector e a amostra:
-
+* **metric** (`Literal["manhattan", "minkowski", "euclidean"]`): Forma de calcular a distância entre o detector e a amostra:  
   * `'euclidean'` ➜ O cálculo da distância é dado pela expressão:
     √( (x₁ - x₂)² + (y₁ - y₂)² + ... + (nₙ - nₙ)² ).
   * `'minkowski'` ➜ O cálculo da distância é dado pela expressão:
@@ -39,9 +31,7 @@ Estudos relacionados de destaque: [2](#ref2).
     O padrão é "euclidean".
 
 * **seed** (int): Semente para geração aleatória de valores dos detectores. O padrão é None.
-
-* `**kwargs`:
-
+* `**kwargs`:  
   * **p** (`float`): Este parâmetro armazena o valor de `p` usado na distância de Minkowski.
     O padrão é `2`, que corresponde à distância euclidiana normalizada. Diferentes valores de p resultam em variantes distintas da distância de Minkowski. [Saiba mais](https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.minkowski.html).
 
@@ -55,7 +45,7 @@ Estudos relacionados de destaque: [2](#ref2).
 
 ## Métodos Públicos
 
-### Método fit(...)
+### Método `fit(...)`
 
 A função `fit(...)` gera detectores para os não-pertencentes em relação às amostras:
 
@@ -65,17 +55,19 @@ def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True) -> AIRS:
 
 Realiza o treinamento conforme `X` e `y`, utilizando o método Sistema de Reconhecimento Imune Artificial (`AIRS`).
 
-**Parâmetros de entrada:**
+**Parâmetros:**
 
 * **X**: Array com as características das amostras, com **N** amostras (linhas) e **N** características (colunas), normalizado para valores entre [0, 1].
 * **y**: Array com as classes de saída correspondentes às **N** amostras relacionadas a `X`.
 * **verbose**: Booleano, padrão `True`, determina se o feedback da geração dos detectores será impresso.
 
-*Retorna a instância da classe.*
+**Retorna:**
+
+* `AIRS`: A instância da classe.
 
 ---
 
-### Método predict(...)
+### Método `predict(...)`
 
 A função `predict(...)` realiza a predição de classes utilizando os detectores gerados:
 
@@ -83,9 +75,9 @@ A função `predict(...)` realiza a predição de classes utilizando os detector
 def predict(self, X: npt.NDArray) -> npt.NDArray:
 ```
 
-**Parâmetro de entrada:**
+**Parâmetros:**
 
-* **X**: Array com as características para predição, com **N** amostras (linhas) e **N** colunas.
+* **X** (`npt.NDArray`): Array com as características para predição, com **N** amostras (linhas) e **N** colunas.
 
 **Retorna:**
 
@@ -94,7 +86,7 @@ def predict(self, X: npt.NDArray) -> npt.NDArray:
 
 ---
 
-### Método score(...)
+### Método `score(...)`
 
 A função `score(...)` calcula a acurácia do modelo treinado realizando predições e calculando a precisão.
 
@@ -102,13 +94,15 @@ A função `score(...)` calcula a acurácia do modelo treinado realizando predi�
 def score(self, X: npt.NDArray, y: list) -> float:
 ```
 
+**Retorna:**
+
 Retorna a acurácia como um `float`.
 
 ---
 
 ## Métodos Privados
 
-### Método _refinement_arb(...)
+### Método `_refinement_arb(...)`
 
 A função "_refinement_arb(...)" refina o conjunto ARB até que o valor médio de estímulo ultrapasse o limiar definido (`affinity_threshold_scalar`).
 
@@ -116,16 +110,18 @@ A função "_refinement_arb(...)" refina o conjunto ARB até que o valor médio 
 def _refinement_arb(self, ai: npt.NDArray, c_match: Cell, arb_list: List[_ARB]) -> _ARB:
 ```
 
-Parâmetros:
-
+**Parâmetros:**
+* **ai** (`npt.NDArray`): Antígeno atual
 * **c_match** (`Cell`): Célula com o maior estímulo em relação a aᵢ.
 * **arb_list** (`List[_ARB]`): Conjunto ARB.
 
-Retorna a célula (_ARB) com o maior estímulo ARB.
+**Retorna:**
+
+Retorna a célula (`_ARB`) com o maior estímulo ARB.
 
 ---
 
-### Método _cells_affinity_threshold(...)
+### Método `_cells_affinity_threshold(...)`
 
 A função "_cells_affinity_threshold(...)" calcula o limiar de afinidade com base na afinidade média entre instâncias de treinamento, onde aᵢ e aⱼ são um par de antígenos, e a afinidade é medida pela distância (Euclidiana, Manhattan, Minkowski, Hamming).
 **Seguindo a fórmula:**
@@ -139,13 +135,13 @@ $$
 def _cells_affinity_threshold(self, antigens_list: npt.NDArray):
 ```
 
-Parâmetros:
+**Parâmetros:**
 
 * **antigens_list** (`NDArray`): Lista de antígenos de treinamento.
 
 ---
 
-### Método _affinity(...)
+### Método `_affinity(...)`
 
 A função "_affinity(...)" calcula o estímulo entre dois vetores usando métricas.
 
@@ -154,17 +150,18 @@ A função "_affinity(...)" calcula o estímulo entre dois vetores usando métri
 def _affinity(self, u: npt.NDArray, v: npt.NDArray) -> float:
 ```
 
-Parâmetros:
+**Parâmetros:**
 
 * **u** (`npt.NDArray`): Coordenadas do primeiro ponto.
 * **v** (`npt.NDArray`): Coordenadas do segundo ponto.
 
+**Retorna:**
 
 Retorna a taxa de estímulo entre os vetores.
 
 ---
 
-### Método _init_memory_c(...)
+### Método `_init_memory_c(...)`
 
 A função "_init_memory_c(...)" inicializa células de memória selecionando aleatoriamente `n_antigens_selected` da lista de antígenos de treinamento.
 
@@ -172,7 +169,7 @@ A função "_init_memory_c(...)" inicializa células de memória selecionando al
 def _init_memory_c(self, antigens_list: npt.NDArray) -> List[Cell]:
 ```
 
-Parâmetros:
+**Parâmetros:**
 
 * **antigens_list** (`NDArray`): Lista de antígenos de treinamento.
 
@@ -186,22 +183,24 @@ Parâmetros:
 
 ### Construtor
 
-Parâmetros:
+**Parâmetros:**
 
 * vector (`npt.NDArray`): Vetor de características da célula. Padrão é None.
 
 ---
 
-### Método consume_resource(...)
+### Método `consume_resource(...)`
 
 ```python
 def consume_resource(self, n_resource: float, amplified: float = 1) -> float:
 ```
 
-Parâmetros:
+**Parâmetros:**
 
 * n_resource (`float`) : A quantidade inicial de recursos.
 * amplified (`float`): Amplificador para o consumo de recursos pela célula. É multiplicado pelo estímulo da célula. O padrão é 1.
+
+**Retorna:**
 
 Retorna a quantidade restante de recursos após o consumo.
 

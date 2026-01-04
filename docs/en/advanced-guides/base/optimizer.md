@@ -10,7 +10,7 @@ keeps track of the cost history, evaluated solutions, and the best solution foun
 
 ## Properties
 
-### `cost_history`
+### Property `cost_history`
 
 ```python
 @property
@@ -21,7 +21,7 @@ Returns the history of costs during optimization.
 
 ---
 
-### `solution_history`
+### Property `solution_history`
 
 ```python
 @property
@@ -32,7 +32,7 @@ Returns the history of evaluated solutions.
 
 ---
 
-### `best_solution`
+### Property `best_solution`
 
 ```python
 @property
@@ -43,7 +43,7 @@ Returns the best solution found so far, or `None` if unavailable.
 
 ---
 
-### `best_cost`
+### Property `best_cost`
 
 ```python
 @property
@@ -54,9 +54,9 @@ Returns the cost of the best solution found so far, or `None` if unavailable.
 
 ---
 
-## Functions
+## Methods
 
-### Function _record_best(...)
+### Method `_record_best(...)`
 
 ```python
 def _record_best(self, cost: float, best_solution: Any) -> None
@@ -70,7 +70,7 @@ Record a new cost value and update the best solution if improved.
 
 ---
 
-### Function get_report()
+### Method `get_report()`
 
 ```python
 def get_report(self) -> str
@@ -85,7 +85,7 @@ its associated cost, and the evolution of cost values per iteration.
 
 ---
 
-### Function register(...)
+### Method `register(...)`
 
 ```python
 def register(self, alias: str, function: Callable[..., Any]) -> None
@@ -106,7 +106,7 @@ Register a function dynamically in the optimizer instance.
 
 ---
 
-### Function reset()
+### Method `reset()`
 
 ```python
 def reset(self)
@@ -118,7 +118,7 @@ Reset the object's internal state, clearing history and resetting values.
 
 ### Abstract methods
 
-#### Function optimize(...)
+#### Method `optimize(...)`
 
 ```python
 @abstractmethod
@@ -139,7 +139,7 @@ Execute the optimization process. This method must be implemented by the subclas
 
 ---
 
-#### Function affinity_function(...)
+#### Method `affinity_function(...)`
 
 ```python
 def affinity_function(self, solution: Any) -> float

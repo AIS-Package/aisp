@@ -21,23 +21,23 @@ The constructor initializes the CLONALG instance with key parameters that define
 
 **Attributes:**
 
-* **problem_size**: `int` - The dimension of the problem to be optimized.
-* **N**: `int`, default=50 - The number of memory cells (antibodies) in the population.
-* **rate_clonal**: `float`, default=10 - The maximum number of possible clones of a cell. This value is multiplied by the cell's affinity to determine the number of clones.
-* **rate_hypermutation**: `float`, default=0.75 - The rate of mutated clones, used as a scalar factor.
-* **n_diversity_injection**: `int`, default=5 - The number of new random memory cells injected to maintain diversity.
-* **selection_size**: `int`, default=5 - The number of best antibodies selected for cloning.
-* **affinity_function**: `Optional[Callable[..., npt.NDArray]]`, default=None - The objective function used to evaluate candidate solutions.
-* **feature_type**: `FeatureTypeAll`, default='ranged-features' - The type of problem samples, which can be `'continuous-features'`, `'binary-features'`, `'ranged-features'`, or `'permutation-features'`.
-* **bounds**: `Optional[Dict]`, default=None - A dictionary defining the search limits for `'ranged-features'` problems. Can be a single fixed range or a list of ranges for each dimension.
-* **mode**: `Literal["min", "max"]`, default="min" - Specifies whether the algorithm minimizes or maximizes the cost function.
-* **seed**: `Optional[int]`, default=None - A seed for random number generation.
+* **problem_size** (`int`): The dimension of the problem to be optimized.
+* **N** (`int`, default=50): The number of memory cells (antibodies) in the population.
+* **rate_clonal** (`float`, default=10): The maximum number of possible clones of a cell. This value is multiplied by the cell's affinity to determine the number of clones.
+* **rate_hypermutation** (`float`, default=0.75): The rate of mutated clones, used as a scalar factor.
+* **n_diversity_injection** (`int`, default=5): The number of new random memory cells injected to maintain diversity.
+* **selection_size** (`int`, default=5): The number of best antibodies selected for cloning.
+* **affinity_function** (`Optional[Callable[..., npt.NDArray]]`, default=None): The objective function used to evaluate candidate solutions.
+* **feature_type** (`FeatureTypeAll`, default='ranged-features'): The type of problem samples, which can be `'continuous-features'`, `'binary-features'`, `'ranged-features'`, or `'permutation-features'`.
+* **bounds** (`Optional[Dict]`, default=None): A dictionary defining the search limits for `'ranged-features'` problems. Can be a single fixed range or a list of ranges for each dimension.
+* **mode** (`Literal["min", "max"]`, default="min"): Specifies whether the algorithm minimizes or maximizes the cost function.
+* **seed** (`Optional[int]`, default=None): A seed for random number generation.
 
 ---
 
 ### Public Methods
 
-#### Function `optimize(...)`
+#### Method `optimize(...)`
 
 ```python
 def optimize(
@@ -50,11 +50,11 @@ def optimize(
 
 This method execute the optimization process and return the population.
 
-**Input parameters:**
+**Parameters:**
 
-* **max_iters**: `int`, default=50 - The maximum number of interactions.
-* **n_iter_no_change**: `int`, default=10 - The maximum number of iterations without an improvement in the best solution.
-* **verbose**: `bool`, default=True - A flag to enable or disable detailed output during the optimization process.
+* **max_iters** (`int`, default=50): The maximum number of interactions.
+* **n_iter_no_change** (`int`, default=10): The maximum number of iterations without an improvement in the best solution.
+* **verbose** (`bool`, default=True): A flag to enable or disable detailed output during the optimization process.
 
 **Returns:**
 
@@ -62,7 +62,7 @@ This method execute the optimization process and return the population.
 
 ---
 
-#### Function `affinity_function(...)`
+#### Method `affinity_function(...)`
 
 ```python
 def affinity_function(self, solution: npt.NDArray) -> np.float64:
@@ -70,9 +70,9 @@ def affinity_function(self, solution: npt.NDArray) -> np.float64:
 
 This method evaluates the affinity of a candidate solution. It raises a `NotImplementedError` if no affinity function has been provided to the class instance.
 
-**Input parameters:**
+**Parameters:**
 
-* **solution**: `npt.NDArray` - The candidate solution to be evaluated.
+* **solution** (`npt.NDArray`): The candidate solution to be evaluated.
 
 **Returns:**
 
@@ -82,7 +82,7 @@ This method evaluates the affinity of a candidate solution. It raises a `NotImpl
 
 ### Private Methods
 
-#### Function `_select_top_antibodies(...)`
+#### Method `_select_top_antibodies(...)`
 
 ```python
 def _select_top_antibodies(self, n: int, antibodies: list[Antibody]) -> list[Antibody]:
@@ -90,10 +90,10 @@ def _select_top_antibodies(self, n: int, antibodies: list[Antibody]) -> list[Ant
 
 This method selects the top `n` antibodies based on their affinity scores, according to the `mode` (`'min'` or `'max'`).
 
-**Input parameters:**
+**Parameters:**
 
-* **n**: `int` - The number of antibodies to select.
-* **antibodies**: `list[tuple]` - A list of tuples, where each tuple represents an antibody and its associated score.
+* **n** (`int`): The number of antibodies to select.
+* **antibodies** (`list[tuple]`): A list of tuples, where each tuple represents an antibody and its associated score.
 
 **Returns:**
 
@@ -101,7 +101,7 @@ This method selects the top `n` antibodies based on their affinity scores, accor
 
 ---
 
-#### Function `_init_population_antibodies(...)`
+#### Method `_init_population_antibodies(...)`
 
 ```python
 def _init_population_antibodies(self) -> npt.NDArray:
@@ -115,7 +115,7 @@ This method initializes the initial population of antibodies randomly.
 
 ---
 
-#### Function `_diversity_introduction(...)`
+#### Method `_diversity_introduction(...)`
 
 ```python
 def _diversity_introduction(self):
@@ -129,7 +129,7 @@ This method introduces new random antibodies into the population to maintain gen
 
 ---
 
-#### Function `_clone_and_mutate(...)`
+#### Method `_clone_and_mutate(...)`
 
 ```python
 def _clone_and_mutate(self, antibody: npt.NDArray, n_clone: int, rate_hypermutation: float) -> npt.NDArray:
@@ -137,11 +137,11 @@ def _clone_and_mutate(self, antibody: npt.NDArray, n_clone: int, rate_hypermutat
 
 This method generates mutated clones from a single antibody. The mutation strategy depends on the `feature_type` specified during initialization (`'binary-features'`, `'continuous-features'`, `'ranged-features'`, or `'permutation-features'`).
 
-**Input parameters:**
+**Parameters:**
 
-* **antibody**: `npt.NDArray` - The original antibody vector to be cloned and mutated.
-* **n_clone**: `int` - The number of clones to generate.
-* **rate_hypermutation**: `float` - The hypermutation rate.
+* **antibody** (`npt.NDArray`): The original antibody vector to be cloned and mutated.
+* **n_clone** (`int`): The number of clones to generate.
+* **rate_hypermutation** (`float`): The hypermutation rate.
 
 **Returns:**
 
@@ -149,7 +149,7 @@ This method generates mutated clones from a single antibody. The mutation strate
 
 ---
 
-#### Function `_clone_and_hypermutation(...)`
+#### Method `_clone_and_hypermutation(...)`
 
 ```python
 def _clone_and_hypermutation(
@@ -160,9 +160,9 @@ def _clone_and_hypermutation(
 
 This method clones and hypermutates a population of antibodies. It returns a list of all clones and their affinities with respect to the cost function.
 
-**Input parameters:**
+**Parameters:**
 
-* **population**: `list[tuple]` - The list of antibodies to be evaluated and cloned.
+* **population** (`list[tuple]`): The list of antibodies to be evaluated and cloned.
 
 **Returns:**
 

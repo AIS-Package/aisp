@@ -4,7 +4,7 @@ Base class for classification algorithm.
 
 Base class for classification algorithms, defining the abstract methods ``fit`` and ``predict``, and implementing the ``get_params`` method.
 
-### Function score(...)
+### Method `score(...)`
 
 ```python
 def score(self, X: npt.NDArray, y: list) -> float
@@ -15,20 +15,20 @@ Score function calculates forecast accuracy.
 This function performs the prediction of X and checks how many elements are equal between vector y and y_predicted.
 This function was added for compatibility with some scikit-learn functions.
 
-**Parameters**:
+**Parameters:**
 
-+ ***X***: ``np.ndarray`` - Feature set with shape (n_samples, n_features).
-+ ***y***: ``np.ndarray`` - True values with shape (n_samples,).
+* **X** (`npt.NDArray`): Feature set with shape (n_samples, n_features).
+* **y** (`list`): True values with shape (n_samples,).
 
 **Returns**:
 
-+ accuracy: ``float`` The accuracy of the model.
+* accuracy: ``float`` The accuracy of the model.
 
 ---
 
-### Function _slice_index_list_by_class(...)
+### Method `_slice_index_list_by_class(...)`
 
-The function ``_slice_index_list_by_class(...)``, separates the indices of the lines according to the output class, to go through the sample array, only in the positions that the output is the class that is being trained:
+The function ``_slice_index_list_by_class(...)```, separates the indices of the lines according to the output class, to go through the sample array, only in the positions that the output is the class that is being trained:
 
 ```python
 def _slice_index_list_by_class(self, y: npt.NDArray) -> dict:
@@ -40,7 +40,7 @@ Returns a dictionary with the classes as key and the indices in ``X`` of the sam
 
 ## Abstract methods
 
-### Function fit(...)
+### Method `fit(...)`
 
 ```python
 @abstractmethod
@@ -51,11 +51,11 @@ Fit the model to the training data.
 
 Implementation:
 
-+ [RNSA](../../classes/Negative%20Selection/RNSA.md#function-fit)
-+ [BNSA](../../classes/Negative%20Selection/BNSA.md#function-fit)
-+ [AIRS](../../classes/Clonal%20Selection%20Algorithms/AIRS.md#function-fit)
+* [RNSA](../../classes/Negative%20Selection/RNSA.md#method-fit)
+* [BNSA](../../classes/Negative%20Selection/BNSA.md#method-fit)
+* [AIRS](../../classes/Clonal%20Selection%20Algorithms/AIRS.md#method-fit)
 
-### Function predict(...)
+### Method `predict(...)`
 
 ```python
 @abstractmethod
@@ -66,6 +66,6 @@ Performs label prediction for the given data.
 
 Implementation:
 
-+ [RNSA](../../classes/Negative%20Selection/RNSA.md#function-predict)
-+ [BNSA](../../classes/Negative%20Selection/BNSA.md#function-predict)
-+ [AIRS](../../classes/Clonal%20Selection%20Algorithms/AIRS.md#function-predict)
+* [RNSA](../../classes/Negative%20Selection/RNSA.md#method-predict)
+* [BNSA](../../classes/Negative%20Selection/BNSA.md#method-predict)
+* [AIRS](../../classes/Clonal%20Selection%20Algorithms/AIRS.md#method-predict)

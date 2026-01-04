@@ -62,7 +62,7 @@ class BNSA(BaseClassifier):
     ):
         self.N: int = sanitize_param(N, 100, lambda x: x > 0)
         self.aff_thresh: float = sanitize_param(aff_thresh, 0.1, lambda x: 0 < x < 1)
-        self.max_discards: float = sanitize_param(max_discards, 1000, lambda x: x > 0)
+        self.max_discards: int = sanitize_param(max_discards, 1000, lambda x: x > 0)
 
         self.seed: Optional[int] = sanitize_seed(seed)
 
@@ -90,10 +90,10 @@ class BNSA(BaseClassifier):
         Parameters
         ----------
         X : npt.NDArray
-            Training array, containing the samples and their characteristics, [``N samples`` (
-            rows)][``N features`` (columns)].
+            Training array, containing the samples and their characteristics.
+            Shape: (``n_samples, n_features``)
         y : npt.NDArray
-            Array of target classes of ``X`` with [``N samples`` (lines)].
+            Array of target classes of ``X`` with ``n_samples`` (lines).
         verbose : bool, default=True
             Feedback from detector generation to the user.
 
@@ -109,7 +109,7 @@ class BNSA(BaseClassifier):
 
         # Converts the entire array X to boolean
         X = X.astype(np.bool_)
-
+        self._n_features = X.shape[1]
         # Identifying the possible classes within the output array `y`.
         self.classes = np.unique(y)
         # Dictionary that will store detectors with classes as keys.
@@ -136,7 +136,7 @@ class BNSA(BaseClassifier):
             x_class = X[sample_index[_class_]]
             while len(valid_detectors_set) < self.N:
                 # Generates a candidate detector vector randomly with values 0 and 1.
-                vector_x = np.random.randint(0, 2, size=(X.shape[1],)).astype(np.bool_)
+                vector_x = np.random.randint(0, 2, size=(self._n_features,)).astype(np.bool_)
                 # If the detector is valid, add it to the list of valid detectors.
                 if check_detector_bnsa_validity(x_class, vector_x, self.aff_thresh):
                     discard_count = 0
@@ -161,6 +161,7 @@ class BNSA(BaseClassifier):
         self._detectors_stack = np.array(
             [np.stack(self._detectors[class_name]) for class_name in self.classes]
         )
+
         return self
 
     def predict(self, X: npt.NDArray) -> Optional[npt.NDArray]:
@@ -169,13 +170,12 @@ class BNSA(BaseClassifier):
         Parameters
         ----------
         X : npt.NDArray
-            Array with input samples with [``N_samples`` (Lines)] and [``N_characteristics``(
-            Columns)]
+            Array with input samples with Shape: (``n_samples, n_features``)
 
         Returns
         -------
         c : Optional[npt.NDArray]
-            an ndarray of the form ``C`` [``N samples``], containing the predicted classes for
+            an ndarray of the form ``C`` (``n_samples``), containing the predicted classes for
             ``X``. Returns``None``: If there are no detectors for the prediction.
         """
         # If there are no detectors, Returns None.
@@ -186,7 +186,7 @@ class BNSA(BaseClassifier):
         ):
             return None
         X = check_array_type(X)
-        check_feature_dimension(X, len(self._detectors[self.classes[0]][0]))
+        check_feature_dimension(X, self._n_features)
         check_binary_array(X)
 
         # Converts the entire array X to boolean.
@@ -238,7 +238,7 @@ class BNSA(BaseClassifier):
 
         class_differences: dict = {}
         for _class_ in self.classes:
-            distances = np.sum(line != self._detectors[_class_]) / self.N
+            distances = np.mean(line != self._detectors[_class_], axis=1)
             # Assign the label to the class with the greatest distance from
             # the nearest detector.
             if self.no_label_sample_selection == "nearest_difference":

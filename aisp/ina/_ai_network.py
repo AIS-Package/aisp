@@ -147,8 +147,6 @@ class AiNet(BaseClusterer):
         self.metric: str = sanitize_choice(
             metric, ["euclidean", "manhattan", "minkowski"], "euclidean"
         )
-        if self._feature_type == "binary-features":
-            self.metric = "hamming"
 
         self.p: np.float64 = np.float64(kwargs.get("p", 2.0))
         self._metric_params = {}
@@ -202,18 +200,7 @@ class AiNet(BaseClusterer):
         self : AiNet
             Returns the instance of the class that implements this method.
         """
-        self._feature_type = detect_vector_data_type(X)
-
-        check_array_type(X)
-
-        match self._feature_type:
-            case "binary-features":
-                X = X.astype(np.bool_)
-                self.metric = "hamming"
-            case "ranged-features":
-                self._bounds = np.vstack([np.min(X, axis=0), np.max(X, axis=0)])
-
-        self._n_features = X.shape[1]
+        X = self._prepare_features(X)
 
         progress = tqdm(
             total=self.max_iterations,
@@ -578,3 +565,41 @@ class AiNet(BaseClusterer):
             for class_name in self.classes
             for cell in self._memory_network[class_name]
         ]
+
+    def _prepare_features(self, X: npt.NDArray) -> npt.NDArray:
+        """
+        Check the samples, specifying the type, quantity of characteristics, and other parameters.
+
+        * This method updates the following attributes:
+            * ``self._feature_type``
+            * ``self.metric`` (only for binary features)
+            * ``self._bounds`` (only for ranged features)
+            * ``self._n_features``
+
+        Parameters
+        ----------
+        X : npt.NDArray
+            Training array, containing the samples and their characteristics,
+            Shape: (n_samples, n_features).
+
+        Returns
+        -------
+        X : npt.NDArray
+            The processed input data.
+        """
+        self._feature_type = detect_vector_data_type(X)
+
+        X = check_array_type(X)
+
+        match self._feature_type:
+            case "binary-features":
+                X = X.astype(np.bool_)
+                self.metric = "hamming"
+            case "ranged-features":
+                self._bounds = np.vstack(
+                    [np.min(X, axis=0), np.max(X, axis=0)]
+                )
+
+        self._n_features = X.shape[1]
+
+        return X

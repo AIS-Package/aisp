@@ -12,23 +12,14 @@ Para clustering, pode opcionalmente utilizar uma **Árvore Geradora Mínima (MST
 **Atributos:**
 
 * **N** (`int`): Número de células de memória (anticorpos) na população. Padrão: 50.
-
 * **n_clone** (`int`): Número de clones gerados por célula de memória selecionada. Padrão: 10.
-
 * **top_clonal_memory_size** (`Optional[int]`): Número de anticorpos de maior afinidade selecionados para clonagem. Padrão: 5.
-
 * **n_diversity_injection** (`int`): Número de novos anticorpos aleatórios injetados para manter a diversidade. Padrão: 5.
-
 * **affinity_threshold** (`float`): Limite para seleção/supressão de células. Padrão: 0.5.
-
-* **suppression_threshold** (`float`): Limite para remoção de células de memória semelhantes. Padrão: 0.5.
-
+* **suppression_threshold** (`float`): Limite para remoção de células de memória semelhantes. Padrão: 0.5
 * **mst_inconsistency_factor** (`float`): Fator para determinar arestas inconsistentes na MST. Padrão: 2.0.
-
 * **max_iterations** (`int`): Número máximo de iterações de treinamento. Padrão: 10.
-
 * **k** (`int`): Número de vizinhos mais próximos usados para predição de rótulos. Padrão: 3.
-
 * **metric** (Literal["manhattan", "minkowski", "euclidean"]): Forma de calcular a distância entre o detector e a amostra:
 
   * `'euclidean'` ➜ Distância dada pela expressão:
@@ -40,9 +31,7 @@ Para clustering, pode opcionalmente utilizar uma **Árvore Geradora Mínima (MST
     Padrão: "euclidean".
 
 * **seed** (`Optional[int]`): Semente para geração de números aleatórios. Padrão: None.
-
 * **use_mst_clustering** (`bool`): Define se o clustering baseado em MST deve ser utilizado. Padrão: True.
-
 * **kwargs**:
 
   * **p** (`float`): Parâmetro para distância de Minkowski. Padrão: 2.
@@ -60,7 +49,7 @@ Para clustering, pode opcionalmente utilizar uma **Árvore Geradora Mínima (MST
 
 ## Métodos Públicos
 
-### Função fit(...)
+### Método `fit(...)`
 
 Treina o modelo AiNet com os dados de entrada:
 
@@ -68,7 +57,7 @@ Treina o modelo AiNet com os dados de entrada:
 def fit(self, X: npt.NDArray, verbose: bool = True) -> AiNet:
 ```
 
-**Parâmetros de entrada:**
+**Parâmetros:**
 
 * **X**: Matriz com amostras (linhas) e atributos (colunas).
 * **verbose**: Booleano, padrão True, habilita feedback de progresso.
@@ -77,7 +66,7 @@ def fit(self, X: npt.NDArray, verbose: bool = True) -> AiNet:
 
 ---
 
-### Função predict(...)
+### Método `predict(...)`
 
 Prediz os rótulos dos clusters para novas amostras:
 
@@ -85,7 +74,7 @@ Prediz os rótulos dos clusters para novas amostras:
 def predict(self, X) -> Optional[npt.NDArray]:
 ```
 
-**Parâmetros de entrada:**
+**Parâmetros:**
 
 * **X**: Matriz de atributos de entrada.
 
@@ -95,7 +84,7 @@ def predict(self, X) -> Optional[npt.NDArray]:
 
 ---
 
-### Função update_clusters(...)
+### Método `update_clusters(...)`
 
 Particiona os clusters utilizando a MST:
 
@@ -103,7 +92,7 @@ Particiona os clusters utilizando a MST:
 def update_clusters(self, mst_inconsistency_factor: Optional[float] = None):
 ```
 
-**Parâmetros de entrada:**
+**Parâmetros:**
 
 * **mst_inconsistency_factor**: Valor opcional (float) para sobrescrever o fator de inconsistência da MST.
 
@@ -116,7 +105,7 @@ def update_clusters(self, mst_inconsistency_factor: Optional[float] = None):
 
 ## Métodos Privados
 
-### Função _init_population_antibodies(...)
+### Método `_init_population_antibodies(...)`
 
 Inicializa a população de anticorpos aleatoriamente.
 
@@ -124,13 +113,11 @@ Inicializa a população de anticorpos aleatoriamente.
 def _init_population_antibodies(self) -> npt.NDArray:
 ```
 
-**Parâmetros de entrada:** Nenhum
-
 **Retorna:** Anticorpos inicializados (`npt.NDArray`).
 
 ---
 
-### Função _select_and_clone_population(...)
+### Método` _select_and_clone_population(...)`
 
 Seleciona os melhores anticorpos e gera clones mutados:
 
@@ -138,7 +125,7 @@ Seleciona os melhores anticorpos e gera clones mutados:
 def _select_and_clone_population(self, antigen: npt.NDArray, population: npt.NDArray) -> list:
 ```
 
-**Parâmetros de entrada:**
+**Parâmetros:**
 
 * **antigen**: Vetor representando o antígeno para o qual as afinidades serão calculadas.
 * **population**: Matriz de anticorpos a serem avaliados e clonados.
@@ -147,7 +134,7 @@ def _select_and_clone_population(self, antigen: npt.NDArray, population: npt.NDA
 
 ---
 
-### Função _clonal_suppression(...)
+### Método `_clonal_suppression(...)`
 
 Suprime clones redundantes com base em limiares:
 
@@ -155,7 +142,7 @@ Suprime clones redundantes com base em limiares:
 def _clonal_suppression(self, antigen: npt.NDArray, clones: list):
 ```
 
-**Parâmetros de entrada:**
+**Parâmetros:**
 
 * **antigen**: Vetor representando o antígeno.
 * **clones**: Lista de clones candidatos a serem suprimidos.
@@ -164,7 +151,7 @@ def _clonal_suppression(self, antigen: npt.NDArray, clones: list):
 
 ---
 
-### Função _memory_suppression(...)
+### Método `_memory_suppression(...)`
 
 Remove anticorpos redundantes da memória:
 
@@ -172,15 +159,17 @@ Remove anticorpos redundantes da memória:
 def _memory_suppression(self, pool_memory: list) -> list:
 ```
 
-**Parâmetros de entrada:**
+**Parâmetros:**
 
-* **pool_memory**: Lista de anticorpos atualmente na memória.
+* **pool_memory** (`list`): Lista de anticorpos atualmente na memória.
 
-**Retorna:** Memória filtrada (`list`).
+**Retorna:**
+
+Memória filtrada (`list`).
 
 ---
 
-### Função _diversity_introduction(...)
+### Método `_diversity_introduction(...)`
 
 Introduce novos anticorpos aleatórios:
 
@@ -188,13 +177,11 @@ Introduce novos anticorpos aleatórios:
 def _diversity_introduction(self) -> npt.NDArray:
 ```
 
-**Parâmetros de entrada:** Nenhum
-
 **Retorna:** Conjunto de novos anticorpos (`npt.NDArray`).
 
 ---
 
-### Função _affinity(...)
+### Método `_affinity(...)`
 
 Calcula o estímulo entre dois vetores:
 
@@ -202,7 +189,7 @@ Calcula o estímulo entre dois vetores:
 def _affinity(self, u: npt.NDArray, v: npt.NDArray) -> float:
 ```
 
-**Parâmetros de entrada:**
+**Parâmetros:**
 
 * **u**: Vetor representando o primeiro ponto.
 * **v**: Vetor representando o segundo ponto.
@@ -211,7 +198,7 @@ def _affinity(self, u: npt.NDArray, v: npt.NDArray) -> float:
 
 ---
 
-### Função _calculate_affinities(...)
+### Método `_calculate_affinities(...)`
 
 Calcula a matriz de afinidades entre um vetor de referência e vetores-alvo:
 
@@ -219,7 +206,7 @@ Calcula a matriz de afinidades entre um vetor de referência e vetores-alvo:
 def _calculate_affinities(self, u: npt.NDArray, v: npt.NDArray) -> npt.NDArray:
 ```
 
-**Parâmetros de entrada:**
+**Parâmetros:**
 
 * **u**: Vetor de referência (`npt.NDArray`) de formato `(n_features,)`.
 * **v**: Vetores-alvo (`npt.NDArray`) de formato `(n_samples, n_features)`.
@@ -228,7 +215,7 @@ def _calculate_affinities(self, u: npt.NDArray, v: npt.NDArray) -> npt.NDArray:
 
 ---
 
-### Função _clone_and_mutate(...)
+### Método `_clone_and_mutate(...)`
 
 Gera clones mutados:
 
@@ -236,7 +223,7 @@ Gera clones mutados:
 def _clone_and_mutate(self, antibody: npt.NDArray, n_clone: int) -> npt.NDArray:
 ```
 
-**Parâmetros de entrada:**
+**Parâmetros:**
 
 * **antibody**: Vetor de anticorpo original a ser clonado e mutado.
 * **n_clone**: Número de clones a serem gerados.
@@ -245,15 +232,13 @@ def _clone_and_mutate(self, antibody: npt.NDArray, n_clone: int) -> npt.NDArray:
 
 ---
 
-### Função _build_mst(...)
+### Método `_build_mst(...)`
 
 Constrói a MST e armazena estatísticas:
 
 ```python
 def _build_mst(self):
 ```
-
-**Parâmetros de entrada:** Nenhum
 
 **Exceções:** ValueError se a população de anticorpos estiver vazia.
 

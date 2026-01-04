@@ -136,10 +136,10 @@ class RNSA(BaseClassifier):
         Parameters
         ----------
         X : npt.NDArray
-            Training array, containing the samples and their characteristics, [``N samples`` (
-            rows)][``N features`` (columns)].
+            Training array, containing the samples and their characteristics.
+            Shape: ``(n_samples, n_features)``
         y : npt.NDArray
-            Array of target classes of ``X`` with [``N samples`` (lines)].
+            Array of target classes of ``X`` with ``n_samples`` (lines).
         verbose: bool, default=True
             Feedback from detector generation to the user.
 
@@ -159,6 +159,7 @@ class RNSA(BaseClassifier):
         X = check_array_type(X)
         y = check_array_type(y, "y")
         check_shape_match(X, y)
+        self._n_features = X.shape[1]
 
         # Identifying the possible classes within the output array `y`.
         self.classes = np.unique(y)
@@ -184,7 +185,7 @@ class RNSA(BaseClassifier):
             )
             while len(valid_detectors_set) < self.N:
                 # Generates a candidate detector vector randomly with values between 0 and 1.
-                vector_x = np.random.random_sample(size=(X.shape[1],))
+                vector_x = np.random.random_sample(size=(self._n_features,))
                 # Checks the validity of the detector for non-self with respect to the class samples
                 valid_detector = self.__checks_valid_detector(x_class, vector_x)
 
@@ -222,8 +223,7 @@ class RNSA(BaseClassifier):
         Parameters
         ----------
         X : npt.NDArray
-            Array with input samples with [``N_samples`` (Lines)] and [``N_characteristics``
-            (Columns)]
+            Array with input samples with Shape: (n_samples, n_features)
 
         Raises
         ------
@@ -235,14 +235,14 @@ class RNSA(BaseClassifier):
         Returns
         -------
         C : npt.NDArray or None
-            a ndarray of the form ``C`` [``N samples``], containing the predicted classes
+            a ndarray of the form ``C`` (n_samples), containing the predicted classes
             for ``X``. Returns `None` if no detectors are available for prediction.
         """
         # If there are no detectors, Returns None.
         if self._detectors is None or self.classes is None:
             return None
         X = check_array_type(X)
-        check_feature_dimension(X, len(self._detectors[self.classes[0]][0].position))
+        check_feature_dimension(X, self._n_features)
 
         # Initializes an empty array that will store the predictions.
         c = []

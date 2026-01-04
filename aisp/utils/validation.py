@@ -52,7 +52,7 @@ def check_array_type(x, name: str = "X") -> npt.NDArray:
     ----------
     x : Any
         Array, containing the samples and their characteristics,
-        [``N samples`` (rows)][``N features`` (columns)].
+        Shape: (n_samples, n_features).
     name : str, default='X'
         Variable name used in error messages.
 
@@ -80,9 +80,9 @@ def check_shape_match(x: npt.NDArray, y: npt.NDArray):
     ----------
     x : npt.NDArray
         Array, containing the samples and their characteristics,
-        [``N samples`` (rows)][``N features`` (columns)].
+        Shape: (n_samples, n_features).
     y : npt.NDArray
-        Array of target classes of ``x`` with [``N samples`` (lines)].
+        Array of target classes of ``x`` with (``n_samples``).
 
     Raises
     ------
@@ -100,7 +100,7 @@ def check_feature_dimension(x: npt.NDArray, expected: int):
     ----------
     x : npt.NDArray
         Input array for prediction, containing the samples and their characteristics,
-        [``N samples`` (rows)][``N features`` (columns)].
+        Shape: (n_samples, n_features).
     expected : int, default=0
         Expected number of features per sample (columns in X).
 
@@ -109,7 +109,7 @@ def check_feature_dimension(x: npt.NDArray, expected: int):
     FeatureDimensionMismatch
         If the number of features in X does not match the expected number.
     """
-    if expected != len(x[0]):
+    if expected <= 0 or expected != len(x[0]):
         raise FeatureDimensionMismatch(expected, len(x[0]), "X")
 
 

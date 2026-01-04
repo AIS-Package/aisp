@@ -9,10 +9,10 @@ The ``RNSA`` class has the purpose of classifying and identifying anomalies thro
 
 **Attributes:**
 
-* *N* (``int``): Number of detectors. Defaults to ``100``.
-* *r* (``float``): Radius of the detector. Defaults to ``0.05``.
-* *k* (``int``): Number of neighbors near the randomly generated detectors to perform the distance average calculation. Defaults to ``1``.
-* *metric* (``str``): Way to calculate the distance between the detector and the sample:
+* **N** (``int``): Number of detectors. Defaults to ``100``.
+* **r** (``float``): Radius of the detector. Defaults to ``0.05``.
+* **k** (``int``): Number of neighbors near the randomly generated detectors to perform the distance average calculation. Defaults to ``1``.
+* **metric** (``str``): Way to calculate the distance between the detector and the sample:
 
   * ``'Euclidean'`` ➜ The calculation of the distance is given by the expression: √( (X₁ - X₂)² + (Y₁ - Y₂)² + ... + (Yn - Yn)²).
 
@@ -21,17 +21,17 @@ The ``RNSA`` class has the purpose of classifying and identifying anomalies thro
 
     Defaults to ``'euclidean'``.
 
-* *max_discards* (``int``): This parameter indicates the maximum number of consecutive detector discards, aimed at preventing a possible infinite loop in case a radius is defined that cannot generate non-self detectors.
-* *seed* (``int``): Seed for the random generation of values in the detectors. Defaults to ``None``.
+* **max_discards** (``int``): This parameter indicates the maximum number of consecutive detector discards, aimed at preventing a possible infinite loop in case a radius is defined that cannot generate non-self detectors.
+* **seed** (``int``): Seed for the random generation of values in the detectors. Defaults to ``None``.
 
-* *algorithm* (``str``), Set the algorithm version:
+* **algorithm** (``str``), Set the algorithm version:
 
   * ``'default-NSA'``: Default algorithm with fixed radius.
   * ``'V-detector'``: This algorithm is based on the article "[Real-Valued Negative Selection Algorithm with Variable-Sized Detectors](https://doi.org/10.1007/978-3-540-24854-5_30)", by Ji, Z., Dasgupta, D. (2004), and uses a variable radius for anomaly detection in feature spaces.
 
     Defaults to ``'default-NSA'``.
 
-* *r_s* (``float``): rₛ Radius of the ``X`` own samples.
+* **r_s** (``float``): rₛ Radius of the ``X`` own samples.
 * ``**kwargs``:
   * *non_self_label* (``str``): This variable stores the label that will be assigned when the data has only one
     output class, and the sample is classified as not belonging to that class. Defaults to ``'non-self'``.
@@ -41,29 +41,28 @@ The ``RNSA`` class has the purpose of classifying and identifying anomalies thro
 
 **Other variables initiated:**
 
-* *detectors* (``dict``): This variable stores a list of detectors by class.
-
-* *classes* (``npt.NDArray``): list of output classes.
+* **detectors** (``dict``): This variable stores a list of detectors by class.
+* **classes** (``npt.NDArray``): list of output classes.
 
 ---
 
-### Function fit(...)
+### Method fit(...)
 
 The ``fit(...)`` function generates the detectors for non-fits with respect to the samples:
 
 ```python
-def fit(self, X: npt.NDArray, y: npt.NDArray):
+def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True):
 ```
 
 In it, training is performed according to ``X`` and ``y``, using the negative selection method(``NegativeSelect``).
 
 The input parameters are:
 
-* ``X``: array with the characteristics of the samples with **N** samples (rows) and **N** characteristics (columns).
+* **X** (`npt.NDArray`): array with the characteristics of the samples with **N** samples (rows) and **N** characteristics (columns).
 
-* ``y``: array with the output classes arranged in **N** samples that are related to ``X``.
+* **y** (`npt.NDArray`): array with the output classes arranged in **N** samples that are related to ``X``.
 
-* ``verbose``: boolean with default value ``True``, determines if the feedback from the detector generation will be printed.
+* **verbose** (`bool`): boolean with default value ``True``, determines if the feedback from the detector generation will be printed.
 
 **Raises**
 
@@ -72,13 +71,12 @@ The input parameters are:
   maturation. Check the defined radius value and consider reducing it.
 
 **Returns**
-----------
 
  the instance of the class.
 
 ---
 
-### Function predict(...)
+### Method predict(...)
 
 The ``predict(...)`` function performs class prediction using the generated detectors:
 
@@ -88,7 +86,7 @@ def predict(self, X: npt.NDArray) -> npt.NDArray:
 
 **The input parameter is:**
 
-* ``X``: array with the characteristics for the prediction, with **N** samples (Rows) and **N** columns.
+* **X** (`npt.NDArray`): array with the characteristics for the prediction, with **N** samples (Rows) and **N** columns.
 
 **Raises:**
 
@@ -102,7 +100,7 @@ def predict(self, X: npt.NDArray) -> npt.NDArray:
 
 ---
 
-### Function score(...)
+### Method score(...)
 
 The function ``score(...)`` calculates the accuracy of the trained model by making predictions and computing accuracy.
 
@@ -118,7 +116,7 @@ It returns the accuracy as a float type.
 
 ---
 
-### Function __checks_valid_detector(...)
+### Method __checks_valid_detector(...)
 
 The ``def __checks_valid_detector(...)`` function checks if the detector has a valid ``r`` radius for the non-self of the class:
 
@@ -128,7 +126,7 @@ def __checks_valid_detector(self, X: npt.NDArray, vector_x: npt.NDArray, samples
 
 **The input parameters are:**
 
-* ``X``: array with sample characteristics with **N** samples (rows) and **N** characteristics (columns), normalized to values between [0, 1].
+* **X** (`npt.NDArray`): array with sample characteristics with **N** samples (rows) and **N** characteristics (columns), normalized to values between [0, 1].
 
 * ``vector_x``: Randomly generated candidate detector.
 
@@ -138,7 +136,7 @@ def __checks_valid_detector(self, X: npt.NDArray, vector_x: npt.NDArray, samples
 
 ---
 
-### Function __compare_KnearestNeighbors_List(...)
+### Method __compare_KnearestNeighbors_List(...)
 
 The ``def __compare_KnearestNeighbors_List(...)`` function compares the distance of the k-nearest neighbors, so if the distance of the new sample is smaller, replaces ``k-1`` and sorts in ascending order:
 
@@ -150,7 +148,7 @@ Returns a list of k-nearest neighbor distances.
 
 ---
 
-### Function __compare_sample_to_detectors(...)
+### Method __compare_sample_to_detectors(...)
 
 Function to compare a sample with the detectors, verifying if the sample is proper.
 In this function, when there is class ambiguity, it returns the class that has the greatest average distance between the detectors.
@@ -167,7 +165,7 @@ def __compare_sample_to_detectors(self, line):
 
 ---
 
-### Function __detector_is_valid_to_Vdetector(...)
+### Method __detector_is_valid_to_Vdetector(...)
 
 Check if the distance between the detector and the samples, minus the radius of the samples, is greater than the minimum radius.
 
@@ -187,7 +185,7 @@ def __detector_is_valid_to_Vdetector(self, distance, vector_x):
 
 ---
 
-### Function __distance(...)
+### Method __distance(...)
 
 The function ``def __distance(...)`` calculates the distance between two points using the technique defined in ``metric``, which are: ``'euclidean', 'norm_euclidean', or 'manhattan'``
 
