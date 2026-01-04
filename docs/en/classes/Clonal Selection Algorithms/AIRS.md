@@ -47,7 +47,7 @@ Related and noteworthy works: access here [2](#ref2).
 
 ## Public Methods
 
-### Function fit(...)
+### Method `fit(...)`
 
 The ``fit(...)`` function generates detectors for the non-owners relative to the samples:
 
@@ -57,7 +57,7 @@ def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True) -> AIRS:
 
 It performs the training according to ``X`` and ``y``, using the method Artificial Immune Recognition System (``AIRS``).
 
-**Input parameters:**
+****Parameters:****
 
 * **X**: Array with sample features, with **N** samples (rows) and **N** features (columns), normalized to values between [0, 1].
 * **y**: Array with output classes corresponding to **N** samples related to ``X``.
@@ -67,7 +67,7 @@ It performs the training according to ``X`` and ``y``, using the method Artifici
 
 ---
 
-### Function predict(...)
+### Method `predict(...)`
 
 The ``predict(...)`` function performs class prediction using the generated detectors:
 
@@ -75,7 +75,7 @@ The ``predict(...)`` function performs class prediction using the generated dete
 def predict(self, X: npt.NDArray) -> Optional[npt.NDArray]:
 ```
 
-**Input parameter:**
+**Parameters:**
 
 * **X**: Array with the features for prediction, with **N** samples (rows) and **N** columns.
 
@@ -86,7 +86,7 @@ def predict(self, X: npt.NDArray) -> Optional[npt.NDArray]:
 
 ---
 
-### Function score(...)
+### Method `score(...)`
 
 The ``score(...)`` function calculates the accuracy of the trained model by making predictions and calculating the accuracy.
 
@@ -100,7 +100,7 @@ Returns accuracy as a ``float``.
 
 ## Private Methods
 
-### Function _refinement_arb(...)
+### Method `_refinement_arb(...)`
 
 The function "_refinement_arb(...)" refines the ARB set until the average stimulation value exceeds the defined threshold (``affinity_threshold_scalar``).
 
@@ -108,7 +108,7 @@ The function "_refinement_arb(...)" refines the ARB set until the average stimul
 def _refinement_arb(self, ai: npt.NDArray, c_match: Cell, arb_list: List[_ARB]) -> _ARB:
 ```
 
-Parameters:
+**Parameters:**
 
 * **c_match** (``Cell``): Cell with the highest stimulation relative to aᵢ.
 * **arb_list** (``List[_ARB]``): ARB set.
@@ -117,7 +117,7 @@ Returns the cell (_ARB) with the highest ARB stimulation.
 
 ---
 
-### Function _cells_affinity_threshold(...)
+### Method `_cells_affinity_threshold(...)`
 
 The function "_cells_affinity_threshold(...)" calculates the affinity threshold based on the average affinity between training instances, where aᵢ and aⱼ are a pair of antigens, and affinity is measured by distance (Euclidean, Manhattan, Minkowski, Hamming).  
 **Following the formula:**
@@ -127,7 +127,7 @@ $$
 \sum_{i=1}^{n-1} \sum_{j=i+1}^{n} \text{affinity}(a_i, a_j)}{n(n-1)/2}
 $$
 
-Parameters:
+**Parameters:**
 
 * **antigens_list** (``NDArray``): List of training antigens.
 
@@ -137,11 +137,11 @@ def _cells_affinity_threshold(self, antigens_list: npt.NDArray):
 
 ---
 
-### Function _affinity(...)
+### Method `_affinity(...)`
 
 The function "_affinity(...)" calculates the stimulus between two vectors using metrics.
 
-Parameters:
+**Parameters:**
 
 * **u** (``npt.NDArray``): Coordinates of the first point.
 * **v** (``npt.NDArray``): Coordinates of the second point.
@@ -154,11 +154,11 @@ Returns the stimulus rate between the vectors.
 
 ---
 
-### Function _init_memory_c(...)
+### Method `_init_memory_c(...)`
 
 The function "_init_memory_c(...)" initializes memory cells by randomly selecting `n_antigens_selected` from the list of training antigens.
 
-Parameters:
+**Parameters:**
 
 * **antigens_list** (``NDArray``): List of training antigens.
 
@@ -168,7 +168,7 @@ def _init_memory_c(self, antigens_list: npt.NDArray) -> List[Cell]:
 
 ---
 
-### Function __slice_index_list_by_class(...)
+### Method `__slice_index_list_by_class(...)`
 
 The function ``__slice_index_list_by_class(...)`` separates the indices of the rows according to the output class, to iterate over the sample array, only at the positions where the output corresponds to the class being trained:
 
@@ -188,15 +188,15 @@ Returns a dictionary with classes as keys and indices in ``X`` of the samples.
 
 ### Constructor
 
-Parameters:
+**Parameters:**
 
 * vector (``npt.NDArray``): A feature vector of the cell. Defaults to None.
 
 ---
 
-### Function consume_resource(...)
+### Method `consume_resource(...)`
 
-Parameters:
+**Parameters:**
 
 * n_resource (```float```) : The initial amount of resources.
 * amplified (``float``): Amplifier for resource consumption by the cell. It is multiplied by the cell's stimulus. The default value is 1.

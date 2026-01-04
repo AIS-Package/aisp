@@ -20,26 +20,25 @@ possible infinite loop if a radius is defined that it is not possible to generat
 **Other variables initiated:**
 
 * *detectors* (``dict``): This variable stores a list of detectors by class.
-
 * *classes* (``npt.NDArray``): list of output classes.
 
-### Function fit(...)
+### Method fit(...)
 
 The ``fit(...)`` function generates the detectors for non-fits with respect to the samples:
 
 ```python
-def fit(self, X: npt.NDArray, y: npt.NDArray):
+def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True):
 ```
 
 In it, training is performed according to ``X`` and ``y``, using the negative selection method(``NegativeSelect``).
 
-**The input parameters are:**
+**Parameters**
 
-* ``X``: array with the characteristics of the samples with **N** samples (rows) and **N** characteristics (columns).
+* **X** (`npt.NDArray`): array with the characteristics of the samples with **N** samples (rows) and **N** characteristics (columns).
 
-* ``y``: array with the output classes arranged in **N** samples that are related to ``X``.
+* **y** (`npt.NDArray`): array with the output classes arranged in **N** samples that are related to ``X``.
 
-* ``verbose``: boolean with default value ``True``, determines if the feedback from the detector generation will be printed.
+* **verbose** (`bool`): boolean with default value ``True``, determines if the feedback from the detector generation will be printed.
 
 **Raises**
 
@@ -51,7 +50,7 @@ In it, training is performed according to ``X`` and ``y``, using the negative se
 
 ---
 
-### Function predict(...)
+### Method predict(...)
 
 The ``predict(...)`` function performs class prediction using the generated detectors:
 
@@ -59,9 +58,9 @@ The ``predict(...)`` function performs class prediction using the generated dete
 def predict(self, X: npt.NDArray) -> npt.NDArray:
 ```
 
-**The input parameter is:**
+**Parameters**
 
-* ``X``: array with the characteristics for the prediction, with **N** samples (Rows) and **N** columns.
+* **X** (`npt.NDArray`): array with the characteristics for the prediction, with **N** samples (Rows) and **N** columns.
 
 **Raises:**
 
@@ -76,7 +75,7 @@ def predict(self, X: npt.NDArray) -> npt.NDArray:
 
 ---
 
-### Function score(...)
+### Method score(...)
 
 The function ``score(...)`` calculates the accuracy of the trained model by making predictions and computing accuracy.
 
@@ -92,7 +91,7 @@ It returns the accuracy as a float type.
 
 ---
 
-### Function __assign_class_to_non_self_sample(...)
+### Method __assign_class_to_non_self_sample(...)
 
 This function determines the class of a sample when all detectors classify it as "non-self". Classification is performed using the ``max_average_difference`` and ``max_nearest_difference`` methods.
 
@@ -100,10 +99,10 @@ This function determines the class of a sample when all detectors classify it as
 def __assign_class_to_non_self_sample(self, line, c) -> npt.NDArray:
 ```
 
-**The input parameter is:**
+**Parameters**
 
-* ***line*** (``list``): Sample to be classified.
-* ***c*** (``npt.NDArray``): List of predictions to be updated with the new classification.
+* **line** (``list``): Sample to be classified.
+* **c** (``npt.NDArray``): List of predictions to be updated with the new classification.
 
 **Returns:**
 
