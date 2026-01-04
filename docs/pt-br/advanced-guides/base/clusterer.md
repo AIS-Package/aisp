@@ -8,7 +8,9 @@ e fornece uma implementação padrão para **`fit_predict`** e **`get_params`**.
 
 ---
 
-### Função fit(...)
+## Métodos abstratos
+
+### Método `fit(...)`
 
 ```python
 @abstractmethod
@@ -18,22 +20,22 @@ def fit(self, X: npt.NDArray, verbose: bool = True) -> BaseClusterer:
 Ajusta o modelo aos dados de treinamento.
 Este método abstrato deve ser implementado pelas subclasses.
 
-**Parâmetros**:
+**Parâmetros:**
 
-* ***X***: `npt.NDArray` - Dados de entrada utilizados para treinar o modelo.
-* ***verbose***: `bool`, default=True - Indica se a saída detalhada durante o treinamento deve ser exibida.
+* **X** (`npt.NDArray`): Dados de entrada utilizados para treinar o modelo.
+* **verbose** (`bool`): default=True - Indica se a saída detalhada durante o treinamento deve ser exibida.
 
-**Retorna**:
+**Retorna:**
 
-* ***self***: `BaseClusterer` - Instância da classe que implementa este método.
+* **self:** `BaseClusterer` - Instância da classe que implementa este método.
 
-**Implementação**:
+**Implementações:**
 
-* [AiNet](../../../classes/Immune%20Network%20Theory/AiNet.md#function-fit)
+* [AiNet](../../../classes/Immune%20Network%20Theory/AiNet.md#método-fit)
 
 ---
 
-### Função predict(...)
+### Método `predict(...)`
 
 ```python
 @abstractmethod
@@ -43,21 +45,23 @@ def predict(self, X: npt.NDArray) -> Optional[npt.NDArray]:
 Gera previsões com base nos dados de entrada.
 Este método abstrato deve ser implementado pelas subclasses.
 
-**Parâmetros**:
+**Parâmetros:**
 
-* ***X***: `npt.NDArray` - Dados de entrada para os quais as previsões serão geradas.
+* **X** (`npt.NDArray`): Dados de entrada para os quais as previsões serão geradas.
 
-**Retorna**:
+**Retorna:**
 
-* ***predictions***: `Optional[npt.NDArray]` - Rótulos previstos dos clusters para cada amostra de entrada, ou `None` caso a previsão não seja possível.
+* **predictions** (`Optional[npt.NDArray]`): Rótulos previstos dos clusters para cada amostra de entrada, ou `None` caso a previsão não seja possível.
 
-**Implementação**:
+**Implementações:**
 
-* [AiNet](../../../classes/Immune%20Network%20Theory/AiNet.md#function-predict)
+* [AiNet](../../../classes/Immune%20Network%20Theory/AiNet.md#método-predict)
 
 ---
 
-### Função fit_predict(...)
+## Métodos
+
+### Método `fit_predict(...)`
 
 ```python
 def fit_predict(self, X: npt.NDArray, verbose: bool = True) -> Optional[npt.NDArray]
@@ -65,11 +69,11 @@ def fit_predict(self, X: npt.NDArray, verbose: bool = True) -> Optional[npt.NDAr
 
 Método de conveniência que combina `fit` e `predict` em uma única chamada.
 
-**Parâmetros**:
+**Parâmetros:**
 
-* ***X***: `npt.NDArray` - Dados de entrada para os quais as previsões serão geradas.
-* ***verbose***: `bool`, default=True - Indica se a saída detalhada durante o treinamento deve ser exibida.
+* **X:** `npt.NDArray` - Dados de entrada para os quais as previsões serão geradas.
+* **verbose:** `bool`, default=True - Indica se a saída detalhada durante o treinamento deve ser exibida.
 
-**Retorna**:
+**Retorna:**
 
-* ***predictions***: `Optional[npt.NDArray]` - Rótulos previstos dos clusters para cada amostra de entrada, ou `None` caso a previsão não seja possível.
+* **predictions:** `Optional[npt.NDArray]` - Rótulos previstos dos clusters para cada amostra de entrada, ou `None` caso a previsão não seja possível.

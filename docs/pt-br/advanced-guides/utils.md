@@ -2,9 +2,9 @@
 
 Funções de utilidade para o desenvolvimento.
 
-## Metrics
+## Métricas (Metrics)
 
-### def accuracy_score(...)
+### Função `accuracy_score(...)`
 
 ```python
 def accuracy_score(
@@ -18,12 +18,12 @@ verdadeiros e nos rótulos previstos.
 
 **Parâmetros:**
 
-* **_y_true_** (``Union[npt.NDArray, list]``): Rótulos verdadeiros (corretos)..
-* **_y_pred_** (``Union[npt.NDArray, list]``): Rótulos previstos.
+* **y_true** (``Union[npt.NDArray, list]``): Rótulos verdadeiros (corretos)..
+* **y_pred** (``Union[npt.NDArray, list]``): Rótulos previstos.
 
 **Retorna:**
 
-* **_Precisão_** (``float``): A proporção de previsões corretas em relação
+* **Precisão** (``float``): A proporção de previsões corretas em relação
     ao número total de previsões.
 
 **Lança:**
@@ -35,7 +35,7 @@ verdadeiros e nos rótulos previstos.
 
 ## Multiclass
 
-### def predict_knn_affinity(...)
+### Função `predict_knn_affinity(...)`
 
 ```python
 def predict_knn_affinity(
@@ -50,10 +50,10 @@ Função para prever classes usando k-vizinhos mais próximos e células treinad
 
 **Parâmetros:**
 
-* **_X_** (`npt.NDArray`): Dados de entrada a serem classificados.
-* **_k_** (`int`): Número de vizinhos mais próximos a considerar para a previsão.
-* **_all_cell_vectors_** (`List[Tuple[Union[str, int], npt.NDArray]]`): Lista de tuplas contendo pares (nome_da_classe, vetor_da_célula).
-* **_affinity_func_** (`Callable[[npt.NDArray, npt.NDArray], float]`): Função que recebe dois vetores e retorna um valor de afinidade.
+* **X** (`npt.NDArray`): Dados de entrada a serem classificados.
+* **k** (`int`): Número de vizinhos mais próximos a considerar para a previsão.
+* **all_cell_vectors** (`List[Tuple[Union[str, int], npt.NDArray]]`): Lista de tuplas contendo pares (nome_da_classe, vetor_da_célula).
+* **affinity_func** (`Callable[[npt.NDArray, npt.NDArray], float]`): Função que recebe dois vetores e retorna um valor de afinidade.
 
 **Retorna:**
 
@@ -61,7 +61,7 @@ Função para prever classes usando k-vizinhos mais próximos e células treinad
 
 ---
 
-### def slice_index_list_by_class(...)
+### Função `slice_index_list_by_class(...)`
 
 ```python
 def slice_index_list_by_class(classes: Optional[Union[npt.NDArray, list]], y: npt.NDArray) -> dict
@@ -73,8 +73,8 @@ onde a saída corresponde à classe sendo treinada.
 
 **Parâmetros:**
 
-* **_classes_** (`Optional[Union[npt.NDArray, list]]`): Lista com classes únicas. Se None, retorna um dicionário vazio.
-* **_y_** (`npt.NDArray`): Array com as classes de saída do array de amostra ``X``.
+* **classes** (`Optional[Union[npt.NDArray, list]]`): Lista com classes únicas. Se None, retorna um dicionário vazio.
+* **y** (`npt.NDArray`): Array com as classes de saída do array de amostra ``X``.
 
 **Retorna:**
 
@@ -92,7 +92,7 @@ onde a saída corresponde à classe sendo treinada.
 
 ## Sanitizers
 
-### def sanitize_choice(...)
+### Função `sanitize_choice(...)`
 
 ```python
 def sanitize_choice(value: T, valid_choices: Iterable[T], default: T) -> T
@@ -100,11 +100,11 @@ def sanitize_choice(value: T, valid_choices: Iterable[T], default: T) -> T
 
 A função ``sanitize_choice(...)``, retorna o valor se estiver presente no conjunto de opções válidas; caso contrário, retorna o valor padrão.
 
-**Parameters:**
+**Parâmetros:**
 
-* _**value**_ (``T``): O valor a ser verificado.
-* _**valid_choices**_ (``Iterable[T]``): Uma coleção de opções válidas.
-* _**default**_: O valor padrão a ser retornado se ``value`` não estiver em ``valid_choices``.
+* **value** (``T``): O valor a ser verificado.
+* **valid_choices** (``Iterable[T]``): Uma coleção de opções válidas.
+* **default**: O valor padrão a ser retornado se ``value`` não estiver em ``valid_choices``.
 
 **Returns:**
 
@@ -112,7 +112,7 @@ A função ``sanitize_choice(...)``, retorna o valor se estiver presente no conj
 
 ---
 
-### def sanitize_param(...)
+### Função `sanitize_param(...)`
 
 ```python
 def sanitize_param(value: T, default: T, condition: Callable[[T], bool]) -> T:
@@ -120,11 +120,11 @@ def sanitize_param(value: T, default: T, condition: Callable[[T], bool]) -> T:
 
 A função ``sanitize_param(...)``, retorna o valor se ele satisfizer a condição especificada; caso contrário, retorna o valor padrão.
 
-**Parameters:**
+**Parâmetros:**
 
-* value (``T``): O valor a ser verificado.
-* default (``T``): O valor padrão a ser retornado se a condição não for satisfeita.
-* condition (``Callable[[T], bool]``): Uma função que recebe um valor e retorna um booleano, determinando se o valor é válido.
+* **value** (``T``): O valor a ser verificado.
+* **default** (``T``): O valor padrão a ser retornado se a condição não for satisfeita.
+* **condition** (``Callable[[T], bool]``): Uma função que recebe um valor e retorna um booleano, determinando se o valor é válido.
 
 **Returns:**
 
@@ -132,7 +132,7 @@ A função ``sanitize_param(...)``, retorna o valor se ele satisfizer a condiç�
 
 ---
 
-### def sanitize_seed(...)
+### Função `sanitize_seed(...)`
 
 ```python
 def sanitize_seed(seed: Any) -> Optional[int]:
@@ -140,9 +140,9 @@ def sanitize_seed(seed: Any) -> Optional[int]:
 
 A função ``sanitize_param(...)``, retorna a semente se for um inteiro não negativo; caso contrário, retorna Nenhum.
 
-**Parameters:**
+**Parâmetros:**
 
-* seed (``Any``): O valor da seed a ser validado.
+* **seed** (``Any``): O valor da seed a ser validado.
 
 **Returns:**
 
@@ -150,7 +150,7 @@ A função ``sanitize_param(...)``, retorna a semente se for um inteiro não neg
 
 ---
 
-### def sanitize_bounds(...)
+### Função `sanitize_bounds(...)`
 
 ```python
 def sanitize_bounds(bounds: Any, problem_size: int) -> Dict[str, npt.NDArray[np.float64]]
@@ -160,8 +160,8 @@ A função `sanitize_bounds(...)` valida e normaliza os limites das característ
 
 **Parâmetros**:
 
-* _**bounds**_ (`Any`): Os limites de entrada, que devem ser `None` ou um dicionário com as chaves `'low'` e `'high'`.
-* _**problem_size**_ (`int`): O tamanho esperado para as listas de limites normalizadas, correspondente ao número de features do problema.
+* **bounds** (`Any`): Os limites de entrada, que devem ser `None` ou um dicionário com as chaves `'low'` e `'high'`.
+* **problem_size** (`int`): O tamanho esperado para as listas de limites normalizadas, correspondente ao número de features do problema.
 
 **Retorna**:
 
@@ -171,7 +171,7 @@ A função `sanitize_bounds(...)` valida e normaliza os limites das característ
 
 Funções utilitárias para distância normalizada entre matrizes com decoradores numba.
 
-### def hamming(...)
+### Função `hamming(...)`
 
 ```python
 def hamming(u: npt.NDArray, v: npt.NDArray) -> np.float64:
@@ -181,10 +181,10 @@ Função para calcular a distância de Hamming normalizada entre dois pontos.
 
 $((x₁ ≠ x₂) + (y₁ ≠ y₂) + ... + (yn ≠ yn)) / n$
 
-**Parameters:**
+**Parâmetros:**
 
-* u (``npt.NDArray``): Coordenadas do primeiro ponto
-* v (``npt.NDArray``): Coordenadas do segundo ponto.
+* **u** (``npt.NDArray``): Coordenadas do primeiro ponto
+* **v** (``npt.NDArray``): Coordenadas do segundo ponto.
 
 **Returns:**
 
@@ -192,7 +192,7 @@ $((x₁ ≠ x₂) + (y₁ ≠ y₂) + ... + (yn ≠ yn)) / n$
 
 ---
 
-### def euclidean(...)
+### Função `euclidean(...)`
 
 ```python
 def euclidean(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]) -> np.float64:
@@ -202,10 +202,10 @@ Função para calcular a distância euclidiana normalizada entre dois pontos.
 
 $√( (x₁ - x₂)² + (y₁ - y₂)² + ... + (yn - yn)²)$
 
-**Parameters:**
+**Parâmetros:**
 
-* u (``npt.NDArray``): Coordenadas do primeiro ponto
-* v (``npt.NDArray``): Coordenadas do segundo ponto.
+* **u** (``npt.NDArray``): Coordenadas do primeiro ponto
+* **v** (``npt.NDArray``): Coordenadas do segundo ponto.
 
 **Returns:**
 
@@ -213,7 +213,7 @@ $√( (x₁ - x₂)² + (y₁ - y₂)² + ... + (yn - yn)²)$
 
 ---
 
-### def cityblock(...)
+### Função `cityblock(...)`
 
 ```python
 def cityblock(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]) -> np.float64:
@@ -223,10 +223,10 @@ Função para calcular a distância Manhattan normalizada entre dois pontos.
 
 $(|x₁ - x₂| + |y₁ - y₂| + ... + |yn - yn|) / n$
 
-**Parameters:**
+**Parâmetros:**
 
-* u (``npt.NDArray``): Coordenadas do primeiro ponto
-* v (``npt.NDArray``): Coordenadas do segundo ponto.
+* **u** (``npt.NDArray``): Coordenadas do primeiro ponto
+* **v** (``npt.NDArray``): Coordenadas do segundo ponto.
 
 **Returns:**
 
@@ -234,7 +234,7 @@ $(|x₁ - x₂| + |y₁ - y₂| + ... + |yn - yn|) / n$
 
 ---
 
-### def minkowski(...)
+### Função `minkowski(...)`
 
 ```python
 def minkowski(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64], p: float = 2.0):
@@ -244,11 +244,11 @@ Função para calcular a distância de Minkowski normalizada entre dois pontos.
 
 $(( |X₁ - Y₁|p + |X₂ - Y₂|p + ... + |Xn - Yn|p) ¹/ₚ) / n$
 
-**Parameters:**
+**Parâmetros:**
 
-* u (``npt.NDArray``): Coordenadas do primeiro ponto.
-* v (``npt.NDArray``): Coordenadas do segundo ponto.
-* p (``float``): O parâmetro p define o tipo de distância a ser calculada:
+* **u** (``npt.NDArray``): Coordenadas do primeiro ponto.
+* **v** (``npt.NDArray``): Coordenadas do segundo ponto.
+* **p** (``float``): O parâmetro p define o tipo de distância a ser calculada:
   * p = 1: Distância **Manhattan** — soma das diferenças absolutas.
   * p = 2: Distância **Euclidiana** — soma das diferenças ao quadrado (raiz quadrada).
   * p > 2: Distância **Minkowski** com uma penalidade crescente à medida que p aumenta.
@@ -259,7 +259,7 @@ $(( |X₁ - Y₁|p + |X₂ - Y₂|p + ... + |Xn - Yn|p) ¹/ₚ) / n$
 
 ---
 
-### def compute_metric_distance(...)
+### Função `compute_metric_distance(...)`
 
 ```python
 def compute_metric_distance(
@@ -272,12 +272,12 @@ def compute_metric_distance(
 
 Função para calcular a distância entre dois pontos pela ``métrica`` escolhida.
 
-**Parameters:**
+**Parâmetros:**
 
-* u (``npt.NDArray``): Coordenadas do primeiro ponto.
-* v (``npt.NDArray``): Coordenadas do segundo ponto.
-* metric (``int``): Métrica de distância a ser utilizada. Opções disponíveis: [0 (Euclidean), 1 (Manhattan), 2 (Minkowski)].
-* p (``float``): Parâmetro da métrica de Minkowski (utilizado apenas se `metric` for "minkowski").
+* **u** (``npt.NDArray``): Coordenadas do primeiro ponto.
+* **v** (``npt.NDArray``): Coordenadas do segundo ponto.
+* **metric** (``int``): Métrica de distância a ser utilizada. Opções disponíveis: [0 (Euclidean), 1 (Manhattan), 2 (Minkowski)].
+* **p** (``float``): Parâmetro da métrica de Minkowski (utilizado apenas se `metric` for "minkowski").
 
 **Returns:**
 
@@ -285,7 +285,7 @@ Função para calcular a distância entre dois pontos pela ``métrica`` escolhid
 
 ---
 
-### def min_distance_to_class_vectors(...)
+### Função `min_distance_to_class_vectors(...)`
 
 ```python
 def min_distance_to_class_vectors(
@@ -298,12 +298,12 @@ def min_distance_to_class_vectors(
 
 Calcula a menor distância entre um vetor de entrada e os vetores de uma classe.
 
-**Parameters:**
+**Parâmetros:**
 
-* x_class (``npt.NDArray``): Array contendo os vetores da classe com os quais o vetor de entrada será comparado. Formato esperado: (n_amostras, n_características).
-* vector_x (``npt.NDArray``): Vetor a ser comparado com os vetores da classe. Formato esperado: (n_características,).
-* metric (``int``): Métrica de distância a ser utilizada. Opções disponíveis: [0 (Euclidean), 1 (Manhattan), 2 (Minkowski)].
-* p (``float``): Parâmetro da métrica de Minkowski (utilizado apenas se `metric` for "minkowski").
+* **x_class** (``npt.NDArray``): Array contendo os vetores da classe com os quais o vetor de entrada será comparado. Formato esperado: (n_amostras, n_características).
+* **vector_x** (``npt.NDArray``): Vetor a ser comparado com os vetores da classe. Formato esperado: (n_características,).
+* **metric** (``int``): Métrica de distância a ser utilizada. Opções disponíveis: [0 (Euclidean), 1 (Manhattan), 2 (Minkowski)].
+* **p** (``float``): Parâmetro da métrica de Minkowski (utilizado apenas se `metric` for "minkowski").
 
 **Returns:**
 
@@ -312,7 +312,7 @@ Calcula a menor distância entre um vetor de entrada e os vetores de uma classe.
 
 ---
 
-### def get_metric_code(...)
+### Função `get_metric_code(...)`
 
 ```python
 def get_metric_code(metric: str) -> int:
@@ -320,9 +320,9 @@ def get_metric_code(metric: str) -> int:
 
 Retorna o código numérico associado a uma métrica de distância.
   
-**Parameters:**
+**Parâmetros:**
 
-* metric (``str``): Nome da métrica. Pode ser "euclidean", "manhattan", "minkowski" ou "hamming".
+* **metric** (``str``): Nome da métrica. Pode ser "euclidean", "manhattan", "minkowski" ou "hamming".
 
 **Raises**
 
@@ -336,7 +336,7 @@ Retorna o código numérico associado a uma métrica de distância.
 
 ## Validation
 
-### def detect_vector_data_type(...)
+### Função `detect_vector_data_type(...)`
 
 ```python
 def detect_vector_data_type(
@@ -352,21 +352,21 @@ Esta função analisa o vetor de entrada e classifica seus dados como um dos tip
 * **contínuo**: Valores float dentro do intervalo normalizado `[0.0, 1.0]`.
 * **intervalo**: Valores float fora do intervalo normalizado.
 
-#### Parâmetros
+**Parâmetros:**
 
-* `vetor` (`npt.NDArray`): Um array contendo os dados a serem classificados.
+* **vector** (`npt.NDArray`): Um array contendo os dados a serem classificados.
 
-#### Retorna
+**Retorna:**
 
 * `FeatureType` (`Literal["binary-features", "continuous-features", "ranged-features"]`): O tipo de dado detectado no vetor.
 
-#### Gera
+**Gera:**
 
 * `UnsupportedDataTypeError`: Gerado se o vetor contiver um tipo de dado não suportado.
 
 ---
 
-### def check_array_type(...)
+### Função `check_array_type(...)`
 
 ```python
 def check_array_type(x, name: str = "X") -> npt.NDArray:
@@ -376,8 +376,8 @@ Garante que o parâmetro recebido é um array numpy. Converte de lista se necess
 
 **Parâmetros:**
 
-* `x`: Array ou lista contendo as amostras e características.
-* `name`: Nome da variável para mensagens de erro.
+* **x**: Array ou lista contendo as amostras e características.
+* **name**: Nome da variável para mensagens de erro.
 
 **Retorna:**
 
@@ -389,7 +389,7 @@ Garante que o parâmetro recebido é um array numpy. Converte de lista se necess
 
 ---
 
-### def check_shape_match(...)
+### Função `check_shape_match(...)`
 
 ```python
 def check_shape_match(x: npt.NDArray, y: npt.NDArray):
@@ -399,8 +399,8 @@ Garante que os arrays `x` e `y` possuem o mesmo número de amostras (primeira di
 
 **Parâmetros:**
 
-* `x`: Array de amostras.
-* `y`: Array de classes alvo.
+* **x**: Array de amostras.
+* **y**: Array de classes alvo.
 
 **Lança:**
 
@@ -408,7 +408,7 @@ Garante que os arrays `x` e `y` possuem o mesmo número de amostras (primeira di
 
 ---
 
-### def check_feature_dimension(...)
+### Função `check_feature_dimension(...)`
 
 ```python
 def check_feature_dimension(x: npt.NDArray, expected: int):
@@ -418,8 +418,8 @@ Garante que o array possui o número esperado de características (features).
 
 **Parâmetros:**
 
-* `x`: Array de entrada para predição.
-* `expected`: Número esperado de características por amostra.
+* **x**: Array de entrada para predição.
+* **expected**: Número esperado de características por amostra.
 
 **Lança:**
 
@@ -427,7 +427,7 @@ Garante que o array possui o número esperado de características (features).
 
 ---
 
-### def check_binary_array(...)
+### Função `check_binary_array(...)`
 
 ```python
 def check_binary_array(x: npt.NDArray):
@@ -437,7 +437,7 @@ Garante que o array contém apenas valores 0 e 1.
 
 **Parâmetros:**
 
-* `x`: Array a ser verificado.
+* **x**: Array a ser verificado.
 
 **Lança:**
 
@@ -449,7 +449,7 @@ Garante que o array contém apenas valores 0 e 1.
 
 Funções utilitárias para exibir informações de algoritmos
 
-### def _supports_box_drawing()
+### Função `_supports_box_drawing()`
 
 ```python
 def _supports_box_drawing() -> bool
@@ -459,7 +459,7 @@ Função para verificar se o terminal suporta caracteres de borda.
 
 **Retorna**:
 
-* _**bool**_ (`bool`): True se o terminal provavelmente suporta caracteres de borda, False caso contrário.
+* **bool** (`bool`): True se o terminal provavelmente suporta caracteres de borda, False caso contrário.
 
 ---
 
@@ -469,7 +469,7 @@ Classe para formatar dados tabulares em strings para exibição no console.
 
 **Parâmetros**:
 
-* _**headers**_ (`Mapping[str, int]`): Mapeamento dos nomes das colunas para suas larguras respectivas, no formato `{nome_coluna: largura_coluna}`.
+* **headers** (`Mapping[str, int]`): Mapeamento dos nomes das colunas para suas larguras respectivas, no formato `{nome_coluna: largura_coluna}`.
 
 **Exceções**:
 
@@ -477,7 +477,7 @@ Classe para formatar dados tabulares em strings para exibição no console.
 
 ---
 
-#### def _border(left, middle, right, line, new_line=True)
+#### Função `_border(left, middle, right, line, new_line=True)`
 
 ```python
 def _border(self, left: str, middle: str, right: str, line: str, new_line: bool = True) -> str
@@ -487,19 +487,19 @@ Cria uma borda horizontal para a tabela.
 
 **Parâmetros**:
 
-* _**left**_ (`str`): Caractere na borda esquerda.
-* _**middle**_ (`str`): Caractere separador entre colunas.
-* _**right**_ (`str`): Caractere na borda direita.
-* _**line**_ (`str`): Caractere usado para preencher a borda.
-* _**new_line**_ (`bool`, opcional): Se True, adiciona uma quebra de linha antes da borda (padrão é True).
+* **left** (`str`): Caractere na borda esquerda.
+* **middle** (`str`): Caractere separador entre colunas.
+* **right** (`str`): Caractere na borda direita.
+* **line** (`str`): Caractere usado para preencher a borda.
+* **new_line** (`bool`, opcional): Se True, adiciona uma quebra de linha antes da borda (padrão é True).
 
 **Retorna**:
 
-* _**border**_ (`str`): String representando a borda horizontal.
+* **border** (`str`): String representando a borda horizontal.
 
 ---
 
-#### def get_header()
+#### Função `get_header()`
 
 ```python
 def get_header(self) -> str
@@ -509,11 +509,11 @@ Gera o cabeçalho da tabela, incluindo a borda superior, os títulos das colunas
 
 **Retorna**:
 
-* _**header**_ (`str`): String formatada do cabeçalho da tabela.
+* **header** (`str`): String formatada do cabeçalho da tabela.
 
 ---
 
-#### def get_row(values)
+#### Função `get_row(values)`
 
 ```python
 def get_row(self, values: Mapping[str, Union[str, int, float]]) -> str
@@ -523,15 +523,15 @@ Gera uma linha formatada para os dados da tabela.
 
 **Parâmetros**:
 
-* _**values**_ (`Mapping[str, Union[str, int, float]]`): Dicionário com os valores de cada coluna, no formato `{nome_coluna: valor}`.
+* **values** (`Mapping[str, Union[str, int, float]]`): Dicionário com os valores de cada coluna, no formato `{nome_coluna: valor}`.
 
 **Retorna**:
 
-* _**row**_ (`str`): String formatada da linha da tabela.
+* **row** (`str`): String formatada da linha da tabela.
 
 ---
 
-#### def get_bottom(new_line=False)
+#### Função `get_bottom(new_line=False)`
 
 ```python
 def get_bottom(self, new_line: bool = False) -> str
@@ -541,11 +541,11 @@ Gera a borda inferior da tabela.
 
 **Parâmetros**:
 
-* _**new_line**_ (`bool`, opcional): Se True, adiciona uma quebra de linha antes da borda (padrão é False).
+* **new_line** (`bool`, opcional): Se True, adiciona uma quebra de linha antes da borda (padrão é False).
 
 **Retorna**:
 
-* _**bottom**_ (`str`): String formatada da borda inferior.
+* **bottom** (`str`): String formatada da borda inferior.
 
 ---
 
@@ -555,8 +555,8 @@ Classe para exibir uma tabela formatada no console para acompanhar o progresso d
 
 **Parâmetros**:
 
-* _**headers**_ (`Mapping[str, int]`): Mapeamento `{nome_coluna: largura_coluna}`.
-* _**verbose**_ (`bool`, padrão=True): Se False, não imprime nada no terminal.
+* **headers** (`Mapping[str, int]`): Mapeamento `{nome_coluna: largura_coluna}`.
+* **verbose** (`bool`, padrão=True): Se False, não imprime nada no terminal.
 
 **Exceções**:
 
@@ -564,7 +564,7 @@ Classe para exibir uma tabela formatada no console para acompanhar o progresso d
 
 ---
 
-#### def _print_header()
+#### Função `_print_header()`
 
 ```python
 def _print_header(self) -> None
@@ -574,7 +574,7 @@ Imprime o cabeçalho da tabela.
 
 ---
 
-#### def update(values)
+#### Função `update(values)`
 
 ```python
 def update(self, values: Mapping[str, Union[str, int, float]]) -> None
@@ -584,11 +584,11 @@ Adiciona uma nova linha de valores à tabela.
 
 **Parâmetros**:
 
-* _**values**_ (`Mapping[str, Union[str, int, float]]`): As chaves devem corresponder às colunas definidas em `headers`.
+* **values** (`Mapping[str, Union[str, int, float]]`): As chaves devem corresponder às colunas definidas em `headers`.
 
 ---
 
-#### def finish()
+#### Função `finish()`
 
 ```python
 def finish(self) -> None

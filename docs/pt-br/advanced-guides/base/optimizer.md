@@ -1,15 +1,15 @@
-# Classe base para algoritmos de otimização
+# BaseOptimizer
 
-## BaseOptimizer
+Classe base para algoritmos de otimização
 
 Esta classe define a interface central para estratégias de otimização e mantém o histórico de custos, soluções
 avaliadas e a melhor solução encontrada. Subclasses devem implementar os métodos `optimize` e `affinity_function`.
 
 ---
 
-### Propriedades
+## Propriedades
 
-#### `cost_history`
+### Propriedade `cost_history`
 
 ```python
 @property
@@ -20,7 +20,7 @@ Retorna o histórico de custos durante a otimização.
 
 ---
 
-#### `solution_history`
+### Propriedade `solution_history`
 
 ```python
 @property
@@ -31,7 +31,7 @@ Retorna o histórico de soluções avaliadas.
 
 ---
 
-#### `best_solution`
+### Propriedade `best_solution`
 
 ```python
 @property
@@ -42,7 +42,7 @@ Retorna a melhor solução encontrada até o momento, ou `None` se não disponí
 
 ---
 
-#### `best_cost`
+### Propriedade `best_cost`
 
 ```python
 @property
@@ -53,9 +53,9 @@ Retorna o custo da melhor solução encontrada até o momento, ou `None` se não
 
 ---
 
-## Funções
+## Métodos
 
-### Função _record_best(...)
+### Método `_record_best(...)`
 
 ```python
 def _record_best(self, cost: float, best_solution: Any) -> None
@@ -65,11 +65,11 @@ Registra um novo valor de custo e atualiza a melhor solução se houver melhoria
 
 **Parâmetros**:
 
-* ***cost***: `float` - Valor de custo a ser adicionado ao histórico.
+* **cost** (`float`): Valor de custo a ser adicionado ao histórico.
 
 ---
 
-### Função get_report()
+### Método `get_report()`
 
 ```python
 def get_report(self) -> str
@@ -80,11 +80,11 @@ associado e a evolução dos valores de custo por iteração.
 
 **Retorna**:
 
-* **report**: `str` - String formatada contendo o resumo da otimização.
+* **report** (`str`): String formatada contendo o resumo da otimização.
 
 ---
 
-### Função register(...)
+### Método `register(...)`
 
 ```python
 def register(self, alias: str, function: Callable[..., Any]) -> None
@@ -94,8 +94,8 @@ Registra dinamicamente uma função na instância do otimizador.
 
 **Parâmetros**:
 
-* ***alias***: `str` - Nome usado para acessar a função como atributo.
-* ***function***: `Callable[..., Any]` - Callable a ser registrado.
+* **alias** (`str`): Nome usado para acessar a função como atributo.
+* **function** (`Callable[..., Any]`): Callable a ser registrado.
 
 **Exceções**:
 
@@ -104,7 +104,7 @@ Registra dinamicamente uma função na instância do otimizador.
 
 ---
 
-### Função reset()
+### Método `reset()`
 
 ```python
 def reset(self)
@@ -114,9 +114,9 @@ Reinicia o estado interno do objeto, limpando o histórico e resetando os valore
 
 ---
 
-### Métodos abstratos
+## Métodos abstratos
 
-#### Função optimize(...)
+### Método `optimize(...)`
 
 ```python
 @abstractmethod
@@ -128,17 +128,17 @@ otimização explora o espaço de busca.
 
 **Parâmetros**:
 
-* ***max_iters***: `int` - Número máximo de iterações.
-* ***n_iter_no_change***: `int`, padrão=10 - Número máximo de iterações sem atualização da melhor solução.
-* ***verbose***: `bool`, padrão=True - Flag para habilitar ou desabilitar saída detalhada durante a otimização.
+* **max_iters** (`int`): Número máximo de iterações.
+* **n_iter_no_change** (`int`, padrão=10: Número máximo de iterações sem atualização da melhor solução.
+* **verbose**: (`bool`, padrão=True): Flag para habilitar ou desabilitar saída detalhada durante a otimização.
 
 **Retorna**:
 
-* **best_solution**: `Any` - A melhor solução encontrada pelo algoritmo de otimização.
+* **best_solution** (`Any`): A melhor solução encontrada pelo algoritmo de otimização.
 
 ---
 
-#### Função affinity_function(...)
+### Método `affinity_function(...)`
 
 ```python
 def affinity_function(self, solution: Any) -> float
@@ -148,8 +148,8 @@ Avalia a afinidade de uma solução candidata. Este método deve ser implementad
 
 **Parâmetros**:
 
-* ***solution***: `Any` - Solução candidata a ser avaliada.
+* **solution** (`Any`): Solução candidata a ser avaliada.
 
 **Retorna**:
 
-* **cost**: `float` - Valor de custo associado à solução fornecida.
+* **cost** (`float`): Valor de custo associado à solução fornecida.

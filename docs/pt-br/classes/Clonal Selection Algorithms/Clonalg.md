@@ -21,23 +21,23 @@ O construtor inicializa a instância do CLONALG com os principais parâmetros qu
 
 **Atributos:**
 
-* **problem_size**: `int` - Dimensão do problema a ser otimizado.
-* **N**: `int`, padrão=50 - Número de células de memória (anticorpos) na população.
-* **rate_clonal**: `float`, padrão=10 - Número máximo de clones possíveis de uma célula. Este valor é multiplicado pela afinidade da célula para determinar o número de clones.
-* **rate_hypermutation**: `float`, padrão=0.75 - Taxa de clones mutados, usada como fator escalar.
-* **n_diversity_injection**: `int`, padrão=5 - Número de novas células de memória aleatórias injetadas para manter a diversidade.
-* **selection_size**: `int`, padrão=5 - Número de melhores anticorpos selecionados para clonagem.
-* **affinity_function**: `Optional[Callable[..., npt.NDArray]]`, padrão=None - Função objetivo usada para avaliar soluções candidatas.
-* **feature_type**: `FeatureTypeAll`, padrão='ranged-features' - Tipo de amostra do problema, podendo ser `'continuous-features'`, `'binary-features'`, `'ranged-features'` ou `'permutation-features'`.
-* **bounds**: `Optional[Dict]`, padrão=None - Dicionário definindo os limites de busca para problemas `'ranged-features'`. Pode ser um único intervalo ou uma lista de intervalos para cada dimensão.
-* **mode**: `Literal["min", "max"]`, padrão="min" - Especifica se o algoritmo minimiza ou maximiza a função de custo.
-* **seed**: `Optional[int]`, padrão=None - Semente para geração de números aleatórios.
+* **problem_size** (`int`): Dimensão do problema a ser otimizado.
+* **N** (`int`, padrão=50): Número de células de memória (anticorpos) na população.
+* **rate_clonal** (`float`, padrão=10): Número máximo de clones possíveis de uma célula. Este valor é multiplicado pela afinidade da célula para determinar o número de clones.
+* **rate_hypermutation** (`float`, padrão=0.75): Taxa de clones mutados, usada como fator escalar.
+* **n_diversity_injection** (`int`, padrão=5): Número de novas células de memória aleatórias injetadas para manter a diversidade.
+* **selection_size** (`int`, padrão=5): Número de melhores anticorpos selecionados para clonagem.
+* **affinity_function** (`Optional[Callable[..., npt.NDArray]]`, padrão=None): Função objetivo usada para avaliar soluções candidatas.
+* **feature_type** (`FeatureTypeAll`, padrão='ranged-features'): Tipo de amostra do problema, podendo ser `'continuous-features'`, `'binary-features'`, `'ranged-features'` ou `'permutation-features'`.
+* **bounds** (`Optional[Dict]`, padrão=None): Dicionário definindo os limites de busca para problemas `'ranged-features'`. Pode ser um único intervalo ou uma lista de intervalos para cada dimensão.
+* **mode** (`Literal["min", "max"]`, padrão="min"): Especifica se o algoritmo minimiza ou maximiza a função de custo.
+* **seed** (`Optional[int]`, padrão=None): Semente para geração de números aleatórios.
 
 ---
 
-### Métodos Públicos
+## Métodos Públicos
 
-#### Função `optimize(...)`
+### Função `optimize(...)`
 
 ```python
 def optimize(
@@ -50,11 +50,11 @@ def optimize(
 
 Este método executa o processo de otimização e retorna a população de anticorpos.
 
-**Parâmetros de entrada:**
+**Parâmetros:**
 
-* **max_iters**: `int`, padrão=50 - Número máximo de interações.
-* **n_iter_no_change**: `int`, padrão=10 - Número máximo de iterações sem melhoria na melhor solução.
-* **verbose**: `bool`, padrão=True - Flag para habilitar ou desabilitar saída detalhada durante o processo de otimização.
+* **max_iters** (`int`, padrão=50): Número máximo de interações.
+* **n_iter_no_change** (`int`, padrão=10): Número máximo de iterações sem melhoria na melhor solução.
+* **verbose** (`bool`, padrão=True): Flag para habilitar ou desabilitar saída detalhada durante o processo de otimização.
 
 **Retorna:**
 
@@ -70,9 +70,9 @@ def affinity_function(self, solution: npt.NDArray) -> np.float64:
 
 Este método avalia a afinidade de uma solução candidata. Levanta `NotImplementedError` se nenhuma função de afinidade tiver sido fornecida à instância da classe.
 
-**Parâmetros de entrada:**
+**Parâmetros:**
 
-* **solution**: `npt.NDArray` - Solução candidata a ser avaliada.
+* **solution** (`npt.NDArray`): Solução candidata a ser avaliada.
 
 **Retorna:**
 
@@ -90,10 +90,10 @@ def _select_top_antibodies(self, n: int, antibodies: list[tuple]) -> list[tuple]
 
 Seleciona os `n` melhores anticorpos com base em suas pontuações de afinidade, de acordo com o `mode` (`'min'` ou `'max'`).
 
-**Parâmetros de entrada:**
+**Parâmetros:**
 
-* **n**: `int` - Número de anticorpos a serem selecionados.
-* **antibodies**: `list[tuple]` - Lista de tuplas, onde cada tupla representa um anticorpo e sua pontuação associada.
+* **n** (`int`): Número de anticorpos a serem selecionados.
+* **antibodies* (`list[tuple]`): Lista de tuplas, onde cada tupla representa um anticorpo e sua pontuação associada.
 
 **Retorna:**
 
@@ -137,11 +137,11 @@ def _clone_and_mutate(self, antibody: npt.NDArray, n_clone: int, rate_hypermutat
 
 Gera clones mutados a partir de um único anticorpo. A estratégia de mutação depende do `feature_type` especificado durante a inicialização (`'binary-features'`, `'continuous-features'`, `'ranged-features'` ou `'permutation-features'`).
 
-**Parâmetros de entrada:**
+**Parâmetros:**
 
-* **antibody**: `npt.NDArray` - Vetor original do anticorpo a ser clonado e mutado.
-* **n_clone**: `int` - Número de clones a serem gerados.
-* **rate_hypermutation**: `float` - Taxa de hipermutação.
+* **antibody** (`npt.NDArray`): Vetor original do anticorpo a ser clonado e mutado.
+* **n_clone** (`int`): Número de clones a serem gerados.
+* **rate_hypermutation** (`float`): Taxa de hipermutação.
 
 **Retorna:**
 
@@ -160,9 +160,9 @@ def _clone_and_hypermutation(
 
 Clona e aplica hipermutação a uma população de anticorpos. Retorna uma lista de todos os clones e suas afinidades em relação à função de custo.
 
-**Parâmetros de entrada:**
+**Parâmetros:**
 
-* **population**: `list[tuple]` - Lista de anticorpos a serem avaliados e clonados.
+* **population** (`list[tuple]`): Lista de anticorpos a serem avaliados e clonados.
 
 **Retorna:**
 

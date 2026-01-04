@@ -4,8 +4,7 @@ Classe base para introspecção de parâmetros compatível com a API do scikit-l
 
 ## Base
 
-Classe genérica para modelos com uma interface comum.
-
+Classe genérica para modelos com uma interface comum.  
 Fornece os métodos `get_params` e `set_params` para compatibilidade com a API do scikit-learn, permitindo acesso aos parâmetros públicos do modelo.
 
 ### Função set_params(...)
@@ -16,13 +15,13 @@ def set_params(self, **params)
 
 Define os parâmetros da instância. Garante compatibilidade com funções do scikit-learn.
 
-**Parâmetros**:
+**Parâmetros:**
 
-* **params**: dict - Dicionário de parâmetros que serão definidos como atributos da instância. Apenas atributos públicos (que não começam com "_") são modificados.
+* **params** (`dict`): Dicionário de parâmetros que serão definidos como atributos da instância. Apenas atributos públicos (que não começam com "_") são modificados.
 
-**Retorno**:
+**Retorna:**
 
-* self: `Base` - Retorna a própria instância após definir os parâmetros.
+* **Base**: Retorna a própria instância após definir os parâmetros.
 
 ---
 
@@ -34,12 +33,12 @@ def get_params(self, deep: bool = True) -> dict
 
 Retorna um dicionário com os principais parâmetros do objeto. Garante compatibilidade com funções do scikit-learn.
 
-**Parâmetros**:
+**Parâmetros:**
 
-* **deep**: `bool` (padrão=True) - Ignorado nesta implementação, mas incluído para compatibilidade com scikit-learn.
+* **deep** (`bool`, padrão=True): Ignorado nesta implementação, mas incluído para compatibilidade com scikit-learn.
 
-**Retorno**:
+**Retorna:**
 
-* params: `dict` - Dicionário contendo os atributos do objeto que não começam com "_".
+* **dict:** Dicionário contendo os atributos do objeto que não começam com "_".
 
 ---
