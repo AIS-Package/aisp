@@ -10,7 +10,7 @@ from tqdm import tqdm
 
 from ._base import check_detector_bnsa_validity, bnsa_class_prediction
 from ..base import BaseClassifier
-from ..exceptions import MaxDiscardsReachedError
+from ..exceptions import MaxDiscardsReachedError, ModelNotFittedError
 from ..utils.sanitizers import sanitize_seed, sanitize_param
 from ..utils.validation import (
     check_array_type,
@@ -97,6 +97,14 @@ class BNSA(BaseClassifier):
         verbose : bool, default=True
             Feedback from detector generation to the user.
 
+        Raises
+        ------
+        TypeError
+            If X or y are not ndarrays or have incompatible shapes.
+        MaxDiscardsReachedError
+            The maximum number of detector discards was reached during maturation. Check the
+            defined radius value and consider reducing it.
+
         Returns
         -------
         self : BNSA
@@ -164,7 +172,7 @@ class BNSA(BaseClassifier):
 
         return self
 
-    def predict(self, X: npt.NDArray) -> Optional[npt.NDArray]:
+    def predict(self, X: npt.NDArray) -> npt.NDArray:
         """Prediction of classes based on detectors created after training.
 
         Parameters
@@ -172,19 +180,28 @@ class BNSA(BaseClassifier):
         X : npt.NDArray
             Array with input samples with Shape: (``n_samples, n_features``)
 
+        Raises
+        ------
+        TypeError
+            If X is not a ndarray or list.
+        FeatureDimensionMismatch
+            If the number of features in X does not match the expected number.
+        ModelNotFittedError
+            If the mode has not yet been adjusted and does not have defined detectors or
+            classes, it is not able to predictions
+
         Returns
         -------
-        c : Optional[npt.NDArray]
-            an ndarray of the form ``C`` (``n_samples``), containing the predicted classes for
-            ``X``. Returns``None``: If there are no detectors for the prediction.
+        c : npt.NDArray
+            A ndarray of the form ``C`` (``n_samples``), containing the predicted classes for
+            ``X``.
         """
-        # If there are no detectors, Returns None.
         if (
             self._detectors is None
             or self._detectors_stack is None
             or self.classes is None
         ):
-            return None
+            raise ModelNotFittedError('BNSA')
         X = check_array_type(X)
         check_feature_dimension(X, self._n_features)
         check_binary_array(X)

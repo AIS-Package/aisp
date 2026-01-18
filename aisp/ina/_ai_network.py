@@ -10,6 +10,7 @@ from scipy.sparse.csgraph import minimum_spanning_tree, connected_components
 from scipy.spatial.distance import squareform, pdist, cdist
 from tqdm import tqdm
 
+from ..exceptions import ModelNotFittedError
 from ..base import BaseClusterer
 from ..base.immune.cell import Cell
 from ..base.immune.mutation import (
@@ -248,7 +249,7 @@ class AiNet(BaseClusterer):
 
         return self
 
-    def predict(self, X) -> Optional[np.ndarray]:
+    def predict(self, X) -> npt.NDArray:
         """
         Predict cluster labels for input data.
 
@@ -257,9 +258,19 @@ class AiNet(BaseClusterer):
         X : npt.NDArray
             Data to predict.
 
+        Raises
+        ------
+        TypeError
+            If X is not a ndarray or list.
+        FeatureDimensionMismatch
+            If the number of features in X does not match the expected number.
+        ModelNotFittedError
+            If the mode has not yet been adjusted and does not have defined memory cells, it is
+            not able to predictions
+
         Returns
         -------
-        Predictions : Optional[npt.NDArray]
+        Predictions : npt.NDArray
             Predicted cluster labels, or None if clustering is disabled.
         """
         if (
@@ -267,7 +278,7 @@ class AiNet(BaseClusterer):
             or self._memory_network is None
             or self._all_cells_memory_vectors is None
         ):
-            return None
+            raise ModelNotFittedError('AiNet')
 
         check_feature_dimension(X, self._n_features)
         if self._feature_type == "binary-features":

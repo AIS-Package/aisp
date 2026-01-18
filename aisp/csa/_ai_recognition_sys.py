@@ -11,6 +11,7 @@ import numpy.typing as npt
 from scipy.spatial.distance import pdist
 from tqdm import tqdm
 
+from ..exceptions import ModelNotFittedError
 from ..base import BaseClassifier
 from ..base.immune.cell import BCell
 from ..utils.distance import hamming, compute_metric_distance, get_metric_code
@@ -305,7 +306,7 @@ class AIRS(BaseClassifier):
         ]
         return self
 
-    def predict(self, X: npt.NDArray) -> Optional[npt.NDArray]:
+    def predict(self, X: npt.NDArray) -> npt.NDArray:
         """
         Predict class labels based on the memory cells created during training.
 
@@ -317,14 +318,24 @@ class AIRS(BaseClassifier):
         X : npt.NDArray
             Array with input samples with  Shape: (``n_samples, n_features``)
 
+        Raises
+        ------
+        TypeError
+            If X is not a ndarray or list.
+        FeatureDimensionMismatch
+            If the number of features in X does not match the expected number.
+        ModelNotFittedError
+            If the mode has not yet been adjusted and does not have defined memory cells, it is
+            not able to predictions
+
         Returns
         -------
-        C : npt.NDArray or None
+        C : npt.NDArray
             An ndarray of the form ``C`` (``n_samples``), containing the predicted classes for
-            ``X``. or ``None``: If there are no detectors for the prediction.
+            ``X``.
         """
         if self._all_class_cell_vectors is None:
-            return None
+            raise ModelNotFittedError('AIRS')
 
         X = check_array_type(X)
         check_feature_dimension(X, self._n_features)
