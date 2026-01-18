@@ -160,11 +160,16 @@ class Clonalg(BaseOptimizer):
         Parameters
         ----------
         max_iters : int, default=50
-            Maximum number of interactions when searching for the best solution using clonalg.
+            Maximum number of iterations when searching for the best solution using clonalg.
         n_iter_no_change: int, default=10
-            the maximum number of iterations without updating the best cell
+            The maximum number of iterations without updating the best cell
         verbose : bool, default=True
-            Feedback on interactions, indicating the best antibody.
+            Feedback on iterations, indicating the best antibody.
+
+        Raises
+        ------
+        NotImplementedError
+            If no affinity function has been provided to model.
 
         Returns
         -------

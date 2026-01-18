@@ -196,6 +196,13 @@ class AiNet(BaseClusterer):
         verbose : bool, default=True
             Feedback from the progress bar showing current training interaction details.
 
+        Raises
+        ------
+        TypeError
+            If X is not a ndarray or list.
+        UnsupportedTypeError
+            If the data type of the vector is not supported.
+
         Returns
         -------
         self : AiNet
@@ -262,6 +269,8 @@ class AiNet(BaseClusterer):
         ------
         TypeError
             If X is not a ndarray or list.
+        ValueError
+            If the array contains values other than 0 and 1.
         FeatureDimensionMismatch
             If the number of features in X does not match the expected number.
         ModelNotFittedError
@@ -592,6 +601,11 @@ class AiNet(BaseClusterer):
         X : npt.NDArray
             Training array, containing the samples and their characteristics,
             Shape: (n_samples, n_features).
+
+        Raises
+        ------
+        UnsupportedTypeError
+            If the data type of the vector is not supported.
 
         Returns
         -------

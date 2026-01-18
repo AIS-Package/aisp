@@ -101,6 +101,8 @@ class BNSA(BaseClassifier):
         ------
         TypeError
             If X or y are not ndarrays or have incompatible shapes.
+        ValueError
+            If the array contains values other than 0 and 1.
         MaxDiscardsReachedError
             The maximum number of detector discards was reached during maturation. Check the
             defined radius value and consider reducing it.
@@ -184,6 +186,8 @@ class BNSA(BaseClassifier):
         ------
         TypeError
             If X is not a ndarray or list.
+        ValueError
+            If the array contains values other than 0 and 1.
         FeatureDimensionMismatch
             If the number of features in X does not match the expected number.
         ModelNotFittedError
@@ -249,6 +253,11 @@ class BNSA(BaseClassifier):
             Sample to be classified.
         c : list
             List of predictions to be updated with the new classification.
+
+        Raises
+        ------
+        ValueError
+            If detectors is not initialized.
         """
         if self._detectors is None or self.classes is None:
             raise ValueError("Detectors is not initialized.")

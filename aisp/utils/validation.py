@@ -23,7 +23,7 @@ def detect_vector_data_type(vector: npt.NDArray) -> FeatureType:
 
     Returns
     -------
-    str
+    FeatureType
         The data type of the vector: "binary-features", "continuous-features", or "ranged-features".
 
     Raises
@@ -64,7 +64,7 @@ def check_array_type(x, name: str = "X") -> npt.NDArray:
     Raises
     ------
     TypeError:
-        If X or y are not ndarrays or have incompatible shapes.
+        If X or y are not ndarrays or a list.
     """
     if isinstance(x, list):
         x = np.array(x)
@@ -87,7 +87,7 @@ def check_shape_match(x: npt.NDArray, y: npt.NDArray):
     Raises
     ------
     TypeError:
-        If x or y are not ndarrays or have incompatible shapes.
+        If x or y have incompatible shapes.
     """
     if x.shape[0] != y.shape[0]:
         raise TypeError("X does not have the same number of samples as y.")
@@ -119,8 +119,7 @@ def check_binary_array(x: npt.NDArray):
     Raises
     ------
     ValueError
-        If feature_type is binary-features and X contains values that are not composed only
-        of 0 and 1.
+        If the array contains values other than 0 and 1.
     """
     if not np.isin(x, [0, 1]).all():
         raise ValueError(
