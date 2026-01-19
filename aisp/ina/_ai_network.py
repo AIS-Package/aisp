@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Optional, Dict, List, Tuple
+from typing import Optional, Dict, List, Tuple, Union
 
 import numpy as np
 import numpy.typing as npt
@@ -10,7 +10,6 @@ from scipy.sparse.csgraph import minimum_spanning_tree, connected_components
 from scipy.spatial.distance import squareform, pdist, cdist
 from tqdm import tqdm
 
-from ..exceptions import ModelNotFittedError
 from ..base import BaseClusterer
 from ..base.immune.cell import Cell
 from ..base.immune.mutation import (
@@ -19,6 +18,7 @@ from ..base.immune.mutation import (
     clone_and_mutate_ranged,
 )
 from ..base.immune.populations import generate_random_antibodies
+from ..exceptions import ModelNotFittedError
 from ..utils.distance import hamming, compute_metric_distance, get_metric_code
 from ..utils.multiclass import predict_knn_affinity
 from ..utils.random import set_seed_numba
@@ -185,7 +185,7 @@ class AiNet(BaseClusterer):
             "std_distance": self._mst_std_distance,
         }
 
-    def fit(self, X: npt.NDArray, verbose: bool = True) -> AiNet:
+    def fit(self, X: Union[npt.NDArray, list], verbose: bool = True) -> AiNet:
         """
         Train the AiNet model on input data.
 
@@ -256,13 +256,13 @@ class AiNet(BaseClusterer):
 
         return self
 
-    def predict(self, X) -> npt.NDArray:
+    def predict(self, X: Union[npt.NDArray, list]) -> npt.NDArray:
         """
         Predict cluster labels for input data.
 
         Parameters
         ----------
-        X : npt.NDArray
+        X : Union[npt.NDArray, list]
             Data to predict.
 
         Raises
@@ -287,8 +287,9 @@ class AiNet(BaseClusterer):
             or self._memory_network is None
             or self._all_cells_memory_vectors is None
         ):
-            raise ModelNotFittedError('AiNet')
+            raise ModelNotFittedError("AiNet")
 
+        X = check_array_type(X)
         check_feature_dimension(X, self._n_features)
         if self._feature_type == "binary-features":
             check_binary_array(X)
@@ -586,7 +587,7 @@ class AiNet(BaseClusterer):
             for cell in self._memory_network[class_name]
         ]
 
-    def _prepare_features(self, X: npt.NDArray) -> npt.NDArray:
+    def _prepare_features(self, X: Union[npt.NDArray, list]) -> npt.NDArray:
         """
         Check the samples, specifying the type, quantity of characteristics, and other parameters.
 
@@ -598,7 +599,7 @@ class AiNet(BaseClusterer):
 
         Parameters
         ----------
-        X : npt.NDArray
+        X : Union[npt.NDArray, list]
             Training array, containing the samples and their characteristics,
             Shape: (n_samples, n_features).
 
@@ -612,9 +613,8 @@ class AiNet(BaseClusterer):
         X : npt.NDArray
             The processed input data.
         """
-        self._feature_type = detect_vector_data_type(X)
-
         X = check_array_type(X)
+        self._feature_type = detect_vector_data_type(X)
 
         match self._feature_type:
             case "binary-features":

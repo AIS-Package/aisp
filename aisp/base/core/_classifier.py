@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Optional, Union
 
 import numpy.typing as npt
 
@@ -24,7 +24,12 @@ class BaseClassifier(ABC, Base):
     _n_features: int = 0
 
     @abstractmethod
-    def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True) -> BaseClassifier:
+    def fit(
+        self,
+        X: Union[npt.NDArray, list],
+        y: Union[npt.NDArray, list],
+        verbose: bool = True
+    ) -> BaseClassifier:
         """
         Train the model using the input data X and corresponding labels y.
 
@@ -32,9 +37,9 @@ class BaseClassifier(ABC, Base):
 
         Parameters
         ----------
-        X : npt.NDArray
+        X : Union[npt.NDArray, list]
             Input data used for training the model.
-        y : npt.NDArray
+        y : Union[npt.NDArray, list]
             Corresponding labels or target values for the input data.
         verbose : bool, default=True
             Flag to enable or disable detailed output during training.
@@ -46,7 +51,7 @@ class BaseClassifier(ABC, Base):
         """
 
     @abstractmethod
-    def predict(self, X) -> Optional[npt.NDArray]:
+    def predict(self, X: Union[npt.NDArray, list]) -> npt.NDArray:
         """
         Generate predictions based on the input data X.
 
@@ -54,16 +59,20 @@ class BaseClassifier(ABC, Base):
 
         Parameters
         ----------
-        X : npt.NDArray
+        X : Union[npt.NDArray, list]
             Input data for which predictions will be generated.
 
         Returns
         -------
         Predictions : Optional[npt.NDArray]
-            Predicted values for each input sample, or ``None`` if the prediction fails.
+            Predicted values for each input sample.
         """
 
-    def score(self, X: npt.NDArray, y: list) -> float:
+    def score(
+        self,
+        X: Union[npt.NDArray, list],
+        y: Union[npt.NDArray, list]
+    ) -> float:
         """
         Score function calculates forecast accuracy.
 
@@ -75,9 +84,9 @@ class BaseClassifier(ABC, Base):
 
         Parameters
         ----------
-        X : np.ndarray
+        X : Union[npt.NDArray, list]
             Feature set with shape (n_samples, n_features).
-        y : np.ndarray
+        y : Union[npt.NDArray, list]
             True values with shape (n_samples,).
 
         Returns
@@ -88,9 +97,6 @@ class BaseClassifier(ABC, Base):
         if len(y) == 0:
             return 0
         y_pred = self.predict(X)
-
-        if y_pred is None:
-            return 0
 
         return accuracy_score(y, y_pred)
 

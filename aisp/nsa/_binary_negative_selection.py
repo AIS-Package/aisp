@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Dict, Literal, Optional
+from typing import Dict, Literal, Optional, Union
 
 import numpy as np
 import numpy.typing as npt
@@ -84,7 +84,12 @@ class BNSA(BaseClassifier):
         """Returns the trained detectors, organized by class."""
         return self._detectors
 
-    def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True) -> BNSA:
+    def fit(
+        self,
+        X: Union[npt.NDArray, list],
+        y: Union[npt.NDArray, list],
+        verbose: bool = True,
+    ) -> BNSA:
         """Training according to X and y, using the method negative selection method.
 
         Parameters
@@ -174,7 +179,7 @@ class BNSA(BaseClassifier):
 
         return self
 
-    def predict(self, X: npt.NDArray) -> npt.NDArray:
+    def predict(self, X: Union[npt.NDArray, list]) -> npt.NDArray:
         """Prediction of classes based on detectors created after training.
 
         Parameters
@@ -205,7 +210,7 @@ class BNSA(BaseClassifier):
             or self._detectors_stack is None
             or self.classes is None
         ):
-            raise ModelNotFittedError('BNSA')
+            raise ModelNotFittedError("BNSA")
         X = check_array_type(X)
         check_feature_dimension(X, self._n_features)
         check_binary_array(X)

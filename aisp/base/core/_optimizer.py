@@ -124,7 +124,7 @@ class BaseOptimizer(ABC, Base):
         Parameters
         ----------
         max_iters : int
-            Maximum number of interactions
+            Maximum number of iterations
         n_iter_no_change: int, default=10
             the maximum number of iterations without updating the best
         verbose : bool, default=True
@@ -149,7 +149,7 @@ class BaseOptimizer(ABC, Base):
 
         Returns
         -------
-        cost : float
+        affinity : float
             Cost value associated with the given solution.
         """
 

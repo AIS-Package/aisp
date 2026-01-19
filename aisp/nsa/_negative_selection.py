@@ -129,7 +129,12 @@ class RNSA(BaseClassifier):
         """Returns the trained detectors, organized by class."""
         return self._detectors
 
-    def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True) -> RNSA:
+    def fit(
+        self,
+        X: Union[npt.NDArray, list],
+        y: Union[npt.NDArray, list],
+        verbose: bool = True,
+    ) -> RNSA:
         """
         Perform training according to X and y, using the negative selection method (NegativeSelect).
 
@@ -216,7 +221,7 @@ class RNSA(BaseClassifier):
         self._detectors = list_detectors_by_class
         return self
 
-    def predict(self, X: npt.NDArray) -> npt.NDArray:
+    def predict(self, X: Union[npt.NDArray, list]) -> npt.NDArray:
         """
         Prediction of classes based on detectors created after training.
 
@@ -242,7 +247,7 @@ class RNSA(BaseClassifier):
             for ``X``.
         """
         if self._detectors is None or self.classes is None:
-            raise ModelNotFittedError('AiNet')
+            raise ModelNotFittedError("AiNet")
         X = check_array_type(X)
         check_feature_dimension(X, self._n_features)
 
