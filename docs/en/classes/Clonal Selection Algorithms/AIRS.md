@@ -168,12 +168,12 @@ def _init_memory_c(self, antigens_list: npt.NDArray) -> List[Cell]:
 
 ---
 
-### Method `__slice_index_list_by_class(...)`
+### Method `_slice_index_list_by_class(...)`
 
-The function ``__slice_index_list_by_class(...)`` separates the indices of the rows according to the output class, to iterate over the sample array, only at the positions where the output corresponds to the class being trained:
+The function ``_slice_index_list_by_class(...)`` separates the indices of the rows according to the output class, to iterate over the sample array, only at the positions where the output corresponds to the class being trained:
 
 ```python
-def __slice_index_list_by_class(self, y: npt.NDArray) -> dict:
+def _slice_index_list_by_class(self, y: npt.NDArray) -> dict:
 ```
 
 Returns a dictionary with classes as keys and indices in ``X`` of the samples.

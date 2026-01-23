@@ -242,11 +242,11 @@ class BNSA(BaseClassifier):
                 c.append("non-self")
             # If the class cannot be identified by the detectors
             elif not class_found:
-                self.__assign_class_to_non_self_sample(line, c)
+                self._assign_class_to_non_self_sample(line, c)
 
         return np.array(c)
 
-    def __assign_class_to_non_self_sample(self, line: npt.NDArray, c: list):
+    def _assign_class_to_non_self_sample(self, line: npt.NDArray, c: list):
         """Determine the class of a sample when all detectors classify it as "non-self".
 
         Classification is performed using the ``max_average_difference`` and
