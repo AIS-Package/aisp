@@ -18,7 +18,7 @@ from aisp.base.immune.mutation import (
         (np.array([0.1, 0.3, 0.3, 0.4, 0.5]), 5, False, 1.0),
         (np.array([2.1, -0.3, 4.3, 1.4, 0.5]), 5, False, 1.0),
         (np.array([1, 2, 3, 4, 5], dtype=np.int64), 5, False, 1.0),
-        (np.array([True, False, False, True]), 5, True, 0.7),
+        (np.array([True, False, False, True]), 5, True, 0.75),
         (np.array([0.1, 0.3, 0.3, 0.4, 0.5]), 5, False, 0.7),
         (np.array([2.1, -0.3, 4.3, 1.4, 0.5]), 5, False, 0.7),
         (np.array([1, 2, 3, 4, 5], dtype=np.int64), 5, False, 0.7),
@@ -40,7 +40,7 @@ def test_generate_mutated_clones(vector, n, mutate_as_binary, mutation_rate):
     for both binary and continuous feature vectors.
     """
     if mutate_as_binary:
-        result = clone_and_mutate_binary(vector, n)
+        result = clone_and_mutate_binary(vector, n, mutation_rate)
     else:
         if np.all(vector >= 0.0) and np.all(vector <= 1.0):
             result = clone_and_mutate_continuous(vector, n, mutation_rate)

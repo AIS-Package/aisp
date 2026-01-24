@@ -41,7 +41,7 @@ class Clonalg(BaseOptimizer):
     rate_clonal : float, default=10
         Maximum number of possible clones of a cell. This value is multiplied by
         cell_affinity to determine the number of clones.
-    rate_hypermutation : float, default=0.75
+    rate_hypermutation : float, default=1.0
         Rate of mutated clones, used as a scalar factor.
     n_diversity_injection : int, default=5
         Number of new random memory cells injected to maintain diversity.
@@ -88,7 +88,7 @@ class Clonalg(BaseOptimizer):
         problem_size: int,
         N: int = 50,
         rate_clonal: int = 10,
-        rate_hypermutation: float = 0.75,
+        rate_hypermutation: float = 1.0,
         n_diversity_injection: int = 5,
         selection_size: int = 5,
         affinity_function: Optional[Callable[..., npt.NDArray]] = None,
@@ -103,7 +103,7 @@ class Clonalg(BaseOptimizer):
         self.rate_clonal: int = sanitize_param(rate_clonal, 10, lambda x: x > 0)
         self.rate_hypermutation: np.float64 = np.float64(
             sanitize_param(
-                rate_hypermutation, 0.75, lambda x: x > 0
+                rate_hypermutation, 1.0, lambda x: x > 0
             )
         )
         self.n_diversity_injection: int = sanitize_param(
@@ -327,7 +327,7 @@ class Clonalg(BaseOptimizer):
             Array of shape (n_clone, len(antibody)) containing mutated clones
         """
         if self.feature_type == "binary-features":
-            return clone_and_mutate_binary(antibody, n_clone)
+            return clone_and_mutate_binary(antibody, n_clone, rate_hypermutation)
         if (
             self.feature_type == "ranged-features"
             and self._bounds_extend_cache is not None
@@ -370,7 +370,7 @@ class Clonalg(BaseOptimizer):
                 if self.mode == "min":
                     normalized_affinity = max(0.0, 1.0 - normalized_affinity)
 
-            num_clones = max(0, int(self.rate_clonal * normalized_affinity))
+            num_clones = max(1, int(self.rate_clonal * normalized_affinity))
             clones = self._clone_and_mutate(
                 antibody.vector,
                 num_clones,
