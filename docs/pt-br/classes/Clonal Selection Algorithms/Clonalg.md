@@ -24,7 +24,7 @@ O construtor inicializa a instância do CLONALG com os principais parâmetros qu
 * **problem_size** (`int`): Dimensão do problema a ser otimizado.
 * **N** (`int`, padrão=50): Número de células de memória (anticorpos) na população.
 * **rate_clonal** (`float`, padrão=10): Número máximo de clones possíveis de uma célula. Este valor é multiplicado pela afinidade da célula para determinar o número de clones.
-* **rate_hypermutation** (`float`, padrão=0.75): Taxa de clones mutados, usada como fator escalar.
+* **rate_hypermutation** (`float`, padrão=1.0): Taxa de clones mutados, usada como fator escalar.
 * **n_diversity_injection** (`int`, padrão=5): Número de novas células de memória aleatórias injetadas para manter a diversidade.
 * **selection_size** (`int`, padrão=5): Número de melhores anticorpos selecionados para clonagem.
 * **affinity_function** (`Optional[Callable[..., npt.NDArray]]`, padrão=None): Função objetivo usada para avaliar soluções candidatas.

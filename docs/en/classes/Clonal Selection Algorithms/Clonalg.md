@@ -24,7 +24,7 @@ The constructor initializes the CLONALG instance with key parameters that define
 * **problem_size** (`int`): The dimension of the problem to be optimized.
 * **N** (`int`, default=50): The number of memory cells (antibodies) in the population.
 * **rate_clonal** (`float`, default=10): The maximum number of possible clones of a cell. This value is multiplied by the cell's affinity to determine the number of clones.
-* **rate_hypermutation** (`float`, default=0.75): The rate of mutated clones, used as a scalar factor.
+* **rate_hypermutation** (`float`, default=1.0): The rate of mutated clones, used as a scalar factor.
 * **n_diversity_injection** (`int`, default=5): The number of new random memory cells injected to maintain diversity.
 * **selection_size** (`int`, default=5): The number of best antibodies selected for cloning.
 * **affinity_function** (`Optional[Callable[..., npt.NDArray]]`, default=None): The objective function used to evaluate candidate solutions.
