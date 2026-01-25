@@ -88,12 +88,12 @@ retorna a acurácia, do tipo ``float``.
 
 ## Métodos privados
 
-### Método `__assign_class_to_non_self_sample(...)`
+### Método `_assign_class_to_non_self_sample(...)`
 
 Essa função determina a classe de uma amostra quando todos os detectores a classificam como não-própria. A classificação é realizada utilizando os métodos ``max_average_difference`` ou ``max_nearest_difference``.
 
 ```python
-def __assign_class_to_non_self_sample(self, line, c) -> npt.NDArray:
+def _assign_class_to_non_self_sample(self, line, c) -> npt.NDArray:
 ```
 
 **Parâmetros:**

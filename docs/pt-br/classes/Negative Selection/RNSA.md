@@ -112,12 +112,12 @@ retorna a acurácia, do tipo ``float``.
 
 ---
 
-### Método `__checks_valid_detector(...)`
+### Método `_checks_valid_detector(...)`
 
-A função ``def __checks_valid_detector(...)`` verifica se o detector possui raio ``r`` válido para o não-próprio da classe:
+A função ``def _checks_valid_detector(...)`` verifica se o detector possui raio ``r`` válido para o não-próprio da classe:
 
 ```python
-def __checks_valid_detector(self, X: npt.NDArray, vector_x: npt.NDArray, samplesIndexClass: npt.NDArray) -> bool:
+def _checks_valid_detector(self, X: npt.NDArray, vector_x: npt.NDArray, samplesIndexClass: npt.NDArray) -> bool:
 ```
 
 **Parâmetros:**
@@ -130,19 +130,19 @@ def __checks_valid_detector(self, X: npt.NDArray, vector_x: npt.NDArray, samples
 
 ---
 
-### Método `__compare_KnearestNeighbors_List(...)`
+### Método `_compare_KnearestNeighbors_List(...)`
 
-A função ``def __compare_KnearestNeighbors_List(...)`` compara a distância dos k-vizinhos mais próximo, para isso se a distância da nova amostra for menor, substitui ``k-1`` e ordena em ordem crescente:
+A função ``def _compare_KnearestNeighbors_List(...)`` compara a distância dos k-vizinhos mais próximo, para isso se a distância da nova amostra for menor, substitui ``k-1`` e ordena em ordem crescente:
 
 ```python
-def __compare_KnearestNeighbors_List(self, knn: npt.NDArray, distance: float) -> npt.NDArray:
+def _compare_KnearestNeighbors_List(self, knn: npt.NDArray, distance: float) -> npt.NDArray:
 ```
 
 **Retorna:** uma lista com as distâncias dos k-vizinhos mais próximo.
 
 ---
 
-### Método `__compare_sample_to_detectors(...)`
+### Método `_compare_sample_to_detectors(...)`
 
 Função para comparar uma amostra com os detectores, verificando se a amostra é própria.
 
@@ -156,12 +156,12 @@ Nesta função, quando possui ambiguidade de classes, retorna a classe que possu
 
 ---
 
-### Método `__detector_is_valid_to_Vdetector(...)`
+### Método `_detector_is_valid_to_Vdetector(...)`
 
 Verifique se a distância entre o detector e as amostras, descontando o raio das amostras, é maior do que o raio mínimo.
 
 ```python
-def __detector_is_valid_to_Vdetector(self, distance, vector_x):
+def _detector_is_valid_to_Vdetector(self, distance, vector_x):
 ```
 
 **Parâmetros:**
@@ -176,12 +176,12 @@ def __detector_is_valid_to_Vdetector(self, distance, vector_x):
 
 ---
 
-### Método `__distance(...)`
+### Método `_distance(...)`
 
-A função ``def __distance(...)`` calcula a distância entre dois pontos utilizando a técnica definida em ``metric``, no qual são: ``'euclidiana', 'minkowski', ou 'manhattan'``
+A função ``def _distance(...)`` calcula a distância entre dois pontos utilizando a técnica definida em ``metric``, no qual são: ``'euclidiana', 'minkowski', ou 'manhattan'``
 
 ```python
-def __distance(self, u: npt.NDArray, v: npt.NDArray):
+def _distance(self, u: npt.NDArray, v: npt.NDArray):
 ```
 
 Os parâmetros de entrada são NDArrays: ``u`` e ``v``, com as coordenadas para os pontos.

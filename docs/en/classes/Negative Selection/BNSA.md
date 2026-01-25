@@ -91,12 +91,12 @@ It returns the accuracy as a float type.
 
 ---
 
-### Method __assign_class_to_non_self_sample(...)
+### Method _assign_class_to_non_self_sample(...)
 
 This function determines the class of a sample when all detectors classify it as "non-self". Classification is performed using the ``max_average_difference`` and ``max_nearest_difference`` methods.
 
 ```python
-def __assign_class_to_non_self_sample(self, line, c) -> npt.NDArray:
+def _assign_class_to_non_self_sample(self, line, c) -> npt.NDArray:
 ```
 
 **Parameters**

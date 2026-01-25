@@ -1,5 +1,7 @@
 """Base class for parameter introspection compatible with the scikit-learn API."""
 
+from __future__ import annotations
+
 
 class Base:
     """
@@ -9,7 +11,7 @@ class Base:
     the scikit-learn API, allowing access to the model's public parameters.
     """
 
-    def set_params(self, **params):
+    def set_params(self, **params) -> Base:
         """
         Set the parameters of the instance.
 

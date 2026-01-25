@@ -116,12 +116,12 @@ It returns the accuracy as a float type.
 
 ---
 
-### Method __checks_valid_detector(...)
+### Method _checks_valid_detector(...)
 
-The ``def __checks_valid_detector(...)`` function checks if the detector has a valid ``r`` radius for the non-self of the class:
+The ``def _checks_valid_detector(...)`` function checks if the detector has a valid ``r`` radius for the non-self of the class:
 
 ```python
-def __checks_valid_detector(self, X: npt.NDArray, vector_x: npt.NDArray, samplesIndexClass: npt.NDArray) -> bool:
+def _checks_valid_detector(self, X: npt.NDArray, vector_x: npt.NDArray, samplesIndexClass: npt.NDArray) -> bool:
 ```
 
 **The input parameters are:**
@@ -136,25 +136,25 @@ def __checks_valid_detector(self, X: npt.NDArray, vector_x: npt.NDArray, samples
 
 ---
 
-### Method __compare_KnearestNeighbors_List(...)
+### Method _compare_KnearestNeighbors_List(...)
 
-The ``def __compare_KnearestNeighbors_List(...)`` function compares the distance of the k-nearest neighbors, so if the distance of the new sample is smaller, replaces ``k-1`` and sorts in ascending order:
+The ``def _compare_KnearestNeighbors_List(...)`` function compares the distance of the k-nearest neighbors, so if the distance of the new sample is smaller, replaces ``k-1`` and sorts in ascending order:
 
 ```python
-def __compare_KnearestNeighbors_List(self, knn: npt.NDArray, distance: float) -> npt.NDArray:
+def _compare_KnearestNeighbors_List(self, knn: npt.NDArray, distance: float) -> npt.NDArray:
 ```
 
 Returns a list of k-nearest neighbor distances.
 
 ---
 
-### Method __compare_sample_to_detectors(...)
+### Method _compare_sample_to_detectors(...)
 
 Function to compare a sample with the detectors, verifying if the sample is proper.
 In this function, when there is class ambiguity, it returns the class that has the greatest average distance between the detectors.
 
 ```python
-def __compare_sample_to_detectors(self, line):
+def _compare_sample_to_detectors(self, line):
 ```
 
 **The input parameters are:**
@@ -165,12 +165,12 @@ def __compare_sample_to_detectors(self, line):
 
 ---
 
-### Method __detector_is_valid_to_Vdetector(...)
+### Method _detector_is_valid_to_Vdetector(...)
 
 Check if the distance between the detector and the samples, minus the radius of the samples, is greater than the minimum radius.
 
 ```python
-def __detector_is_valid_to_Vdetector(self, distance, vector_x):
+def _detector_is_valid_to_Vdetector(self, distance, vector_x):
 ```
 
 **The input parameters are:**
@@ -185,12 +185,12 @@ def __detector_is_valid_to_Vdetector(self, distance, vector_x):
 
 ---
 
-### Method __distance(...)
+### Method _distance(...)
 
-The function ``def __distance(...)`` calculates the distance between two points using the technique defined in ``metric``, which are: ``'euclidean', 'norm_euclidean', or 'manhattan'``
+The function ``def _distance(...)`` calculates the distance between two points using the technique defined in ``metric``, which are: ``'euclidean', 'norm_euclidean', or 'manhattan'``
 
 ```python
-def __distance(self, u: npt.NDArray, v: npt.NDArray):
+def _distance(self, u: npt.NDArray, v: npt.NDArray):
 ```
 
 The input parameters are ``u`` and ``v`` NDArrays, with the coordinates for the points.

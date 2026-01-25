@@ -56,3 +56,20 @@ class UnsupportedTypeError(Exception):
                 "continuous vector."
             )
         super().__init__(message)
+
+
+class ModelNotFittedError(Exception):
+    """
+    Exception raised when a method is called before the model has been fit.
+
+    This exception is thrown when the  model instance is being used without first training
+    it via the `fit` method.
+    """
+
+    def __init__(self, object_name: str, message: Optional[str] = None):
+        if message is None:
+            message = (
+                f"The model {object_name} must be fitted before use. Train the model by calling "
+                "the fit method before using it."
+            )
+        super().__init__(message)
