@@ -5,10 +5,11 @@ Contém funções que geram conjuntos de clones mutados a partir de vetores cont
 ## clone_and_mutate_continuous
 
 ```python
-@njit([(types.float64[:], types.int64)], cache=True)
+@njit([(types.float64[:], types.int64, types.float64)], cache=True)
 def clone_and_mutate_continuous(
     vector: npt.NDArray[np.float64],
-    n: int
+    n: int,
+    mutation_rate: float
 ) -> npt.NDArray[np.float64]:
 ```
 
@@ -20,6 +21,9 @@ Esta função cria `n` clones do vetor de entrada e aplica mutações aleatória
 
 * `vector` (`npt.NDArray[np.float64]`): Vetor contínuo original que representa a célula imune a ser clonada e mutada.
 * `n` (`int`): Quantidade de clones mutados a serem gerados.
+* `mutation_rate` : (`float`) Se 0 <= mutation_rate < 1: probabilidade de mutação de cada componente.
+  Se mutation_rate >= 1 ou mutation_rate <= 0: a mutação aleatoriza a quantidade de componentes entre 1 e len(vector).
+
 
 ### Retorno
 
@@ -30,10 +34,11 @@ Esta função cria `n` clones do vetor de entrada e aplica mutações aleatória
 ## clone_and_mutate_binary
 
 ```python
-@njit([(types.boolean[:], types.int64)], cache=True)
+@njit([(types.boolean[:], types.int64, types.float64)], cache=True)
 def clone_and_mutate_binary(
     vector: npt.NDArray[np.bool_],
-    n: int
+    n: int,
+    mutation_rate: float
 ) -> npt.NDArray[np.bool_]:
 ```
 
@@ -45,6 +50,8 @@ Esta função cria `n` clones do vetor binário de entrada e aplica mutações a
 
 * `vector` (`npt.NDArray[np.bool_]`): Vetor binário original que representa a célula imune a ser clonada e mutada.
 * `n` (`int`): Quantidade de clones mutados a serem gerados.
+* `mutation_rate` : (`float`) Se 0 <= mutation_rate < 1: probabilidade de mutação de cada componente.
+  Se mutation_rate >= 1 ou mutation_rate <= 0: a mutação aleatoriza a quantidade de componentes entre 1 e len(vector).
 
 ### Retorno
 
@@ -55,11 +62,12 @@ Esta função cria `n` clones do vetor binário de entrada e aplica mutações a
 ## clone_and_mutate_ranged
 
 ```python
-@njit([(types.float64[:], types.int64, types.float64[:, :])], cache=True)
+@njit([(types.float64[:], types.int64, types.float64[:, :], types.float64)], cache=True)
 def clone_and_mutate_ranged(
-vector: npt.NDArray[np.float64],
-n: int,
-bounds: npt.NDArray[np.float64]
+    vector: npt.NDArray[np.float64],
+    n: int,
+    bounds: npt.NDArray[np.float64],
+    mutation_rate: float,
 ) -> npt.NDArray[np.float64]:
 ```
 
@@ -72,6 +80,8 @@ Esta função cria `n` clones do vetor de entrada e aplica mutações aleatória
 * `vector` (`npt.NDArray[np.float64]`): Vetor contínuo original que representa a célula imune a ser clonada e mutada.
 * `n` (`int`): Quantidade de clones mutados a serem gerados.
 * `bounds` (`npt.NDArray[np.float64]`): Um array 2D com o formato `(len(vector), 2)` contendo os valores mínimo e máximo para cada dimensão.
+* `mutation_rate` : (`float`) Se 0 <= mutation_rate < 1: probabilidade de mutação de cada componente.
+  Se mutation_rate >= 1 ou mutation_rate <= 0: a mutação aleatoriza a quantidade de componentes entre 1 e len(vector).
 
 ### Retorna
 

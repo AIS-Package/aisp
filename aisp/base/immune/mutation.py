@@ -162,7 +162,9 @@ def clone_and_mutate_ranged(
 
 @njit([(types.int64[:], types.int64, types.float64)], cache=True)
 def clone_and_mutate_permutation(
-    vector: npt.NDArray[np.int64], n: int, mutation_rate: float
+    vector: npt.NDArray[np.int64],
+    n: int,
+    mutation_rate: float
 ) -> npt.NDArray[np.int64]:
     """Generate a set of mutated clones by random permutation.
 
