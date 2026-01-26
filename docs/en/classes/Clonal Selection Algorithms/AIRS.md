@@ -17,10 +17,11 @@ Related and noteworthy works: access here [2](#ref2).
 
 * **n_resources** (``float``): Total amount of available resources. Defaults to 10.
 * **rate_clonal** (``float``): Maximum number of possible clones of a class. This quantity is multiplied by (cell stimulus * rate_hypermutation) to define the number of clones. Defaults to 10.
-* **rate_hypermutation** (``int``): The rate of mutated clones derived from rate_clonal as a scalar factor. Defaults to 0.75.
+* **rate_mc_init** (``float``): Percentage of samples used to initialize memory cells. Defaults to 0.2.
+* **rate_hypermutation** (``float``): The rate of mutated clones derived from rate_clonal as a scalar factor. Defaults to 0.75.
 * **affinity_threshold_scalar** (``float``): Normalized affinity threshold. Defaults to 0.75.
-* **k** (``int``): The number of K nearest neighbors that will be used to choose a label in the prediction. Defaults to 10.
-* **max_iters** (``int``): Maximum number of interactions in the refinement process of the ARB set exposed to aᵢ. Defaults to 100.
+* **k** (``int``): The number of K nearest neighbors that will be used to choose a label in the prediction. Defaults to 3.
+* **max_iters** (``int``): Maximum number of iterations in the refinement process of the ARB set exposed to aᵢ. Defaults to 100.
 * **resource_amplified** (``float``): Resource consumption amplifier is multiplied with the incentive to subtract resources. Defaults to 1.0 without amplification.
 * **metric** (Literal["manhattan", "minkowski", "euclidean"]): Way to calculate the distance between the detector and the sample:
   * ``'Euclidean'`` ➜ The calculation of the distance is given by the expression:  
@@ -52,16 +53,21 @@ Related and noteworthy works: access here [2](#ref2).
 The ``fit(...)`` function generates detectors for the non-owners relative to the samples:
 
 ```python
-def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True) -> AIRS:
+def fit(
+    self,
+    X: Union[npt.NDArray, list],
+    y: Union[npt.NDArray, list],
+    verbose: bool = True,
+) -> AIRS:
 ```
 
 It performs the training according to ``X`` and ``y``, using the method Artificial Immune Recognition System (``AIRS``).
 
 ****Parameters:****
 
-* **X**: Array with sample features, with **N** samples (rows) and **N** features (columns), normalized to values between [0, 1].
-* **y**: Array with output classes corresponding to **N** samples related to ``X``.
-* **verbose**: Boolean, default ``True``, determines if the feedback from the detector generation will be printed.
+* **X** (``Union[npt.NDArray, list]``): Array with sample features, with **N** samples (rows) and **N** features (columns), normalized to values between [0, 1].
+* **y** (``Union[npt.NDArray, list]``): Array with output classes corresponding to **N** samples related to ``X``.
+* **verbose** (``bool``): Boolean, default ``True``, determines if the feedback from the detector generation will be printed.
 
 *Returns the class instance.*
 
@@ -72,12 +78,22 @@ It performs the training according to ``X`` and ``y``, using the method Artifici
 The ``predict(...)`` function performs class prediction using the generated detectors:
 
 ```python
-def predict(self, X: npt.NDArray) -> Optional[npt.NDArray]:
+def predict(self, X: Union[npt.NDArray, list]) -> npt.NDArray:
 ```
 
 **Parameters:**
 
-* **X**: Array with the features for prediction, with **N** samples (rows) and **N** columns.
+* **X** (``Union[npt.NDArray, list]``): Array with the features for prediction, with **N** samples (rows) and **N** columns.
+
+**Raises**
+
+* `TypeError`  
+    If X is not a ndarray or list.
+* `FeatureDimensionMismatch`  
+    If the number of features in X does not match the expected number.
+* `ModelNotFittedError`  
+    If the mode has not yet been adjusted and does not have defined memory cells, it is
+    not able to predictions
 
 **Returns:**
 
@@ -105,12 +121,18 @@ Returns accuracy as a ``float``.
 The function "_refinement_arb(...)" refines the ARB set until the average stimulation value exceeds the defined threshold (``affinity_threshold_scalar``).
 
 ```python
-def _refinement_arb(self, ai: npt.NDArray, c_match: Cell, arb_list: List[_ARB]) -> _ARB:
+def _refinement_arb(
+    self,
+    ai: npt.NDArray,
+    c_match_stimulation: float,
+    arb_list: List[_ARB]
+) -> _ARB:
 ```
 
 **Parameters:**
 
-* **c_match** (``Cell``): Cell with the highest stimulation relative to aᵢ.
+* **ai** (`npt.NDArray`): The current antigen.
+* **c_match_stimulation** (``float``): The highest stimulation relative to aᵢ
 * **arb_list** (``List[_ARB]``): ARB set.
 
 Returns the cell (_ARB) with the highest ARB stimulation.
@@ -120,6 +142,11 @@ Returns the cell (_ARB) with the highest ARB stimulation.
 ### Method `_cells_affinity_threshold(...)`
 
 The function "_cells_affinity_threshold(...)" calculates the affinity threshold based on the average affinity between training instances, where aᵢ and aⱼ are a pair of antigens, and affinity is measured by distance (Euclidean, Manhattan, Minkowski, Hamming).  
+
+```python
+def _cells_affinity_threshold(self, antigens_list: npt.NDArray):
+```
+
 **Following the formula:**
 
 $$
@@ -131,24 +158,20 @@ $$
 
 * **antigens_list** (``NDArray``): List of training antigens.
 
-```python
-def _cells_affinity_threshold(self, antigens_list: npt.NDArray):
-```
-
 ---
 
 ### Method `_affinity(...)`
 
 The function "_affinity(...)" calculates the stimulus between two vectors using metrics.
 
+```python
+def _affinity(self, u: npt.NDArray, v: npt.NDArray) -> float:
+```
+
 **Parameters:**
 
 * **u** (``npt.NDArray``): Coordinates of the first point.
 * **v** (``npt.NDArray``): Coordinates of the second point.
-
-```python
-def _affinity(self, u: npt.NDArray, v: npt.NDArray) -> float:
-```
 
 Returns the stimulus rate between the vectors.
 
@@ -158,13 +181,13 @@ Returns the stimulus rate between the vectors.
 
 The function "_init_memory_c(...)" initializes memory cells by randomly selecting `n_antigens_selected` from the list of training antigens.
 
+```python
+def _init_memory_c(self, antigens_list: npt.NDArray) -> List[BCell]:
+```
+
 **Parameters:**
 
-* **antigens_list** (``NDArray``): List of training antigens.
-
-```python
-def _init_memory_c(self, antigens_list: npt.NDArray) -> List[Cell]:
-```
+* **antigens_list** (``npt.NDArray``): List of training antigens.
 
 ---
 
@@ -177,6 +200,29 @@ def _slice_index_list_by_class(self, y: npt.NDArray) -> dict:
 ```
 
 Returns a dictionary with classes as keys and indices in ``X`` of the samples.
+
+---
+
+### Method `__prepare_features(...)`
+
+The function ``__prepare_features(...)`` check the samples, specifying the type, quantity of characteristics, and other parameters.
+
+```python
+def _prepare_features(self, X: Union[npt.NDArray, list]) -> npt.NDArray:
+```
+
+* This method updates the following attributes:
+    * ``self._feature_type``
+    * ``self.metric`` (only for binary features)
+    * ``self._bounds`` (only for ranged features)
+    * ``self._n_features``
+
+
+**Parameters:**
+
+* **X** (``Union[npt.NDArray, list]``): Array with the features for prediction, with **N** samples (rows) and **N** columns.
+
+Returns the processed input data.
 
 ---
 

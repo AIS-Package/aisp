@@ -12,7 +12,9 @@ from ..utils.distance import compute_metric_distance, hamming
 
 @njit([(types.boolean[:, :], types.boolean[:], types.float64)], cache=True)
 def check_detector_bnsa_validity(
-    x_class: npt.NDArray[np.bool_], vector_x: npt.NDArray[np.bool_], aff_thresh: float
+    x_class: npt.NDArray[np.bool_],
+    vector_x: npt.NDArray[np.bool_],
+    aff_thresh: float
 ) -> bool:
     """
     Check the validity of a candidate detector using the Hamming distance.

@@ -191,7 +191,7 @@ class AiNet(BaseClusterer):
 
         Parameters
         ----------
-        X : npt.NDArray
+        X : Union[npt.NDArray, list]
             Input data used for training the model.
         verbose : bool, default=True
             Feedback from the progress bar showing current training interaction details.

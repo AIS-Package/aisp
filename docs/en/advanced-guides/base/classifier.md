@@ -7,7 +7,11 @@ Base class for classification algorithms, defining the abstract methods ``fit`` 
 ### Method `score(...)`
 
 ```python
-def score(self, X: npt.NDArray, y: list) -> float
+def score(
+    self,
+    X: Union[npt.NDArray, list],
+    y: Union[npt.NDArray, list]
+) -> float:
 ```
 
 Score function calculates forecast accuracy.
@@ -17,8 +21,8 @@ This function was added for compatibility with some scikit-learn functions.
 
 **Parameters:**
 
-* **X** (`npt.NDArray`): Feature set with shape (n_samples, n_features).
-* **y** (`list`): True values with shape (n_samples,).
+* **X** (`Union[npt.NDArray, list]`): Feature set with shape (n_samples, n_features).
+* **y** (`Union[npt.NDArray, list]`): True values with shape (n_samples,).
 
 **Returns**:
 
@@ -44,7 +48,12 @@ Returns a dictionary with the classes as key and the indices in ``X`` of the sam
 
 ```python
 @abstractmethod
-def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True) -> BaseClassifier:
+def fit(
+    self,
+    X: Union[npt.NDArray, list],
+    y: Union[npt.NDArray, list],
+    verbose: bool = True
+) -> BaseClassifier:
 ```
 
 Fit the model to the training data.
@@ -59,7 +68,7 @@ Implementation:
 
 ```python
 @abstractmethod
-def predict(self, X) -> Optional[npt.NDArray]:
+def predict(self, X: Union[npt.NDArray, list]) -> npt.NDArray:
 ```
 
 Performs label prediction for the given data.

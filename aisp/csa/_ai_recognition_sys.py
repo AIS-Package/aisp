@@ -353,7 +353,10 @@ class AIRS(BaseClassifier):
         )
 
     def _refinement_arb(
-        self, ai: npt.NDArray, c_match_stimulation: float, arb_list: List[_ARB]
+        self,
+        ai: npt.NDArray,
+        c_match_stimulation: float,
+        arb_list: List[_ARB]
     ) -> _ARB:
         """
         Refine the ARB set until the average stimulation exceeds the defined threshold.

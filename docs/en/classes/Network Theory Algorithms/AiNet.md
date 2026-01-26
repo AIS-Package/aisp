@@ -36,12 +36,12 @@ For clustering, it optionally uses a **Minimum Spanning Tree (MST)** to separate
 
 **Other initialized variables:**
 
-* **_population_antibodies** (``npt.NDArray``): Stores the current set of antibodies.
-* **_memory_network** (``dict``): Dictionary mapping clusters to antibodies.
-* **_mst_structure** (``scipy.sparse.csr_matrix``): MST adjacency structure.
-* **_mst_mean_distance** (``float``): Mean of MST edge distances.
-* **_mst_std_distance** (``float``): Standard deviation of MST edge distances.
-* **classes** (``list``): List of cluster labels.
+* **_population_antibodies** (``Optional[npt.NDArray]``): Stores the current set of antibodies.
+* **_memory_network** (``Dict[int, List[Cell]]``): Dictionary mapping clusters to antibodies.
+* **_mst_structure** (``Optional[npt.NDArray]``): MST adjacency structure.
+* **_mst_mean_distance** (``Optional[float]``): Mean of MST edge distances.
+* **_mst_std_distance** (``Optional[float]``): Standard deviation of MST edge distances.
+* **classes** (``Optional[npt.NDArray]``): List of cluster labels.
 
 ---
 
@@ -52,13 +52,18 @@ For clustering, it optionally uses a **Minimum Spanning Tree (MST)** to separate
 Trains the AiNet model on input data:
 
 ```python
-def fit(self, X: npt.NDArray, verbose: bool = True) -> AiNet:
+def fit(self, X: Union[npt.NDArray, list], verbose: bool = True) -> AiNet:
 ```
 
 **Parameters:**
 
-* **X**: Array with input samples (rows) and features (columns).
-* **verbose**: Boolean, default True, enables progress feedback.
+* **X** (`Union[npt.NDArray, list]`): Array with input samples (rows) and features (columns).
+* **verbose** (`bool`): Boolean, default True, enables progress feedback.
+
+**Raises**
+
+* `TypeError`: If X is not a ndarray or list.
+* `UnsupportedTypeError`: If the data type of the vector is not supported.
 
 *Returns the class instance.*
 
@@ -69,12 +74,19 @@ def fit(self, X: npt.NDArray, verbose: bool = True) -> AiNet:
 Predicts cluster labels for new samples:
 
 ```python
-def predict(self, X: npt.NDArray) -> Optional[npt.NDArray]:
+def predict(self, X: Union[npt.NDArray, list]) -> npt.NDArray:
 ```
 
 **Parameters:**
 
-* **X**: Array of input features.
+* **X** (`Union[npt.NDArray, list]`): Array of input features.
+
+**Raises**
+
+* `TypeError`: If X is not a ndarray or list.
+* `ValueError`: If the array contains values other than 0 and 1.
+* `FeatureDimensionMismatch`: If the number of features in X does not match the expected number.
+* `ModelNotFittedError`: If the mode has not yet been adjusted and does not have defined memory cells, it is not able to predictions
 
 **Returns:**
 

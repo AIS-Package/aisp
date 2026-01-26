@@ -33,7 +33,7 @@ def hamming(u: npt.NDArray[np.bool_], v: npt.NDArray[np.bool_]) -> float64:
     if n == 0:
         return float64(0.0)
 
-    return np.float64(np.sum(u != v) / n)
+    return float64(np.sum(u != v) / n)
 
 
 @njit()
@@ -84,7 +84,9 @@ def cityblock(u: npt.NDArray[float64], v: npt.NDArray[float64]) -> float64:
 
 @njit()
 def minkowski(
-    u: npt.NDArray[float64], v: npt.NDArray[float64], p: float = 2.0
+    u: npt.NDArray[float64],
+    v: npt.NDArray[float64],
+    p: float = 2.0
 ) -> float64:
     """Calculate the normalized Minkowski distance between two points.
 
@@ -117,7 +119,10 @@ def minkowski(
 
 @njit([(types.float64[:], types.float64[:], types.int32, types.float64)], cache=True)
 def compute_metric_distance(
-    u: npt.NDArray[float64], v: npt.NDArray[float64], metric: int, p: float = 2.0
+    u: npt.NDArray[float64],
+    v: npt.NDArray[float64],
+    metric: int,
+    p: float = 2.0
 ) -> float64:
     """Calculate the distance between two points by the chosen metric.
 
