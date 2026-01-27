@@ -26,7 +26,7 @@ verdadeiros e nos rótulos previstos.
 * **Precisão** (``float``): A proporção de previsões corretas em relação
     ao número total de previsões.
 
-**Lança:**
+**Exceções:**
 
 * `ValueError`: Se `y_true` ou `y_pred` estiverem vazios ou se não
     tiverem o mesmo tamanho.
@@ -257,8 +257,8 @@ $(( |X₁ - Y₁|p + |X₂ - Y₂|p + ... + |Xn - Yn|p) ¹/ₚ) / n$
 * **u** (``npt.NDArray[float64]``): Coordenadas do primeiro ponto.
 * **v** (``npt.NDArray[float64]``): Coordenadas do segundo ponto.
 * **p** (``float``, padrão=2.0): O parâmetro p define o tipo de distância a ser calculada:
-  * p = 1: Distância **Manhattan** — soma das diferenças absolutas.
-  * p = 2: Distância **Euclidiana** — soma das diferenças ao quadrado (raiz quadrada).
+  * p = 1: Distância **Manhattan** - soma das diferenças absolutas.
+  * p = 2: Distância **Euclidiana** - soma das diferenças ao quadrado (raiz quadrada).
   * p > 2: Distância **Minkowski** com uma penalidade crescente à medida que p aumenta.
 
 **Returns:**
@@ -393,7 +393,7 @@ Garante que o parâmetro recebido é um array numpy. Converte de lista se necess
 
 * `npt.NDArray`: O array convertido ou validado.
 
-**Lança:**
+**Exceções:**
 
 * `TypeError`: Se não for possível converter para ndarray.
 
@@ -412,7 +412,7 @@ Garante que os arrays `x` e `y` possuem o mesmo número de amostras (primeira di
 * **x**: Array de amostras.
 * **y**: Array de classes alvo.
 
-**Lança:**
+**Exceções:**
 
 * `TypeError`: Se as dimensões não forem compatíveis.
 
@@ -431,7 +431,7 @@ Garante que o array possui o número esperado de características (features).
 * **x**: Array de entrada para predição.
 * **expected**: Número esperado de características por amostra.
 
-**Lança:**
+**Exceções:**
 
 * `FeatureDimensionMismatch`: Se o número de características não corresponder ao esperado.
 
@@ -449,7 +449,7 @@ Garante que o array contém apenas valores 0 e 1.
 
 * **x**: Array a ser verificado.
 
-**Lança:**
+**Exceções:**
 
 * `ValueError`: Se o array contiver valores diferentes de 0 e 1.
 

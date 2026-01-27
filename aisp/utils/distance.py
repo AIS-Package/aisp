@@ -101,8 +101,8 @@ def minkowski(
     p : float
         The p parameter defines the type of distance to be calculated:
 
-        - p = 1: **Manhattan** distance — sum of absolute differences.
-        - p = 2: **Euclidean** distance — sum of squared differences (square root).
+        - p = 1: **Manhattan** distance - sum of absolute differences.
+        - p = 2: **Euclidean** distance - sum of squared differences (square root).
         - p > 2: **Minkowski** distance with an increasing penalty as p increases.
 
     Returns

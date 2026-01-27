@@ -272,8 +272,8 @@ $(( |X₁ - Y₁|p + |X₂ - Y₂|p + ... + |Xn - Yn|p) ¹/ₚ) / n$
 * **u** (``npt.NDArray[float64]``): Coordinates of the first point.
 * **v** (``npt.NDArray[float64]``): Coordinates of the second point.
 * **p** float: The p parameter defines the type of distance to be calculated:
-  * p = 1: **Manhattan** distance — sum of absolute differences.
-  * p = 2: **Euclidean** distance — sum of squared differences (square root).
+  * p = 1: **Manhattan** distance - sum of absolute differences.
+  * p = 2: **Euclidean** distance - sum of squared differences (square root).
   * p > 2: **Minkowski** distance with an increasing penalty as p increases.
 
 **Returns:**
