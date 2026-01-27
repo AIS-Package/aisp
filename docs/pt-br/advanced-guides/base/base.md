@@ -10,7 +10,7 @@ Fornece os métodos `get_params` e `set_params` para compatibilidade com a API d
 ### Função set_params(...)
 
 ```python
-def set_params(self, **params)
+def set_params(self, **params) -> Base:
 ```
 
 Define os parâmetros da instância. Garante compatibilidade com funções do scikit-learn.

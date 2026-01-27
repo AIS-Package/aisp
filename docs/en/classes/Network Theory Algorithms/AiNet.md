@@ -104,7 +104,7 @@ def update_clusters(self, mst_inconsistency_factor: Optional[float] = None):
 
 **Parameters:**
 
-* **mst_inconsistency_factor**: Optional float to override the MST inconsistency factor.
+* **mst_inconsistency_factor** (`Optional[float]`): Optional float to override the MST inconsistency factor.
 
 **Updates:**
 
@@ -123,8 +123,6 @@ Initializes antibody population randomly.
 def _init_population_antibodies(self) -> npt.NDArray:
 ```
 
-**Parameters:** None
-
 **Returns:** Initialized antibodies (`npt.NDArray`).
 
 ---
@@ -139,8 +137,8 @@ def _select_and_clone_population(self, antigen: npt.NDArray, population: npt.NDA
 
 **Parameters:**
 
-* **antigen**: Array representing the antigen to which affinities will be computed.
-* **population**: Array of antibodies to be evaluated and cloned.
+* **antigen** (`npt.NDArray`): Array representing the antigen to which affinities will be computed.
+* **population** (`npt.NDArray`): Array of antibodies to be evaluated and cloned.
 
 **Returns:** List of mutated clones.
 
@@ -156,8 +154,8 @@ def _clonal_suppression(self, antigen: npt.NDArray, clones: list):
 
 **Parameters:**
 
-* **antigen**: Array representing the antigen.
-* **clones**: List of candidate clones to be suppressed.
+* **antigen** (`npt.NDArray`): Array representing the antigen.
+* **clones** (`list`): List of candidate clones to be suppressed.
 
 **Returns:** List of non-redundant, high-affinity clones.
 
@@ -173,7 +171,7 @@ def _memory_suppression(self, pool_memory: list) -> list:
 
 **Parameters:**
 
-* **pool_memory**: List of antibodies currently in memory.
+* **pool_memory** (`list`): List of antibodies currently in memory.
 
 **Returns:** Cleaned memory pool (`list`).
 
@@ -203,8 +201,8 @@ def _affinity(self, u: npt.NDArray, v: npt.NDArray) -> float:
 
 **Parameters:**
 
-* **u**: Array representing the first point.
-* **v**: Array representing the second point.
+* **u** (`npt.NDArray`): Array representing the first point.
+* **v** (`npt.NDArray`): Array representing the second point.
 
 **Returns:** Affinity score (`float`) in [0,1].
 
@@ -220,8 +218,8 @@ def _calculate_affinities(self, u: npt.NDArray, v: npt.NDArray) -> npt.NDArray:
 
 **Parameters:**
 
-* **u**: Reference vector (`npt.NDArray`) of shape `(n_features,)`.
-* **v**: Target vectors (`npt.NDArray`) of shape `(n_samples, n_features)`.
+* **u** (`npt.NDArray`): Reference vector (`npt.NDArray`) of shape `(n_features,)`.
+* **v** (`npt.NDArray`): Target vectors (`npt.NDArray`) of shape `(n_samples, n_features)`.
 
 **Returns:** Array of affinities (`npt.NDArray`) with shape `(n_samples,)`.
 
@@ -237,8 +235,8 @@ def _clone_and_mutate(self, antibody: npt.NDArray, n_clone: int) -> npt.NDArray:
 
 **Parameters:**
 
-* **antibody**: Original antibody vector to clone and mutate.
-* **n_clone**: Number of clones to generate.
+* **antibody** (`npt.NDArray`): Original antibody vector to clone and mutate.
+* **n_clone** (`int`): Number of clones to generate.
 
 **Returns:** Array of mutated clones (`npt.NDArray`) of shape `(n_clone, len(antibody))`.
 

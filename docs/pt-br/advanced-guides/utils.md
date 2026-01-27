@@ -10,7 +10,7 @@ Funções de utilidade para o desenvolvimento.
 def accuracy_score(
     y_true: Union[npt.NDArray, list],
     y_pred: Union[npt.NDArray, list]
-) -> float
+) -> float:
 ```
 
 Função para calcular a acurácia de precisão com base em listas de rótulos
@@ -138,7 +138,7 @@ A função ``sanitize_param(...)``, retorna o valor se ele satisfizer a condiç�
 def sanitize_seed(seed: Any) -> Optional[int]:
 ```
 
-A função ``sanitize_param(...)``, retorna a semente se for um inteiro não negativo; caso contrário, retorna Nenhum.
+A função ``sanitize_seed(...)``, retorna a semente se for um inteiro não negativo; caso contrário, retorna Nenhum.
 
 **Parâmetros:**
 
@@ -174,7 +174,8 @@ Funções utilitárias para distância normalizada entre matrizes com decoradore
 ### Função `hamming(...)`
 
 ```python
-def hamming(u: npt.NDArray, v: npt.NDArray) -> np.float64:
+@njit([(types.boolean[:], types.boolean[:])], cache=True)
+def hamming(u: npt.NDArray[np.bool_], v: npt.NDArray[np.bool_]) -> float64:
 ```
 
 Função para calcular a distância de Hamming normalizada entre dois pontos.
@@ -183,19 +184,20 @@ $((x₁ ≠ x₂) + (y₁ ≠ y₂) + ... + (yn ≠ yn)) / n$
 
 **Parâmetros:**
 
-* **u** (``npt.NDArray``): Coordenadas do primeiro ponto
-* **v** (``npt.NDArray``): Coordenadas do segundo ponto.
+* **u** (``npt.NDArray[np.bool_]``): Coordenadas do primeiro ponto
+* **v** (``npt.NDArray[np.bool_]``): Coordenadas do segundo ponto.
 
 **Returns:**
 
-* Distância (``float``) entre os dois pontos.
+* Distância (``float64``) entre os dois pontos.
 
 ---
 
 ### Função `euclidean(...)`
 
 ```python
-def euclidean(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]) -> np.float64:
+@njit()
+def euclidean(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]) -> float64:
 ```
 
 Função para calcular a distância euclidiana normalizada entre dois pontos.
@@ -204,19 +206,20 @@ $√( (x₁ - x₂)² + (y₁ - y₂)² + ... + (yn - yn)²)$
 
 **Parâmetros:**
 
-* **u** (``npt.NDArray``): Coordenadas do primeiro ponto
-* **v** (``npt.NDArray``): Coordenadas do segundo ponto.
+* **u** (``npt.NDArray[np.float64]``): Coordenadas do primeiro ponto
+* **v** (``npt.NDArray[np.float64]``): Coordenadas do segundo ponto.
 
 **Returns:**
 
-* Distância (``float``) entre os dois pontos.
+* Distância (``float64``) entre os dois pontos.
 
 ---
 
 ### Função `cityblock(...)`
 
 ```python
-def cityblock(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]) -> np.float64:
+@njit()
+def cityblock(u: npt.NDArray[float64], v: npt.NDArray[float64]) -> float64:
 ```
 
 Função para calcular a distância Manhattan normalizada entre dois pontos.
@@ -225,19 +228,24 @@ $(|x₁ - x₂| + |y₁ - y₂| + ... + |yn - yn|) / n$
 
 **Parâmetros:**
 
-* **u** (``npt.NDArray``): Coordenadas do primeiro ponto
-* **v** (``npt.NDArray``): Coordenadas do segundo ponto.
+* **u** (``npt.NDArray[float64]``): Coordenadas do primeiro ponto
+* **v** (``npt.NDArray[float64]``): Coordenadas do segundo ponto.
 
 **Returns:**
 
-* Distância (``float``) entre os dois pontos.
+* Distância (``float64``) entre os dois pontos.
 
 ---
 
 ### Função `minkowski(...)`
 
 ```python
-def minkowski(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64], p: float = 2.0):
+@njit()
+def minkowski(
+    u: npt.NDArray[float64],
+    v: npt.NDArray[float64],
+    p: float = 2.0
+) -> float64:
 ```
 
 Função para calcular a distância de Minkowski normalizada entre dois pontos.
@@ -246,9 +254,9 @@ $(( |X₁ - Y₁|p + |X₂ - Y₂|p + ... + |Xn - Yn|p) ¹/ₚ) / n$
 
 **Parâmetros:**
 
-* **u** (``npt.NDArray``): Coordenadas do primeiro ponto.
-* **v** (``npt.NDArray``): Coordenadas do segundo ponto.
-* **p** (``float``): O parâmetro p define o tipo de distância a ser calculada:
+* **u** (``npt.NDArray[float64]``): Coordenadas do primeiro ponto.
+* **v** (``npt.NDArray[float64]``): Coordenadas do segundo ponto.
+* **p** (``float``, padrão=2.0): O parâmetro p define o tipo de distância a ser calculada:
   * p = 1: Distância **Manhattan** — soma das diferenças absolutas.
   * p = 2: Distância **Euclidiana** — soma das diferenças ao quadrado (raiz quadrada).
   * p > 2: Distância **Minkowski** com uma penalidade crescente à medida que p aumenta.
@@ -262,22 +270,23 @@ $(( |X₁ - Y₁|p + |X₂ - Y₂|p + ... + |Xn - Yn|p) ¹/ₚ) / n$
 ### Função `compute_metric_distance(...)`
 
 ```python
+@njit([(types.float64[:], types.float64[:], types.int32, types.float64)], cache=True)
 def compute_metric_distance(
-    u: npt.NDArray[np.float64],
-    v: npt.NDArray[np.float64],
+    u: npt.NDArray[float64],
+    v: npt.NDArray[float64],
     metric: int,
-    p: np.float64 = 2.0
-) -> np.float64:
+    p: float = 2.0
+) -> float64:
 ```
 
 Função para calcular a distância entre dois pontos pela ``métrica`` escolhida.
 
 **Parâmetros:**
 
-* **u** (``npt.NDArray``): Coordenadas do primeiro ponto.
-* **v** (``npt.NDArray``): Coordenadas do segundo ponto.
-* **metric** (``int``): Métrica de distância a ser utilizada. Opções disponíveis: [0 (Euclidean), 1 (Manhattan), 2 (Minkowski)].
-* **p** (``float``): Parâmetro da métrica de Minkowski (utilizado apenas se `metric` for "minkowski").
+* **u** (``npt.NDArray[float64]``): Coordenadas do primeiro ponto.
+* **v** (``npt.NDArray[float64]``): Coordenadas do segundo ponto.
+* **metric** (``int``): Métrica de distância a ser utilizada. Opções disponíveis: 0 (Euclidean), 1 (Manhattan), 2 (Minkowski).
+* **p** (``float``, padrão=2.0): Parâmetro da métrica de Minkowski (utilizado apenas se `metric` for "minkowski").
 
 **Returns:**
 
@@ -288,11 +297,12 @@ Função para calcular a distância entre dois pontos pela ``métrica`` escolhid
 ### Função `min_distance_to_class_vectors(...)`
 
 ```python
+@njit([(types.float64[:, :], types.float64[:], types.int32, types.float64)], cache=True)
 def min_distance_to_class_vectors(
-    x_class: npt.NDArray,
-    vector_x: npt.NDArray,
+    x_class: npt.NDArray[float64],
+    vector_x: npt.NDArray[float64],
     metric: int,
-    p: float = 2.0
+    p: float = 2.0,
 ) -> float:
 ```
 
@@ -302,7 +312,7 @@ Calcula a menor distância entre um vetor de entrada e os vetores de uma classe.
 
 * **x_class** (``npt.NDArray``): Array contendo os vetores da classe com os quais o vetor de entrada será comparado. Formato esperado: (n_amostras, n_características).
 * **vector_x** (``npt.NDArray``): Vetor a ser comparado com os vetores da classe. Formato esperado: (n_características,).
-* **metric** (``int``): Métrica de distância a ser utilizada. Opções disponíveis: [0 (Euclidean), 1 (Manhattan), 2 (Minkowski)].
+* **metric** (``int``): Métrica de distância a ser utilizada. Opções disponíveis: 0 (Euclidean), 1 (Manhattan), 2 (Minkowski), 3 (Hamming).
 * **p** (``float``): Parâmetro da métrica de Minkowski (utilizado apenas se `metric` for "minkowski").
 
 **Returns:**

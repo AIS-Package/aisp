@@ -210,5 +210,6 @@ def _distance(self, u: npt.NDArray, v: npt.NDArray):
 **Parameters**
 * **u** (`npt.NDArray`): Coordinates of the first point.
 * **v** (`npt.NDArray`): Coordinates of the second point.
+
 **Returns:**
 * distance (`float`): the distance between the two points.

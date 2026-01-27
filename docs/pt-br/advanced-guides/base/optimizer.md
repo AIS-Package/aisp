@@ -120,7 +120,12 @@ Reinicia o estado interno do objeto, limpando o histórico e resetando os valore
 
 ```python
 @abstractmethod
-def optimize(self, max_iters: int = 50, n_iter_no_change=10, verbose: bool = True) -> Any
+def optimize(
+    self,
+    max_iters: int = 50,
+    n_iter_no_change: int = 10,
+    verbose: bool = True
+) -> Any:
 ```
 
 Executa o processo de otimização. Este método deve ser implementado pela subclasse para definir como a estratégia de
@@ -128,8 +133,8 @@ otimização explora o espaço de busca.
 
 **Parâmetros**:
 
-* **max_iters** (`int`): Número máximo de iterações.
-* **n_iter_no_change** (`int`, padrão=10: Número máximo de iterações sem atualização da melhor solução.
+* **max_iters** (`int`, padrão=50): Número máximo de iterações.
+* **n_iter_no_change** (`int`, padrão=10): Número máximo de iterações sem atualização da melhor solução.
 * **verbose**: (`bool`, padrão=True): Flag para habilitar ou desabilitar saída detalhada durante a otimização.
 
 **Retorna**:

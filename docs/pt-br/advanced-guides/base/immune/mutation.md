@@ -19,9 +19,9 @@ Esta função cria `n` clones do vetor de entrada e aplica mutações aleatória
 
 ### Parâmetros
 
-* `vector` (`npt.NDArray[np.float64]`): Vetor contínuo original que representa a célula imune a ser clonada e mutada.
-* `n` (`int`): Quantidade de clones mutados a serem gerados.
-* `mutation_rate` : (`float`) Se 0 <= mutation_rate < 1: probabilidade de mutação de cada componente.
+* **vector** (`npt.NDArray[np.float64]`): Vetor contínuo original que representa a célula imune a ser clonada e mutada.
+* **n** (`int`): Quantidade de clones mutados a serem gerados.
+* **mutation_rate** : (`float`) Se 0 <= mutation_rate < 1: probabilidade de mutação de cada componente.
   Se mutation_rate >= 1 ou mutation_rate <= 0: a mutação aleatoriza a quantidade de componentes entre 1 e len(vector).
 
 
@@ -48,9 +48,9 @@ Esta função cria `n` clones do vetor binário de entrada e aplica mutações a
 
 ### Parâmetros
 
-* `vector` (`npt.NDArray[np.bool_]`): Vetor binário original que representa a célula imune a ser clonada e mutada.
-* `n` (`int`): Quantidade de clones mutados a serem gerados.
-* `mutation_rate` : (`float`) Se 0 <= mutation_rate < 1: probabilidade de mutação de cada componente.
+* **vector** (`npt.NDArray[np.bool_]`): Vetor binário original que representa a célula imune a ser clonada e mutada.
+* **n** (`int`): Quantidade de clones mutados a serem gerados.
+* **mutation_rate** (`float`): Se 0 <= mutation_rate < 1: probabilidade de mutação de cada componente.
   Se mutation_rate >= 1 ou mutation_rate <= 0: a mutação aleatoriza a quantidade de componentes entre 1 e len(vector).
 
 ### Retorno
@@ -77,10 +77,10 @@ Esta função cria `n` clones do vetor de entrada e aplica mutações aleatória
 
 ### Parâmetros
 
-* `vector` (`npt.NDArray[np.float64]`): Vetor contínuo original que representa a célula imune a ser clonada e mutada.
-* `n` (`int`): Quantidade de clones mutados a serem gerados.
-* `bounds` (`npt.NDArray[np.float64]`): Um array 2D com o formato `(len(vector), 2)` contendo os valores mínimo e máximo para cada dimensão.
-* `mutation_rate` : (`float`) Se 0 <= mutation_rate < 1: probabilidade de mutação de cada componente.
+* **vector** (`npt.NDArray[np.float64]`): Vetor contínuo original que representa a célula imune a ser clonada e mutada.
+* **n** (`int`): Quantidade de clones mutados a serem gerados.
+* **bounds** (`npt.NDArray[np.float64]`): Um array 2D com formato `(2, len(vector))` contendo os valores mínimo e máximo para cada dimensão.
+* **mutation_rate** : (`float`) Se 0 <= mutation_rate < 1: probabilidade de mutação de cada componente.
   Se mutation_rate >= 1 ou mutation_rate <= 0: a mutação aleatoriza a quantidade de componentes entre 1 e len(vector).
 
 ### Retorna
@@ -106,9 +106,9 @@ Esta função cria `n` clones do vetor de permutação de entrada e aplica muta�
 
 ### Parâmetros
 
-* `vector` (`npt.NDArray[np.int64]`): A célula imune original com valores de permutação a serem clonados e mutados.
-* `n` (`int`): Número de clones mutados a serem gerados.
-* `mutation_rate` (`float`): Probabilidade de mutação de cada componente (0 <= mutation_rate < 1).
+* **vector** (`npt.NDArray[np.int64]`): A célula imune original com valores de permutação a serem clonados e mutados.
+* **n** (`int`): Número de clones mutados a serem gerados.
+* **mutation_rate** (`float`): Probabilidade de mutação de cada componente (0 <= mutation_rate < 1).
 
 ### Retorna
 

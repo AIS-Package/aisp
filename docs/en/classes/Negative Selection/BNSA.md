@@ -66,14 +66,13 @@ def predict(self, X: Union[npt.NDArray, list]) -> npt.NDArray:
 
 **Parameters**
 
-* **X** (`npt.NDArray`): array with the characteristics for the prediction, with **N** samples (Rows) and **N** columns.
+* **X** (`Union[npt.NDArray, list]`): array with the characteristics for the prediction, with **N** samples (Rows) and **N** columns.
 
 **Raises:**
 
 * ``TypeError``: If X is not an ndarray or list.
-* ``ValueError``: If the array contains values other than 0 and 1.
-* ``FeatureDimensionMismatch``: If the number of features in X does not match the expected number.
 * ``ValueError``: X contains values that are not composed only of 0 and 1.
+* ``FeatureDimensionMismatch``: If the number of features in X does not match the expected number.
 * ``ModelNotFittedError``: If the mode has not yet been adjusted and does not have defined detectors or classes, it is not able to predictions
 
 **Returns:**

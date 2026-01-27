@@ -42,15 +42,15 @@ def hyper_clonal_mutate(
     n: int,
     feature_type: FeatureType = "continuous-features",
     bounds: Optional[npt.NDArray[np.float64]] = None
-) -> np.ndarray
+) -> npt.NDArray:
 ```
 
 Clona N características das características de uma célula, gerando um conjunto de vetores mutados.
 
 #### Parâmetros
 * **n** (`int`): Número de clones a serem gerados a partir de mutações da célula original.
-* **feature_type** (`Literal["binary-features", "continuous-features", "ranged-features"]`): Especifica o tipo de características com base na natureza das características de entrada.
-* **bounds** (`Optional[npt.NDArray[np.float64]]`): Array (n_features, 2) com mínimo e máximo por dimensão.
+* **feature_type** (`FeatureType`, padrão="continuous-features"): Especifica o tipo de características com base na natureza das características de entrada.
+* **bounds** (`Optional[npt.NDArray[np.float64]]`, padrão=None): Array (n_features, 2) com mínimo e máximo por dimensão.
 
 #### Retorna
 * **npt.NDArray**: Um array contendo N vetores mutados da célula original.

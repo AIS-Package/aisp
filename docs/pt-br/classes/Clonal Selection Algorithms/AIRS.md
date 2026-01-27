@@ -16,9 +16,10 @@ Estudos relacionados de destaque: [2](#ref2).
 
 * **n_resources** (`float`): Quantidade total de recursos disponíveis. O padrão é 10.
 * **rate_clonal** (`float`): Número máximo de clones possíveis de uma classe. Esta quantidade é multiplicada por (estímulo da célula * taxa de hipermutação) para definir o número de clones. O padrão é 10.
-* **rate_hypermutation** (`int`): Taxa de clones mutados derivada de rate_clonal como um fator escalar. O padrão é 0,75.
+* **rate_mc_init** (`float`): Percentual de amostras usadas para inicializar as células de memórias. O padrão é 0,75.
+* **rate_hypermutation** (`float`): Taxa de clones mutados derivada de rate_clonal como um fator escalar. O padrão é 0,2.
 * **affinity_threshold_scalar** (`float`): Limiar de afinidade normalizado. O padrão é 0,75.
-* **k** (`int`): Número de vizinhos mais próximos (k-NN) que será usado para escolher um rótulo na predição. O padrão é 10.
+* **k** (`int`): Número de vizinhos mais próximos (k-NN) que será usado para escolher um rótulo na predição. O padrão é 3.
 * **max_iters** (`int`): Número máximo de interações no processo de refinamento do conjunto ARB exposto a aᵢ. O padrão é 100.
 * **resource_amplified** (`float`): Amplificador de consumo de recursos, multiplicado com o estímulo para subtrair recursos. O padrão é 1.0 (sem amplificação).
 * **metric** (`Literal["manhattan", "minkowski", "euclidean"]`): Forma de calcular a distância entre o detector e a amostra:  
@@ -50,16 +51,21 @@ Estudos relacionados de destaque: [2](#ref2).
 A função `fit(...)` gera detectores para os não-pertencentes em relação às amostras:
 
 ```python
-def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True) -> AIRS:
+def fit(
+    self,
+    X: Union[npt.NDArray, list],
+    y: Union[npt.NDArray, list],
+    verbose: bool = True,
+) -> AIRS:
 ```
 
 Realiza o treinamento conforme `X` e `y`, utilizando o método Sistema de Reconhecimento Imune Artificial (`AIRS`).
 
 **Parâmetros:**
 
-* **X**: Array com as características das amostras, com **N** amostras (linhas) e **N** características (colunas), normalizado para valores entre [0, 1].
-* **y**: Array com as classes de saída correspondentes às **N** amostras relacionadas a `X`.
-* **verbose**: Booleano, padrão `True`, determina se o feedback da geração dos detectores será impresso.
+* **X** (``Union[npt.NDArray, list]``): Array com as características das amostras, com **N** amostras (linhas) e **N** características (colunas), normalizado para valores entre [0, 1].
+* **y** (``Union[npt.NDArray, list]``): Array com as classes de saída correspondentes às **N** amostras relacionadas a `X`.
+* **verbose**:  (``bool``, padrão=True), determina se o feedback da geração dos detectores será impresso.
 
 **Retorna:**
 
@@ -72,17 +78,23 @@ Realiza o treinamento conforme `X` e `y`, utilizando o método Sistema de Reconh
 A função `predict(...)` realiza a predição de classes utilizando os detectores gerados:
 
 ```python
-def predict(self, X: npt.NDArray) -> npt.NDArray:
+def predict(self, X: Union[npt.NDArray, list]) -> npt.NDArray:
 ```
 
 **Parâmetros:**
 
-* **X** (`npt.NDArray`): Array com as características para predição, com **N** amostras (linhas) e **N** colunas.
+* **X** (`Union[npt.NDArray, list]`): Array com as características para predição, com **N** amostras (linhas) e **N** colunas.
+
+**Raises**
+
+* `TypeError`: Se X não for um ndarray ou uma lista.
+* `FeatureDimensionMismatch`: Se o número de características em X não corresponder ao número esperado.
+* `ModelNotFittedError`: Se o modelo ainda não tiver sido ajustado e não possuir células de memória definidas, não conseguirá realizar predições.
+
 
 **Retorna:**
 
 * **C**: Um array de predições com as classes de saída para as características fornecidas.
-* **None**: Se não houver detectores.
 
 ---
 
@@ -107,12 +119,17 @@ Retorna a acurácia como um `float`.
 A função "_refinement_arb(...)" refina o conjunto ARB até que o valor médio de estímulo ultrapasse o limiar definido (`affinity_threshold_scalar`).
 
 ```python
-def _refinement_arb(self, ai: npt.NDArray, c_match: Cell, arb_list: List[_ARB]) -> _ARB:
+def _refinement_arb(
+    self,
+    ai: npt.NDArray,
+    c_match_stimulation: float,
+    arb_list: List[_ARB]
+) -> _ARB:
 ```
 
 **Parâmetros:**
 * **ai** (`npt.NDArray`): Antígeno atual
-* **c_match** (`Cell`): Célula com o maior estímulo em relação a aᵢ.
+* **c_match_stimulation** (``float``): Célula com o maior estímulo em relação a aᵢ.
 * **arb_list** (`List[_ARB]`): Conjunto ARB.
 
 **Retorna:**
@@ -124,6 +141,11 @@ Retorna a célula (`_ARB`) com o maior estímulo ARB.
 ### Método `_cells_affinity_threshold(...)`
 
 A função "_cells_affinity_threshold(...)" calcula o limiar de afinidade com base na afinidade média entre instâncias de treinamento, onde aᵢ e aⱼ são um par de antígenos, e a afinidade é medida pela distância (Euclidiana, Manhattan, Minkowski, Hamming).
+
+```python
+def _cells_affinity_threshold(self, antigens_list: npt.NDArray):
+```
+
 **Seguindo a fórmula:**
 
 $$
@@ -131,13 +153,10 @@ $$
 \sum_{i=1}^{n-1} \sum_{j=i+1}^{n} \text{affinity}(a_i, a_j)}{n(n-1)/2}
 $$
 
-```python
-def _cells_affinity_threshold(self, antigens_list: npt.NDArray):
-```
 
 **Parâmetros:**
 
-* **antigens_list** (`NDArray`): Lista de antígenos de treinamento.
+* **antigens_list** (`npt.NDArray`): Lista de antígenos de treinamento.
 
 ---
 
@@ -171,7 +190,50 @@ def _init_memory_c(self, antigens_list: npt.NDArray) -> List[Cell]:
 
 **Parâmetros:**
 
-* **antigens_list** (`NDArray`): Lista de antígenos de treinamento.
+* **antigens_list** (`npt.NDArray`): Lista de antígenos de treinamento.
+
+---
+
+
+### Method `_slice_index_list_by_class(...)`
+
+A função ``_slice_index_list_by_class(...)``, separa os índices das linhas conforme a classe de saída, para percorrer o array de amostra, apenas nas posições que a saída for a classe que está sendo treinada:
+
+
+```python
+def _slice_index_list_by_class(self, y: npt.NDArray) -> dict:
+```
+
+**Parâmetros**:
+
+* **y** (`npt.NDArray`): Recebe um array ``n_samples`` com as classes de saída do array de amostras ``X``.
+
+**Retorna:**
+
+Retorna um dicionário com as classes como chave e os índices em ``X`` das amostras.
+
+---
+
+### Method `__prepare_features(...)`
+
+A função ``__prepare_features(...)`` verifica as amostras, especificando o tipo, a quantidade de características e outros parâmetros.
+
+```python
+def _prepare_features(self, X: Union[npt.NDArray, list]) -> npt.NDArray:
+```
+
+* Este método atualiza os seguintes atributos:
+    * ``self._feature_type``
+    * ``self.metric`` (apenas para características binárias)
+    * ``self._bounds`` (apenas para características com intervalo definido)
+    * ``self._n_features``
+
+
+**Parameters:**
+
+* **X** (``Union[npt.NDArray, list]``): Array com as características para predição, contendo N amostras (linhas) e N colunas.
+
+Retorna os dados de entrada processados.
 
 ---
 
@@ -197,8 +259,8 @@ def consume_resource(self, n_resource: float, amplified: float = 1) -> float:
 
 **Parâmetros:**
 
-* n_resource (`float`) : A quantidade inicial de recursos.
-* amplified (`float`): Amplificador para o consumo de recursos pela célula. É multiplicado pelo estímulo da célula. O padrão é 1.
+* **n_resource** (`float`) : A quantidade inicial de recursos.
+* **amplified** (`float`): Amplificador para o consumo de recursos pela célula. É multiplicado pelo estímulo da célula. O padrão é 1.
 
 **Retorna:**
 

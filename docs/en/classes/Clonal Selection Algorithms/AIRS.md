@@ -23,7 +23,7 @@ Related and noteworthy works: access here [2](#ref2).
 * **k** (``int``): The number of K nearest neighbors that will be used to choose a label in the prediction. Defaults to 3.
 * **max_iters** (``int``): Maximum number of iterations in the refinement process of the ARB set exposed to aᵢ. Defaults to 100.
 * **resource_amplified** (``float``): Resource consumption amplifier is multiplied with the incentive to subtract resources. Defaults to 1.0 without amplification.
-* **metric** (Literal["manhattan", "minkowski", "euclidean"]): Way to calculate the distance between the detector and the sample:
+* **metric** (`Literal["manhattan", "minkowski", "euclidean"]`): Way to calculate the distance between the detector and the sample:
   * ``'Euclidean'`` ➜ The calculation of the distance is given by the expression:  
     √( (x₁ - x₂)² + (y₁ - y₂)² + ... + (yn - yn)²).
   * ``'minkowski'`` ➜ The calculation of the distance is given by the expression:  
@@ -98,7 +98,6 @@ def predict(self, X: Union[npt.NDArray, list]) -> npt.NDArray:
 **Returns:**
 
 * **C**: An array of predictions with the output classes for the given features.
-* **None**: If there are no detectors.
 
 ---
 
@@ -156,7 +155,7 @@ $$
 
 **Parameters:**
 
-* **antigens_list** (``NDArray``): List of training antigens.
+* **antigens_list** (``npt.NDArray``): List of training antigens.
 
 ---
 
@@ -244,8 +243,8 @@ Returns the processed input data.
 
 **Parameters:**
 
-* n_resource (```float```) : The initial amount of resources.
-* amplified (``float``): Amplifier for resource consumption by the cell. It is multiplied by the cell's stimulus. The default value is 1.
+* **n_resource** (```float```) : The initial amount of resources.
+* **amplified** (``float``): Amplifier for resource consumption by the cell. It is multiplied by the cell's stimulus. The default value is 1.
 
 ```python
 def consume_resource(self, n_resource: float, amplified: float = 1) -> float:
