@@ -9,7 +9,11 @@ Classe base para algoritmos de classificação, definindo os métodos abstratos 
 ### Método `score(...)`
 
 ```python
-def score(self, X: npt.NDArray, y: list) -> float
+def score(
+    self,
+    X: Union[npt.NDArray, list],
+    y: Union[npt.NDArray, list]
+) -> float:
 ```
 
 A função de pontuação (score) calcula a precisão da previsão.
@@ -19,8 +23,8 @@ Esta função foi adicionada para compatibilidade com algumas funções do sciki
 
 **Parâmetros**:
 
-* **X** (`npt.NDArray`): Conjunto de características com formato (n_amostras, n_características).
-* **y** (`list`): Valores verdadeiros com formato (n_amostras,).
+* **X** (`Union[npt.NDArray, list]`): Conjunto de características com formato (n_amostras, n_características).
+* **y** (`Union[npt.NDArray, list]`): Valores verdadeiros com formato (n_amostras,).
 
 **Retorna:**
 
@@ -36,6 +40,12 @@ A função ``_slice_index_list_by_class(...)``, separa os índices das linhas co
 def _slice_index_list_by_class(self, y: npt.NDArray) -> dict:
 ```
 
+**Parâmetros**:
+
+* **y** (`npt.NDArray`): Recebe um array ``n_samples`` com as classes de saída do array de amostras ``X``.
+
+**Retorna:**
+
 Retorna um dicionário com as classes como chave e os índices em ``X`` das amostras.
 
 ---
@@ -46,7 +56,12 @@ Retorna um dicionário com as classes como chave e os índices em ``X`` das amos
 
 ```python
 @abstractmethod
-def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True) -> BaseClassifier:
+def fit(
+    self,
+    X: Union[npt.NDArray, list],
+    y: Union[npt.NDArray, list],
+    verbose: bool = True
+) -> BaseClassifier:
 ```
 
 Ajusta o modelo aos dados de treinamento.
@@ -61,7 +76,7 @@ Implementação:
 
 ```python
 @abstractmethod
-def predict(self, X) -> Optional[npt.NDArray]:
+def predict(self, X: Union[npt.NDArray, list]) -> npt.NDArray:
 ```
 
 Realiza a previsão dos rótulos para os dados fornecidos.

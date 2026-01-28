@@ -36,12 +36,12 @@ For clustering, it optionally uses a **Minimum Spanning Tree (MST)** to separate
 
 **Other initialized variables:**
 
-* **_population_antibodies** (``npt.NDArray``): Stores the current set of antibodies.
-* **_memory_network** (``dict``): Dictionary mapping clusters to antibodies.
-* **_mst_structure** (``scipy.sparse.csr_matrix``): MST adjacency structure.
-* **_mst_mean_distance** (``float``): Mean of MST edge distances.
-* **_mst_std_distance** (``float``): Standard deviation of MST edge distances.
-* **classes** (``list``): List of cluster labels.
+* **_population_antibodies** (``Optional[npt.NDArray]``): Stores the current set of antibodies.
+* **_memory_network** (``Dict[int, List[Cell]]``): Dictionary mapping clusters to antibodies.
+* **_mst_structure** (``Optional[npt.NDArray]``): MST adjacency structure.
+* **_mst_mean_distance** (``Optional[float]``): Mean of MST edge distances.
+* **_mst_std_distance** (``Optional[float]``): Standard deviation of MST edge distances.
+* **classes** (``Optional[npt.NDArray]``): List of cluster labels.
 
 ---
 
@@ -52,13 +52,18 @@ For clustering, it optionally uses a **Minimum Spanning Tree (MST)** to separate
 Trains the AiNet model on input data:
 
 ```python
-def fit(self, X: npt.NDArray, verbose: bool = True) -> AiNet:
+def fit(self, X: Union[npt.NDArray, list], verbose: bool = True) -> AiNet:
 ```
 
 **Parameters:**
 
-* **X**: Array with input samples (rows) and features (columns).
-* **verbose**: Boolean, default True, enables progress feedback.
+* **X** (`Union[npt.NDArray, list]`): Array with input samples (rows) and features (columns).
+* **verbose** (`bool`): Boolean, default True, enables progress feedback.
+
+**Raises**
+
+* `TypeError`: If X is not a ndarray or list.
+* `UnsupportedTypeError`: If the data type of the vector is not supported.
 
 *Returns the class instance.*
 
@@ -69,12 +74,19 @@ def fit(self, X: npt.NDArray, verbose: bool = True) -> AiNet:
 Predicts cluster labels for new samples:
 
 ```python
-def predict(self, X: npt.NDArray) -> Optional[npt.NDArray]:
+def predict(self, X: Union[npt.NDArray, list]) -> npt.NDArray:
 ```
 
 **Parameters:**
 
-* **X**: Array of input features.
+* **X** (`Union[npt.NDArray, list]`): Array of input features.
+
+**Raises**
+
+* `TypeError`: If X is not a ndarray or list.
+* `ValueError`: If the array contains values other than 0 and 1.
+* `FeatureDimensionMismatch`: If the number of features in X does not match the expected number.
+* `ModelNotFittedError`: If the mode has not yet been adjusted and does not have defined memory cells, it is not able to predictions
 
 **Returns:**
 
@@ -92,7 +104,7 @@ def update_clusters(self, mst_inconsistency_factor: Optional[float] = None):
 
 **Parameters:**
 
-* **mst_inconsistency_factor**: Optional float to override the MST inconsistency factor.
+* **mst_inconsistency_factor** (`Optional[float]`): Optional float to override the MST inconsistency factor.
 
 **Updates:**
 
@@ -111,8 +123,6 @@ Initializes antibody population randomly.
 def _init_population_antibodies(self) -> npt.NDArray:
 ```
 
-**Parameters:** None
-
 **Returns:** Initialized antibodies (`npt.NDArray`).
 
 ---
@@ -127,8 +137,8 @@ def _select_and_clone_population(self, antigen: npt.NDArray, population: npt.NDA
 
 **Parameters:**
 
-* **antigen**: Array representing the antigen to which affinities will be computed.
-* **population**: Array of antibodies to be evaluated and cloned.
+* **antigen** (`npt.NDArray`): Array representing the antigen to which affinities will be computed.
+* **population** (`npt.NDArray`): Array of antibodies to be evaluated and cloned.
 
 **Returns:** List of mutated clones.
 
@@ -144,8 +154,8 @@ def _clonal_suppression(self, antigen: npt.NDArray, clones: list):
 
 **Parameters:**
 
-* **antigen**: Array representing the antigen.
-* **clones**: List of candidate clones to be suppressed.
+* **antigen** (`npt.NDArray`): Array representing the antigen.
+* **clones** (`list`): List of candidate clones to be suppressed.
 
 **Returns:** List of non-redundant, high-affinity clones.
 
@@ -161,7 +171,7 @@ def _memory_suppression(self, pool_memory: list) -> list:
 
 **Parameters:**
 
-* **pool_memory**: List of antibodies currently in memory.
+* **pool_memory** (`list`): List of antibodies currently in memory.
 
 **Returns:** Cleaned memory pool (`list`).
 
@@ -191,8 +201,8 @@ def _affinity(self, u: npt.NDArray, v: npt.NDArray) -> float:
 
 **Parameters:**
 
-* **u**: Array representing the first point.
-* **v**: Array representing the second point.
+* **u** (`npt.NDArray`): Array representing the first point.
+* **v** (`npt.NDArray`): Array representing the second point.
 
 **Returns:** Affinity score (`float`) in [0,1].
 
@@ -208,8 +218,8 @@ def _calculate_affinities(self, u: npt.NDArray, v: npt.NDArray) -> npt.NDArray:
 
 **Parameters:**
 
-* **u**: Reference vector (`npt.NDArray`) of shape `(n_features,)`.
-* **v**: Target vectors (`npt.NDArray`) of shape `(n_samples, n_features)`.
+* **u** (`npt.NDArray`): Reference vector (`npt.NDArray`) of shape `(n_features,)`.
+* **v** (`npt.NDArray`): Target vectors (`npt.NDArray`) of shape `(n_samples, n_features)`.
 
 **Returns:** Array of affinities (`npt.NDArray`) with shape `(n_samples,)`.
 
@@ -225,8 +235,8 @@ def _clone_and_mutate(self, antibody: npt.NDArray, n_clone: int) -> npt.NDArray:
 
 **Parameters:**
 
-* **antibody**: Original antibody vector to clone and mutate.
-* **n_clone**: Number of clones to generate.
+* **antibody** (`npt.NDArray`): Original antibody vector to clone and mutate.
+* **n_clone** (`int`): Number of clones to generate.
 
 **Returns:** Array of mutated clones (`npt.NDArray`) of shape `(n_clone, len(antibody))`.
 

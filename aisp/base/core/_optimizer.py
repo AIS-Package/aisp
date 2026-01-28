@@ -115,7 +115,12 @@ class BaseOptimizer(ABC, Base):
         return "".join(report_parts)
 
     @abstractmethod
-    def optimize(self, max_iters: int = 50, n_iter_no_change=10, verbose: bool = True) -> Any:
+    def optimize(
+        self,
+        max_iters: int = 50,
+        n_iter_no_change: int = 10,
+        verbose: bool = True
+    ) -> Any:
         """Execute the optimization process.
 
         This abstract method must be implemented by the subclass, defining

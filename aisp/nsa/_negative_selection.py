@@ -280,7 +280,9 @@ class RNSA(BaseClassifier):
         return np.array(c)
 
     def _checks_valid_detector(
-        self, x_class: npt.NDArray, vector_x: npt.NDArray
+        self,
+        x_class: npt.NDArray,
+        vector_x: npt.NDArray
     ) -> Union[bool, tuple[bool, float]]:
         """
         Check if the detector has a valid non-proper r radius for the class.
@@ -344,7 +346,7 @@ class RNSA(BaseClassifier):
 
         Parameters
         ----------
-        knn : npt.NDArray
+        knn : list
             List of k-nearest neighbor distances.
         distance : float
             Distance to check.
@@ -426,7 +428,9 @@ class RNSA(BaseClassifier):
         return compute_metric_distance(u, v, get_metric_code(self.metric), self.p)
 
     def _detector_is_valid_to_vdetector(
-        self, distance: float, vector_x: npt.NDArray
+        self,
+        distance: float,
+        vector_x: npt.NDArray
     ) -> Union[bool, tuple[bool, float]]:
         """Validate the detector against the vdetector.
 

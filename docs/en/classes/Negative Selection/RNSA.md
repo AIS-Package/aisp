@@ -15,7 +15,6 @@ The ``RNSA`` class has the purpose of classifying and identifying anomalies thro
 * **metric** (``str``): Way to calculate the distance between the detector and the sample:
 
   * ``'Euclidean'`` ➜ The calculation of the distance is given by the expression: √( (X₁ - X₂)² + (Y₁ - Y₂)² + ... + (Yn - Yn)²).
-
   * ``'minkowski'`` ➜ The calculation of the distance is given by the expression: ( |X₁ - Y₁|p + |X₂ - Y₂|p + ... |Xn - Yn|p) ¹/ₚ , In this project ``p == 2``.
   * ``'manhattan'`` ➜ The calculation of the distance is given by the expression: ( |X₁ - X₂| + |Y₁ - Y₂| + ...+ |Yn - Yn₂|) .
 
@@ -51,17 +50,20 @@ The ``RNSA`` class has the purpose of classifying and identifying anomalies thro
 The ``fit(...)`` function generates the detectors for non-fits with respect to the samples:
 
 ```python
-def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True):
+def fit(
+    self,
+    X: Union[npt.NDArray, list],
+    y: Union[npt.NDArray, list],
+    verbose: bool = True,
+) -> RNSA:
 ```
 
 In it, training is performed according to ``X`` and ``y``, using the negative selection method(``NegativeSelect``).
 
 The input parameters are:
 
-* **X** (`npt.NDArray`): array with the characteristics of the samples with **N** samples (rows) and **N** characteristics (columns).
-
-* **y** (`npt.NDArray`): array with the output classes arranged in **N** samples that are related to ``X``.
-
+* **X** (`Union[npt.NDArray, list]`): array with the characteristics of the samples with **N** samples (rows) and **N** characteristics (columns).
+* **y** (`Union[npt.NDArray, list]`): array with the output classes arranged in **N** samples that are related to ``X``.
 * **verbose** (`bool`): boolean with default value ``True``, determines if the feedback from the detector generation will be printed.
 
 **Raises**
@@ -81,22 +83,22 @@ The input parameters are:
 The ``predict(...)`` function performs class prediction using the generated detectors:
 
 ```python
-def predict(self, X: npt.NDArray) -> npt.NDArray:
+def predict(self, X: Union[npt.NDArray, list]) -> npt.NDArray:
 ```
 
 **The input parameter is:**
 
-* **X** (`npt.NDArray`): array with the characteristics for the prediction, with **N** samples (Rows) and **N** columns.
+* **X** (`Union[npt.NDArray, list]`): array with the characteristics for the prediction, with **N** samples (Rows) and **N** columns.
 
 **Raises:**
 
 * ``TypeError``: If X is not an ndarray or list.
 * ``FeatureDimensionMismatch``: If the number of features in X does not match the expected number.
+* ``ModelNotFittedError``: If the mode has not yet been adjusted and does not have defined detectors or classes, it is not able to predictions
 
 **Returns:**
 
-* ``C``: prediction array, with the output classes for the given characteristics.
-* ``None``: if there are no detectors.
+* C (``npt.NDArray``): A ndarray of the form ``C`` (n_samples), containing the predicted classes for ``X``.
 
 ---
 
@@ -118,21 +120,23 @@ It returns the accuracy as a float type.
 
 ### Method _checks_valid_detector(...)
 
-The ``def _checks_valid_detector(...)`` function checks if the detector has a valid ``r`` radius for the non-self of the class:
+The ``def _checks_valid_detector(...)`` function check if the detector has a valid non-proper r radius for the class.
 
 ```python
-def _checks_valid_detector(self, X: npt.NDArray, vector_x: npt.NDArray, samplesIndexClass: npt.NDArray) -> bool:
+def _checks_valid_detector(
+    self,
+    x_class: npt.NDArray,
+    vector_x: npt.NDArray
+) -> Union[bool, tuple[bool, float]]:
 ```
 
-**The input parameters are:**
+**Parameters**
 
-* **X** (`npt.NDArray`): array with sample characteristics with **N** samples (rows) and **N** characteristics (columns), normalized to values between [0, 1].
+* **x_class** (`npt.NDArray`): Array ``x_class`` with the samples per class.
+* **vector_x** (`npt.NDArray`): Randomly generated vector x candidate detector with values between[0, 1].
 
-* ``vector_x``: Randomly generated candidate detector.
-
-* ``samplesIndexClass``: Array with the indexes of a class.
-
-**Returns:** ``True`` for detectors that do not have samples inside or ``False`` if they do.
+**Returns**
+* **Validity** (``bool``): Returns whether the detector is valid or not.
 
 ---
 
@@ -141,8 +145,12 @@ def _checks_valid_detector(self, X: npt.NDArray, vector_x: npt.NDArray, samplesI
 The ``def _compare_KnearestNeighbors_List(...)`` function compares the distance of the k-nearest neighbors, so if the distance of the new sample is smaller, replaces ``k-1`` and sorts in ascending order:
 
 ```python
-def _compare_KnearestNeighbors_List(self, knn: npt.NDArray, distance: float) -> npt.NDArray:
+def _compare_knearest_neighbors_list(self, knn: list, distance: float) -> None:
 ```
+
+**Parameters**
+* **knn** (`list`): List of k-nearest neighbor distances.
+* **distance** (`float`): Distance to check.
 
 Returns a list of k-nearest neighbor distances.
 
@@ -154,14 +162,16 @@ Function to compare a sample with the detectors, verifying if the sample is prop
 In this function, when there is class ambiguity, it returns the class that has the greatest average distance between the detectors.
 
 ```python
-def _compare_sample_to_detectors(self, line):
+def _compare_sample_to_detectors(self, line: npt.NDArray) -> Optional[str]:
 ```
 
-**The input parameters are:**
+**Parameters**
 
-* line: vector with N-features
+* line (`npt.NDArray`): vector with N-features
 
-**Returns:** The predicted class with the detectors or None if the sample does not qualify for any class.
+**Returns**
+
+The predicted class with the detectors or None if the sample does not qualify for any class.
 
 ---
 
@@ -170,13 +180,17 @@ def _compare_sample_to_detectors(self, line):
 Check if the distance between the detector and the samples, minus the radius of the samples, is greater than the minimum radius.
 
 ```python
-def _detector_is_valid_to_Vdetector(self, distance, vector_x):
+def _detector_is_valid_to_vdetector(
+    self,
+    distance: float,
+    vector_x: npt.NDArray
+) -> Union[bool, tuple[bool, float]]:
 ```
 
-**The input parameters are:**
+**Parameters**
 
 * distance (``float``): minimum distance calculated between all samples.
-* vector_x (``numpy.ndarray``): randomly generated candidate detector vector x with values between 0 and 1.
+* vector_x (``npt.NDArray``): randomly generated candidate detector vector x with values between 0 and 1.
 
 **Returns:**
 
@@ -193,6 +207,9 @@ The function ``def _distance(...)`` calculates the distance between two points u
 def _distance(self, u: npt.NDArray, v: npt.NDArray):
 ```
 
-The input parameters are ``u`` and ``v`` NDArrays, with the coordinates for the points.
+**Parameters**
+* **u** (`npt.NDArray`): Coordinates of the first point.
+* **v** (`npt.NDArray`): Coordinates of the second point.
 
-**Returns:** the distance (``double``) between the two points.
+**Returns:**
+* distance (`float`): the distance between the two points.

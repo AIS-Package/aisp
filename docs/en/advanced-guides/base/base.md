@@ -11,7 +11,7 @@ Provides the `get_params` and `set_params` methods for compatibility with the sc
 ### Method `set_params(...)`
 
 ```python
-def set_params(self, **params)
+def set_params(self, **params) -> Base:
 ```
 
 Set the parameters of the instance. Ensures compatibility with scikit-learn functions.

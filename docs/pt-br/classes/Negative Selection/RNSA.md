@@ -51,18 +51,23 @@ possível loop infinito caso seja definido um raio que não seja possível gerar
 A função ``fit(...)`` gera os detectores para os não próprios com relação às amostras:
 
 ```python
-def fit(self, X: npt.NDArray, y: npt.NDArray):
+def fit(
+    self,
+    X: Union[npt.NDArray, list],
+    y: Union[npt.NDArray, list],
+    verbose: bool = True,
+) -> RNSA:
 ```
 
 Nela é realizado o treinamento de acordo com ``X`` e ``y``, usando o método de seleção negativa(``NegativeSelect``).
 
 **Parâmetros:**
 
-* **X**: array com as características das amostras com **N** amostras (linhas) e **N** características  (colunas), normalizados para valores entre [0, 1].
-* **y**: array com as classes de saídas disposto em **N** amostras que são relacionadas ao ``X``.
-* **verbose**: boolean com valor default ``True``, determina se o feedback da geração dos detectores será impresso.
+* **X** (`Union[npt.NDArray, list]`): array com as características das amostras com **N** amostras (linhas) e **N** características  (colunas), normalizados para valores entre [0, 1].
+* **y** (`Union[npt.NDArray, list]`): array com as classes de saídas disposto em **N** amostras que são relacionadas ao ``X``.
+* **verbose** (`bool`): boolean com valor default ``True``, determina se o feedback da geração dos detectores será impresso.
 
-**Lança:**
+**Exceções:**
 
 * ``TypeError``: Se X ou y não forem ndarrays, ou tiverem formas incompatíveis.
 * ``MaxDiscardsReachedError``: O número máximo de descartes do detector foi atingido durante
@@ -77,22 +82,23 @@ a maturação. Verifique o valor do raio definido e considere reduzi-lo.
 A função ``predict(...)`` realiza a previsão das classes utilizando os detectores gerados:
 
 ```python
-def predict(self, X: npt.NDArray) -> npt.NDArray:
+def predict(self, X: Union[npt.NDArray, list]) -> npt.NDArray:
 ```
 
 **Parâmetros:**
 
-* **X**: array com as características para a previsão, com **N** amostras (Linhas) e **N** colunas.
+* **X** (`Union[npt.NDArray, list]`): array com as características para a previsão, com **N** amostras (Linhas) e **N** colunas.
 
-**Lança:**
+**Exceções:**
 
 * ``TypeError``: Se X não for um ndarray ou lista.
 * ``FeatureDimensionMismatch``: Se o número de características em X não corresponder ao número esperado.
+* ``MaxDiscardsReachedError``: O número máximo de descartes do detector foi atingido durante a maturação. Verifique o valor do raio definido e considere reduzi-lo.
+
 
 **Retorna:**
 
-* ``C``: Um array de previsão com as classes de saída para as características informadas.
-* ``None``: se não houver detectores.
+* C (``npt.NDArray``): Um array de previsão com as classes de saída para as características informadas.
 
 ---
 
@@ -117,16 +123,21 @@ retorna a acurácia, do tipo ``float``.
 A função ``def _checks_valid_detector(...)`` verifica se o detector possui raio ``r`` válido para o não-próprio da classe:
 
 ```python
-def _checks_valid_detector(self, X: npt.NDArray, vector_x: npt.NDArray, samplesIndexClass: npt.NDArray) -> bool:
+def _checks_valid_detector(
+    self,
+    x_class: npt.NDArray,
+    vector_x: npt.NDArray
+) -> Union[bool, tuple[bool, float]]:
 ```
 
 **Parâmetros:**
 
-* **X**: array com as características das amostras com **N** amostras (linhas) e **N** características  (colunas), normalizados para valores entre [0, 1].
-* **vector_x**: Detector candidato gerado aleatoriamente.
-* **samplesIndexClass**: Array com os indexes de uma classe.
+* **X**(`npt.NDArray`): array com as características das amostras com **N** amostras (linhas) e **N** características  (colunas), normalizados para valores entre [0, 1].
+* **vector_x**(`npt.NDArray`): Detector candidato gerado aleatoriamente.
 
-**Retorna:** Verdadeiro (``True``) para os detectores que não possuam amostras em seu interior ou falso (``False``) se possuir.
+**Retorna:**
+
+* **Validity** (``bool``): Retorna se o detector é válido ou não.
 
 ---
 
@@ -135,8 +146,12 @@ def _checks_valid_detector(self, X: npt.NDArray, vector_x: npt.NDArray, samplesI
 A função ``def _compare_KnearestNeighbors_List(...)`` compara a distância dos k-vizinhos mais próximo, para isso se a distância da nova amostra for menor, substitui ``k-1`` e ordena em ordem crescente:
 
 ```python
-def _compare_KnearestNeighbors_List(self, knn: npt.NDArray, distance: float) -> npt.NDArray:
+def _compare_knearest_neighbors_list(self, knn: list, distance: float) -> None:
 ```
+
+**Parâmetros**
+* **knn** (`list`): Lista das distâncias dos k vizinhos mais próximos.
+* **distance** (`float`): Distância a ser verificada.
 
 **Retorna:** uma lista com as distâncias dos k-vizinhos mais próximo.
 
@@ -148,11 +163,17 @@ Função para comparar uma amostra com os detectores, verificando se a amostra �
 
 Nesta função, quando possui ambiguidade de classes, retorna a classe que possuir a média de distância maior entre os detectores.
 
+```python
+def _compare_sample_to_detectors(self, line: npt.NDArray) -> Optional[str]:
+```
+
 **Parâmetros:**
 
-* **line**: vetor com N-características
+* **line** (`npt.NDArray`): vetor com N-características
 
-**Retorna:** A classe prevista com os detectores ou None se a amostra não se qualificar a nenhuma classe.
+**Retorna:**
+
+A classe prevista com os detectores ou None se a amostra não se qualificar a nenhuma classe.
 
 ---
 
@@ -161,13 +182,17 @@ Nesta função, quando possui ambiguidade de classes, retorna a classe que possu
 Verifique se a distância entre o detector e as amostras, descontando o raio das amostras, é maior do que o raio mínimo.
 
 ```python
-def _detector_is_valid_to_Vdetector(self, distance, vector_x):
+def _detector_is_valid_to_vdetector(
+    self,
+    distance: float,
+    vector_x: npt.NDArray
+) -> Union[bool, tuple[bool, float]]:
 ```
 
 **Parâmetros:**
 
 * **distance** (``float``): distância mínima calculada entre todas as amostras.
-* **vector_x** (``numpy.ndarray``): vetor x candidato do detector gerado aleatoriamente, com valores entre 0 e 1.
+* **vector_x** (``npt.NDArray``): vetor x candidato do detector gerado aleatoriamente, com valores entre 0 e 1.
 
 **Retorna:**
 
@@ -183,7 +208,10 @@ A função ``def _distance(...)`` calcula a distância entre dois pontos utiliza
 ```python
 def _distance(self, u: npt.NDArray, v: npt.NDArray):
 ```
+**Parameters**
+* **u** (`npt.NDArray`): Coordenadas do primeiro ponto.
+* **v** (`npt.NDArray`): Coordenadas do segundo ponto.
 
-Os parâmetros de entrada são NDArrays: ``u`` e ``v``, com as coordenadas para os pontos.
+**Retorna:**
 
-Retorna a distância (``double``) entre os dois pontos.
+Retorna a distância (``float``) entre os dois pontos.
