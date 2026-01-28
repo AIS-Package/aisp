@@ -247,7 +247,7 @@ class RNSA(BaseClassifier):
             for ``X``.
         """
         if self._detectors is None or self.classes is None:
-            raise ModelNotFittedError("AiNet")
+            raise ModelNotFittedError("RNSA")
         X = check_array_type(X)
         check_feature_dimension(X, self._n_features)
 
