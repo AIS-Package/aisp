@@ -14,7 +14,7 @@ e fornece uma implementação padrão para **`fit_predict`** e **`get_params`**.
 
 ```python
 @abstractmethod
-def fit(self, X: npt.NDArray, verbose: bool = True) -> BaseClusterer:
+def fit(self, X: Union[npt.NDArray, list], verbose: bool = True) -> BaseClusterer:
 ```
 
 Ajusta o modelo aos dados de treinamento.
@@ -22,7 +22,7 @@ Este método abstrato deve ser implementado pelas subclasses.
 
 **Parâmetros:**
 
-* **X** (`npt.NDArray`): Dados de entrada utilizados para treinar o modelo.
+* **X** (`Union[npt.NDArray, list]`): Dados de entrada utilizados para treinar o modelo.
 * **verbose** (`bool`): default=True - Indica se a saída detalhada durante o treinamento deve ser exibida.
 
 **Retorna:**
@@ -39,7 +39,7 @@ Este método abstrato deve ser implementado pelas subclasses.
 
 ```python
 @abstractmethod
-def predict(self, X: npt.NDArray) -> Optional[npt.NDArray]:
+def predict(self, X: Union[npt.NDArray, list]) -> npt.NDArray:
 ```
 
 Gera previsões com base nos dados de entrada.
@@ -47,11 +47,11 @@ Este método abstrato deve ser implementado pelas subclasses.
 
 **Parâmetros:**
 
-* **X** (`npt.NDArray`): Dados de entrada para os quais as previsões serão geradas.
+* **X** (`Union[npt.NDArray, list]`): Dados de entrada para os quais as previsões serão geradas.
 
 **Retorna:**
 
-* **predictions** (`Optional[npt.NDArray]`): Rótulos previstos dos clusters para cada amostra de entrada, ou `None` caso a previsão não seja possível.
+* **predictions** (`npt.NDArray`): Rótulos previstos dos clusters para cada amostra de entrada.
 
 **Implementações:**
 
@@ -64,16 +64,16 @@ Este método abstrato deve ser implementado pelas subclasses.
 ### Método `fit_predict(...)`
 
 ```python
-def fit_predict(self, X: npt.NDArray, verbose: bool = True) -> Optional[npt.NDArray]
+def fit_predict(self, X: Union[npt.NDArray, list], verbose: bool = True) -> npt.NDArray:
 ```
 
 Método de conveniência que combina `fit` e `predict` em uma única chamada.
 
 **Parâmetros:**
 
-* **X:** `npt.NDArray` - Dados de entrada para os quais as previsões serão geradas.
-* **verbose:** `bool`, default=True - Indica se a saída detalhada durante o treinamento deve ser exibida.
+* **X** (`Union[npt.NDArray, list]`): Dados de entrada para os quais as previsões serão geradas.
+* **verbose** (`bool`, default=True): Indica se a saída detalhada durante o treinamento deve ser exibida.
 
 **Retorna:**
 
-* **predictions:** `Optional[npt.NDArray]` - Rótulos previstos dos clusters para cada amostra de entrada, ou `None` caso a previsão não seja possível.
+* **predictions** (`npt.NDArray`): Rótulos previstos dos clusters para cada amostra de entrada.

@@ -14,7 +14,7 @@ from ..base.immune.mutation import (
     clone_and_mutate_binary,
     clone_and_mutate_ranged,
     clone_and_mutate_continuous,
-    clone_and_mutate_permutation
+    clone_and_mutate_permutation,
 )
 from ..base.immune.populations import generate_random_antibodies
 from ..utils.display import ProgressTable
@@ -41,7 +41,7 @@ class Clonalg(BaseOptimizer):
     rate_clonal : float, default=10
         Maximum number of possible clones of a cell. This value is multiplied by
         cell_affinity to determine the number of clones.
-    rate_hypermutation : float, default=0.75
+    rate_hypermutation : float, default=1.0
         Rate of mutated clones, used as a scalar factor.
     n_diversity_injection : int, default=5
         Number of new random memory cells injected to maintain diversity.
@@ -88,14 +88,14 @@ class Clonalg(BaseOptimizer):
         problem_size: int,
         N: int = 50,
         rate_clonal: int = 10,
-        rate_hypermutation: float = 0.75,
+        rate_hypermutation: float = 1.0,
         n_diversity_injection: int = 5,
         selection_size: int = 5,
         affinity_function: Optional[Callable[..., npt.NDArray]] = None,
-        feature_type: FeatureTypeAll = 'ranged-features',
+        feature_type: FeatureTypeAll = "ranged-features",
         bounds: Optional[Dict] = None,
         mode: Literal["min", "max"] = "min",
-        seed: Optional[int] = None
+        seed: Optional[int] = None,
     ):
         super().__init__()
         self.problem_size = sanitize_param(problem_size, 1, lambda x: x > 0)
@@ -103,7 +103,7 @@ class Clonalg(BaseOptimizer):
         self.rate_clonal: int = sanitize_param(rate_clonal, 10, lambda x: x > 0)
         self.rate_hypermutation: np.float64 = np.float64(
             sanitize_param(
-                rate_hypermutation, 0.75, lambda x: x > 0
+                rate_hypermutation, 1.0, lambda x: x > 0
             )
         )
         self.n_diversity_injection: int = sanitize_param(
@@ -140,31 +140,33 @@ class Clonalg(BaseOptimizer):
     @bounds.setter
     def bounds(self, value: Optional[Dict]):
         """Setter for the bounds attribute."""
-        if self.feature_type == 'ranged-features':
+        if self.feature_type == "ranged-features":
             self._bounds = sanitize_bounds(value, self.problem_size)
-            low_bounds = np.array(self._bounds['low'])
-            high_bounds = np.array(self._bounds['high'])
+            low_bounds = np.array(self._bounds["low"])
+            high_bounds = np.array(self._bounds["high"])
             self._bounds_extend_cache = np.array([low_bounds, high_bounds])
         else:
             self._bounds = None
             self._bounds_extend_cache = None
 
     def optimize(
-        self,
-        max_iters: int = 50,
-        n_iter_no_change=10,
-        verbose: bool = True
+        self, max_iters: int = 50, n_iter_no_change=10, verbose: bool = True
     ) -> List[Antibody]:
         """Execute the optimization process and return the population.
 
         Parameters
         ----------
         max_iters : int, default=50
-            Maximum number of interactions when searching for the best solution using clonalg.
+            Maximum number of iterations when searching for the best solution using clonalg.
         n_iter_no_change: int, default=10
-            the maximum number of iterations without updating the best cell
+            The maximum number of iterations without updating the best cell
         verbose : bool, default=True
-            Feedback on interactions, indicating the best antibody.
+            Feedback on iterations, indicating the best antibody.
+
+        Raises
+        ------
+        NotImplementedError
+            If no affinity function has been provided to model.
 
         Returns
         -------
@@ -185,9 +187,9 @@ class Clonalg(BaseOptimizer):
                 "Iteration": 11,
                 f"Best Affinity ({self.mode})": 25,
                 "Worse Affinity": 20,
-                "Stagnation": 17
+                "Stagnation": 17,
             },
-            verbose
+            verbose,
         )
 
         while t <= max_iters:
@@ -218,7 +220,7 @@ class Clonalg(BaseOptimizer):
                     "Iteration": t,
                     f"Best Affinity ({self.mode})": f"{self.best_cost:>25.6f}",
                     "Worse Affinity": f"{antibodies[-1].affinity:>20.6f}",
-                    "Stagnation": stop
+                    "Stagnation": stop,
                 }
             )
             if stop == n_iter_no_change:
@@ -229,7 +231,9 @@ class Clonalg(BaseOptimizer):
         self.population = antibodies
         return self.population
 
-    def _select_top_antibodies(self, n: int, antibodies: list[Antibody]) -> list[Antibody]:
+    def _select_top_antibodies(
+        self, n: int, antibodies: list[Antibody]
+    ) -> list[Antibody]:
         """Select the antibodies with the highest or lowest values, depending on the mode.
 
         Parameters
@@ -283,10 +287,7 @@ class Clonalg(BaseOptimizer):
             List of initialized antibodies.
         """
         return generate_random_antibodies(
-            self.N,
-            self.problem_size,
-            self.feature_type,
-            self._bounds_extend_cache
+            self.N, self.problem_size, self.feature_type, self._bounds_extend_cache
         )
 
     def _diversity_introduction(self):
@@ -301,7 +302,7 @@ class Clonalg(BaseOptimizer):
             self.n_diversity_injection,
             self.problem_size,
             self.feature_type,
-            self._bounds_extend_cache
+            self._bounds_extend_cache,
         )
 
     def _clone_and_mutate(
@@ -326,8 +327,11 @@ class Clonalg(BaseOptimizer):
             Array of shape (n_clone, len(antibody)) containing mutated clones
         """
         if self.feature_type == "binary-features":
-            return clone_and_mutate_binary(antibody, n_clone)
-        if self.feature_type == "ranged-features" and self._bounds_extend_cache is not None:
+            return clone_and_mutate_binary(antibody, n_clone, rate_hypermutation)
+        if (
+            self.feature_type == "ranged-features"
+            and self._bounds_extend_cache is not None
+        ):
             return clone_and_mutate_ranged(
                 antibody, n_clone, self._bounds_extend_cache, rate_hypermutation
             )
@@ -335,10 +339,7 @@ class Clonalg(BaseOptimizer):
             return clone_and_mutate_permutation(antibody, n_clone, rate_hypermutation)
         return clone_and_mutate_continuous(antibody, n_clone, rate_hypermutation)
 
-    def _clone_and_hypermutation(
-        self,
-        population: list[Antibody]
-    ) -> list[Antibody]:
+    def _clone_and_hypermutation(self, population: list[Antibody]) -> list[Antibody]:
         """Clone and hypermutate the population's antibodies.
 
         The clone list is returned with the clones and their affinities with respect to the cost
@@ -363,16 +364,21 @@ class Clonalg(BaseOptimizer):
             if affinity_range == 0:
                 normalized_affinity = 1.0
             else:
-                normalized_affinity = (antibody.affinity - min_affinity) / affinity_range
+                normalized_affinity = (
+                    antibody.affinity - min_affinity
+                ) / affinity_range
                 if self.mode == "min":
                     normalized_affinity = max(0.0, 1.0 - normalized_affinity)
 
-            num_clones = max(0, int(self.rate_clonal * normalized_affinity))
+            num_clones = max(1, int(self.rate_clonal * normalized_affinity))
             clones = self._clone_and_mutate(
                 antibody.vector,
                 num_clones,
-                np.exp(-self.rate_hypermutation * normalized_affinity)
+                np.exp(-self.rate_hypermutation * normalized_affinity),
             )
             clonal_m.extend(clones)
 
-        return [Antibody(clone, self.affinity_function(clone)) for clone in np.asarray(clonal_m)]
+        return [
+            Antibody(clone, self.affinity_function(clone))
+            for clone in np.asarray(clonal_m)
+        ]

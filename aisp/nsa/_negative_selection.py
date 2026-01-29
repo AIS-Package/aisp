@@ -11,7 +11,7 @@ from tqdm import tqdm
 from ._base import check_detector_rnsa_validity
 from ..base import BaseClassifier
 from ..base.immune.cell import Detector
-from ..exceptions import MaxDiscardsReachedError
+from ..exceptions import MaxDiscardsReachedError, ModelNotFittedError
 from ..utils.distance import (
     min_distance_to_class_vectors,
     get_metric_code,
@@ -129,7 +129,12 @@ class RNSA(BaseClassifier):
         """Returns the trained detectors, organized by class."""
         return self._detectors
 
-    def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True) -> RNSA:
+    def fit(
+        self,
+        X: Union[npt.NDArray, list],
+        y: Union[npt.NDArray, list],
+        verbose: bool = True,
+    ) -> RNSA:
         """
         Perform training according to X and y, using the negative selection method (NegativeSelect).
 
@@ -187,7 +192,7 @@ class RNSA(BaseClassifier):
                 # Generates a candidate detector vector randomly with values between 0 and 1.
                 vector_x = np.random.random_sample(size=(self._n_features,))
                 # Checks the validity of the detector for non-self with respect to the class samples
-                valid_detector = self.__checks_valid_detector(x_class, vector_x)
+                valid_detector = self._checks_valid_detector(x_class, vector_x)
 
                 # If the detector is valid, add it to the list of valid detectors.
                 if valid_detector is not False:
@@ -216,7 +221,7 @@ class RNSA(BaseClassifier):
         self._detectors = list_detectors_by_class
         return self
 
-    def predict(self, X: npt.NDArray) -> Optional[npt.NDArray]:
+    def predict(self, X: Union[npt.NDArray, list]) -> npt.NDArray:
         """
         Prediction of classes based on detectors created after training.
 
@@ -231,16 +236,18 @@ class RNSA(BaseClassifier):
             If X is not a ndarray or list.
         FeatureDimensionMismatch
             If the number of features in X does not match the expected number.
+        ModelNotFittedError
+            If the mode has not yet been adjusted and does not have defined detectors or
+            classes, it is not able to predictions
 
         Returns
         -------
-        C : npt.NDArray or None
-            a ndarray of the form ``C`` (n_samples), containing the predicted classes
-            for ``X``. Returns `None` if no detectors are available for prediction.
+        C : npt.NDArray
+            A ndarray of the form ``C`` (n_samples), containing the predicted classes
+            for ``X``.
         """
-        # If there are no detectors, Returns None.
         if self._detectors is None or self.classes is None:
-            return None
+            raise ModelNotFittedError("RNSA")
         X = check_array_type(X)
         check_feature_dimension(X, self._n_features)
 
@@ -249,7 +256,7 @@ class RNSA(BaseClassifier):
         # For each sample row in X.
         for line in X:
             class_found: bool
-            _class_ = self.__compare_sample_to_detectors(line)
+            _class_ = self._compare_sample_to_detectors(line)
             if _class_ is None:
                 class_found = False
             else:
@@ -267,13 +274,15 @@ class RNSA(BaseClassifier):
                 for _class_ in self.classes:
                     detectores = [x.position for x in self._detectors[_class_]]
                     average_distance[_class_] = np.average(
-                        [self.__distance(detector, line) for detector in detectores]
+                        [self._distance(detector, line) for detector in detectores]
                     )
                 c.append(max(average_distance, key=average_distance.get))  # type: ignore
         return np.array(c)
 
-    def __checks_valid_detector(
-        self, x_class: npt.NDArray, vector_x: npt.NDArray
+    def _checks_valid_detector(
+        self,
+        x_class: npt.NDArray,
+        vector_x: npt.NDArray
     ) -> Union[bool, tuple[bool, float]]:
         """
         Check if the detector has a valid non-proper r radius for the class.
@@ -300,13 +309,13 @@ class RNSA(BaseClassifier):
             for x in x_class:
                 # Calculates the distance between the two vectors and adds it to the kNN list if
                 # the distance is smaller than the largest distance in the list.
-                self.__compare_knearest_neighbors_list(
-                    knn_list, self.__distance(x, vector_x)
+                self._compare_knearest_neighbors_list(
+                    knn_list, self._distance(x, vector_x)
                 )
             # If the average of the distances in the kNN list is less than the radius, Returns true.
             distance_mean = np.mean(knn_list)
             if self.algorithm == "V-detector":
-                return self.__detector_is_valid_to_vdetector(
+                return self._detector_is_valid_to_vdetector(
                     float(distance_mean), vector_x
                 )
             if distance_mean > (self.r + self.r_s):
@@ -316,7 +325,7 @@ class RNSA(BaseClassifier):
                 distance = min_distance_to_class_vectors(
                     x_class, vector_x, get_metric_code(self.metric), self.p
                 )
-                return self.__detector_is_valid_to_vdetector(distance, vector_x)
+                return self._detector_is_valid_to_vdetector(distance, vector_x)
 
             # Calculates the distance between the vectors; if not it is less than or equal to
             # the radius plus the sample's radius, sets the validity of the detector to
@@ -329,7 +338,7 @@ class RNSA(BaseClassifier):
 
         return False  # Detector is not valid!
 
-    def __compare_knearest_neighbors_list(self, knn: list, distance: float) -> None:
+    def _compare_knearest_neighbors_list(self, knn: list, distance: float) -> None:
         """
         Compare the k-nearest neighbor distance at position k=1 in the list knn.
 
@@ -337,7 +346,7 @@ class RNSA(BaseClassifier):
 
         Parameters
         ----------
-        knn : npt.NDArray
+        knn : list
             List of k-nearest neighbor distances.
         distance : float
             Distance to check.
@@ -352,7 +361,7 @@ class RNSA(BaseClassifier):
             knn[self.k - 1] = distance
             knn.sort()
 
-    def __compare_sample_to_detectors(self, line: npt.NDArray) -> Optional[str]:
+    def _compare_sample_to_detectors(self, line: npt.NDArray) -> Optional[str]:
         """
         Compare a sample with the detectors, verifying if the sample is proper.
 
@@ -377,7 +386,7 @@ class RNSA(BaseClassifier):
             class_found: bool = True
             sum_distance = 0.0
             for detector in self._detectors[_class_]:
-                distance = self.__distance(detector.position, line)
+                distance = self._distance(detector.position, line)
                 sum_distance += distance
                 if self.algorithm == "V-detector" and detector.radius is not None:
                     if distance <= detector.radius:
@@ -400,7 +409,7 @@ class RNSA(BaseClassifier):
 
         return None
 
-    def __distance(self, u: npt.NDArray, v: npt.NDArray) -> float:
+    def _distance(self, u: npt.NDArray, v: npt.NDArray) -> float:
         """
         Calculate the distance between two points by the chosen ``metric``.
 
@@ -418,8 +427,10 @@ class RNSA(BaseClassifier):
         """
         return compute_metric_distance(u, v, get_metric_code(self.metric), self.p)
 
-    def __detector_is_valid_to_vdetector(
-        self, distance: float, vector_x: npt.NDArray
+    def _detector_is_valid_to_vdetector(
+        self,
+        distance: float,
+        vector_x: npt.NDArray
     ) -> Union[bool, tuple[bool, float]]:
         """Validate the detector against the vdetector.
 

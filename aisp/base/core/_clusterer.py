@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Union
 
 import numpy.typing as npt
 
@@ -19,7 +19,7 @@ class BaseClusterer(ABC, Base):
     """
 
     @abstractmethod
-    def fit(self, X: npt.NDArray, verbose: bool = True) -> BaseClusterer:
+    def fit(self, X: Union[npt.NDArray, list], verbose: bool = True) -> BaseClusterer:
         """
         Train the model using the input data X.
 
@@ -27,7 +27,7 @@ class BaseClusterer(ABC, Base):
 
         Parameters
         ----------
-        X : npt.NDArray
+        X : Union[npt.NDArray, list]
             Input data used for training the model.
         verbose : bool, default=True
             Flag to enable or disable detailed output during training.
@@ -39,7 +39,7 @@ class BaseClusterer(ABC, Base):
         """
 
     @abstractmethod
-    def predict(self, X: npt.NDArray) -> Optional[npt.NDArray]:
+    def predict(self, X: Union[npt.NDArray, list]) -> npt.NDArray:
         """
         Generate predictions based on the input data X.
 
@@ -47,16 +47,16 @@ class BaseClusterer(ABC, Base):
 
         Parameters
         ----------
-        X : npt.NDArray
+        X : Union[npt.NDArray, list]
             Input data for which predictions will be generated.
 
         Returns
         -------
-        predictions : Optional[npt.NDArray]
-            Predicted cluster labels for each input sample, or None if prediction is not possible.
+        predictions : npt.NDArray
+            Predicted cluster labels for each input sample.
         """
 
-    def fit_predict(self, X, verbose: bool = True) -> Optional[npt.NDArray]:
+    def fit_predict(self, X: Union[npt.NDArray, list], verbose: bool = True) -> npt.NDArray:
         """Fit the clustering model to the data and return cluster labels.
 
         This is a convenience method that combines `fit` and `predict`
@@ -64,15 +64,15 @@ class BaseClusterer(ABC, Base):
 
         Parameters
         ----------
-        X : npt.NDArray
+        X : Union[npt.NDArray, list]
             Input data for which predictions will be generated.
         verbose : bool, default=True
             Flag to enable or disable detailed output during training.
 
         Returns
         -------
-        predictions : Optional[npt.NDArray]
-            Predicted cluster labels for each input sample, or None if prediction is not possible.
+        predictions : npt.NDArray
+            Predicted cluster labels for each input sample.
         """
         self.fit(X, verbose)
         return self.predict(X)

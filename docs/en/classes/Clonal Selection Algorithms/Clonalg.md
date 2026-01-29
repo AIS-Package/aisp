@@ -24,7 +24,7 @@ The constructor initializes the CLONALG instance with key parameters that define
 * **problem_size** (`int`): The dimension of the problem to be optimized.
 * **N** (`int`, default=50): The number of memory cells (antibodies) in the population.
 * **rate_clonal** (`float`, default=10): The maximum number of possible clones of a cell. This value is multiplied by the cell's affinity to determine the number of clones.
-* **rate_hypermutation** (`float`, default=0.75): The rate of mutated clones, used as a scalar factor.
+* **rate_hypermutation** (`float`, default=1.0): The rate of mutated clones, used as a scalar factor.
 * **n_diversity_injection** (`int`, default=5): The number of new random memory cells injected to maintain diversity.
 * **selection_size** (`int`, default=5): The number of best antibodies selected for cloning.
 * **affinity_function** (`Optional[Callable[..., npt.NDArray]]`, default=None): The objective function used to evaluate candidate solutions.
@@ -52,13 +52,13 @@ This method execute the optimization process and return the population.
 
 **Parameters:**
 
-* **max_iters** (`int`, default=50): The maximum number of interactions.
+* **max_iters** (`int`, default=50): The maximum number of iterations.
 * **n_iter_no_change** (`int`, default=10): The maximum number of iterations without an improvement in the best solution.
 * **verbose** (`bool`, default=True): A flag to enable or disable detailed output during the optimization process.
 
 **Returns:**
 
-* `npt.NDArray`: The best antibody population after clonal expansion.
+* `List[Antibody]`: The best antibody population after clonal expansion.
 
 ---
 
@@ -93,11 +93,11 @@ This method selects the top `n` antibodies based on their affinity scores, accor
 **Parameters:**
 
 * **n** (`int`): The number of antibodies to select.
-* **antibodies** (`list[tuple]`): A list of tuples, where each tuple represents an antibody and its associated score.
+* **antibodies** (`list[Antibody]`): A list of tuples, where each tuple represents an antibody and its associated score.
 
 **Returns:**
 
-* `list[tuple]`: A list containing the `n` selected antibodies.
+* `list[Antibody]`: A list containing the `n` selected antibodies.
 
 ---
 
@@ -132,7 +132,12 @@ This method introduces new random antibodies into the population to maintain gen
 #### Method `_clone_and_mutate(...)`
 
 ```python
-def _clone_and_mutate(self, antibody: npt.NDArray, n_clone: int, rate_hypermutation: float) -> npt.NDArray:
+def _clone_and_mutate(
+    self,
+    antibody: npt.NDArray,
+    n_clone: int,
+    rate_hypermutation: float
+) -> npt.NDArray:
 ```
 
 This method generates mutated clones from a single antibody. The mutation strategy depends on the `feature_type` specified during initialization (`'binary-features'`, `'continuous-features'`, `'ranged-features'`, or `'permutation-features'`).
@@ -162,7 +167,7 @@ This method clones and hypermutates a population of antibodies. It returns a lis
 
 **Parameters:**
 
-* **population** (`list[tuple]`): The list of antibodies to be evaluated and cloned.
+* **population** (`list[Antibody]`): The list of antibodies to be evaluated and cloned.
 
 **Returns:**
 

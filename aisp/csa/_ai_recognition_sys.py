@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import random
 from operator import attrgetter
-from typing import List, Optional, Dict, Tuple, Any
+from typing import List, Optional, Dict, Tuple, Any, Union
 
 import numpy as np
 import numpy.typing as npt
@@ -13,6 +13,7 @@ from tqdm import tqdm
 
 from ..base import BaseClassifier
 from ..base.immune.cell import BCell
+from ..exceptions import ModelNotFittedError
 from ..utils.distance import hamming, compute_metric_distance, get_metric_code
 from ..utils.multiclass import predict_knn_affinity
 from ..utils.random import set_seed_numba
@@ -202,7 +203,12 @@ class AIRS(BaseClassifier):
         """Returns the trained cells memory, organized by class."""
         return self._cells_memory
 
-    def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True) -> AIRS:
+    def fit(
+        self,
+        X: Union[npt.NDArray, list],
+        y: Union[npt.NDArray, list],
+        verbose: bool = True,
+    ) -> AIRS:
         """
         Fit the model to the training data using the AIRS.
 
@@ -211,10 +217,10 @@ class AIRS(BaseClassifier):
 
         Parameters
         ----------
-        X : npt.NDArray
+        X : Union[npt.NDArray, list]
             Training array, containing the samples and their characteristics,
             Shape: (n_samples, n_features).
-        y : npt.NDArray
+        y : Union[npt.NDArray, list]
             Array of target classes of ``X`` with (``n_samples``).
         verbose : bool
             Feedback on which sample aᵢ the memory cells are being generated.
@@ -305,7 +311,7 @@ class AIRS(BaseClassifier):
         ]
         return self
 
-    def predict(self, X: npt.NDArray) -> Optional[npt.NDArray]:
+    def predict(self, X: Union[npt.NDArray, list]) -> npt.NDArray:
         """
         Predict class labels based on the memory cells created during training.
 
@@ -314,17 +320,27 @@ class AIRS(BaseClassifier):
 
         Parameters
         ----------
-        X : npt.NDArray
+        X : Union[npt.NDArray, list]
             Array with input samples with  Shape: (``n_samples, n_features``)
+
+        Raises
+        ------
+        TypeError
+            If X is not a ndarray or list.
+        FeatureDimensionMismatch
+            If the number of features in X does not match the expected number.
+        ModelNotFittedError
+            If the mode has not yet been adjusted and does not have defined memory cells, it is
+            not able to predictions
 
         Returns
         -------
-        C : npt.NDArray or None
+        C : npt.NDArray
             An ndarray of the form ``C`` (``n_samples``), containing the predicted classes for
-            ``X``. or ``None``: If there are no detectors for the prediction.
+            ``X``.
         """
         if self._all_class_cell_vectors is None:
-            return None
+            raise ModelNotFittedError("AIRS")
 
         X = check_array_type(X)
         check_feature_dimension(X, self._n_features)
@@ -337,7 +353,10 @@ class AIRS(BaseClassifier):
         )
 
     def _refinement_arb(
-        self, ai: npt.NDArray, c_match_stimulation: float, arb_list: List[_ARB]
+        self,
+        ai: npt.NDArray,
+        c_match_stimulation: float,
+        arb_list: List[_ARB]
     ) -> _ARB:
         """
         Refine the ARB set until the average stimulation exceeds the defined threshold.
@@ -478,7 +497,7 @@ class AIRS(BaseClassifier):
         selected = antigens_list[permutation[:n_cells]]
         return [BCell(ai) for ai in selected]
 
-    def _prepare_features(self, X: npt.NDArray) -> npt.NDArray:
+    def _prepare_features(self, X: Union[npt.NDArray, list]) -> npt.NDArray:
         """
         Check the samples, specifying the type, quantity of characteristics, and other parameters.
 
@@ -490,7 +509,7 @@ class AIRS(BaseClassifier):
 
         Parameters
         ----------
-        X : npt.NDArray
+        X : Union[npt.NDArray, list]
             Training array, containing the samples and their characteristics,
             Shape: (n_samples, n_features).
 
@@ -499,9 +518,8 @@ class AIRS(BaseClassifier):
         X : npt.NDArray
             The processed input data.
         """
-        self._feature_type = detect_vector_data_type(X)
-
         X = check_array_type(X)
+        self._feature_type = detect_vector_data_type(X)
 
         match self._feature_type:
             case "binary-features":

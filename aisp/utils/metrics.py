@@ -7,7 +7,8 @@ import numpy.typing as npt
 
 
 def accuracy_score(
-    y_true: Union[npt.NDArray, list], y_pred: Union[npt.NDArray, list]
+    y_true: Union[npt.NDArray, list],
+    y_pred: Union[npt.NDArray, list]
 ) -> float:
     """Calculate the accuracy score based on true and predicted labels.
 

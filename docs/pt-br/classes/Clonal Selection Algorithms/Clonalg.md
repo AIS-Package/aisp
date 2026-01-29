@@ -24,7 +24,7 @@ O construtor inicializa a instância do CLONALG com os principais parâmetros qu
 * **problem_size** (`int`): Dimensão do problema a ser otimizado.
 * **N** (`int`, padrão=50): Número de células de memória (anticorpos) na população.
 * **rate_clonal** (`float`, padrão=10): Número máximo de clones possíveis de uma célula. Este valor é multiplicado pela afinidade da célula para determinar o número de clones.
-* **rate_hypermutation** (`float`, padrão=0.75): Taxa de clones mutados, usada como fator escalar.
+* **rate_hypermutation** (`float`, padrão=1.0): Taxa de clones mutados, usada como fator escalar.
 * **n_diversity_injection** (`int`, padrão=5): Número de novas células de memória aleatórias injetadas para manter a diversidade.
 * **selection_size** (`int`, padrão=5): Número de melhores anticorpos selecionados para clonagem.
 * **affinity_function** (`Optional[Callable[..., npt.NDArray]]`, padrão=None): Função objetivo usada para avaliar soluções candidatas.
@@ -58,7 +58,7 @@ Este método executa o processo de otimização e retorna a população de antic
 
 **Retorna:**
 
-* `npt.NDArray`: A população de anticorpos após a expansão clonal.
+* `List[Antibody]`: A população de anticorpos após a expansão clonal.
 
 ---
 
@@ -93,11 +93,11 @@ Seleciona os `n` melhores anticorpos com base em suas pontuações de afinidade,
 **Parâmetros:**
 
 * **n** (`int`): Número de anticorpos a serem selecionados.
-* **antibodies* (`list[tuple]`): Lista de tuplas, onde cada tupla representa um anticorpo e sua pontuação associada.
+* **antibodies** (`list[Antibody]`): Lista de tuplas, onde cada tupla representa um anticorpo e sua pontuação associada.
 
 **Retorna:**
 
-* `list[tuple]`: Lista contendo os `n` anticorpos selecionados.
+* `list[Antibody]`: Lista contendo os `n` anticorpos selecionados.
 
 ---
 
@@ -132,7 +132,12 @@ Introduz novos anticorpos aleatórios na população para manter a diversidade g
 #### Função `_clone_and_mutate(...)`
 
 ```python
-def _clone_and_mutate(self, antibody: npt.NDArray, n_clone: int, rate_hypermutation: float) -> npt.NDArray:
+def _clone_and_mutate(
+    self,
+    antibody: npt.NDArray,
+    n_clone: int,
+    rate_hypermutation: float
+) -> npt.NDArray:
 ```
 
 Gera clones mutados a partir de um único anticorpo. A estratégia de mutação depende do `feature_type` especificado durante a inicialização (`'binary-features'`, `'continuous-features'`, `'ranged-features'` ou `'permutation-features'`).
@@ -162,7 +167,7 @@ Clona e aplica hipermutação a uma população de anticorpos. Retorna uma lista
 
 **Parâmetros:**
 
-* **population** (`list[tuple]`): Lista de anticorpos a serem avaliados e clonados.
+* **population** (`list[Antibody]`): Lista de anticorpos a serem avaliados e clonados.
 
 **Retorna:**
 

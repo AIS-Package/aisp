@@ -5,7 +5,7 @@ Contains functions that generate sets of mutated clones from continuous or binar
 ## clone_and_mutate_continuous
 
 ```python
-@njit([(types.float64[:], types.int64)], cache=True)
+@njit([(types.float64[:], types.int64, types.float64)], cache=True)
 def clone_and_mutate_continuous(
     vector: npt.NDArray[np.float64],
     n: int,
@@ -34,10 +34,11 @@ This function creates `n` clones of the input vector and applies random mutation
 ## clone_and_mutate_binary
 
 ```python
-@njit([(types.boolean[:], types.int64)], cache=True)
+@njit([(types.boolean[:], types.int64, types.float64)], cache=True)
 def clone_and_mutate_binary(
     vector: npt.NDArray[np.bool_],
-    n: int
+    n: int,
+    mutation_rate: float
 ) -> npt.NDArray[np.bool_]:
 ```
 
@@ -59,12 +60,12 @@ This function creates `n` clones of the input binary vector and applies random m
 ## clone_and_mutate_ranged
 
 ```python
-@njit([(types.float64[:], types.int64, types.float64[:, :])], cache=True)
+@njit([(types.float64[:], types.int64, types.float64[:, :], types.float64)], cache=True)
 def clone_and_mutate_ranged(
     vector: npt.NDArray[np.float64],
     n: int,
     bounds: npt.NDArray[np.float64],
-    mutation_rate: float
+    mutation_rate: float,
 ) -> npt.NDArray[np.float64]:
 ```
 

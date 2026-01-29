@@ -1,6 +1,6 @@
 # Populations Module
 
-Provide utility functions for generating antibody populations in immunological algorithms.
+Fornece funções utilitárias para gerar populações de anticorpos em algoritmos imunológicos.
 
 # generate_random_antibodies(...)
 
@@ -9,20 +9,20 @@ def generate_random_antibodies(
     n_samples: int,
     n_features: int,
     feature_type: FeatureTypeAll = "continuous-features",
-    bounds: Optional[npt.NDArray[np.float64]] = None
+    bounds: Optional[npt.NDArray[np.float64]] = None,
 ) -> npt.NDArray:
 ```
 
-Generate a random antibody population.
+Gera uma população aleatória de anticorpos
 
-**Parameters**:
-* **n_samples** (`int`): Number of antibodies (samples) to generate.
-* **n_features** (`int`): Number of features (dimensions) for each antibody.
-* **feature_type** (`FeatureTypeAll`, default="continuous-features"): Specifies the type of features: "continuous-features", "binary-features", "ranged-features", or "permutation-features".
-* **bounds** (`Optional[npt.NDArray[np.float64]]`): Array (n_features, 2) with min and max per dimension.
+**Parâmetros**:
+* **n_samples** (`int`): Número de anticorpos (amostras) a serem gerados.
+* **n_features** (`int`): Número de características (dimensões) de cada anticorpo.
+* **feature_type** (`FeatureTypeAll`, default="continuous-features"): Especifica o tipo de características:: "continuous-features", "binary-features", "ranged-features", or "permutation-features".
+* **bounds** (`Optional[npt.NDArray[np.float64]]`, default=None): Array (2, n_features) com valores mínimo e máximo por dimensão.
 
 **Returns**:
-* **npt.NDArray**: Array of shape (n_samples, n_features) containing the generated antibodies.
+* **npt.NDArray**: Array com forma (n_samples, n_features) contendo os anticorpos gerados.
 
 **Raises**:
-* **ValueError**: If the number of features is less than or equal to zero.
+* **ValueError**: Se o número de características for menor que 0. 

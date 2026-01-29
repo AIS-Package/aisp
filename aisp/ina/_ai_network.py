@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Optional, Dict, List, Tuple
+from typing import Optional, Dict, List, Tuple, Union
 
 import numpy as np
 import numpy.typing as npt
@@ -18,6 +18,7 @@ from ..base.immune.mutation import (
     clone_and_mutate_ranged,
 )
 from ..base.immune.populations import generate_random_antibodies
+from ..exceptions import ModelNotFittedError
 from ..utils.distance import hamming, compute_metric_distance, get_metric_code
 from ..utils.multiclass import predict_knn_affinity
 from ..utils.random import set_seed_numba
@@ -184,16 +185,23 @@ class AiNet(BaseClusterer):
             "std_distance": self._mst_std_distance,
         }
 
-    def fit(self, X: npt.NDArray, verbose: bool = True) -> AiNet:
+    def fit(self, X: Union[npt.NDArray, list], verbose: bool = True) -> AiNet:
         """
         Train the AiNet model on input data.
 
         Parameters
         ----------
-        X : npt.NDArray
+        X : Union[npt.NDArray, list]
             Input data used for training the model.
         verbose : bool, default=True
             Feedback from the progress bar showing current training interaction details.
+
+        Raises
+        ------
+        TypeError
+            If X is not a ndarray or list.
+        UnsupportedTypeError
+            If the data type of the vector is not supported.
 
         Returns
         -------
@@ -248,18 +256,30 @@ class AiNet(BaseClusterer):
 
         return self
 
-    def predict(self, X) -> Optional[np.ndarray]:
+    def predict(self, X: Union[npt.NDArray, list]) -> npt.NDArray:
         """
         Predict cluster labels for input data.
 
         Parameters
         ----------
-        X : npt.NDArray
+        X : Union[npt.NDArray, list]
             Data to predict.
+
+        Raises
+        ------
+        TypeError
+            If X is not a ndarray or list.
+        ValueError
+            If the array contains values other than 0 and 1.
+        FeatureDimensionMismatch
+            If the number of features in X does not match the expected number.
+        ModelNotFittedError
+            If the mode has not yet been adjusted and does not have defined memory cells, it is
+            not able to predictions
 
         Returns
         -------
-        Predictions : Optional[npt.NDArray]
+        Predictions : npt.NDArray
             Predicted cluster labels, or None if clustering is disabled.
         """
         if (
@@ -267,8 +287,9 @@ class AiNet(BaseClusterer):
             or self._memory_network is None
             or self._all_cells_memory_vectors is None
         ):
-            return None
+            raise ModelNotFittedError("AiNet")
 
+        X = check_array_type(X)
         check_feature_dimension(X, self._n_features)
         if self._feature_type == "binary-features":
             check_binary_array(X)
@@ -463,12 +484,12 @@ class AiNet(BaseClusterer):
             Array of shape (n_clone, len(antibody)) containing mutated clones
         """
         if self._feature_type == "binary-features":
-            return clone_and_mutate_binary(antibody, n_clone)
+            return clone_and_mutate_binary(antibody, n_clone, 1.0)
         if self._feature_type == "ranged-features" and self._bounds is not None:
             return clone_and_mutate_ranged(
-                antibody, n_clone, self._bounds, np.float64(1.0)
+                antibody, n_clone, self._bounds, 1.0
             )
-        return clone_and_mutate_continuous(antibody, n_clone, np.float64(1.0))
+        return clone_and_mutate_continuous(antibody, n_clone, 1.0)
 
     def _build_mst(self):
         """Construct the Minimum Spanning Tree (MST) for the antibody population.
@@ -566,7 +587,7 @@ class AiNet(BaseClusterer):
             for cell in self._memory_network[class_name]
         ]
 
-    def _prepare_features(self, X: npt.NDArray) -> npt.NDArray:
+    def _prepare_features(self, X: Union[npt.NDArray, list]) -> npt.NDArray:
         """
         Check the samples, specifying the type, quantity of characteristics, and other parameters.
 
@@ -578,18 +599,22 @@ class AiNet(BaseClusterer):
 
         Parameters
         ----------
-        X : npt.NDArray
+        X : Union[npt.NDArray, list]
             Training array, containing the samples and their characteristics,
             Shape: (n_samples, n_features).
+
+        Raises
+        ------
+        UnsupportedTypeError
+            If the data type of the vector is not supported.
 
         Returns
         -------
         X : npt.NDArray
             The processed input data.
         """
-        self._feature_type = detect_vector_data_type(X)
-
         X = check_array_type(X)
+        self._feature_type = detect_vector_data_type(X)
 
         match self._feature_type:
             case "binary-features":

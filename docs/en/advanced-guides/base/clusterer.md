@@ -11,7 +11,7 @@ the implementation of the **`fit`** and **`predict`** methods in all derived cla
 
 ```python
 @abstractmethod
-def fit(self, X: npt.NDArray, verbose: bool = True) -> BaseClusterer:
+def fit(self, X: Union[npt.NDArray, list], verbose: bool = True) -> BaseClusterer:
 ```
 
 Fit the model to the training data.
@@ -19,7 +19,7 @@ This abstract method must be implemented by subclasses.
 
 **Parameters**:
 
-* **X** (`npt.NDArray`): Input data used for training the model.
+* **X** (`Union[npt.NDArray, list]`): Input data used for training the model.
 * **verbose** (`bool`, default=True): Flag to enable or disable detailed output during training.
 
 **Returns**:
@@ -36,7 +36,7 @@ This abstract method must be implemented by subclasses.
 
 ```python
 @abstractmethod
-def predict(self, X: npt.NDArray) -> Optional[npt.NDArray]:
+def predict(self, X: Union[npt.NDArray, list]) -> npt.NDArray:
 ```
 
 Generate predictions based on the input data.
@@ -44,11 +44,11 @@ This abstract method must be implemented by subclasses.
 
 **Parameters**:
 
-* **X** (`npt.NDArray`): Input data for which predictions will be generated.
+* **X** (`Union[npt.NDArray, list]`): Input data for which predictions will be generated.
 
 **Returns**:
 
-* **predictions** (`Optional[npt.NDArray]`): Predicted cluster labels for each input sample, or `None` if prediction is not possible.
+* **predictions** (`npt.NDArray`): Predicted cluster labels for each input sample.
 
 **Implementation**:
 
@@ -59,16 +59,16 @@ This abstract method must be implemented by subclasses.
 ### Method `fit_predict(...)`
 
 ```python
-def fit_predict(self, X: npt.NDArray, verbose: bool = True) -> Optional[npt.NDArray]
+def fit_predict(self, X: Union[npt.NDArray, list], verbose: bool = True) -> npt.NDArray:
 ```
 
 Convenience method that combines `fit` and `predict` in a single call.
 
 **Parameters**:
 
-* **X** (`npt.NDArray`): Input data for which predictions will be generated.
+* **X** (`Union[npt.NDArray, list]`): Input data for which predictions will be generated.
 * **verbose** (`bool`, default=True): Flag to enable or disable detailed output during training.
 
 **Returns**:
 
-* **predictions**: `Optional[npt.NDArray]` - Predicted cluster labels for each input sample, or `None` if prediction is not possible.
+* **predictions**: `npt.NDArray` - Predicted cluster labels for each input sample.

@@ -115,7 +115,12 @@ class BaseOptimizer(ABC, Base):
         return "".join(report_parts)
 
     @abstractmethod
-    def optimize(self, max_iters: int = 50, n_iter_no_change=10, verbose: bool = True) -> Any:
+    def optimize(
+        self,
+        max_iters: int = 50,
+        n_iter_no_change: int = 10,
+        verbose: bool = True
+    ) -> Any:
         """Execute the optimization process.
 
         This abstract method must be implemented by the subclass, defining
@@ -124,7 +129,7 @@ class BaseOptimizer(ABC, Base):
         Parameters
         ----------
         max_iters : int
-            Maximum number of interactions
+            Maximum number of iterations
         n_iter_no_change: int, default=10
             the maximum number of iterations without updating the best
         verbose : bool, default=True
@@ -149,7 +154,7 @@ class BaseOptimizer(ABC, Base):
 
         Returns
         -------
-        cost : float
+        affinity : float
             Cost value associated with the given solution.
         """
 

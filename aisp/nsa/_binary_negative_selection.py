@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Dict, Literal, Optional
+from typing import Dict, Literal, Optional, Union
 
 import numpy as np
 import numpy.typing as npt
@@ -10,7 +10,7 @@ from tqdm import tqdm
 
 from ._base import check_detector_bnsa_validity, bnsa_class_prediction
 from ..base import BaseClassifier
-from ..exceptions import MaxDiscardsReachedError
+from ..exceptions import MaxDiscardsReachedError, ModelNotFittedError
 from ..utils.sanitizers import sanitize_seed, sanitize_param
 from ..utils.validation import (
     check_array_type,
@@ -84,7 +84,12 @@ class BNSA(BaseClassifier):
         """Returns the trained detectors, organized by class."""
         return self._detectors
 
-    def fit(self, X: npt.NDArray, y: npt.NDArray, verbose: bool = True) -> BNSA:
+    def fit(
+        self,
+        X: Union[npt.NDArray, list],
+        y: Union[npt.NDArray, list],
+        verbose: bool = True,
+    ) -> BNSA:
         """Training according to X and y, using the method negative selection method.
 
         Parameters
@@ -96,6 +101,16 @@ class BNSA(BaseClassifier):
             Array of target classes of ``X`` with ``n_samples`` (lines).
         verbose : bool, default=True
             Feedback from detector generation to the user.
+
+        Raises
+        ------
+        TypeError
+            If X or y are not ndarrays or have incompatible shapes.
+        ValueError
+            If the array contains values other than 0 and 1.
+        MaxDiscardsReachedError
+            The maximum number of detector discards was reached during maturation. Check the
+            defined radius value and consider reducing it.
 
         Returns
         -------
@@ -164,7 +179,7 @@ class BNSA(BaseClassifier):
 
         return self
 
-    def predict(self, X: npt.NDArray) -> Optional[npt.NDArray]:
+    def predict(self, X: Union[npt.NDArray, list]) -> npt.NDArray:
         """Prediction of classes based on detectors created after training.
 
         Parameters
@@ -172,19 +187,30 @@ class BNSA(BaseClassifier):
         X : npt.NDArray
             Array with input samples with Shape: (``n_samples, n_features``)
 
+        Raises
+        ------
+        TypeError
+            If X is not a ndarray or list.
+        ValueError
+            If the array contains values other than 0 and 1.
+        FeatureDimensionMismatch
+            If the number of features in X does not match the expected number.
+        ModelNotFittedError
+            If the mode has not yet been adjusted and does not have defined detectors or
+            classes, it is not able to predictions
+
         Returns
         -------
-        c : Optional[npt.NDArray]
-            an ndarray of the form ``C`` (``n_samples``), containing the predicted classes for
-            ``X``. Returns``None``: If there are no detectors for the prediction.
+        c : npt.NDArray
+            A ndarray of the form ``C`` (``n_samples``), containing the predicted classes for
+            ``X``.
         """
-        # If there are no detectors, Returns None.
         if (
             self._detectors is None
             or self._detectors_stack is None
             or self.classes is None
         ):
-            return None
+            raise ModelNotFittedError("BNSA")
         X = check_array_type(X)
         check_feature_dimension(X, self._n_features)
         check_binary_array(X)
@@ -216,11 +242,11 @@ class BNSA(BaseClassifier):
                 c.append("non-self")
             # If the class cannot be identified by the detectors
             elif not class_found:
-                self.__assign_class_to_non_self_sample(line, c)
+                self._assign_class_to_non_self_sample(line, c)
 
         return np.array(c)
 
-    def __assign_class_to_non_self_sample(self, line: npt.NDArray, c: list):
+    def _assign_class_to_non_self_sample(self, line: npt.NDArray, c: list):
         """Determine the class of a sample when all detectors classify it as "non-self".
 
         Classification is performed using the ``max_average_difference`` and
@@ -232,6 +258,11 @@ class BNSA(BaseClassifier):
             Sample to be classified.
         c : list
             List of predictions to be updated with the new classification.
+
+        Raises
+        ------
+        ValueError
+            If detectors is not initialized.
         """
         if self._detectors is None or self.classes is None:
             raise ValueError("Detectors is not initialized.")

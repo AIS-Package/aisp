@@ -122,7 +122,12 @@ Reset the object's internal state, clearing history and resetting values.
 
 ```python
 @abstractmethod
-def optimize(self, max_iters: int = 50, n_iter_no_change=10, verbose: bool = True) -> Any
+def optimize(
+   self,
+   max_iters: int = 50,
+   n_iter_no_change: int = 10,
+   verbose: bool = True
+) -> Any:
 ```
 
 Execute the optimization process. This method must be implemented by the subclass to define how the optimization strategy explores the search space.

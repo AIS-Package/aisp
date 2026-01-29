@@ -37,7 +37,7 @@ class Cell:
 
         return NotImplemented
 
-    def __array__(self) -> np.ndarray:
+    def __array__(self) -> npt.NDArray:
         """Array interface to Numpy.
 
         Allows the instance to be treated as a np.ndarray by NumPy functions.
@@ -70,7 +70,7 @@ class BCell(Cell):
         n: int,
         feature_type: FeatureType = "continuous-features",
         bounds: Optional[npt.NDArray[np.float64]] = None
-    ) -> np.ndarray:
+    ) -> npt.NDArray:
         """
         Clones N features from a cell's features, generating a set of mutated vectors.
 
@@ -80,7 +80,7 @@ class BCell(Cell):
             Number of clones to be generated from mutations of the original cell.
         feature_type : Literal["binary-features", "continuous-features", "ranged-features"]
             Specifies the type of feature_type to use based on the nature of the input features
-        bounds : np.ndarray
+        bounds : npt.NDArray[np.float64], optional
             Array (n_features, 2) with min and max per dimension.
 
         Returns
@@ -89,10 +89,10 @@ class BCell(Cell):
             An array containing N mutated vectors from the original cell.
         """
         if feature_type == "binary-features":
-            return clone_and_mutate_binary(self.vector, n)
+            return clone_and_mutate_binary(self.vector, n, 1.0)
         if feature_type == "ranged-features" and bounds is not None:
-            return clone_and_mutate_ranged(self.vector, n, bounds, np.float64(1.0))
-        return clone_and_mutate_continuous(self.vector, n, np.float64(1.0))
+            return clone_and_mutate_ranged(self.vector, n, bounds, 1.0)
+        return clone_and_mutate_continuous(self.vector, n, 1.0)
 
 
 @dataclass(slots=True)
@@ -104,7 +104,7 @@ class Antibody(Cell):
     ----------
     vector : npt.NDArray
         A vector of cell features.
-    affinity : np.floating
+    affinity : float
         Affinity value for the antibody.
     """
 
