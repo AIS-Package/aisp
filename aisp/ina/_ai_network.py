@@ -542,7 +542,7 @@ class AiNet(BaseClusterer):
         -------
         self._memory_network : dict[int, npt.NDArray]
             Dictionary mapping cluster labels to antibody arrays.
-        self.classes : list
+        self.labels : list
             List of cluster labels.
         """
         if self._mst_structure is None:
