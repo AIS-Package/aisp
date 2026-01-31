@@ -154,7 +154,7 @@ class AiNet(BaseClusterer):
         if self.metric == "minkowski":
             self._metric_params["p"] = self.p
 
-        self.classes: Optional[npt.NDArray] = None
+        self.labels: Optional[npt.NDArray] = None
         self._memory_network: Dict[int, List[Cell]] = {}
         self._population_antibodies: Optional[npt.NDArray] = None
         self._n_features: int = 0
@@ -240,7 +240,7 @@ class AiNet(BaseClusterer):
         if self.use_mst_clustering:
             self._build_mst()
             self.update_clusters()
-            labels = self.classes.tolist() if self.classes is not None else []
+            labels = self.labels.tolist() if self.labels is not None else []
             progress.set_description(
                 f"\033[92m✔ Set of memory antibodies for classes "
                 f"({', '.join(map(str, labels))}) successfully generated | "
@@ -579,11 +579,11 @@ class AiNet(BaseClusterer):
             label: [Cell(a) for a in self._population_antibodies[labels == label]]
             for label in range(n_antibodies)
         }
-        self.classes = np.array(list(self._memory_network.keys()))
+        self.labels = np.array(list(self._memory_network.keys()))
 
         self._all_cells_memory_vectors = [
             (class_name, cell.vector)
-            for class_name in self.classes
+            for class_name in self.labels
             for cell in self._memory_network[class_name]
         ]
 

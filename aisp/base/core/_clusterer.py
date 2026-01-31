@@ -18,6 +18,8 @@ class BaseClusterer(ABC, Base):
     and provides a default implementation for `fit_predict` and `get_params`.
     """
 
+    labels: Optional[npt.NDArray] = None
+
     @abstractmethod
     def fit(self, X: Union[npt.NDArray, list], verbose: bool = True) -> BaseClusterer:
         """
