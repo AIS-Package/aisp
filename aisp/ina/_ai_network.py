@@ -242,15 +242,15 @@ class AiNet(BaseClusterer):
             self.update_clusters()
             labels = self.labels.tolist() if self.labels is not None else []
             progress.set_description(
-                f"\033[92m✔ Set of memory antibodies for classes "
-                f"({', '.join(map(str, labels))}) successfully generated | "
-                f"Clusters: {len(labels)} | Population of antibodies size: "
-                f"{len(self._population_antibodies)}\033[0m"
+                f"\033[92m✔ Memory antibodies successfully generated for labels "
+                f"({', '.join(map(str, labels))}) | "
+                f"Number of clusters: {len(labels)} | "
+                f"Antibody population size: {len(self._population_antibodies)}\033[0m"
             )
         else:
             progress.set_description(
-                f"\033[92m✔ Set of memory antibodies successfully generated | "
-                f"Population of antibodies size: {len(self._population_antibodies)}\033[0m"
+                f"\033[92m✔ Memory antibodies successfully generated | "
+                f"Antibody population size: {len(self._population_antibodies)}\033[0m"
             )
         progress.close()
 
