@@ -237,21 +237,17 @@ class AiNet(BaseClusterer):
             t += 1
         self._population_antibodies = population_p
 
+        parts = ["✔ Memory antibodies successfully generated"]
+
         if self.use_mst_clustering:
             self._build_mst()
             self.update_clusters()
             labels = self.labels.tolist() if self.labels is not None else []
-            progress.set_description(
-                f"\033[92m✔ Memory antibodies successfully generated for labels "
-                f"({', '.join(map(str, labels))}) | "
-                f"Number of clusters: {len(labels)} | "
-                f"Antibody population size: {len(self._population_antibodies)}\033[0m"
-            )
-        else:
-            progress.set_description(
-                f"\033[92m✔ Memory antibodies successfully generated | "
-                f"Antibody population size: {len(self._population_antibodies)}\033[0m"
-            )
+            parts[0] += f" for labels ({', '.join(map(str, labels))})"
+            parts.append(f"Number of clusters: {len(labels)}")
+
+        parts.append(f"Antibody population size: {len(self._population_antibodies)}")
+        progress.set_description(f"\033[92m{' | '.join(parts)}\033[0m")
         progress.close()
 
         return self
