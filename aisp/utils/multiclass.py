@@ -26,10 +26,11 @@ def slice_index_list_by_class(classes: Optional[Union[npt.NDArray, list]], y: np
     Examples
     --------
     >>> import numpy as np
+    >>> from aisp.utils.multiclass import slice_index_list_by_class
     >>> labels = ['a', 'b', 'c']
     >>> y = np.array(['a', 'c', 'b', 'a', 'c', 'b'])
     >>> slice_index_list_by_class(labels, y)
-    {'a': [0, 3], 1: [2, 5], 2: [1, 4]}
+    {'a': [0, 3], 'b': [2, 5], 'c': [1, 4]}
     """
     if classes is None:
         return {}

@@ -139,6 +139,28 @@ class AIRS(BaseClassifier):
 
     .. [2] AZZOUG, Aghiles. Artificial Immune Recognition System V2.
         Available at: https://github.com/AghilesAzzoug/Artificial-Immune-System
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from aisp.csa import AIRS
+
+    >>> np.random.seed(1)
+    >>> # Generating training data
+    >>> a = np.random.uniform(high=0.5, size=(50, 2))
+    >>> b = np.random.uniform(low=0.51, size=(50, 2))
+    >>> x_train = np.vstack((a, b))
+    >>> y_train = [0] * 50 + [1] * 50
+    >>> # AIRS Instance
+    >>> airs = AIRS(n_resources=5, rate_clonal=5, rate_hypermutation=0.65, seed=1)
+    >>> airs = airs.fit(x_train, y_train, verbose=False)
+    >>> x_test = [
+    ...     [0.15, 0.45],  # Expected: Class 0
+    ...     [0.85, 0.65],  # Esperado: Classe 1
+    ... ]
+    >>> y_pred = airs.predict(x_test)
+    >>> print(y_pred)
+    [0 1]
     """
 
     def __init__(
