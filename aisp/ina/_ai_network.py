@@ -108,8 +108,8 @@ class AiNet(BaseClusterer):
     ... )
     >>> ai_net = ai_net.fit(x_train, verbose=True)
     >>> x_test = [
-    ...     [0.15, 0.45],  # Expected: Class 0
-    ...     [0.85, 0.65],  # Esperado: Classe 1
+    ...     [0.15, 0.45],  # Expected: label 0
+    ...     [0.85, 0.65],  # Esperado: label 1
     ... ]
     >>> y_pred = ai_net.predict(x_test)
     >>> print(y_pred)
