@@ -81,7 +81,7 @@ class BNSA(BaseClassifier):
 
     @property
     def detectors(self) -> Optional[Dict[str | int, npt.NDArray[np.bool_]]]:
-        """Returns the trained detectors, organized by class."""
+        """Return the trained detectors, organized by class."""
         return self._detectors
 
     def fit(
@@ -94,10 +94,10 @@ class BNSA(BaseClassifier):
 
         Parameters
         ----------
-        X : npt.NDArray
+        X : Union[npt.NDArray, list]
             Training array, containing the samples and their characteristics.
             Shape: (``n_samples, n_features``)
-        y : npt.NDArray
+        y : Union[npt.NDArray, list]
             Array of target classes of ``X`` with ``n_samples`` (lines).
         verbose : bool, default=True
             Feedback from detector generation to the user.
@@ -184,7 +184,7 @@ class BNSA(BaseClassifier):
 
         Parameters
         ----------
-        X : npt.NDArray
+        X : Union[npt.NDArray, list]
             Array with input samples with Shape: (``n_samples, n_features``)
 
         Raises

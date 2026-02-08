@@ -178,7 +178,7 @@ class AiNet(BaseClusterer):
 
     @property
     def mst(self) -> dict:
-        """Returns the Minimum Spanning Tree and its statistics."""
+        """Return the Minimum Spanning Tree and its statistics."""
         return {
             "graph": self._mst_structure,
             "mean_distance": self._mst_mean_distance,
@@ -275,7 +275,7 @@ class AiNet(BaseClusterer):
 
         Returns
         -------
-        Predictions : npt.NDArray
+        predictions : npt.NDArray
             Predicted cluster labels, or None if clustering is disabled.
         """
         if (
@@ -300,7 +300,7 @@ class AiNet(BaseClusterer):
 
         Returns
         -------
-        npt.NDArray
+        antibodies : npt.NDArray
             List of initialized memories.
         """
         return generate_random_antibodies(
@@ -308,7 +308,9 @@ class AiNet(BaseClusterer):
         )
 
     def _select_and_clone_population(
-        self, antigen: npt.NDArray, population: npt.NDArray
+        self,
+        antigen: npt.NDArray,
+        population: npt.NDArray
     ) -> list:
         """
         Select top antibodies by affinity and generate mutated clones.
@@ -317,12 +319,12 @@ class AiNet(BaseClusterer):
         ----------
         antigen : npt.NDArray
             The antigen for which affinities will be calculated.
-        population: list
+        population: npt.NDArray
             The list of antibodies (solutions) to be evaluated and cloned.
 
         Returns
         -------
-        list[npt.NDArray]
+        mutated_clones : list[npt.NDArray]
             List of mutated clones.
         """
         affinities = self._calculate_affinities(antigen, population)
@@ -358,7 +360,7 @@ class AiNet(BaseClusterer):
 
         Returns
         -------
-        list
+        suppressed_clones : list
             Non-redundant, high-affinity clones.
         """
         suppression_affinity = [
@@ -382,7 +384,7 @@ class AiNet(BaseClusterer):
 
         Returns
         -------
-        list
+        suppressed_pool : list
             Memory pool without redundant antibodies.
         """
         if not pool_memory:
@@ -403,7 +405,7 @@ class AiNet(BaseClusterer):
 
         Returns
         -------
-        npt.NDArray
+        new_antibodies : npt.NDArray
             Array of new random antibodies for diversity introduction.
         """
         return generate_random_antibodies(
@@ -426,7 +428,7 @@ class AiNet(BaseClusterer):
 
         Returns
         -------
-        float
+        affinity : float
             Affinity score in [0, 1], where higher means more similar.
         """
         distance: float
@@ -453,7 +455,7 @@ class AiNet(BaseClusterer):
 
         Returns
         -------
-        npt.NDArray
+        affinities : npt.NDArray
             One-dimensional array of shape (n_samples,), containing the affinities between `u`
             and each vector in `v`.
         """
@@ -476,7 +478,7 @@ class AiNet(BaseClusterer):
 
         Returns
         -------
-        npt.NDArray
+        mutated_clones : npt.NDArray
             Array of shape (n_clone, len(antibody)) containing mutated clones
         """
         if self._feature_type == "binary-features":

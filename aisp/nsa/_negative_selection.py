@@ -65,7 +65,7 @@ class RNSA(BaseClassifier):
             and uses a variable radius for anomaly detection in feature spaces.
 
     **kwargs : dict
-        Parâmetros adicionais. Os seguintes argumentos são reconhecidos:
+        Additional parameters. The following arguments are recognized:
 
         + non_self_label : str, default='non-self'
             This variable stores the label that will be assigned when the data has only one
@@ -140,10 +140,10 @@ class RNSA(BaseClassifier):
 
         Parameters
         ----------
-        X : npt.NDArray
+        X : Union[npt.NDArray, list]
             Training array, containing the samples and their characteristics.
             Shape: ``(n_samples, n_features)``
-        y : npt.NDArray
+        y : Union[npt.NDArray, list]
             Array of target classes of ``X`` with ``n_samples`` (lines).
         verbose: bool, default=True
             Feedback from detector generation to the user.
@@ -227,7 +227,7 @@ class RNSA(BaseClassifier):
 
         Parameters
         ----------
-        X : npt.NDArray
+        X : Union[npt.NDArray, list]
             Array with input samples with Shape: (n_samples, n_features)
 
         Raises
@@ -296,7 +296,7 @@ class RNSA(BaseClassifier):
 
         Returns
         -------
-        Validity : bool
+        is_valid : Union[bool, tuple[bool, float]]
             Returns whether the detector is valid or not.
         """
         # If any of the input arrays have zero size, Returns false.

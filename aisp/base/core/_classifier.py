@@ -64,7 +64,7 @@ class BaseClassifier(ABC, Base):
 
         Returns
         -------
-        Predictions : Optional[npt.NDArray]
+        predictions : npt.NDArray
             Predicted values for each input sample.
         """
 
@@ -113,7 +113,7 @@ class BaseClassifier(ABC, Base):
 
         Returns
         -------
-        dict: dict
+        indices_by_class : dict
             A dictionary with the list of array positions(``y``), with the classes as key.
         """
         return slice_index_list_by_class(self.classes, y)

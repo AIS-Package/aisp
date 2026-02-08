@@ -57,6 +57,8 @@ class BaseOptimizer(ABC, Base):
         ----------
         cost : float
             Cost value to be added to the history.
+        best_solution : Any
+            The solution associated with the give cost.
         """
         self._solution_history.append(best_solution)
         self._cost_history.append(cost)
@@ -128,9 +130,9 @@ class BaseOptimizer(ABC, Base):
 
         Parameters
         ----------
-        max_iters : int
+        max_iters : int, default=50
             Maximum number of iterations
-        n_iter_no_change: int, default=10
+        n_iter_no_change : int, default=10
             the maximum number of iterations without updating the best
         verbose : bool, default=True
             Flag to enable or disable detailed output during optimization.
