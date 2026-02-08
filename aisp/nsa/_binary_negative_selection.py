@@ -64,6 +64,30 @@ class BNSA(BaseClassifier):
         a computer," Proceedings of 1994 IEEE Computer Society Symposium on Research in Security
         and Privacy, Oakland, CA, USA, 1994, pp. 202-212,
         doi: https://dx.doi.org/10.1109/RISP.1994.296580.
+
+    Examples
+    --------
+    >>> from aisp.nsa import BNSA
+    >>> # Binary 'self' samples
+    >>> x_train  = [
+    ...     [0, 0, 1, 0, 1],
+    ...     [0, 1, 1, 0, 1],
+    ...     [0, 1, 0, 1, 0],
+    ...     [0, 0, 1, 0, 1],
+    ...     [0, 1, 1, 0, 1],
+    ...     [0, 1, 0, 1, 0]
+    ... ]
+    >>> y_train = ['self', 'self', 'self', 'self', 'self', 'self']
+    >>> bnsa = BNSA(aff_thresh=0.55, seed=1)
+    >>> bnsa = bnsa.fit(x_train, y_train, verbose=False)
+    >>> # samples for testing
+    >>> x_test = [
+    ...     [1, 1, 1, 1, 1], # Sample of Anomaly
+    ...     [0, 1, 0, 1, 0], # self sample
+    ... ]
+    >>> y_prev = bnsa.predict(X=x_test)
+    >>> print(y_prev)
+    ['non-self' 'self']
     """
 
     def __init__(
