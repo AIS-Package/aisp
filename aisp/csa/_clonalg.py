@@ -81,6 +81,23 @@ class Clonalg(BaseOptimizer):
     .. [1] BROWNLEE, Jason. Clonal Selection Algorithm. Clever Algorithms: Nature-inspired
     Programming Recipes., 2011. Available at:
     https://cleveralgorithms.com/nature-inspired/immune/clonal_selection_algorithm.html
+
+    Examples
+    --------
+    >>> from aisp.csa import Clonalg
+    >>> import numpy as np
+    >>> # Search space limits
+    >>> bounds = {'low': -5.12, 'high': 5.12}
+    >>> # Objective function
+    >>> def rastrigin_fitness(x):
+    ...     x = np.clip(x, bounds['low'], bounds['high'])
+    ...     return 10 * len(x) + np.sum(x**2 - 10 * np.cos(2 * np.pi * x))
+    >>> # CLONALG Instance
+    >>> clonalg = Clonalg(problem_size=2, bounds=bounds, seed=1)
+    >>> clonalg.register('affinity_function', rastrigin_fitness)
+    >>> population = clonalg.optimize(100, 50, False)
+    >>> print('Best cost:', abs(clonalg.best_cost))
+    Best cost: 0.02623036956750724
     """
 
     def __init__(
