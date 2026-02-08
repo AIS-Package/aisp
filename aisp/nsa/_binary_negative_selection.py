@@ -21,10 +21,10 @@ from ..utils.validation import (
 
 
 class BNSA(BaseClassifier):
-    """BNSA (Binary Negative Selection Algorithm).
+    """Binary Negative Selection Algorithm (BNSA).
 
-    Class is for classification and identification purposes of anomalies through the self and not
-    self method.
+    Algorithm for classification and anomaly detection Based on self or not self
+    discrimination, inspired by Negative Selection Algorithm.
 
     Parameters
     ----------
@@ -33,6 +33,9 @@ class BNSA(BaseClassifier):
     aff_thresh : float, default=0.1
         The variable represents the percentage of similarity between the T cell and the own
         samples. The default value is 10% (0.1), while a value of 1.0 represents 100% similarity.
+
+        Warning
+            High values may prevent the generation of valid non-self detectors.
     max_discards : int, default=1000
         This parameter indicates the maximum number of detector discards in sequence, which aims
         to avoid a possible infinite loop if a radius is defined that it is not possible to
@@ -48,6 +51,19 @@ class BNSA(BaseClassifier):
 
         - max_nearest_difference - Selects the class with the highest difference between the
         nearest and farthest detector from the sample.
+
+    Notes
+    -----
+    The **Binary Negative Selection Algorithm (BNSA)** is based on the original proposal by
+    Forrest et al. (1994) [1], originally developed for computer security. In the adaptation, the
+    algorithm use bits arrays, and it has support for multiclass classification.
+
+    References
+    ----------
+    .. [1] S. Forrest, A. S. Perelson, L. Allen and R. Cherukuri, "Self-nonself discrimination in
+        a computer," Proceedings of 1994 IEEE Computer Society Symposium on Research in Security
+        and Privacy, Oakland, CA, USA, 1994, pp. 202-212,
+        doi: https://dx.doi.org/10.1109/RISP.1994.296580.
     """
 
     def __init__(
