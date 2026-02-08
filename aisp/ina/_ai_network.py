@@ -87,6 +87,33 @@ class AiNet(BaseClusterer):
     .. [2] SciPy Documentation. *Minimum Spanning Tree*.
            https://docs.scipy.org/doc/scipy/reference/generated/
            scipy.sparse.csgraph.minimum_spanning_tree
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from aisp.ina import AiNet
+
+    >>> np.random.seed(1)
+    >>> # Generating training data
+    >>> a = np.random.uniform(high=0.4, size=(50, 2))
+    >>> b = np.random.uniform(low=0.6, size=(50, 2))
+    >>> x_train = np.vstack((a, b))
+    >>> # AiNet Instance
+    >>> ai_net = AiNet(
+    ...     N=150,
+    ...     mst_inconsistency_factor=1,
+    ...     seed=1,
+    ...     affinity_threshold=0.85,
+    ...     suppression_threshold=0.7
+    ... )
+    >>> ai_net = ai_net.fit(x_train, verbose=True)
+    >>> x_test = [
+    ...     [0.15, 0.45],  # Expected: Class 0
+    ...     [0.85, 0.65],  # Esperado: Classe 1
+    ... ]
+    >>> y_pred = ai_net.predict(x_test)
+    >>> print(y_pred)
+    [0 1]
     """
 
     def __init__(
