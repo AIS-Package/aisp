@@ -64,7 +64,7 @@ class Clonalg(BaseOptimizer):
             Each dimension has specific limits. Both arrays must be
             ``problem_size``.
 
-    mode : Literal["min", "max"], default="min"
+    mode : {"min", "max"}, default="min"
         Defines whether the algorithm minimizes or maximizes the cost function.
     seed : Optional[int], default=None
         Seed for random generation of detector values. If None, the value is random.

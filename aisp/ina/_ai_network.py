@@ -33,7 +33,7 @@ from ..utils.validation import (
 
 
 class AiNet(BaseClusterer):
-    """Artificial Immune Network for Compression and Clustering.
+    """Artificial Immune Network (AiNet) for Compression and Clustering.
 
     This class implements the aiNet algorithm, an artificial immune network model designed for
     clustering and data compression tasks. The aiNet algorithm uses principles from immune
@@ -64,18 +64,8 @@ class AiNet(BaseClusterer):
         Maximum number of training iterations.
     k : int, default=3
         The number of K nearest neighbors that will be used to choose a label in the prediction.
-    metric : Literal["manhattan", "minkowski", "euclidean"], default="euclidean"
-        Way to calculate the distance between the detector and the sample:
-
-        * ``'Euclidean'`` ➜ The calculation of the distance is given by the expression:
-            √( (x₁ - x₂)² + (y₁ - y₂)² + ... + (yn - yn)²).
-
-        * ``'minkowski'`` ➜ The calculation of the distance is given by the expression:
-            ( |X₁ - Y₁|p + |X₂ - Y₂|p + ... + |Xn - Yn|p) ¹/ₚ.
-
-        * ``'manhattan'`` ➜ The calculation of the distance is given by the expression:
-            ( |x₁ - x₂| + |y₁ - y₂| + ... + |yn - yn|).
-
+    metric : {"euclidean", "minkowski", "manhattan"}, default="euclidean"
+        Distance metric used to compute similarity between memory cells
     seed : Optional[int]
         Seed for the random generation of detector values. Defaults to None.
     use_mst_clustering : bool, default=True
@@ -506,7 +496,9 @@ class AiNet(BaseClusterer):
 
         antibodies_matrix = squareform(
             pdist(
-                self._population_antibodies, metric=self.metric, **self._metric_params
+                self._population_antibodies,
+                metric=self.metric, # type: ignore
+                **self._metric_params
             )
         )
         antibodies_mst = minimum_spanning_tree(antibodies_matrix).toarray()
