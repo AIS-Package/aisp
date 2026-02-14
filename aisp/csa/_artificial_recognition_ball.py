@@ -1,4 +1,5 @@
 """ARB (Artificial recognition ball)."""
+
 from typing import Optional
 
 import numpy.typing as npt

@@ -37,13 +37,7 @@ class RNSA(BaseClassifier):
     N : int, default=100
         Number of detectors.
     r : float, default=0.05
-        Radius of the detector.  
-        Warning  
-            it is important to consider that setting a very low radius for the detector can
-            significantly reduce the detection rate. On the other hand, a very large radius
-            can make it impossible to incorporate the detector into the search space, which
-            can also compromise detection performance. It is essential to find a balance
-            between the radius size and detection efficiency to achieve the best possible results.
+        Radius of the detector.
     r_s : float, default=0.0001
         rₛ Radius of the ``X`` own samples.
     k : int, default=1
@@ -77,6 +71,13 @@ class RNSA(BaseClassifier):
             is ``2``, which represents Euclidean distance. Different values of p lead
             to different variants of the Minkowski Distance.
 
+    Warnings
+    --------
+    The parameters `r` and `r_s` can prevent the generation of valid detectors. A very small `r`
+    value can limit coverage, while a very high one can hinder the generation of valid detectors.
+    Similarly, a high r_s can restrict detector creation. Thus, proper adjustment of `r` and `r_s`
+    is essential to ensure good model performance.
+
     Notes
     -----
     This algorithm has two different versions: one based on the canonical version [1] and another
@@ -99,21 +100,28 @@ class RNSA(BaseClassifier):
     >>> from aisp.nsa import RNSA
 
     >>> np.random.seed(1)
-    >>> # Generating training data
-    >>> a = np.random.uniform(high=0.5, size=(50, 2))
-    >>> b = np.random.uniform(low=0.51, size=(50, 2))
-    >>> x_train = np.vstack((a, b))
-    >>> y_train = [0] * 50 + [1] * 50
-    >>> # RNSA Instance
-    >>> rnsa = RNSA(N=150, seed=1)
+    >>> class_a = np.random.uniform(high=0.5, size=(50, 2))
+    >>> class_b = np.random.uniform(low=0.51, size=(50, 2))
+
+    >>> # Example 1: Multiclass classification (RNSA supports two or more classes)
+    >>> x_train = np.vstack((class_a, class_b))
+    >>> y_train = ['a'] * 50 + ['b'] * 50
+    >>> rnsa = RNSA(N=150, r=0.3, seed=1)
     >>> rnsa = rnsa.fit(x_train, y_train, verbose=False)
     >>> x_test = [
-    ...     [0.15, 0.45],  # Expected: Class 0
-    ...     [0.85, 0.65],  # Esperado: Classe 1
+    ...     [0.15, 0.45],  # Expected: Class 'a'
+    ...     [0.85, 0.65],  # Esperado: Classe 'b'
     ... ]
     >>> y_pred = rnsa.predict(x_test)
     >>> print(y_pred)
-    [0 1]
+    ['a' 'b']
+
+    >>> # Example 2: Anomaly Detection (self/non-self)
+    >>> rnsa = RNSA(N=150, r=0.3, seed=1)
+    >>> rnsa = rnsa.fit(X=class_a, y=np.array(['self'] * 50), verbose=False)
+    >>> y_pred = rnsa.predict(class_b[:5])
+    >>> print(y_pred)
+    ['non-self' 'non-self' 'non-self' 'non-self' 'non-self']
     """
 
     def __init__(
