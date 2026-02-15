@@ -77,6 +77,15 @@ class AiNet(BaseClusterer):
             is ``2``, which represents normalized Euclidean distance.\
             Different values of p lead to different variants of the Minkowski Distance.
 
+    Attributes
+    ----------
+    memory_network : Dict[int, List[Cell]]
+        The immune network representing clusters.
+    population_antibodies : Optional[npt.NDArray]
+        The set of memory antibodies.
+    mst : dict
+        The Minimum Spanning Tree and its statistics (graph, mean_distance, std_distance).
+
     References
     ----------
     .. [1] De Castro, Leandro & José, Fernando & von Zuben, Antonio Augusto. (2001). aiNet: An

@@ -18,6 +18,13 @@ class BaseClassifier(ABC, Base):
     This class defines the core interface for classification models. It enforces the
     implementation of the ``fit`` and ``predict`` methods in all derived classes,
     and provides a default implementation of ``score`` and utility functions.
+
+    Attributes
+    ----------
+    classes : Optional[npt.NDArray]
+        Class labels identified during training.
+    _n_features : int
+        The number of features of the data.
     """
 
     classes: Optional[npt.NDArray] = None

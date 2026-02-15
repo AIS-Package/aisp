@@ -40,16 +40,16 @@ class AIRS(BaseClassifier):
     Parameters
     ----------
     n_resources : float, default=10
-            Total amount of available resources.
+        Total amount of available resources.
     rate_clonal : float, default=10
         Maximum number of possible clones of a class. This quantity is multiplied by (
         cell_stimulus * rate_hypermutation) to define the number of clones.
     rate_mc_init : float, default=0.2
-            Percentage of samples used to initialize memory cells.
+        Percentage of samples used to initialize memory cells.
     rate_hypermutation : float, default=0.75
-            The rate of mutated clones derived from rate_clonal as a scalar factor.
+        The rate of mutated clones derived from rate_clonal as a scalar factor.
     affinity_threshold_scalar : float, default=0.75
-            Normalized affinity threshold.
+        Normalized affinity threshold.
     k : int, default=3
         The number of K nearest neighbors that will be used to choose a label in the prediction.
     max_iters : int, default=100
@@ -67,6 +67,11 @@ class AIRS(BaseClassifier):
             This parameter stores the value of ``p`` used in the Minkowski distance. The default
             is ``2``, which represents normalized Euclidean distance.\
             Different values of p lead to different variants of the Minkowski Distance.
+
+    Attributes
+    ----------
+    cells_memory : Optional[Dict[str | int, list[BCell]]]
+        Dictionary of trained memory cells, organized by class.
 
     Notes
     -----

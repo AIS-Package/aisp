@@ -15,6 +15,19 @@ class BaseOptimizer(ABC, Base):
     This class defines the core interface for optimization strategies. It keeps track of cost
     history, evaluated solutions, and the best solution found during the optimization process.
     Subclasses must implement ``optimize`` and ``affinity_function``.
+
+    Attributes
+    ----------
+    cost_history : List[float]
+        History of best costs found at each iteration.
+    solution_history : List
+        History of the best solution found at each iteration.
+    best_solution : Any
+        The best solution found.
+    best_cost : Optional[float]
+        Cost of the best solution found.
+    mode : {"min", "max"}, default="min"
+        Defines whether the algorithm minimizes or maximizes the cost function.
     """
 
     def __init__(self) -> None:

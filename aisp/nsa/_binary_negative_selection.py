@@ -49,6 +49,11 @@ class BNSA(BaseClassifier):
         - max_nearest_difference - Selects the class with the highest difference between the
         nearest and farthest detector from the sample.
 
+    Attributes
+    ----------
+    detectors : Optional[Dict[str | int, npt.NDArray[np.bool_]]]
+        The trained detectors, organized by class.
+
     Warnings
     --------
     High `aff_thresh` values may prevent the generation of valid non-self detectors

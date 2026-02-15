@@ -44,7 +44,7 @@ class RNSA(BaseClassifier):
         Number of neighbors near the randomly generated detectors to perform the distance average
         calculation.
     metric: {"euclidean", "minkowski", "manhattan"}, default='euclidean'
-        Distance metric used to computed the distance between the detector and the sample.
+        Distance metric used to compute the distance between the detector and the sample.
     max_discards : int, default=1000
         This parameter indicates the maximum number of consecutive detector discards, aimed at
         preventing a possible infinite loop in case a radius is defined that cannot generate
@@ -70,6 +70,11 @@ class RNSA(BaseClassifier):
             This parameter stores the value of ``p`` used in the Minkowski distance. The default
             is ``2``, which represents Euclidean distance. Different values of p lead
             to different variants of the Minkowski Distance.
+
+    Attributes
+    ----------
+    detectors : Optional[Dict[str | int, list[Detector]]]
+        The trained detectors, organized by class.
 
     Warnings
     --------
@@ -103,7 +108,8 @@ class RNSA(BaseClassifier):
     >>> class_a = np.random.uniform(high=0.5, size=(50, 2))
     >>> class_b = np.random.uniform(low=0.51, size=(50, 2))
 
-    >>> # Example 1: Multiclass classification (RNSA supports two or more classes)
+    Example 1: Multiclass classification (RNSA supports two or more classes)
+    
     >>> x_train = np.vstack((class_a, class_b))
     >>> y_train = ['a'] * 50 + ['b'] * 50
     >>> rnsa = RNSA(N=150, r=0.3, seed=1)
@@ -116,7 +122,8 @@ class RNSA(BaseClassifier):
     >>> print(y_pred)
     ['a' 'b']
 
-    >>> # Example 2: Anomaly Detection (self/non-self)
+    Example 2: Anomaly Detection (self/non-self)
+    
     >>> rnsa = RNSA(N=150, r=0.3, seed=1)
     >>> rnsa = rnsa.fit(X=class_a, y=np.array(['self'] * 50), verbose=False)
     >>> y_pred = rnsa.predict(class_b[:5])

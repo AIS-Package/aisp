@@ -69,6 +69,11 @@ class Clonalg(BaseOptimizer):
     seed : Optional[int], default=None
         Seed for random generation of detector values. If None, the value is random.
 
+    Attributes
+    ----------
+    population : Optional[List[Antibody]]
+        Population of antibody
+
     Notes
     -----
     This CLONALG implementation contains some changes based on the AISP context, for general
@@ -84,8 +89,8 @@ class Clonalg(BaseOptimizer):
 
     Examples
     --------
-    >>> from aisp.csa import Clonalg
     >>> import numpy as np
+    >>> from aisp.csa import Clonalg
     >>> # Search space limits
     >>> bounds = {'low': -5.12, 'high': 5.12}
     >>> # Objective function
