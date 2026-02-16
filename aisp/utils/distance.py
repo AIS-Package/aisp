@@ -1,4 +1,4 @@
-"""Utility functions for normalized distance between arrays with numba decorators."""
+"""Utility functions for distance between arrays with numba decorators."""
 
 import numpy as np
 import numpy.typing as npt
@@ -76,7 +76,7 @@ def cityblock(u: npt.NDArray[float64], v: npt.NDArray[float64]) -> float64:
     Returns
     -------
     float64
-        Normalized Manhattan distance between two points.
+        Manhattan distance between two points.
     """
     n = len(u)
     if n == 0:
@@ -91,7 +91,7 @@ def minkowski(
     v: npt.NDArray[float64],
     p: float = 2.0
 ) -> float64:
-    r"""Calculate the normalized Minkowski distance between two points.
+    r"""Calculate the Minkowski distance between two points.
 
     .. math::
         (|X_{1} - Y_{1}|^p + |X_{2} - Y_{2}|^p + \cdots + |X_{n} - Y_{n}|^p)^\frac{1}{p}
@@ -112,7 +112,7 @@ def minkowski(
     Returns
     -------
     float64
-        Normalized Minkowski distance between two points.
+        Minkowski distance between two points.
     """
     n = len(u)
     if n == 0:
