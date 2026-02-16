@@ -72,7 +72,7 @@ class Clonalg(BaseOptimizer):
     Attributes
     ----------
     population : Optional[List[Antibody]]
-        Population of antibody
+        Population of antibodies
 
     Notes
     -----

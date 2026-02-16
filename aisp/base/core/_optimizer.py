@@ -71,7 +71,7 @@ class BaseOptimizer(ABC, Base):
         cost : float
             Cost value to be added to the history.
         best_solution : Any
-            The solution associated with the give cost.
+            The best solution associated with the given cost.
         """
         self._solution_history.append(best_solution)
         self._cost_history.append(cost)
