@@ -21,10 +21,10 @@ from ..utils.validation import (
 
 
 class BNSA(BaseClassifier):
-    """BNSA (Binary Negative Selection Algorithm).
+    """Binary Negative Selection Algorithm (BNSA).
 
-    Class is for classification and identification purposes of anomalies through the self and not
-    self method.
+    Algorithm for classification and anomaly detection Based on self or not self
+    discrimination, inspired by Negative Selection Algorithm.
 
     Parameters
     ----------
@@ -48,6 +48,52 @@ class BNSA(BaseClassifier):
 
         - max_nearest_difference - Selects the class with the highest difference between the
         nearest and farthest detector from the sample.
+
+    Attributes
+    ----------
+    detectors : Optional[Dict[str | int, npt.NDArray[np.bool_]]]
+        The trained detectors, organized by class.
+
+    Warnings
+    --------
+    High `aff_thresh` values may prevent the generation of valid non-self detectors
+
+    Notes
+    -----
+    The **Binary Negative Selection Algorithm (BNSA)** is based on the original proposal by
+    Forrest et al. (1994) [1], originally developed for computer security. In the adaptation, the
+    algorithm use bits arrays, and it has support for multiclass classification.
+
+    References
+    ----------
+    .. [1] S. Forrest, A. S. Perelson, L. Allen and R. Cherukuri, "Self-nonself discrimination in
+        a computer," Proceedings of 1994 IEEE Computer Society Symposium on Research in Security
+        and Privacy, Oakland, CA, USA, 1994, pp. 202-212,
+        doi: https://dx.doi.org/10.1109/RISP.1994.296580.
+
+    Examples
+    --------
+    >>> from aisp.nsa import BNSA
+    >>> # Binary 'self' samples
+    >>> x_train  = [
+    ...     [0, 0, 1, 0, 1],
+    ...     [0, 1, 1, 0, 1],
+    ...     [0, 1, 0, 1, 0],
+    ...     [0, 0, 1, 0, 1],
+    ...     [0, 1, 1, 0, 1],
+    ...     [0, 1, 0, 1, 0]
+    ... ]
+    >>> y_train = ['self', 'self', 'self', 'self', 'self', 'self']
+    >>> bnsa = BNSA(aff_thresh=0.55, seed=1)
+    >>> bnsa = bnsa.fit(x_train, y_train, verbose=False)
+    >>> # samples for testing
+    >>> x_test = [
+    ...     [1, 1, 1, 1, 1], # Sample of Anomaly
+    ...     [0, 1, 0, 1, 0], # self sample
+    ... ]
+    >>> y_prev = bnsa.predict(X=x_test)
+    >>> print(y_prev)
+    ['non-self' 'self']
     """
 
     def __init__(
@@ -81,7 +127,7 @@ class BNSA(BaseClassifier):
 
     @property
     def detectors(self) -> Optional[Dict[str | int, npt.NDArray[np.bool_]]]:
-        """Returns the trained detectors, organized by class."""
+        """Return the trained detectors, organized by class."""
         return self._detectors
 
     def fit(
@@ -94,10 +140,10 @@ class BNSA(BaseClassifier):
 
         Parameters
         ----------
-        X : npt.NDArray
+        X : Union[npt.NDArray, list]
             Training array, containing the samples and their characteristics.
             Shape: (``n_samples, n_features``)
-        y : npt.NDArray
+        y : Union[npt.NDArray, list]
             Array of target classes of ``X`` with ``n_samples`` (lines).
         verbose : bool, default=True
             Feedback from detector generation to the user.
@@ -184,7 +230,7 @@ class BNSA(BaseClassifier):
 
         Parameters
         ----------
-        X : npt.NDArray
+        X : Union[npt.NDArray, list]
             Array with input samples with Shape: (``n_samples, n_features``)
 
         Raises

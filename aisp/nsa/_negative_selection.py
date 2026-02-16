@@ -27,9 +27,10 @@ from ..utils.validation import (
 
 
 class RNSA(BaseClassifier):
-    """Real-Valued Negative Selection Algorithm (RNSA) for classification and anomaly detection.
+    """Real-Valued Negative Selection Algorithm (RNSA).
 
-    Uses the self and non-self method to identify anomalies.
+    Algorithm for classification and anomaly detection Based on self or not self
+    discrimination, inspired by Negative Selection Algorithm.
 
     Parameters
     ----------
@@ -42,49 +43,92 @@ class RNSA(BaseClassifier):
     k : int, default=1
         Number of neighbors near the randomly generated detectors to perform the distance average
         calculation.
-    metric: str, default='euclidean'
-        Way to calculate the distance between the detector and the sample:
-
-        + ``'Euclidean'`` ➜ The calculation of the distance is given by the expression:
-            √( (x₁ - x₂)² + (y₁ - y₂)² + ... + (yn - yn)²).
-        + ``'minkowski'`` ➜ The calculation of the distance is given by the expression:
-            ( |X₁ - Y₁|p + |X₂ - Y₂|p + ... + |Xn - Yn|p) ¹/ₚ.
-        + ``'manhattan'`` ➜ The calculation of the distance is given by the expression:
-            ( |x₁ - x₂| + |y₁ - y₂| + ... + |yn - yn|) .
+    metric: {"euclidean", "minkowski", "manhattan"}, default='euclidean'
+        Distance metric used to compute the distance between the detector and the sample.
     max_discards : int, default=1000
         This parameter indicates the maximum number of consecutive detector discards, aimed at
         preventing a possible infinite loop in case a radius is defined that cannot generate
         non-self detectors.
     seed : int, default=None
         Seed for the random generation of values in the detectors.
-    algorithm : str, default='default-NSA'
-        Set the algorithm version:
-
-        + ``'default-NSA'``: Default algorithm with fixed radius.
-        + ``'V-detector'``: This algorithm is based on the article Ji & Dasgupta (2004) [1]_
+    algorithm : {"default-NSA", "V-detector"}, default='default-NSA'
+        Set the algorithm version:  
+        * ``'default-NSA'``: Default algorithm with fixed radius.
+        * ``'V-detector'``: This algorithm is based on the article Ji & Dasgupta (2004) [1]_
             and uses a variable radius for anomaly detection in feature spaces.
 
     **kwargs : dict
-        Parâmetros adicionais. Os seguintes argumentos são reconhecidos:
-
-        + non_self_label : str, default='non-self'
+        Additional parameters. The following arguments are recognized:  
+        * non_self_label : str, default='non-self'
             This variable stores the label that will be assigned when the data has only one
             output class, and the sample is classified as not belonging to that class.
-        + cell_bounds : bool, default=False
+        * cell_bounds : bool, default=False
             If set to ``True``, this option limits the generation of detectors to the space
             within the plane between 0 and 1. This means that any detector whose radius exceeds
             this limit is discarded, this variable is only used in the ``V-detector`` algorithm.
-        + p : float, default=2
+        * p : float, default=2
             This parameter stores the value of ``p`` used in the Minkowski distance. The default
             is ``2``, which represents Euclidean distance. Different values of p lead
             to different variants of the Minkowski Distance.
 
+    Attributes
+    ----------
+    detectors : Optional[Dict[str | int, list[Detector]]]
+        The trained detectors, organized by class.
+
+    Warnings
+    --------
+    The parameters `r` and `r_s` can prevent the generation of valid detectors. A very small `r`
+    value can limit coverage, while a very high one can hinder the generation of valid detectors.
+    Similarly, a high r_s can restrict detector creation. Thus, proper adjustment of `r` and `r_s`
+    is essential to ensure good model performance.
+
+    Notes
+    -----
+    This algorithm has two different versions: one based on the canonical version [1] and another
+    with variable radius detectors [2]. Both are adapted to work with multiple classes and have
+    methods for predicting data present in the non-self region of all detectors and classes.
+
     References
     ----------
-    .. [1] Ji, Z.; Dasgupta, D. (2004).
-           Real-Valued Negative Selection Algorithm with Variable-Sized Detectors.
-           In *Lecture Notes in Computer Science*, vol. 3025.
-           https://doi.org/10.1007/978-3-540-24854-5_30
+    .. [1] BRABAZON, Anthony; O'NEILL, Michael; MCGARRAGHY, Seán. Natural Computing
+        Algorithms. [S. l.]: Springer Berlin Heidelberg, 2015. DOI 10.1007/978-3-662-43631-8.
+        Disponível em: https://dx.doi.org/10.1007/978-3-662-43631-8.
+    .. [2] Ji, Z.; Dasgupta, D. (2004).
+        Real-Valued Negative Selection Algorithm with Variable-Sized Detectors.
+        In *Lecture Notes in Computer Science*, vol. 3025.
+        https://doi.org/10.1007/978-3-540-24854-5_30
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from aisp.nsa import RNSA
+
+    >>> np.random.seed(1)
+    >>> class_a = np.random.uniform(high=0.5, size=(50, 2))
+    >>> class_b = np.random.uniform(low=0.51, size=(50, 2))
+
+    Example 1: Multiclass classification (RNSA supports two or more classes)
+    
+    >>> x_train = np.vstack((class_a, class_b))
+    >>> y_train = ['a'] * 50 + ['b'] * 50
+    >>> rnsa = RNSA(N=150, r=0.3, seed=1)
+    >>> rnsa = rnsa.fit(x_train, y_train, verbose=False)
+    >>> x_test = [
+    ...     [0.15, 0.45],  # Expected: Class 'a'
+    ...     [0.85, 0.65],  # Esperado: Classe 'b'
+    ... ]
+    >>> y_pred = rnsa.predict(x_test)
+    >>> print(y_pred)
+    ['a' 'b']
+
+    Example 2: Anomaly Detection (self/non-self)
+    
+    >>> rnsa = RNSA(N=150, r=0.3, seed=1)
+    >>> rnsa = rnsa.fit(X=class_a, y=np.array(['self'] * 50), verbose=False)
+    >>> y_pred = rnsa.predict(class_b[:5])
+    >>> print(y_pred)
+    ['non-self' 'non-self' 'non-self' 'non-self' 'non-self']
     """
 
     def __init__(
@@ -140,10 +184,10 @@ class RNSA(BaseClassifier):
 
         Parameters
         ----------
-        X : npt.NDArray
+        X : Union[npt.NDArray, list]
             Training array, containing the samples and their characteristics.
             Shape: ``(n_samples, n_features)``
-        y : npt.NDArray
+        y : Union[npt.NDArray, list]
             Array of target classes of ``X`` with ``n_samples`` (lines).
         verbose: bool, default=True
             Feedback from detector generation to the user.
@@ -227,7 +271,7 @@ class RNSA(BaseClassifier):
 
         Parameters
         ----------
-        X : npt.NDArray
+        X : Union[npt.NDArray, list]
             Array with input samples with Shape: (n_samples, n_features)
 
         Raises
@@ -296,7 +340,7 @@ class RNSA(BaseClassifier):
 
         Returns
         -------
-        Validity : bool
+        is_valid : Union[bool, tuple[bool, float]]
             Returns whether the detector is valid or not.
         """
         # If any of the input arrays have zero size, Returns false.

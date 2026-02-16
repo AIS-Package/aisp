@@ -11,6 +11,7 @@ import numpy.typing as npt
 from scipy.spatial.distance import pdist
 from tqdm import tqdm
 
+from ._artificial_recognition_ball import _ARB
 from ..base import BaseClassifier
 from ..base.immune.cell import BCell
 from ..exceptions import ModelNotFittedError
@@ -28,61 +29,6 @@ from ..utils.validation import (
 )
 
 
-class _ARB(BCell):
-    """ARB (Artificial recognition ball).
-
-    Individual from the set of recognizing cells (ARB), inherits characteristics from a B-cell,
-    adding resource consumption
-
-    Parameters
-    ----------
-    vector : npt.NDArray
-        A vector of cell features.
-    stimulation : Optional[float], default=None
-        The rate at which the cell stimulates antigens.
-    """
-
-    def __init__(
-        self, vector: npt.NDArray, stimulation: Optional[float] = None
-    ) -> None:
-        super().__init__(vector)
-        self.resource: float = 0.0
-        if stimulation is not None:
-            self.stimulation: float = stimulation
-
-    def consume_resource(self, n_resource: float, amplified: float = 1) -> float:
-        """
-        Update the amount of resources available for an ARB after consumption.
-
-        This function consumes the resources and returns the remaining amount of resources after
-        consumption.
-
-        Parameters
-        ----------
-        n_resource : float
-            Amount of resources.
-        amplified : float
-            Amplifier for the resource consumption by the cell. It is multiplied by the cell's
-            stimulus. The default value is 1.
-
-        Returns
-        -------
-        n_resource : float
-            The remaining amount of resources after consumption.
-        """
-        consumption = self.stimulation * amplified
-        n_resource -= consumption
-        if n_resource < 0:
-            return 0
-
-        self.resource = consumption
-        return n_resource
-
-    def to_cell(self) -> BCell:
-        """Convert this _ARB into a pure BCell object."""
-        return BCell(self.vector)
-
-
 class AIRS(BaseClassifier):
     """Artificial Immune Recognition System (AIRS).
 
@@ -94,16 +40,16 @@ class AIRS(BaseClassifier):
     Parameters
     ----------
     n_resources : float, default=10
-            Total amount of available resources.
+        Total amount of available resources.
     rate_clonal : float, default=10
         Maximum number of possible clones of a class. This quantity is multiplied by (
         cell_stimulus * rate_hypermutation) to define the number of clones.
     rate_mc_init : float, default=0.2
-            Percentage of samples used to initialize memory cells.
+        Percentage of samples used to initialize memory cells.
     rate_hypermutation : float, default=0.75
-            The rate of mutated clones derived from rate_clonal as a scalar factor.
+        The rate of mutated clones derived from rate_clonal as a scalar factor.
     affinity_threshold_scalar : float, default=0.75
-            Normalized affinity threshold.
+        Normalized affinity threshold.
     k : int, default=3
         The number of K nearest neighbors that will be used to choose a label in the prediction.
     max_iters : int, default=100
@@ -111,18 +57,8 @@ class AIRS(BaseClassifier):
     resource_amplified : float, default=1.0
         Resource consumption amplifier is multiplied with the incentive to subtract resources.
         Defaults to 1.0 without amplification.
-    metric : Literal["manhattan", "minkowski", "euclidean"], default="euclidean"
-        Way to calculate the distance between the detector and the sample:
-
-        * ``'Euclidean'`` ➜ The calculation of the distance is given by the expression:
-            √( (x₁ - x₂)² + (y₁ - y₂)² + ... + (yn - yn)²).
-
-        * ``'minkowski'`` ➜ The calculation of the distance is given by the expression:
-            ( |X₁ - Y₁|p + |X₂ - Y₂|p + ... + |Xn - Yn|p) ¹/ₚ.
-
-        * ``'manhattan'`` ➜ The calculation of the distance is given by the expression:
-            ( |x₁ - x₂| + |y₁ - y₂| + ... + |yn - yn|).
-
+    metric : {"euclidean", "minkowski", "manhattan"}, default="euclidean"
+        Distance metric used to compute affinity between cells and samples.
     seed : int
         Seed for the random generation of detector values. Defaults to None.
 
@@ -131,6 +67,11 @@ class AIRS(BaseClassifier):
             This parameter stores the value of ``p`` used in the Minkowski distance. The default
             is ``2``, which represents normalized Euclidean distance.\
             Different values of p lead to different variants of the Minkowski Distance.
+
+    Attributes
+    ----------
+    cells_memory : Optional[Dict[str | int, list[BCell]]]
+        Dictionary of trained memory cells, organized by class.
 
     Notes
     -----
@@ -149,6 +90,28 @@ class AIRS(BaseClassifier):
 
     .. [2] AZZOUG, Aghiles. Artificial Immune Recognition System V2.
         Available at: https://github.com/AghilesAzzoug/Artificial-Immune-System
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from aisp.csa import AIRS
+
+    >>> np.random.seed(1)
+    >>> # Generating training data
+    >>> a = np.random.uniform(high=0.5, size=(50, 2))
+    >>> b = np.random.uniform(low=0.51, size=(50, 2))
+    >>> x_train = np.vstack((a, b))
+    >>> y_train = [0] * 50 + [1] * 50
+    >>> # AIRS Instance
+    >>> airs = AIRS(n_resources=5, rate_clonal=5, rate_hypermutation=0.65, seed=1)
+    >>> airs = airs.fit(x_train, y_train, verbose=False)
+    >>> x_test = [
+    ...     [0.15, 0.45],  # Expected: Class 0
+    ...     [0.85, 0.65],  # Esperado: Classe 1
+    ... ]
+    >>> y_pred = airs.predict(x_test)
+    >>> print(y_pred)
+    [0 1]
     """
 
     def __init__(

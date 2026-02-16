@@ -101,7 +101,7 @@ def check_feature_dimension(x: npt.NDArray, expected: int):
     x : npt.NDArray
         Input array for prediction, containing the samples and their characteristics,
         Shape: (n_samples, n_features).
-    expected : int, default=0
+    expected : int
         Expected number of features per sample (columns in X).
 
     Raises
@@ -115,6 +115,11 @@ def check_feature_dimension(x: npt.NDArray, expected: int):
 
 def check_binary_array(x: npt.NDArray):
     """Ensure X contains only 0 and 1.
+
+    Parameters
+    ----------
+    x : npt.NDArray
+        Array, containing the samples.
 
     Raises
     ------

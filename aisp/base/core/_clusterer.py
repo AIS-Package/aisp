@@ -17,6 +17,11 @@ class BaseClusterer(ABC, Base):
     This class defines the core interface for clustering models. It enforces
     the implementation of the `fit` and `predict` methods in all derived classes,
     and provides a default implementation for `fit_predict` and `get_params`.
+
+    Attributes
+    ----------
+    labels : Optional[npt.NDArray]
+        Labels for the clusters generated during model fitting.
     """
 
     labels: Optional[npt.NDArray] = None

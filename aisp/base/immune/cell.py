@@ -78,7 +78,7 @@ class BCell(Cell):
         ----------
         n : int
             Number of clones to be generated from mutations of the original cell.
-        feature_type : Literal["binary-features", "continuous-features", "ranged-features"]
+        feature_type : { "binary-features", "continuous-features", "ranged-features" }
             Specifies the type of feature_type to use based on the nature of the input features
         bounds : npt.NDArray[np.float64], optional
             Array (n_features, 2) with min and max per dimension.
