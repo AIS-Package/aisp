@@ -1,4 +1,4 @@
-"""Utility functions for normalized distance between arrays with numba decorators."""
+"""Utility functions for distance between arrays with numba decorators."""
 
 import numpy as np
 import numpy.typing as npt
@@ -61,10 +61,10 @@ def euclidean(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]) -> float64
 
 @njit()
 def cityblock(u: npt.NDArray[float64], v: npt.NDArray[float64]) -> float64:
-    r"""Calculate the normalized Manhattan distance between two points.
+    r"""Calculate the Manhattan distance between two points.
 
     .. math::
-        \frac{(|X_{1} - Y_{1}| + |X_{2} - Y_{2}| + \cdots + |X_{n} - Y_{n}|)}{n}
+        |X_{1} - Y_{1}| + |X_{2} - Y_{2}| + \cdots + |X_{n} - Y_{n}|
 
     Parameters
     ----------
@@ -76,13 +76,13 @@ def cityblock(u: npt.NDArray[float64], v: npt.NDArray[float64]) -> float64:
     Returns
     -------
     float64
-        Normalized Manhattan distance between two points.
+        Manhattan distance between two points.
     """
     n = len(u)
     if n == 0:
         return float64(-1.0)
 
-    return float64(np.sum(np.abs(u - v)) / n)
+    return float64(np.sum(np.abs(u - v)))
 
 
 @njit()
@@ -91,12 +91,10 @@ def minkowski(
     v: npt.NDArray[float64],
     p: float = 2.0
 ) -> float64:
-    r"""Calculate the normalized Minkowski distance between two points.
+    r"""Calculate the Minkowski distance between two points.
 
     .. math::
-        \frac{
-            ((|X_{1} - Y_{1}|^p + |X_{2} - Y_{2}|^p + \cdots + |X_{n} - Y_{n}|^p)^\frac{1}{p})
-        }{n}
+        (|X_{1} - Y_{1}|^p + |X_{2} - Y_{2}|^p + \cdots + |X_{n} - Y_{n}|^p)^\frac{1}{p}
 
     Parameters
     ----------
@@ -114,13 +112,13 @@ def minkowski(
     Returns
     -------
     float64
-        Normalized Minkowski distance between two points.
+        Minkowski distance between two points.
     """
     n = len(u)
     if n == 0:
         return float64(-1.0)
 
-    return float64((np.sum(np.abs(u - v) ** p) ** (1 / p)) / n)
+    return float64(np.sum(np.abs(u - v) ** p) ** (1 / p))
 
 
 @njit([(types.float64[:], types.float64[:], types.int32, types.float64)], cache=True)
