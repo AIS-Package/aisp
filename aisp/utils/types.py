@@ -1,28 +1,21 @@
 """
 Defines type aliases used throughout the project to improve readability.
 
-Type Aliases
-------------
-FeatureType : Literal["binary-features", "continuous-features", "ranged-features"]
-    Specifies the type of features in the input data. Can be one of:
-    - "binary-features": Features with binary values (e.g., 0 or 1).
-    - "continuous-features": Features with continuous numeric values.
-    - "ranged-features": Features represented by ranges or intervals.
-FeatureTypeAll : Literal["binary-features", "continuous-features", "ranged-features"]
-    Specifies the type of features in the input data. Can be one of:
-    - "binary-features": Features with binary values (e.g., 0 or 1).
-    - "continuous-features": Features with continuous numeric values.
-    - "ranged-features": Features represented by ranges or intervals.
-    - "permutation-features": Features represented by permutation.
+FeatureType:
+    Type of input features:
+    - "binary-features": values like 0 or 1.
+    - "continuous-features": numeric continuous values.
+    - "ranged-features": values defined by intervals.
 
-MetricType : Literal["manhattan", "minkowski", "euclidean"]
-    Specifies the distance metric to use for calculations. Possible values:
-    - "manhattan": The calculation of the distance is given by the expression:
-            √( (x₁ - x₂)² + (y₁ - y₂)² + ... + (yn - yn)²).
-    - "minkowski": The calculation of the distance is given by the expression:
-            ( |X₁ - Y₁|p + |X₂ - Y₂|p + ... + |Xn - Yn|p) ¹/ₚ.
-    - "euclidean": The calculation of the distance is given by the expression:
-            ( |x₁ - x₂| + |y₁ - y₂| + ... + |yn - yn|).
+FeatureTypeAll:
+    Same as ``FeatureType``, plus:
+    - "permutation-features": values represented as permutation.
+
+MetricType:
+    Distance metric used in calculations:
+    - "manhattan": the Manhattan distance between two points
+    - "minkowski": the Minkowski distance between two points.
+    - "euclidean": the Euclidean distance between two points.
 """
 
 from typing import Literal, TypeAlias, Union
