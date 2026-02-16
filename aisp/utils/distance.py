@@ -64,7 +64,7 @@ def cityblock(u: npt.NDArray[float64], v: npt.NDArray[float64]) -> float64:
     r"""Calculate the Manhattan distance between two points.
 
     .. math::
-        \frac{(|X_{1} - Y_{1}| + |X_{2} - Y_{2}| + \cdots + |X_{n} - Y_{n}|)}{n}
+        |X_{1} - Y_{1}| + |X_{2} - Y_{2}| + \cdots + |X_{n} - Y_{n}|
 
     Parameters
     ----------
@@ -94,9 +94,7 @@ def minkowski(
     r"""Calculate the normalized Minkowski distance between two points.
 
     .. math::
-        \frac{
-            ((|X_{1} - Y_{1}|^p + |X_{2} - Y_{2}|^p + \cdots + |X_{n} - Y_{n}|^p)^\frac{1}{p})
-        }{n}
+        (|X_{1} - Y_{1}|^p + |X_{2} - Y_{2}|^p + \cdots + |X_{n} - Y_{n}|^p)^\frac{1}{p}
 
     Parameters
     ----------
