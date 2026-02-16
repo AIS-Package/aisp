@@ -23,6 +23,7 @@ from ..utils.validation import (
     check_array_type,
     check_shape_match,
     check_feature_dimension,
+    check_value_range,
 )
 
 
@@ -199,6 +200,8 @@ class RNSA(BaseClassifier):
         MaxDiscardsReachedError
             The maximum number of detector discards was reached during maturation. Check the
             defined radius value and consider reducing it.
+        ValueError
+          If the array X fall outside the interval (0, 1).
 
         Returns
         -------
@@ -208,6 +211,7 @@ class RNSA(BaseClassifier):
         X = check_array_type(X)
         y = check_array_type(y, "y")
         check_shape_match(X, y)
+        check_value_range(X)
         self._n_features = X.shape[1]
 
         # Identifying the possible classes within the output array `y`.
@@ -283,6 +287,8 @@ class RNSA(BaseClassifier):
         ModelNotFittedError
             If the mode has not yet been adjusted and does not have defined detectors or
             classes, it is not able to predictions
+        ValueError
+          If the array X fall outside the interval (0, 1).
 
         Returns
         -------
@@ -294,6 +300,7 @@ class RNSA(BaseClassifier):
             raise ModelNotFittedError("RNSA")
         X = check_array_type(X)
         check_feature_dimension(X, self._n_features)
+        check_value_range(X)
 
         # Initializes an empty array that will store the predictions.
         c = []

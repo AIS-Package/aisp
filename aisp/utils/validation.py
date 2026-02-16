@@ -130,3 +130,33 @@ def check_binary_array(x: npt.NDArray):
         raise ValueError(
             "The array x contains values that are not composed only of 0 and 1."
         )
+
+
+def check_value_range(
+    x: npt.NDArray,
+    name: str = 'X',
+    min_value: float = 0.0,
+    max_value: float = 1.0
+) -> None:
+    """Ensure all values in the x array fall within a range.
+
+    Parameters
+    ----------
+    x : npt.NDArray
+        Array, containing the samples.
+    name : str, default='X'
+        Name used in the error message.
+    min_value : float, default=0.0
+        Minimum allowed value.
+    max_value : float, default=1.0
+        Maximum allowed value.
+
+    Raises
+    ------
+    ValueError
+        If the array fall outside the interval (min_value, max_value).
+    """
+    if x.min() < min_value or x.max() > max_value:
+        raise ValueError(
+            f"{name} must contain oly values within [{min_value}, {max_value}]."
+        )

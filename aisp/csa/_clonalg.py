@@ -42,7 +42,8 @@ class Clonalg(BaseOptimizer):
         Maximum number of possible clones of a cell. This value is multiplied by
         cell_affinity to determine the number of clones.
     rate_hypermutation : float, default=1.0
-        Rate of mutated clones, used as a scalar factor.
+        Hypermutation rate controls the intensity of mutations during clonal expansion. Higher
+        values decrease mutation intensity, while lower values increase it.
     n_diversity_injection : int, default=5
         Number of new random memory cells injected to maintain diversity.
     selection_size : int, default=5
