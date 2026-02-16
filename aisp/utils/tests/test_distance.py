@@ -51,8 +51,8 @@ def test_hamming(u, v, expected_output):
 @pytest.mark.parametrize(
     "u, v, expected_output",
     [
-        (np.array([1, 2, 3]), np.array([4, 5, 6]), 3),
-        (np.array([0, 0]), np.array([3, 4]), 3.5),
+        (np.array([1, 2, 3]), np.array([4, 5, 6]), 9),
+        (np.array([0, 0]), np.array([3, 4]), 7),
     ],
     ids=[
         "Manhattan Distance - 3 dimensions",
@@ -68,9 +68,9 @@ def test_cityblock(u, v, expected_output):
 @pytest.mark.parametrize(
     "u, v, p, expected_output",
     [
-        (np.array([0, 0]), np.array([3, 4]), 1, 3.5),
-        (np.array([0, 0]), np.array([3, 4]), 2, 2.5),
-        (np.array([1, 2, 3]), np.array([4, 5, 6]), 3, 1.442),
+        (np.array([0, 0]), np.array([3, 4]), 1, 7),
+        (np.array([0.0, 0.0]), np.array([3.0, 4.0]), 2, 5),
+        (np.array([1, 2, 3]), np.array([4, 5, 6]), 3, 4.327),
     ],
     ids=[
         "Minkowski p=1 - Manhattan",
