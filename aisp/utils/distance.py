@@ -1,4 +1,4 @@
-"""Utility functions for normalized distance between arrays with numba decorators."""
+"""Utility functions for distance between arrays with numba decorators."""
 
 import numpy as np
 import numpy.typing as npt
@@ -13,9 +13,10 @@ HAMMING: int = 3
 
 @njit([(types.boolean[:], types.boolean[:])], cache=True)
 def hamming(u: npt.NDArray[np.bool_], v: npt.NDArray[np.bool_]) -> float64:
-    """Calculate the normalized Hamming distance between two points.
+    r"""Calculate the Hamming distance between two points.
 
-    ((x₁ ≠ x₂) + (y₁ ≠ y₂) + ... + (yn ≠ yn)) / n
+    .. math::
+        \frac{(x_1 \neq y_1) + (x_2 \neq y_2) + \cdots + (x_n \neq y_n)}{n}
 
     Parameters
     ----------
@@ -26,8 +27,8 @@ def hamming(u: npt.NDArray[np.bool_], v: npt.NDArray[np.bool_]) -> float64:
 
     Returns
     -------
-    Distance : np.float64
-        Distance : float``) between the two points.
+    float64
+        Hamming distance between two points.
     """
     n = len(u)
     if n == 0:
@@ -38,9 +39,10 @@ def hamming(u: npt.NDArray[np.bool_], v: npt.NDArray[np.bool_]) -> float64:
 
 @njit()
 def euclidean(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]) -> float64:
-    """Calculate the normalized Euclidean distance between two points.
+    r"""Calculate the Euclidean distance between two points.
 
-    √( (x₁ - x₂)² + (y₁ - y₂)² + ... + (yn - yn)²)
+    .. math:
+        \sqrt{(X_{1} - X_{1})^2 + (Y_{2} - Y_{2})^2 + \cdots + (Y_{n} - Y_{n})^2}
 
     Parameters
     ----------
@@ -51,17 +53,18 @@ def euclidean(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]) -> float64
 
     Returns
     -------
-    distance : float64
-        Distance : float``) between the two points.
+    float64
+        Euclidean distance between two points.
     """
     return float64(np.linalg.norm(u - v))
 
 
 @njit()
 def cityblock(u: npt.NDArray[float64], v: npt.NDArray[float64]) -> float64:
-    """Calculate the normalized Manhattan distance between two points.
+    r"""Calculate the Manhattan distance between two points.
 
-    (|x₁ - x₂| + |y₁ - y₂| + ... + |yn - yn|) / n
+    .. math::
+        |X_{1} - Y_{1}| + |X_{2} - Y_{2}| + \cdots + |X_{n} - Y_{n}|
 
     Parameters
     ----------
@@ -72,14 +75,14 @@ def cityblock(u: npt.NDArray[float64], v: npt.NDArray[float64]) -> float64:
 
     Returns
     -------
-    distance : float64
-        Distance (``float``) between the two points.
+    float64
+        Manhattan distance between two points.
     """
     n = len(u)
     if n == 0:
         return float64(-1.0)
 
-    return float64(np.sum(np.abs(u - v)) / n)
+    return float64(np.sum(np.abs(u - v)))
 
 
 @njit()
@@ -88,9 +91,10 @@ def minkowski(
     v: npt.NDArray[float64],
     p: float = 2.0
 ) -> float64:
-    """Calculate the normalized Minkowski distance between two points.
+    r"""Calculate the Minkowski distance between two points.
 
-    (( |X₁ - Y₁|p + |X₂ - Y₂|p + ... + |Xn - Yn|p) ¹/ₚ.) / n
+    .. math::
+        (|X_{1} - Y_{1}|^p + |X_{2} - Y_{2}|^p + \cdots + |X_{n} - Y_{n}|^p)^\frac{1}{p}
 
     Parameters
     ----------
@@ -108,13 +112,13 @@ def minkowski(
     Returns
     -------
     float64
-        Distance (``float``) between the two points.
+        Minkowski distance between two points.
     """
     n = len(u)
     if n == 0:
         return float64(-1.0)
 
-    return float64((np.sum(np.abs(u - v) ** p) ** (1 / p)) / n)
+    return float64(np.sum(np.abs(u - v) ** p) ** (1 / p))
 
 
 @njit([(types.float64[:], types.float64[:], types.int32, types.float64)], cache=True)
@@ -133,8 +137,8 @@ def compute_metric_distance(
     v : npt.NDArray[float64]
         Coordinates of the second point.
     metric : int
-        Distance metric to be used. Available options:  [0 (Euclidean), 1 (Manhattan),
-        2 (Minkowski)]
+        Distance metric to be used. Available options: 0 (Euclidean), 1 (Manhattan),
+        2 (Minkowski)
     p : float, default=2.0
         Parameter for the Minkowski distance (used only if `metric` is "minkowski").
 
@@ -168,8 +172,8 @@ def min_distance_to_class_vectors(
     vector_x : npt.NDArray[float64]
         Vector to be compared with the class vectors. Expected shape: (n_features,).
     metric : int
-        Distance metric to be used. Available options: ["hamming", "cityblock", "minkowski",
-        "euclidean"]
+        Distance metric to be used. Available options: 0 ("euclidean"), 1 ("manhattan"),
+        2 ("minkowski") or ("hamming")
     p : float, default=2.0
         Parameter for the Minkowski distance (used only if `metric` is "minkowski").
 

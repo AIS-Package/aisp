@@ -43,7 +43,7 @@ Para clustering, pode opcionalmente utilizar uma **Árvore Geradora Mínima (MST
 * **_mst_structure** (``Optional[npt.NDArray]``): Estrutura de adjacência da MST.
 * **_mst_mean_distance** (``Optional[float]``): Média das distâncias das arestas da MST.
 * **_mst_std_distance** (``Optional[float]``): Desvio padrão das distâncias das arestas da MST.
-* **classes** (``Optional[npt.NDArray]``): Lista de rótulos dos clusters.
+* **labels** (``Optional[npt.NDArray]``): Lista de rótulos dos clusters.
 
 ---
 
@@ -111,7 +111,7 @@ def update_clusters(self, mst_inconsistency_factor: Optional[float] = None):
 **Atualiza:**
 
 * **_memory_network**: Dicionário de rótulos de clusters para vetores de anticorpos.
-* **classes**: Lista de rótulos de clusters.
+* **labels**: Lista de rótulos de clusters.
 
 ---
 

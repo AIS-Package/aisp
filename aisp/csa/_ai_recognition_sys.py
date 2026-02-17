@@ -11,6 +11,7 @@ import numpy.typing as npt
 from scipy.spatial.distance import pdist
 from tqdm import tqdm
 
+from ._artificial_recognition_ball import _ARB
 from ..base import BaseClassifier
 from ..base.immune.cell import BCell
 from ..exceptions import ModelNotFittedError
@@ -28,61 +29,6 @@ from ..utils.validation import (
 )
 
 
-class _ARB(BCell):
-    """ARB (Artificial recognition ball).
-
-    Individual from the set of recognizing cells (ARB), inherits characteristics from a B-cell,
-    adding resource consumption
-
-    Parameters
-    ----------
-    vector : npt.NDArray
-        A vector of cell features.
-    stimulation : Optional[float], default=None
-        The rate at which the cell stimulates antigens.
-    """
-
-    def __init__(
-        self, vector: npt.NDArray, stimulation: Optional[float] = None
-    ) -> None:
-        super().__init__(vector)
-        self.resource: float = 0.0
-        if stimulation is not None:
-            self.stimulation: float = stimulation
-
-    def consume_resource(self, n_resource: float, amplified: float = 1) -> float:
-        """
-        Update the amount of resources available for an ARB after consumption.
-
-        This function consumes the resources and returns the remaining amount of resources after
-        consumption.
-
-        Parameters
-        ----------
-        n_resource : float
-            Amount of resources.
-        amplified : float
-            Amplifier for the resource consumption by the cell. It is multiplied by the cell's
-            stimulus. The default value is 1.
-
-        Returns
-        -------
-        n_resource : float
-            The remaining amount of resources after consumption.
-        """
-        consumption = self.stimulation * amplified
-        n_resource -= consumption
-        if n_resource < 0:
-            return 0
-
-        self.resource = consumption
-        return n_resource
-
-    def to_cell(self) -> BCell:
-        """Convert this _ARB into a pure BCell object."""
-        return BCell(self.vector)
-
-
 class AIRS(BaseClassifier):
     """Artificial Immune Recognition System (AIRS).
 
@@ -94,16 +40,16 @@ class AIRS(BaseClassifier):
     Parameters
     ----------
     n_resources : float, default=10
-            Total amount of available resources.
+        Total amount of available resources.
     rate_clonal : float, default=10
         Maximum number of possible clones of a class. This quantity is multiplied by (
         cell_stimulus * rate_hypermutation) to define the number of clones.
     rate_mc_init : float, default=0.2
-            Percentage of samples used to initialize memory cells.
+        Percentage of samples used to initialize memory cells.
     rate_hypermutation : float, default=0.75
-            The rate of mutated clones derived from rate_clonal as a scalar factor.
+        The rate of mutated clones derived from rate_clonal as a scalar factor.
     affinity_threshold_scalar : float, default=0.75
-            Normalized affinity threshold.
+        Normalized affinity threshold.
     k : int, default=3
         The number of K nearest neighbors that will be used to choose a label in the prediction.
     max_iters : int, default=100
@@ -111,18 +57,8 @@ class AIRS(BaseClassifier):
     resource_amplified : float, default=1.0
         Resource consumption amplifier is multiplied with the incentive to subtract resources.
         Defaults to 1.0 without amplification.
-    metric : Literal["manhattan", "minkowski", "euclidean"], default="euclidean"
-        Way to calculate the distance between the detector and the sample:
-
-        * ``'Euclidean'`` ➜ The calculation of the distance is given by the expression:
-            √( (x₁ - x₂)² + (y₁ - y₂)² + ... + (yn - yn)²).
-
-        * ``'minkowski'`` ➜ The calculation of the distance is given by the expression:
-            ( |X₁ - Y₁|p + |X₂ - Y₂|p + ... + |Xn - Yn|p) ¹/ₚ.
-
-        * ``'manhattan'`` ➜ The calculation of the distance is given by the expression:
-            ( |x₁ - x₂| + |y₁ - y₂| + ... + |yn - yn|).
-
+    metric : {"euclidean", "minkowski", "manhattan"}, default="euclidean"
+        Distance metric used to compute affinity between cells and samples.
     seed : int
         Seed for the random generation of detector values. Defaults to None.
 
@@ -131,6 +67,11 @@ class AIRS(BaseClassifier):
             This parameter stores the value of ``p`` used in the Minkowski distance. The default
             is ``2``, which represents normalized Euclidean distance.\
             Different values of p lead to different variants of the Minkowski Distance.
+
+    Attributes
+    ----------
+    cells_memory : Optional[Dict[str | int, list[BCell]]]
+        Dictionary of trained memory cells, organized by class.
 
     Notes
     -----
@@ -149,6 +90,28 @@ class AIRS(BaseClassifier):
 
     .. [2] AZZOUG, Aghiles. Artificial Immune Recognition System V2.
         Available at: https://github.com/AghilesAzzoug/Artificial-Immune-System
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from aisp.csa import AIRS
+
+    >>> np.random.seed(1)
+    >>> # Generating training data
+    >>> a = np.random.uniform(high=0.5, size=(50, 2))
+    >>> b = np.random.uniform(low=0.51, size=(50, 2))
+    >>> x_train = np.vstack((a, b))
+    >>> y_train = [0] * 50 + [1] * 50
+    >>> # AIRS Instance
+    >>> airs = AIRS(n_resources=5, rate_clonal=5, rate_hypermutation=0.65, seed=1)
+    >>> airs = airs.fit(x_train, y_train, verbose=False)
+    >>> x_test = [
+    ...     [0.15, 0.45],  # Expected: Class 0
+    ...     [0.85, 0.65],  # Esperado: Classe 1
+    ... ]
+    >>> y_pred = airs.predict(x_test)
+    >>> print(y_pred)
+    [0 1]
     """
 
     def __init__(
@@ -249,42 +212,16 @@ class AIRS(BaseClassifier):
             )
 
             x_class = X[sample_index[_class_]]
-            # Calculating the similarity threshold between antigens
+
             self._cells_affinity_threshold(x_class)
-            sufficiently_similar = (
-                self.affinity_threshold * self.affinity_threshold_scalar
-            )
-            # Initialize memory cells for a class.
+            sufficiently_similar = self.affinity_threshold * self.affinity_threshold_scalar
+
             pool_c: list[BCell] = self._init_memory_c(x_class)
 
             for ai in x_class:
-                # Calculating the stimulation of memory cells with aᵢ and selecting the largest
-                # stimulation from the memory set.
-                c_match = pool_c[0]
-                match_stimulation = -1.0
-                for cell in pool_c:
-                    stimulation = self._affinity(cell.vector, ai)
-                    if stimulation > match_stimulation:
-                        match_stimulation = stimulation
-                        c_match = cell
+                c_match, match_stimulation = self._select_best_matching_cell(ai, pool_c)
 
-                arb_list: list[_ARB] = [
-                    _ARB(vector=c_match.vector, stimulation=match_stimulation)
-                ]
-
-                set_clones: npt.NDArray = c_match.hyper_clonal_mutate(
-                    int(self.rate_hypermutation * self.rate_clonal * match_stimulation),
-                    self._feature_type,
-                )
-
-                for clone in set_clones:
-                    arb_list.append(
-                        _ARB(
-                            vector=clone,
-                            stimulation=self._affinity(clone, ai),
-                        )
-                    )
-
+                arb_list = self._generate_arb_list(ai, c_match, match_stimulation)
                 c_candidate = self._refinement_arb(ai, match_stimulation, arb_list)
 
                 if c_candidate.stimulation > match_stimulation:
@@ -352,6 +289,77 @@ class AIRS(BaseClassifier):
             X, self.k, self._all_class_cell_vectors, self._affinity
         )
 
+    def _select_best_matching_cell(
+        self,
+        ai: npt.NDArray,
+        pool_c: list[BCell]
+    ) -> tuple[BCell, float]:
+        """Select the BCell with the highest affinity with antigen.
+
+        Parameters
+        ----------
+        ai : npt.NDArray
+            The current antigen.
+        pool_c : list[BCell]
+            Pool of memory B-Cells belonging to same class.
+
+        Returns
+        -------
+        tuple[BCell, float]
+            A tuple containing the best B cell and their affinity.
+        """
+        c_match = pool_c[0]
+        match_stimulation = -1.0
+        for cell in pool_c:
+            stimulation = self._affinity(cell.vector, ai)
+            if stimulation > match_stimulation:
+                match_stimulation = stimulation
+                c_match = cell
+
+        return c_match, match_stimulation
+
+    def _generate_arb_list(
+        self,
+        ai: npt.NDArray,
+        c_match: BCell,
+        match_stimulation: float
+    ) -> list[_ARB]:
+        """Generate a pool from the best affinity B cell.
+
+        Parameters
+        ----------
+        ai : npt.NDArray
+            The current antigen.
+        c_match : BCell
+            The best B-Cell
+        match_stimulation : float
+            The corresponding stimulation (affinity) value
+
+        Returns
+        -------
+        list[_ARB]
+            ARB set.
+        """
+        n_clones = int(self.rate_hypermutation * self.rate_clonal * match_stimulation)
+        arb_list: list[_ARB] = [
+            _ARB(vector=c_match.vector, stimulation=match_stimulation)
+        ]
+
+        if n_clones <= 0:
+            return arb_list
+
+        set_clones: npt.NDArray = c_match.hyper_clonal_mutate(
+            n_clones,
+            self._feature_type,
+        )
+
+        arb_list.extend(
+            _ARB(vector=clone, stimulation=self._affinity(clone, ai))
+            for clone in set_clones
+        )
+
+        return arb_list
+
     def _refinement_arb(
         self,
         ai: npt.NDArray,
@@ -409,7 +417,6 @@ class AIRS(BaseClassifier):
             if iters == self.max_iters or avg_stimulation > self.affinity_threshold:
                 break
 
-            # pick a random cell for mutations.
             random_index = random.randint(0, len(arb_list) - 1)
             clone_arb = arb_list[random_index].hyper_clonal_mutate(
                 int(self.rate_clonal * c_match_stimulation), self._feature_type

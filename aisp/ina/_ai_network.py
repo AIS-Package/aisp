@@ -33,7 +33,7 @@ from ..utils.validation import (
 
 
 class AiNet(BaseClusterer):
-    """Artificial Immune Network for Compression and Clustering.
+    """Artificial Immune Network (AiNet) for Compression and Clustering.
 
     This class implements the aiNet algorithm, an artificial immune network model designed for
     clustering and data compression tasks. The aiNet algorithm uses principles from immune
@@ -64,18 +64,8 @@ class AiNet(BaseClusterer):
         Maximum number of training iterations.
     k : int, default=3
         The number of K nearest neighbors that will be used to choose a label in the prediction.
-    metric : Literal["manhattan", "minkowski", "euclidean"], default="euclidean"
-        Way to calculate the distance between the detector and the sample:
-
-        * ``'Euclidean'`` ➜ The calculation of the distance is given by the expression:
-            √( (x₁ - x₂)² + (y₁ - y₂)² + ... + (yn - yn)²).
-
-        * ``'minkowski'`` ➜ The calculation of the distance is given by the expression:
-            ( |X₁ - Y₁|p + |X₂ - Y₂|p + ... + |Xn - Yn|p) ¹/ₚ.
-
-        * ``'manhattan'`` ➜ The calculation of the distance is given by the expression:
-            ( |x₁ - x₂| + |y₁ - y₂| + ... + |yn - yn|).
-
+    metric : {"euclidean", "minkowski", "manhattan"}, default="euclidean"
+        Distance metric used to compute similarity between memory cells
     seed : Optional[int]
         Seed for the random generation of detector values. Defaults to None.
     use_mst_clustering : bool, default=True
@@ -87,6 +77,15 @@ class AiNet(BaseClusterer):
             is ``2``, which represents normalized Euclidean distance.\
             Different values of p lead to different variants of the Minkowski Distance.
 
+    Attributes
+    ----------
+    memory_network : Dict[int, List[Cell]]
+        The immune network representing clusters.
+    population_antibodies : Optional[npt.NDArray]
+        The set of memory antibodies.
+    mst : dict
+        The Minimum Spanning Tree and its statistics (graph, mean_distance, std_distance).
+
     References
     ----------
     .. [1] De Castro, Leandro & José, Fernando & von Zuben, Antonio Augusto. (2001). aiNet: An
@@ -97,6 +96,33 @@ class AiNet(BaseClusterer):
     .. [2] SciPy Documentation. *Minimum Spanning Tree*.
            https://docs.scipy.org/doc/scipy/reference/generated/
            scipy.sparse.csgraph.minimum_spanning_tree
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from aisp.ina import AiNet
+
+    >>> np.random.seed(1)
+    >>> # Generating training data
+    >>> a = np.random.uniform(high=0.4, size=(50, 2))
+    >>> b = np.random.uniform(low=0.6, size=(50, 2))
+    >>> x_train = np.vstack((a, b))
+    >>> # AiNet Instance
+    >>> ai_net = AiNet(
+    ...     N=150,
+    ...     mst_inconsistency_factor=1,
+    ...     seed=1,
+    ...     affinity_threshold=0.85,
+    ...     suppression_threshold=0.7
+    ... )
+    >>> ai_net = ai_net.fit(x_train, verbose=True)
+    >>> x_test = [
+    ...     [0.15, 0.45],  # Expected: label 0
+    ...     [0.85, 0.65],  # Esperado: label 1
+    ... ]
+    >>> y_pred = ai_net.predict(x_test)
+    >>> print(y_pred)
+    [0 1]
     """
 
     def __init__(
@@ -154,7 +180,7 @@ class AiNet(BaseClusterer):
         if self.metric == "minkowski":
             self._metric_params["p"] = self.p
 
-        self.classes: Optional[npt.NDArray] = None
+        self.labels: Optional[npt.NDArray] = None
         self._memory_network: Dict[int, List[Cell]] = {}
         self._population_antibodies: Optional[npt.NDArray] = None
         self._n_features: int = 0
@@ -178,7 +204,7 @@ class AiNet(BaseClusterer):
 
     @property
     def mst(self) -> dict:
-        """Returns the Minimum Spanning Tree and its statistics."""
+        """Return the Minimum Spanning Tree and its statistics."""
         return {
             "graph": self._mst_structure,
             "mean_distance": self._mst_mean_distance,
@@ -237,21 +263,17 @@ class AiNet(BaseClusterer):
             t += 1
         self._population_antibodies = population_p
 
+        parts = ["✔ Memory antibodies successfully generated"]
+
         if self.use_mst_clustering:
             self._build_mst()
             self.update_clusters()
-            labels = self.classes.tolist() if self.classes is not None else []
-            progress.set_description(
-                f"\033[92m✔ Set of memory antibodies for classes "
-                f"({', '.join(map(str, labels))}) successfully generated | "
-                f"Clusters: {len(labels)} | Population of antibodies size: "
-                f"{len(self._population_antibodies)}\033[0m"
-            )
-        else:
-            progress.set_description(
-                f"\033[92m✔ Set of memory antibodies successfully generated | "
-                f"Population of antibodies size: {len(self._population_antibodies)}\033[0m"
-            )
+            labels = self.labels.tolist() if self.labels is not None else []
+            parts[0] += f" for labels ({', '.join(map(str, labels))})"
+            parts.append(f"Number of clusters: {len(labels)}")
+
+        parts.append(f"Antibody population size: {len(self._population_antibodies)}")
+        progress.set_description(f"\033[92m{' | '.join(parts)}\033[0m")
         progress.close()
 
         return self
@@ -279,7 +301,7 @@ class AiNet(BaseClusterer):
 
         Returns
         -------
-        Predictions : npt.NDArray
+        predictions : npt.NDArray
             Predicted cluster labels, or None if clustering is disabled.
         """
         if (
@@ -304,7 +326,7 @@ class AiNet(BaseClusterer):
 
         Returns
         -------
-        npt.NDArray
+        antibodies : npt.NDArray
             List of initialized memories.
         """
         return generate_random_antibodies(
@@ -312,7 +334,9 @@ class AiNet(BaseClusterer):
         )
 
     def _select_and_clone_population(
-        self, antigen: npt.NDArray, population: npt.NDArray
+        self,
+        antigen: npt.NDArray,
+        population: npt.NDArray
     ) -> list:
         """
         Select top antibodies by affinity and generate mutated clones.
@@ -321,12 +345,12 @@ class AiNet(BaseClusterer):
         ----------
         antigen : npt.NDArray
             The antigen for which affinities will be calculated.
-        population: list
+        population: npt.NDArray
             The list of antibodies (solutions) to be evaluated and cloned.
 
         Returns
         -------
-        list[npt.NDArray]
+        mutated_clones : list[npt.NDArray]
             List of mutated clones.
         """
         affinities = self._calculate_affinities(antigen, population)
@@ -362,7 +386,7 @@ class AiNet(BaseClusterer):
 
         Returns
         -------
-        list
+        suppressed_clones : list
             Non-redundant, high-affinity clones.
         """
         suppression_affinity = [
@@ -386,7 +410,7 @@ class AiNet(BaseClusterer):
 
         Returns
         -------
-        list
+        suppressed_pool : list
             Memory pool without redundant antibodies.
         """
         if not pool_memory:
@@ -407,7 +431,7 @@ class AiNet(BaseClusterer):
 
         Returns
         -------
-        npt.NDArray
+        new_antibodies : npt.NDArray
             Array of new random antibodies for diversity introduction.
         """
         return generate_random_antibodies(
@@ -430,7 +454,7 @@ class AiNet(BaseClusterer):
 
         Returns
         -------
-        float
+        affinity : float
             Affinity score in [0, 1], where higher means more similar.
         """
         distance: float
@@ -457,7 +481,7 @@ class AiNet(BaseClusterer):
 
         Returns
         -------
-        npt.NDArray
+        affinities : npt.NDArray
             One-dimensional array of shape (n_samples,), containing the affinities between `u`
             and each vector in `v`.
         """
@@ -480,7 +504,7 @@ class AiNet(BaseClusterer):
 
         Returns
         -------
-        npt.NDArray
+        mutated_clones : npt.NDArray
             Array of shape (n_clone, len(antibody)) containing mutated clones
         """
         if self._feature_type == "binary-features":
@@ -508,7 +532,9 @@ class AiNet(BaseClusterer):
 
         antibodies_matrix = squareform(
             pdist(
-                self._population_antibodies, metric=self.metric, **self._metric_params
+                self._population_antibodies,
+                metric=self.metric, # type: ignore
+                **self._metric_params
             )
         )
         antibodies_mst = minimum_spanning_tree(antibodies_matrix).toarray()
@@ -546,7 +572,7 @@ class AiNet(BaseClusterer):
         -------
         self._memory_network : dict[int, npt.NDArray]
             Dictionary mapping cluster labels to antibody arrays.
-        self.classes : list
+        self.labels : list
             List of cluster labels.
         """
         if self._mst_structure is None:
@@ -579,11 +605,11 @@ class AiNet(BaseClusterer):
             label: [Cell(a) for a in self._population_antibodies[labels == label]]
             for label in range(n_antibodies)
         }
-        self.classes = np.array(list(self._memory_network.keys()))
+        self.labels = np.array(list(self._memory_network.keys()))
 
         self._all_cells_memory_vectors = [
             (class_name, cell.vector)
-            for class_name in self.classes
+            for class_name in self.labels
             for cell in self._memory_network[class_name]
         ]
 

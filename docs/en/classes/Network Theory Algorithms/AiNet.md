@@ -41,7 +41,7 @@ For clustering, it optionally uses a **Minimum Spanning Tree (MST)** to separate
 * **_mst_structure** (``Optional[npt.NDArray]``): MST adjacency structure.
 * **_mst_mean_distance** (``Optional[float]``): Mean of MST edge distances.
 * **_mst_std_distance** (``Optional[float]``): Standard deviation of MST edge distances.
-* **classes** (``Optional[npt.NDArray]``): List of cluster labels.
+* **labels** (``Optional[npt.NDArray]``): List of cluster labels.
 
 ---
 
@@ -109,7 +109,7 @@ def update_clusters(self, mst_inconsistency_factor: Optional[float] = None):
 **Updates:**
 
 * **_memory_network**: Dictionary of cluster labels to antibody arrays.
-* **classes**: List of cluster labels.
+* **labels**: List of cluster labels.
 
 ---
 

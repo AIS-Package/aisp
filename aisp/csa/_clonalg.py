@@ -42,7 +42,8 @@ class Clonalg(BaseOptimizer):
         Maximum number of possible clones of a cell. This value is multiplied by
         cell_affinity to determine the number of clones.
     rate_hypermutation : float, default=1.0
-        Rate of mutated clones, used as a scalar factor.
+        Hypermutation rate controls the intensity of mutations during clonal expansion. Higher
+        values decrease mutation intensity, while lower values increase it.
     n_diversity_injection : int, default=5
         Number of new random memory cells injected to maintain diversity.
     selection_size : int, default=5
@@ -64,10 +65,15 @@ class Clonalg(BaseOptimizer):
             Each dimension has specific limits. Both arrays must be
             ``problem_size``.
 
-    mode : Literal["min", "max"], default="min"
+    mode : {"min", "max"}, default="min"
         Defines whether the algorithm minimizes or maximizes the cost function.
     seed : Optional[int], default=None
         Seed for random generation of detector values. If None, the value is random.
+
+    Attributes
+    ----------
+    population : Optional[List[Antibody]]
+        Population of antibodies
 
     Notes
     -----
@@ -81,6 +87,23 @@ class Clonalg(BaseOptimizer):
     .. [1] BROWNLEE, Jason. Clonal Selection Algorithm. Clever Algorithms: Nature-inspired
     Programming Recipes., 2011. Available at:
     https://cleveralgorithms.com/nature-inspired/immune/clonal_selection_algorithm.html
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from aisp.csa import Clonalg
+    >>> # Search space limits
+    >>> bounds = {'low': -5.12, 'high': 5.12}
+    >>> # Objective function
+    >>> def rastrigin_fitness(x):
+    ...     x = np.clip(x, bounds['low'], bounds['high'])
+    ...     return 10 * len(x) + np.sum(x**2 - 10 * np.cos(2 * np.pi * x))
+    >>> # CLONALG Instance
+    >>> clonalg = Clonalg(problem_size=2, bounds=bounds, seed=1)
+    >>> clonalg.register('affinity_function', rastrigin_fitness)
+    >>> population = clonalg.optimize(100, 50, False)
+    >>> print('Best cost:', abs(clonalg.best_cost))
+    Best cost: 0.02623036956750724
     """
 
     def __init__(
@@ -232,7 +255,9 @@ class Clonalg(BaseOptimizer):
         return self.population
 
     def _select_top_antibodies(
-        self, n: int, antibodies: list[Antibody]
+        self,
+        n: int,
+        antibodies: list[Antibody]
     ) -> list[Antibody]:
         """Select the antibodies with the highest or lowest values, depending on the mode.
 
@@ -245,8 +270,9 @@ class Clonalg(BaseOptimizer):
 
         Returns
         -------
-            List containing the `n` antibodies selected according to the defined min or max
-            criterion.
+        selected : list[Antibody]
+            List containing the `n` antibodies selected according to the defined min
+            or max criterion.
         """
         if self.mode == "max":
             return heapq.nlargest(n, antibodies)
@@ -264,7 +290,7 @@ class Clonalg(BaseOptimizer):
 
         Returns
         -------
-        affinity : float
+        affinity : np.float64
             Affinity value associated with the given cell.
 
         Raises
@@ -283,11 +309,14 @@ class Clonalg(BaseOptimizer):
 
         Returns
         -------
-        npt.NDArray
+        antibodies : npt.NDArray
             List of initialized antibodies.
         """
         return generate_random_antibodies(
-            self.N, self.problem_size, self.feature_type, self._bounds_extend_cache
+            self.N,
+            self.problem_size,
+            self.feature_type,
+            self._bounds_extend_cache
         )
 
     def _diversity_introduction(self):
@@ -295,7 +324,7 @@ class Clonalg(BaseOptimizer):
 
         Returns
         -------
-        npt.NDArray
+        new_antibodies : npt.NDArray
             Array of new random antibodies for diversity introduction.
         """
         return generate_random_antibodies(
@@ -320,10 +349,12 @@ class Clonalg(BaseOptimizer):
             Original antibody vector to be cloned and mutated.
         n_clone : int
             Number of clones to generate.
+        rate_hypermutation : float
+            The hypermutation rate applied to clones represents the probability of mutation.
 
         Returns
         -------
-        npt.NDArray
+        mutated_clones : npt.NDArray
             Array of shape (n_clone, len(antibody)) containing mutated clones
         """
         if self.feature_type == "binary-features":
@@ -352,7 +383,7 @@ class Clonalg(BaseOptimizer):
 
         Returns
         -------
-        list[Antibody]
+        mutated_clones : list[Antibody]
             List of mutated clones.
         """
         clonal_m: list = []

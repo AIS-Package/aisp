@@ -26,10 +26,12 @@ def slice_index_list_by_class(classes: Optional[Union[npt.NDArray, list]], y: np
     Examples
     --------
     >>> import numpy as np
+    >>> from aisp.utils.multiclass import slice_index_list_by_class
+
     >>> labels = ['a', 'b', 'c']
     >>> y = np.array(['a', 'c', 'b', 'a', 'c', 'b'])
     >>> slice_index_list_by_class(labels, y)
-    {'a': [0, 3], 1: [2, 5], 2: [1, 4]}
+    {'a': [0, 3], 'b': [2, 5], 'c': [1, 4]}
     """
     if classes is None:
         return {}
@@ -63,10 +65,10 @@ def predict_knn_affinity(
 
     Returns
     -------
-    npt.NDArray
+    predicted_labels : npt.NDArray
         Array of predicted labels for each sample in X, based on the k nearest neighbors.
     """
-    c: list = []
+    predicted_labels: list = []
 
     for line in X:
         label_stim_list = [
@@ -76,6 +78,6 @@ def predict_knn_affinity(
         # Create the list with the k nearest neighbors and select the class with the most votes
         k_nearest = nlargest(k, label_stim_list, key=lambda x: x[1])
         votes = Counter(label for label, _ in k_nearest)
-        c.append(votes.most_common(1)[0][0])
+        predicted_labels.append(votes.most_common(1)[0][0])
 
-    return np.asarray(c)
+    return np.asarray(predicted_labels)
