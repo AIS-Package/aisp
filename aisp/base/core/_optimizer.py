@@ -16,6 +16,11 @@ class BaseOptimizer(ABC, Base):
     history, evaluated solutions, and the best solution found during the optimization process.
     Subclasses must implement ``optimize`` and ``affinity_function``.
 
+    Parameters
+    ----------
+    affinity_function : Optional[Callable[..., Any]], default=None
+        Objective function to evaluate candidate solutions the problem.
+
     Attributes
     ----------
     cost_history : List[float]
@@ -30,7 +35,7 @@ class BaseOptimizer(ABC, Base):
         Defines whether the algorithm minimizes or maximizes the cost function.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, affinity_function: Optional[Callable[..., Any]] = None) -> None:
         self._cost_history: List[float] = []
         self._solution_history: list = []
         self._best_solution: Optional[Any] = None
@@ -42,6 +47,8 @@ class BaseOptimizer(ABC, Base):
             "get_report"
         ]
         self.mode = "min"
+        if callable(affinity_function):
+            self.register('affinity_function', affinity_function)
 
     @property
     def cost_history(self) -> List[float]:
@@ -156,7 +163,6 @@ class BaseOptimizer(ABC, Base):
             The best solution found by the optimization algorithm.
         """
 
-    @abstractmethod
     def affinity_function(self, solution: Any) -> float:
         """Evaluate the affinity of a candidate solution.
 
@@ -171,7 +177,15 @@ class BaseOptimizer(ABC, Base):
         -------
         affinity : float
             Cost value associated with the given solution.
+
+        Raises
+        ------
+        NotImplementedError
+            If no affinity function has been provided.
         """
+        raise NotImplementedError(
+            "No affinity function to evaluate the candidate cell was provided."
+        )
 
     def register(self, alias: str, function: Callable[..., Any]) -> None:
         """Register a function dynamically in the optimizer instance.
@@ -207,3 +221,24 @@ class BaseOptimizer(ABC, Base):
         self._solution_history = []
         self._best_solution = None
         self._best_cost = None
+
+    def _affinity_function(self, solution: Any) -> float:
+        """
+        Evaluate the affinity of a candidate cell.
+
+        Parameters
+        ----------
+        solution : npt.NDArray
+            Candidate solution to evaluate.
+
+        Returns
+        -------
+        affinity : np.float64
+            Affinity value associated with the given cell.
+
+        Raises
+        ------
+        NotImplementedError
+            If no affinity function has been provided.
+        """
+        return float(self.affinity_function(solution))

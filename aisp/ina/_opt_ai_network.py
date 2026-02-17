@@ -60,14 +60,14 @@ class OptAiNet(BaseOptimizer):
         mode: Literal["min", "max"] = "min",
         seed: Optional[int] = None
     ):
-        super().__init__()
+        super().__init__(affinity_function)
         self.problem_size = sanitize_param(problem_size, 1, lambda x: x > 0)
         self.N: int = sanitize_param(N, 50, lambda x: x > 0)
         self.rate_clonal: int = sanitize_param(rate_clonal, 10, lambda x: x > 0)
         self.n_diversity_injection: int = sanitize_param(
             n_diversity_injection, 5, lambda x: x > 0
         )
-        self._affinity_function = affinity_function
+
         self.feature_type: FeatureTypeAll = feature_type
 
         self._bounds: Optional[Dict] = None
@@ -119,28 +119,3 @@ class OptAiNet(BaseOptimizer):
         population : any
         """
         return []
-
-    def affinity_function(self, solution: Any) -> float:
-        """
-        Evaluate the affinity of a candidate cell.
-
-        Parameters
-        ----------
-        solution : npt.NDArray
-            Candidate solution to evaluate.
-
-        Returns
-        -------
-        affinity : float
-            Affinity value associated with the given cell.
-
-        Raises
-        ------
-        NotImplementedError
-            If no affinity function has been provided.
-        """
-        if not callable(self._affinity_function):
-            raise NotImplementedError(
-                "No affinity function to evaluate the candidate cell was provided."
-            )
-        return np.float64(self._affinity_function(solution))
