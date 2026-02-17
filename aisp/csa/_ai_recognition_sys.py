@@ -212,42 +212,16 @@ class AIRS(BaseClassifier):
             )
 
             x_class = X[sample_index[_class_]]
-            # Calculating the similarity threshold between antigens
+
             self._cells_affinity_threshold(x_class)
-            sufficiently_similar = (
-                self.affinity_threshold * self.affinity_threshold_scalar
-            )
-            # Initialize memory cells for a class.
+            sufficiently_similar = self.affinity_threshold * self.affinity_threshold_scalar
+
             pool_c: list[BCell] = self._init_memory_c(x_class)
 
             for ai in x_class:
-                # Calculating the stimulation of memory cells with aᵢ and selecting the largest
-                # stimulation from the memory set.
-                c_match = pool_c[0]
-                match_stimulation = -1.0
-                for cell in pool_c:
-                    stimulation = self._affinity(cell.vector, ai)
-                    if stimulation > match_stimulation:
-                        match_stimulation = stimulation
-                        c_match = cell
+                c_match, match_stimulation = self._select_best_matching_cell(ai, pool_c)
 
-                arb_list: list[_ARB] = [
-                    _ARB(vector=c_match.vector, stimulation=match_stimulation)
-                ]
-
-                set_clones: npt.NDArray = c_match.hyper_clonal_mutate(
-                    int(self.rate_hypermutation * self.rate_clonal * match_stimulation),
-                    self._feature_type,
-                )
-
-                for clone in set_clones:
-                    arb_list.append(
-                        _ARB(
-                            vector=clone,
-                            stimulation=self._affinity(clone, ai),
-                        )
-                    )
-
+                arb_list = self._generate_arb_list(ai, c_match, match_stimulation)
                 c_candidate = self._refinement_arb(ai, match_stimulation, arb_list)
 
                 if c_candidate.stimulation > match_stimulation:
@@ -315,6 +289,77 @@ class AIRS(BaseClassifier):
             X, self.k, self._all_class_cell_vectors, self._affinity
         )
 
+    def _select_best_matching_cell(
+        self,
+        ai: npt.NDArray,
+        pool_c: list[BCell]
+    ) -> tuple[BCell, float]:
+        """Select the BCell with the highest affinity with antigen.
+
+        Parameters
+        ----------
+        ai : npt.NDArray
+            The current antigen.
+        pool_c : list[BCell]
+            Pool of memory B-Cells belonging to same class.
+
+        Returns
+        -------
+        tuple[BCell, float]
+            A tuple containing the best B cell and their affinity.
+        """
+        c_match = pool_c[0]
+        match_stimulation = -1.0
+        for cell in pool_c:
+            stimulation = self._affinity(cell.vector, ai)
+            if stimulation > match_stimulation:
+                match_stimulation = stimulation
+                c_match = cell
+
+        return c_match, match_stimulation
+
+    def _generate_arb_list(
+        self,
+        ai: npt.NDArray,
+        c_match: BCell,
+        match_stimulation: float
+    ) -> list[_ARB]:
+        """Generate a pool from the best affinity B cell.
+
+        Parameters
+        ----------
+        ai : npt.NDArray
+            The current antigen.
+        c_match : BCell
+            The best B-Cell
+        match_stimulation : float
+            The corresponding stimulation (affinity) value
+
+        Returns
+        -------
+        list[_ARB]
+            ARB set.
+        """
+        n_clones = int(self.rate_hypermutation * self.rate_clonal * match_stimulation)
+        arb_list: list[_ARB] = [
+            _ARB(vector=c_match.vector, stimulation=match_stimulation)
+        ]
+
+        if n_clones <= 0:
+            return arb_list
+
+        set_clones: npt.NDArray = c_match.hyper_clonal_mutate(
+            n_clones,
+            self._feature_type,
+        )
+
+        arb_list.extend(
+            _ARB(vector=clone, stimulation=self._affinity(clone, ai))
+            for clone in set_clones
+        )
+
+        return arb_list
+
     def _refinement_arb(
         self,
         ai: npt.NDArray,
@@ -372,7 +417,6 @@ class AIRS(BaseClassifier):
             if iters == self.max_iters or avg_stimulation > self.affinity_threshold:
                 break
 
-            # pick a random cell for mutations.
             random_index = random.randint(0, len(arb_list) - 1)
             clone_arb = arb_list[random_index].hyper_clonal_mutate(
                 int(self.rate_clonal * c_match_stimulation), self._feature_type
