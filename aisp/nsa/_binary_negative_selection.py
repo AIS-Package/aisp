@@ -168,16 +168,12 @@ class BNSA(BaseClassifier):
         check_shape_match(X, y)
         check_binary_array(X)
 
-        # Converts the entire array X to boolean
         X = X.astype(np.bool_)
         self._n_features = X.shape[1]
-        # Identifying the possible classes within the output array `y`.
         self.classes = np.unique(y)
-        # Dictionary that will store detectors with classes as keys.
+
         list_detectors_by_class: dict = {}
-        # Separates the classes for training.
         sample_index: dict = self._slice_index_list_by_class(y)
-        # Progress bar for generating all detectors.
 
         progress = tqdm(
             total=int(self.N * (len(self.classes))),
@@ -187,18 +183,17 @@ class BNSA(BaseClassifier):
         )
 
         for _class_ in self.classes:
-            # Initializes the empty set that will contain the valid detectors.
             valid_detectors_set: list = []
             discard_count: int = 0
-            # Updating the progress bar with the current class the algorithm is processing.
             progress.set_description_str(
                 f"Generating the detectors for the {_class_} class:"
             )
             x_class = X[sample_index[_class_]]
             while len(valid_detectors_set) < self.N:
-                # Generates a candidate detector vector randomly with values 0 and 1.
-                vector_x = np.random.randint(0, 2, size=(self._n_features,)).astype(np.bool_)
-                # If the detector is valid, add it to the list of valid detectors.
+                vector_x = np.random.randint(0, 2, size=(self._n_features,)).astype(
+                    np.bool_
+                )
+
                 if check_detector_bnsa_validity(x_class, vector_x, self.aff_thresh):
                     discard_count = 0
                     valid_detectors_set.append(vector_x)
@@ -208,16 +203,13 @@ class BNSA(BaseClassifier):
                     if discard_count == self.max_discards:
                         raise MaxDiscardsReachedError(_class_)
 
-            # Add detectors to the dictionary with classes as keys.
             list_detectors_by_class[_class_] = np.array(valid_detectors_set)
 
-        # Notify the completion of detector generation for the classes.
         progress.set_description(
             f"\033[92m✔ Non-self detectors for classes ({', '.join(map(str, self.classes))}) "
             f"successfully generated\033[0m"
         )
         progress.close()
-        # Saves the found detectors in the attribute for the class detectors.
         self._detectors = list_detectors_by_class
         self._detectors_stack = np.array(
             [np.stack(self._detectors[class_name]) for class_name in self.classes]
@@ -261,16 +253,14 @@ class BNSA(BaseClassifier):
         check_feature_dimension(X, self._n_features)
         check_binary_array(X)
 
-        # Converts the entire array X to boolean.
         if X.dtype != bool:
             X = X.astype(bool)
 
-        # Initializes an empty array that will store the predictions.
         c = []
-        # For each sample row in X.
+
         for line in X:
             class_found: bool = True
-            # Class prediction based on detectors
+
             class_index = bnsa_class_prediction(
                 line, self._detectors_stack, self.aff_thresh
             )

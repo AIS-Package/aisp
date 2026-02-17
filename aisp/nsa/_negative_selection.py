@@ -117,7 +117,7 @@ class RNSA(BaseClassifier):
     >>> rnsa = rnsa.fit(x_train, y_train, verbose=False)
     >>> x_test = [
     ...     [0.15, 0.45],  # Expected: Class 'a'
-    ...     [0.85, 0.65],  # Esperado: Classe 'b'
+    ...     [0.85, 0.65],  # Expected: Class 'b'
     ... ]
     >>> y_pred = rnsa.predict(x_test)
     >>> print(y_pred)
@@ -160,12 +160,10 @@ class RNSA(BaseClassifier):
         )
         self.max_discards: int = sanitize_param(max_discards, 1000, lambda x: x > 0)
 
-        # Retrieves the variables from kwargs.
         self.p: np.float64 = np.float64(kwargs.get("p", 2))
         self.cell_bounds: bool = bool(kwargs.get("cell_bounds", False))
         self.non_self_label: str = str(kwargs.get("non_self_label", "non-self"))
 
-        # Initializes the other class variables as None.
         self._detectors: Optional[Dict[str | int, list[Detector]]] = None
         self.classes: Optional[npt.NDArray] = None
 
@@ -206,7 +204,7 @@ class RNSA(BaseClassifier):
         Returns
         -------
         self : RNSA
-        Returns the instance itself.
+            Returns the instance itself.
         """
         X = check_array_type(X)
         y = check_array_type(y, "y")
@@ -214,13 +212,10 @@ class RNSA(BaseClassifier):
         check_value_range(X)
         self._n_features = X.shape[1]
 
-        # Identifying the possible classes within the output array `y`.
         self.classes = np.unique(y)
-        # Dictionary that will store detectors with classes as keys.
         list_detectors_by_class = {}
-        # Separates the classes for training.
         sample_index = self._slice_index_list_by_class(y)
-        # Progress bar for generating all detectors.
+
         progress = tqdm(
             total=int(self.N * (len(self.classes))),
             bar_format="{desc} ┇{bar}┇ {n}/{total} detectors",
@@ -228,21 +223,19 @@ class RNSA(BaseClassifier):
             disable=not verbose,
         )
         for _class_ in self.classes:
-            # Initializes the empty set that will contain the valid detectors.
             valid_detectors_set: List[Detector] = []
             discard_count = 0
             x_class = X[sample_index[_class_]]
-            # Indicating which class the algorithm is currently processing for the progress bar.
+
             progress.set_description_str(
                 f"Generating the detectors for the {_class_} class:"
             )
+
             while len(valid_detectors_set) < self.N:
-                # Generates a candidate detector vector randomly with values between 0 and 1.
                 vector_x = np.random.random_sample(size=(self._n_features,))
-                # Checks the validity of the detector for non-self with respect to the class samples
+
                 valid_detector = self._checks_valid_detector(x_class, vector_x)
 
-                # If the detector is valid, add it to the list of valid detectors.
                 if valid_detector is not False:
                     discard_count = 0
                     radius: Optional[float] = None
@@ -257,15 +250,14 @@ class RNSA(BaseClassifier):
                     if discard_count == self.max_discards:
                         raise MaxDiscardsReachedError(_class_)
 
-            # Add detectors, with classes as keys in the dictionary.
             list_detectors_by_class[_class_] = valid_detectors_set
-        # Notify completion of detector generation for the classes.
+
         progress.set_description(
             f"\033[92m✔ Non-self detectors for classes ({', '.join(map(str, self.classes))}) "
             f"successfully generated\033[0m"
         )
         progress.close()
-        # Saves the found detectors in the attribute for the non-self detectors of the trained model
+
         self._detectors = list_detectors_by_class
         return self
 
@@ -302,9 +294,7 @@ class RNSA(BaseClassifier):
         check_feature_dimension(X, self._n_features)
         check_value_range(X)
 
-        # Initializes an empty array that will store the predictions.
         c = []
-        # For each sample row in X.
         for line in X:
             class_found: bool
             _class_ = self._compare_sample_to_detectors(line)
@@ -350,7 +340,6 @@ class RNSA(BaseClassifier):
         is_valid : Union[bool, tuple[bool, float]]
             Returns whether the detector is valid or not.
         """
-        # If any of the input arrays have zero size, Returns false.
         if np.size(x_class) == 0 or np.size(vector_x) == 0:
             return False
         # If self.k > 1, uses the k nearest neighbors (kNN); otherwise, checks the detector
@@ -358,12 +347,9 @@ class RNSA(BaseClassifier):
         if self.k > 1:
             knn_list: list = []
             for x in x_class:
-                # Calculates the distance between the two vectors and adds it to the kNN list if
-                # the distance is smaller than the largest distance in the list.
                 self._compare_knearest_neighbors_list(
                     knn_list, self._distance(x, vector_x)
                 )
-            # If the average of the distances in the kNN list is less than the radius, Returns true.
             distance_mean = np.mean(knn_list)
             if self.algorithm == "V-detector":
                 return self._detector_is_valid_to_vdetector(
@@ -378,16 +364,13 @@ class RNSA(BaseClassifier):
                 )
                 return self._detector_is_valid_to_vdetector(distance, vector_x)
 
-            # Calculates the distance between the vectors; if not it is less than or equal to
-            # the radius plus the sample's radius, sets the validity of the detector to
-            # true.
             threshold: float = self.r + self.r_s
             if check_detector_rnsa_validity(
                 x_class, vector_x, threshold, get_metric_code(self.metric), self.p
             ):
-                return True  # Detector is valid!
+                return True
 
-        return False  # Detector is not valid!
+        return False
 
     def _compare_knearest_neighbors_list(self, knn: list, distance: float) -> None:
         """
@@ -402,12 +385,9 @@ class RNSA(BaseClassifier):
         distance : float
             Distance to check.
         """
-        # If the number of distances in kNN is less than k, adds the distance.
         if len(knn) < self.k:
             knn.append(distance)
             knn.sort()
-        # Otherwise, add the distance if the new distance is smaller than the largest
-        # distance in the list.
         elif knn[self.k - 1] > distance:
             knn[self.k - 1] = distance
             knn.sort()
@@ -430,10 +410,8 @@ class RNSA(BaseClassifier):
         if self._detectors is None or self.classes is None:
             return None
 
-        # List to store the classes and the average distance between the detectors and the sample.
         possible_classes = []
         for _class_ in self.classes:
-            # Variable to indicate if the class was found with the detectors.
             class_found: bool = True
             sum_distance = 0.0
             for detector in self._detectors[_class_]:

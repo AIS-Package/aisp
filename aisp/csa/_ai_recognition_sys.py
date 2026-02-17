@@ -417,7 +417,6 @@ class AIRS(BaseClassifier):
             if iters == self.max_iters or avg_stimulation > self.affinity_threshold:
                 break
 
-            # pick a random cell for mutations.
             random_index = random.randint(0, len(arb_list) - 1)
             clone_arb = arb_list[random_index].hyper_clonal_mutate(
                 int(self.rate_clonal * c_match_stimulation), self._feature_type

@@ -41,7 +41,6 @@ def check_detector_bnsa_validity(
         return False
 
     for i in range(x_class.shape[0]):
-        # Calculate the normalized Hamming Distance
         if hamming(x_class[i], vector_x) <= aff_thresh:
             return False
     return True
@@ -77,9 +76,7 @@ def bnsa_class_prediction(
         total_distance = 0.0
         class_found = True
 
-        # Calculates the Hamming distance between the row and all detectors.
         for detector_index in range(n_detectors):
-            # Calculates the normalized Hamming distance between the sample and the detector
             distance = hamming(features, class_detectors[class_index][detector_index])
 
             # If the distance is less than or equal to the threshold, the detector recognizes
@@ -89,7 +86,6 @@ def bnsa_class_prediction(
                 break
             total_distance += distance
 
-        # if the sample is self for the class
         if class_found:
             avg_distance = total_distance / n_detectors
             # Choose the class with the largest average distance.
