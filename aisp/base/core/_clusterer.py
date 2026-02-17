@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from typing import Optional, Union
-from warnings import warn
 
 import numpy.typing as npt
 
@@ -25,20 +24,6 @@ class BaseClusterer(ABC, Base):
     """
 
     labels: Optional[npt.NDArray] = None
-
-    @property
-    def classes(self) -> Optional[npt.NDArray]:
-        """Deprecated alias kept for backward compatibility.
-
-        Use `labels` instead of `classes`.
-        """
-        warn(
-            "The `classes` attribute is deprecated and will be removed in future "
-            "versions. Use labels instead.",
-            FutureWarning,
-            2
-        )
-        return self.labels
 
     @abstractmethod
     def fit(self, X: Union[npt.NDArray, list], verbose: bool = True) -> BaseClusterer:
