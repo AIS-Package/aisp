@@ -1,16 +1,16 @@
 ---
 id: class-name
-title: ClassName
 sidebar_label: ClassName
 tags: 
-  - tag
+    - tag
 ---
 
 # ClassName
 
-> **Package:** `aisp.[module]`
-
 {{ Brief description of the class. }}
+
+> **Module:** `aisp.[module]`  
+> **Import:** `from aisp.[module] import [class]`
 
 ---
 
@@ -37,10 +37,10 @@ model.method_name()
 
 ## Constructor Parameters
 
-| Name      | Type   | Default | Description                    |
-|-----------|--------|:-------:|--------------------------------|
-| `param_1` | `Type` |    -    | Description of the parameters. |
-| `param_2` | `Type` |    -    | Description of the parameters. |
+| Name      | Type   | Default | Description               |
+|-----------|--------|:-------:|---------------------------|
+| `param_1` | `Type` |    -    | Description of the param. |
+| `param_2` | `Type` |    -    | Description of the param. |
 
 ## Attributes
 
@@ -65,13 +65,15 @@ Description.
 
 **Parameters**
 
-| Name      | Type   | Default | Description                   |
-|-----------|--------|:-------:|-------------------------------|
-| `param_1` | `Type` |    -    | Description of the attribute. |
+| Name      | Type   | Default | Description               |
+|-----------|--------|:-------:|---------------------------|
+| `param_1` | `Type` |    -    | Description of the param. |
 
 **Returns**
 
 {{ Type }} - {{ Description   }}.
+
+---
 
 ## Extended Example
 
