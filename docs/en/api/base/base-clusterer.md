@@ -1,7 +1,7 @@
 ---
 id: base-clusterer
 sidebar_label: BaseClusterer
-tags: 
+keywords: 
     - base
     - clusterer
 ---

@@ -1,7 +1,7 @@
 ---
 id: base-classifier
 sidebar_label: BaseClassifier
-tags: 
+keywords: 
     - base
     - classifier
     - accuracy

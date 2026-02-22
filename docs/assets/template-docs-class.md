@@ -1,7 +1,7 @@
 ---
 id: class-name
 sidebar_label: ClassName
-tags: 
+keywords: 
     - tag
 ---
 

@@ -1,7 +1,7 @@
 ---
 id: base-optimizer
 sidebar_label: BaseOptimizer
-tags: 
+keywords: 
     - base
     - optimizer
 ---
