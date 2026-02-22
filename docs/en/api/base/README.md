@@ -1,7 +1,7 @@
 ---
 id: base
 sidebar_label: aisp.base
-tags: 
+keywords: 
     - base
     - immune
     - abstract
