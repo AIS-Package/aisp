@@ -37,10 +37,10 @@ model.method_name()
 
 ## Constructor Parameters
 
-| Name          | Type   | Default | Description                    |
-|---------------|--------|:-------:|--------------------------------|
-| `attribute_1` | `Type` |    -    | Description of the parameters. |
-| `attribute_2` | `Type` |    -    | Description of the parameters. |
+| Name      | Type   | Default | Description                    |
+|-----------|--------|:-------:|--------------------------------|
+| `param_1` | `Type` |    -    | Description of the parameters. |
+| `param_2` | `Type` |    -    | Description of the parameters. |
 
 ## Attributes
 
@@ -65,9 +65,9 @@ Description.
 
 **Parameters**
 
-| Name          | Type   | Default | Description                   |
-|---------------|--------|:-------:|-------------------------------|
-| `attribute_1` | `Type` |    -    | Description of the attribute. |
+| Name      | Type   | Default | Description                   |
+|-----------|--------|:-------:|-------------------------------|
+| `param_1` | `Type` |    -    | Description of the attribute. |
 
 **Returns**
 
