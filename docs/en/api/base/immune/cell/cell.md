@@ -23,4 +23,13 @@ Represents a basic immune cell.
 
 | Name     | Type         | Default | Description                |
 |----------|--------------|:-------:|----------------------------|
-| `vector` | `np.ndarray` |    -    | A vector of cell features. |]
+| `vector` | `np.ndarray` |    -    | A vector of cell features. |
+
+---
+
+## Methods
+
+* `__eq__(other)`: Check if two cells are equal based on their vectors.
+* `__array__()`: Array interface to NumPy, allows the instance to be treated as a `np.ndarray`.
+* `__getitem__(item)`: Get elements from the feature vector using indexing.
+
