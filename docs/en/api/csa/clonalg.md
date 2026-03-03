@@ -2,7 +2,11 @@
 id: clonalg
 sidebar_label: Clonalg
 keywords:
-    - key
+    - optimization
+    - clonal selection
+    - clonalg
+    - antibody population
+    - objective function
 ---
 
 # Clonalg
@@ -102,11 +106,11 @@ Execute the optimization process and return the population.
 
 **Parameters**
 
-| Name      | Type   | Default | Description                                                                      |
-|-----------|--------|:-------:|----------------------------------------------------------------------------------|
-| `max_iters` | `int`  |  `50`   | Maximum number of iterations when searching for the best solution using clonalg. |
+| Name               | Type   | Default | Description                                                                      |
+|--------------------|--------|:-------:|----------------------------------------------------------------------------------|
+| `max_iters`        | `int`  |  `50`   | Maximum number of iterations when searching for the best solution using clonalg. |
 | `n_iter_no_change` | `int`  |  `10`   | The maximum number of iterations without updating the best cell.                 |
-| `verbose` | `bool` | `True`  | Feedback on iterations, indicating the best antibody.                                                        |
+| `verbose`          | `bool` | `True`  | Feedback on iterations, indicating the best antibody.                            |
 
 **Raises**
 
@@ -150,8 +154,6 @@ Complete usage examples are available in the Jupyter Notebooks:
 - [**Knapsack Problem Example**](../../../../examples/en/optimization/clonalg/knapsack_problem_example.ipynb)
 - [**Rastrigin Function Example**](../../../../examples/en/optimization/clonalg/rastrigin_function_example.ipynb)
 - [**Tsp Problem Example**](../../../../examples/en/optimization/clonalg/tsp_problem_example.ipynb)
-
-
 
 ---
 
