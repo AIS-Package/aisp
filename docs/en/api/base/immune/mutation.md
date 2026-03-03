@@ -1,7 +1,7 @@
 ---
 id: mutation
 sidebar_label: mutation
-keywords: 
+keywords:
     - mutation
     - clonal expansion
     - immune system

@@ -1,10 +1,13 @@
 ---
 id: base-classifier
 sidebar_label: BaseClassifier
-keywords: 
+keywords:
     - base
     - classifier
-    - accuracy
+    - classifier interface
+    - accuracy score
+    - fit
+    - predict
 ---
 
 # BaseClassifier
