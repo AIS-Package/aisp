@@ -100,17 +100,6 @@ Output:
 
 ---
 
-## References
-
-[^1]: Brabazon, A., O'Neill, M., & McGarraghy, S. (2015). Natural Computing Algorithms. In Natural Computing Series.
-    Springer Berlin Heidelberg. [https://doi.org/10.1007/978-3-662-43631-8](https://doi.org/10.1007/978-3-662-43631-8)
-
-[^2]: AZZOUG, Aghiles. Artificial Immune Recognition System V2. Available at:
-    [https://github.com/AghilesAzzoug/Artificial-Immune-System](https://github.com/AghilesAzzoug/Artificial-Immune-System)
-
-
----
-
 ## Public Methods
 
 ### fit
@@ -180,3 +169,14 @@ Complete usage examples are available in the Jupyter Notebooks:
 - [**Geyser Dataset Example**](../../../../examples/en/classification/AIRS/geyser_dataBase_example_en.ipynb)
 - [**Mushrooms Dataset Example**](../../../../examples/en/classification/AIRS/mushrooms_dataBase_example_en.ipynb)
 - [**Random Dataset Example**](../../../../examples/en/classification/AIRS/example_with_randomly_generated_dataset-en.ipynb)
+
+
+---
+
+## References
+
+[^1]: Brabazon, A., O'Neill, M., & McGarraghy, S. (2015). Natural Computing Algorithms. In Natural Computing Series.
+    Springer Berlin Heidelberg. [https://doi.org/10.1007/978-3-662-43631-8](https://doi.org/10.1007/978-3-662-43631-8)
+
+[^2]: AZZOUG, Aghiles. Artificial Immune Recognition System V2. Available at:
+    [https://github.com/AghilesAzzoug/Artificial-Immune-System](https://github.com/AghilesAzzoug/Artificial-Immune-System)

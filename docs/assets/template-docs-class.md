@@ -56,12 +56,6 @@ model.method_name()
 
 ---
 
-## References
-
-1.
-
----
-
 ## Public Methods
 
 ### method_name
@@ -85,3 +79,10 @@ Description.
 Complete usage examples are available in the Jupyter Notebooks:
 
 - [example](#link)
+
+
+---
+
+## References
+
+[^1]: {{ Reference }}
