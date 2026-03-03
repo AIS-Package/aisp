@@ -20,14 +20,14 @@ Artificial Immune Systems algorithms implemented in the AISP package.
 
 ## Classes
 
-| Class            | Description                                        |
-|------------------|----------------------------------------------------|
-| `BaseClassifier` | Abstract base class for classification algorithms. |
-| `BaseClusterer`  | Abstract base class for clustering algorithms.     |
-| `BaseOptimizer`  | Abstract base class for optimization algorithms.   |
+| Class                                    | Description                                        |
+|------------------------------------------|----------------------------------------------------|
+| [`BaseClassifier`](./base-classifier.md) | Abstract base class for classification algorithms. |
+| [`BaseClusterer`](./base-clusterer.md)   | Abstract base class for clustering algorithms.     |
+| [`BaseOptimizer`](./base-optimizer.md)   | Abstract base class for optimization algorithms.   |
 
 ## Submodules
 
-| Module   | Description                                   |
-|----------|-----------------------------------------------|
-| `immune` | Support Module for Artificial Immune Systems. |
+| Module                         | Description                                   |
+|--------------------------------|-----------------------------------------------|
+| [`immune`](./immune/README.md) | Support Module for Artificial Immune Systems. |

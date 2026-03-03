@@ -1,13 +1,18 @@
 ---
 id: class-name
 sidebar_label: ClassName
-keywords: 
-    - tag
+keywords:
+    - key
 ---
 
 # ClassName
 
 {{ Brief description of the class. }}
+
+:::tip[Inheritance]
+This class extends {{ class }}
+:::
+
 
 > **Module:** `aisp.[module]`  
 > **Import:** `from aisp.[module] import [class]`

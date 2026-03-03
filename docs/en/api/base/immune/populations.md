@@ -1,7 +1,7 @@
 ---
 id: populations
 sidebar_label: populations
-keywords: 
+keywords:
     - binary
     - classifying
     - affinity threshold

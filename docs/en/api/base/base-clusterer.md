@@ -1,9 +1,14 @@
 ---
 id: base-clusterer
 sidebar_label: BaseClusterer
-keywords: 
+keywords:
     - base
     - clusterer
+    - clusterer interface
+    - cluster labels
+    - fit
+    - predict
+    - fit_predict
 ---
 
 # BaseClusterer

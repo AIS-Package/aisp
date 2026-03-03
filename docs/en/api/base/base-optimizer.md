@@ -1,9 +1,14 @@
 ---
 id: base-optimizer
 sidebar_label: BaseOptimizer
-keywords: 
+keywords:
     - base
     - optimizer
+    - optimization
+    - optimizer interface
+    - objective function
+    - minimization
+    - maximization
 ---
 
 # BaseOptimizer
