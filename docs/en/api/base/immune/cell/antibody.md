@@ -30,3 +30,10 @@ This class extends [Cell](./cell.md)
 |------------|---------------|:-------:|----------------------------------|
 | `vector`   | `npt.NDArray` |    -    | A vector of cell features.       |
 | `affinity` | `float`       |    -    | Affinity value for the antibody. |
+
+---
+
+## Methods
+
+* `__lt__(other)`: Compare this cell with another Antibody cell based on affinity.
+* `__eq__(other)`: Check if this cell has the same affinity as another cell.
