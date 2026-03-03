@@ -30,8 +30,8 @@ def clone_and_mutate_continuous(
     n : int
         The number of mutated clones to be generated.
     mutation_rate : float, default=1
-        If 0 <= mutation_rate < 1: probability of mutating each component.
-        If mutation_rate >= 1 or mutation_rate <= 0: the mutation randomizes
+        If 0 ≤ mutation_rate < 1: probability of mutating each component.
+        If mutation_rate ≥ 1 or mutation_rate ≤ 0: the mutation randomizes
         a number of components between 1 and len(vector).
 
     Returns
@@ -78,8 +78,8 @@ def clone_and_mutate_binary(
     n : int
         The number of mutated clones to be generated.
     mutation_rate : float, default=1
-        If 0 <= mutation_rate < 1: probability of mutating each component.
-        If mutation_rate >= 1 or mutation_rate <= 0: the mutation randomizes
+        If 0 ≤ mutation_rate < 1: probability of mutating each component.
+        If mutation_rate ≥ 1 or mutation_rate ≤ 0: the mutation randomizes
         a number of components between 1 and len(vector).
 
     Returns
@@ -129,8 +129,8 @@ def clone_and_mutate_ranged(
     bounds : np.ndarray
         Array (n_features, 2) with min and max per dimension.
     mutation_rate : float, default=1
-        If 0 <= mutation_rate < 1: probability of mutating each component.
-        If mutation_rate >= 1 or mutation_rate <= 0: the mutation randomizes
+        If 0 ≤ mutation_rate < 1: probability of mutating each component.
+        If mutation_rate ≥ 1 or mutation_rate ≤ 0: the mutation randomizes
         a number of components between 1 and len(vector).
 
     Returns
@@ -175,7 +175,7 @@ def clone_and_mutate_permutation(
     n : int
         The number of mutated clones to be generated.
     mutation_rate : float
-        Probability of mutating each component 0 <= mutation_rate < 1.
+        Probability of mutating each component 0 ≤ mutation_rate < 1.
 
     Returns
     -------

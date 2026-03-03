@@ -41,11 +41,11 @@ in distinct positions of the original vector.
 
 **Parameters**
 
-| Name            | Type                      | Default | Description                                                                                                                                                                               |
-|-----------------|---------------------------|:-------:|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `vector`        | `npt.NDArray[np.float64]` |    -    | The original immune cell with continuous values to be cloned and mutated.                                                                                                                 |
-| `n`             | `int`                     |    -    | The number of mutated clones to be generated.                                                                                                                                             |
-| `mutation_rate` | `float`                   |    -    | If 0 <= mutation_rate < 1: probability of mutating each component. If mutation_rate >= 1 or mutation_rate <= 0: the mutation randomizes a number of components between 1 and len(vector). |
+| Name            | Type                      | Default | Description                                                                                                                                                                            |
+|-----------------|---------------------------|:-------:|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `vector`        | `npt.NDArray[np.float64]` |    -    | The original immune cell with continuous values to be cloned and mutated.                                                                                                              |
+| `n`             | `int`                     |    -    | The number of mutated clones to be generated.                                                                                                                                          |
+| `mutation_rate` | `float`                   |    -    | If 0 ≤ mutation_rate < 1: probability of mutating each component. If mutation_rate ≥ 1 or mutation_rate ≤ 0: the mutation randomizes a number of components between 1 and len(vector). |
 
 **Returns**
 
@@ -71,11 +71,11 @@ immune systems with discrete representations.
 
 **Parameters**
 
-| Name            | Type                      | Default | Description                                                                                                                                                                               |
-|-----------------|---------------------------|:-------:|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `vector`        | `npt.NDArray[np.float64]` |    -    | The original immune cell with binary values to be cloned and mutated.                                                                                                                     |
-| `n`             | `int`                     |    -    | The number of mutated clones to be generated.                                                                                                                                             |
-| `mutation_rate` | `float`                   |    -    | If 0 <= mutation_rate < 1: probability of mutating each component. If mutation_rate >= 1 or mutation_rate <= 0: the mutation randomizes a number of components between 1 and len(vector). |
+| Name            | Type                      | Default | Description                                                                                                                                                                            |
+|-----------------|---------------------------|:-------:|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `vector`        | `npt.NDArray[np.float64]` |    -    | The original immune cell with binary values to be cloned and mutated.                                                                                                                  |
+| `n`             | `int`                     |    -    | The number of mutated clones to be generated.                                                                                                                                          |
+| `mutation_rate` | `float`                   |    -    | If 0 ≤ mutation_rate < 1: probability of mutating each component. If mutation_rate ≥ 1 or mutation_rate ≤ 0: the mutation randomizes a number of components between 1 and len(vector). |
 
 **Returns**
 
@@ -103,12 +103,12 @@ will have a random number of mutations applied in distinct positions of the orig
 
 **Parameters**
 
-| Name            | Type                      | Default | Description                                                                                                                                                                               |
-|-----------------|---------------------------|:-------:|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `vector`        | `npt.NDArray[np.float64]` |    -    | The original immune cell with continuous values to be cloned and mutated.                                                                                                                 |
-| `n`             | `int`                     |    -    | The number of mutated clones to be generated.                                                                                                                                             |
-| `bounds`        | `np.ndarray`              |    -    | Array (n_features, 2) with min and max per dimension.                                                                                                                                     |
-| `mutation_rate` | `float`                   |    -    | If 0 <= mutation_rate < 1: probability of mutating each component. If mutation_rate >= 1 or mutation_rate <= 0: the mutation randomizes a number of components between 1 and len(vector). |
+| Name            | Type                      | Default | Description                                                                                                                                                                            |
+|-----------------|---------------------------|:-------:|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `vector`        | `npt.NDArray[np.float64]` |    -    | The original immune cell with continuous values to be cloned and mutated.                                                                                                              |
+| `n`             | `int`                     |    -    | The number of mutated clones to be generated.                                                                                                                                          |
+| `bounds`        | `np.ndarray`              |    -    | Array (n_features, 2) with min and max per dimension.                                                                                                                                  |
+| `mutation_rate` | `float`                   |    -    | If 0 ≤ mutation_rate < 1: probability of mutating each component. If mutation_rate ≥ 1 or mutation_rate ≤ 0: the mutation randomizes a number of components between 1 and len(vector). |
 
 **Returns**
 
@@ -135,7 +135,7 @@ Generate a set of mutated clones by random permutation.
 |-----------------|-------------------------|:-------:|----------------------------------------------------------------------------|
 | `vector`        | `npt.NDArray[np.int64]` |    -    | The original immune cell with permutation values to be cloned and mutated. |
 | `n`             | `int`                   |    -    | The number of mutated clones to be generated.                              |
-| `mutation_rate` | `float`                 |    -    | Probability of mutating each component 0 <= mutation_rate < 1.             |
+| `mutation_rate` | `float`                 |    -    | Probability of mutating each component 0 ≤ mutation_rate < 1.              |
 
 **Returns**
 
