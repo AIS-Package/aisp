@@ -157,7 +157,7 @@ using the k-nearest neighbors approach.
 
 **Returns**
 
-C `npt.NDArray` - An ndarray of the form ``C`` (``n_samples``), containing the predicted classes for ``X``.
+**C** : `npt.NDArray` - An ndarray of the form ``C`` (``n_samples``), containing the predicted classes for ``X``.
 
 ---
 
