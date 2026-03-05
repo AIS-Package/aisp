@@ -9,6 +9,9 @@ keywords:
     - fit
     - predict
     - fit_predict
+tags:
+    - clusterer
+    - clustering
 ---
 
 # BaseClusterer

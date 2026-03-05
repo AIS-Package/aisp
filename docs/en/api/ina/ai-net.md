@@ -7,6 +7,11 @@ keywords:
     - data compression
     - unsupervised learning
     - Minimum Spanning Tree
+tags:
+    - clustering
+    - unsupervised
+    - immune network
+    - data compression
 ---
 
 # AiNet
@@ -31,7 +36,7 @@ This class implements the aiNet algorithm, an artificial immune network model de
 clustering and data compression tasks. The aiNet algorithm uses principles from immune
 network theory, clonal selection, and affinity maturation to compress high-dimensional
 datasets [^1].  
-For clustering, the class uses SciPy's implementation of the **Minimum Spanning Tree**
+For clustering, the class uses SciPy implementation of the **Minimum Spanning Tree**
 (MST) to remove the most distant nodes and separate the groups [^2].
 
 ---

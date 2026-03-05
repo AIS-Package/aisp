@@ -8,6 +8,9 @@ keywords:
     - accuracy score
     - fit
     - predict
+tags:
+    - classifier
+    - classification
 ---
 
 # BaseClassifier

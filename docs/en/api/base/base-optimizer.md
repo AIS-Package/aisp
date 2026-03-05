@@ -9,6 +9,9 @@ keywords:
     - objective function
     - minimization
     - maximization
+tags:
+    - optimizer
+    - optimization
 ---
 
 # BaseOptimizer

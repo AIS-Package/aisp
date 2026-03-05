@@ -10,6 +10,12 @@ keywords:
     - real-valued
     - v-detector
     - multiclass
+tags:
+    - classification
+    - supervised
+    - negative selection
+    - real-valued
+    - anomaly detection
 ---
 
 # RNSA

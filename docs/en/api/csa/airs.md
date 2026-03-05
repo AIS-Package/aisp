@@ -7,6 +7,10 @@ keywords:
     - memory cells
     - k-nn
     - supervised learning
+tags:
+    - classification
+    - supervised
+    - clonal selection
 ---
 
 # AIRS

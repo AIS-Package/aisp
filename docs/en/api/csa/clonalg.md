@@ -7,6 +7,15 @@ keywords:
     - clonalg
     - antibody population
     - objective function
+tags:
+    - optimization
+    - clonal selection
+    - minimization
+    - maximization
+    - binary
+    - continuous
+    - permutation
+    - ranged
 ---
 
 # Clonalg
