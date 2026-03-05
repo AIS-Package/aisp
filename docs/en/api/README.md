@@ -14,7 +14,7 @@ keywords:
 
 Welcome to the **AISP** (Artificial Immune System Package) api. This documentation demonstrates the package public API.
 
-## Core Modules (`aisp.base`)
+## Core Modules ([`aisp.base`](./base/README.md))
 
 Fundamental abstractions and base classes that define core interfaces of package.
 
@@ -24,7 +24,7 @@ Fundamental abstractions and base classes that define core interfaces of package
 | [`BaseClusterer`](./base/base-clusterer.md)   | Abstract base class for clustering algorithms.     |
 | [`BaseOptimizer`](./base/base-optimizer.md)   | Abstract base class for optimization algorithms.   |
 
-### Immune Domain components (`aisp.base.immune`)
+### Immune Domain components ([`aisp.base.immune`](./base/immune/README.md))
 
 Core structures and support utilities for implementations immune.
 
@@ -38,7 +38,7 @@ Core structures and support utilities for implementations immune.
 
 ## Algorithms
 
-### Negative Selection Algorithms (`aisp.nsa`)
+### Negative Selection Algorithms ([`aisp.nsa`](./nsa/README.md))
 
 supervised learning algorithms based on negative selection, the immune systems process of distinguishing self from not-self.
 
@@ -47,7 +47,7 @@ supervised learning algorithms based on negative selection, the immune systems p
 | [`RNSA`](./nsa/rnsa.md) | A supervised learning algorithm for classification that uses real-valued detectors. |
 | [`BNSA`](./nsa/bnsa.md) | A supervised learning algorithm for classification that uses binary detectors.      |
 
-### Clonal Selection Algorithms (`aisp.csa`)
+### Clonal Selection Algorithms ([`aisp.csa`](./csa/README.md))
 
 Algorithms inspired by the process of antibody proliferation to detecting an antigen.
 
@@ -56,7 +56,7 @@ Algorithms inspired by the process of antibody proliferation to detecting an ant
 | [`AIRS`](./csa/airs.md)       | A supervised learning algorithm for classification tasks based on the clonal selection principle.                                                                                    |
 | [`Clonalg`](./csa/clonalg.md) | Implementation of the clonal selection algorithm for optimization, adapted for both minimization and maximization of cost functions in binary, continuous, and permutation problems. |
 
-### Immune Network Algorithms  (`aisp.ina`)
+### Immune Network Algorithms  ([`aisp.ina`](./ina/README.md))
 
 Algorithms based on Network Theory Algorithms proposed by Jerne.
 
