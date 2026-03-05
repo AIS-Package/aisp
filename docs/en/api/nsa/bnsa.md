@@ -9,6 +9,12 @@ keywords:
     - pattern recognition
     - classification
     - multiclass
+tags:
+    - classification
+    - supervised
+    - negative selection
+    - binary-features
+    - anomaly detection
 ---
 
 # BNSA

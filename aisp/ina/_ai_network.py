@@ -39,7 +39,7 @@ class AiNet(BaseClusterer):
     clustering and data compression tasks. The aiNet algorithm uses principles from immune
     network theory, clonal selection, and affinity maturation to compress high-dimensional
     datasets. [1]_
-    For clustering, the class uses SciPy's implementation of the **Minimum Spanning Tree**
+    For clustering, the class uses SciPy implementation of the **Minimum Spanning Tree**
     (MST) to remove the most distant nodes and separate the groups. [2]_
 
     Parameters
