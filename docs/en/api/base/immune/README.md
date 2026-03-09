@@ -13,9 +13,9 @@ Support Module for Artificial Immune Systems.
 
 > **Module:** `aisp.base.immune`
 
-## Classes
+## Submodules
 
-| Class                             | Description                                                                                |
+| Module                            | Description                                                                                |
 |-----------------------------------|--------------------------------------------------------------------------------------------|
 | [`cell`](./cell/README.md)        | Representation of immune system cells.                                                     |
 | [`mutation`](./mutation.md)       | Functions to generate mutated clones and simulate clonal expansion.                        |

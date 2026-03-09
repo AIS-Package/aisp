@@ -18,7 +18,7 @@ Provide utility functions for generating antibody populations in immunological a
 > **Module:** `aisp.base.immune`  
 > **Import:** `from aisp.base.immune import populations`
 
-## Methods
+## Functions
 
 ### generate_random_antibodies
 

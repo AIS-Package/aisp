@@ -12,7 +12,9 @@ tags:
 {{ Brief description of the class }}
 
 :::tip[Inheritance]
+
 This class extends {{ class }}
+
 :::
 
 
