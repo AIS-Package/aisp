@@ -22,7 +22,7 @@ Provide utility functions for generating antibody populations in immunological a
 
 ### generate_random_antibodies
 
-````python
+```python
 def generate_random_antibodies(
     n_samples: int,
     n_features: int,
@@ -30,7 +30,7 @@ def generate_random_antibodies(
     bounds: Optional[npt.NDArray[np.float64]] = None,
 ) -> npt.NDArray:
     ...
-````
+```
 
 Generate a random antibody population.
 

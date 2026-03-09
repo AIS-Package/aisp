@@ -64,12 +64,12 @@ model.method_name()
 
 ### method_name
 
-````python
+```python
 def method_name(
     param_1: type,
 ) -> type:
     ...
-````
+```
 
 Description.
 
