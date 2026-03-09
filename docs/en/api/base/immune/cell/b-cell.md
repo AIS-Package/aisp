@@ -49,11 +49,11 @@ Clones N features from a cell's features, generating a set of mutated vectors.
 
 **Parameters**
 
-| Name           | Type                                     |         Default         | Description                                                                         |
-|----------------|------------------------------------------|:-----------------------:|-------------------------------------------------------------------------------------|
-| `n`            | `int`                                    |            -            | Number of clones to be generated from mutations of the original cell.               |
-| `feature_type` | [`FeatureType`](../../../utils/types.md) | `"continuous-features"` | Specifies the type of feature_type to use based on the nature of the input features |
-| `bounds`       | `Optional[npt.NDArray[np.float64]]`      |         `None`          | Array (n_features, 2) with min and max per dimension.                               |
+| Name           | Type                                                 |         Default         | Description                                                                         |
+|----------------|------------------------------------------------------|:-----------------------:|-------------------------------------------------------------------------------------|
+| `n`            | `int`                                                |            -            | Number of clones to be generated from mutations of the original cell.               |
+| `feature_type` | [`FeatureType`](../../../utils/types.md#featuretype) | `"continuous-features"` | Specifies the type of feature_type to use based on the nature of the input features |
+| `bounds`       | `Optional[npt.NDArray[np.float64]]`                  |         `None`          | Array (n_features, 2) with min and max per dimension.                               |
 
 **Returns**
 

@@ -82,7 +82,7 @@ def check_shape_match(x: npt.NDArray, y: npt.NDArray):
         Array, containing the samples and their characteristics,
         Shape: (n_samples, n_features).
     y : npt.NDArray
-        Array of target classes of ``x`` with (``n_samples``).
+        Array of target classes of `x` with (`n_samples`).
 
     Raises
     ------
