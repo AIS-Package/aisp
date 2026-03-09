@@ -77,21 +77,21 @@ print(y_pred)
 
 ## Constructor Parameters
 
-| Name                       | Type                              |    Default    | Description                                                                                                                                |
-|----------------------------|-----------------------------------|:-------------:|--------------------------------------------------------------------------------------------------------------------------------------------|
-| `N`                        | `int`                             |     `50`      | Number of memory cells (antibodies) in the population.                                                                                     |
-| `n_clone`                  | `int`                             |     `10`      | Number of clones generated for each selected memory cell.                                                                                  |
-| `top_clonal_memory_size`   | `int`                             |      `5`      | Number of highest-affinity antibodies selected per antigen for cloning and mutation.                                                       |
-| `n_diversity_injection`    | `int`                             |      `5`      | Number of new random memory cells injected to maintain diversity.                                                                          |
-| `affinity_threshold`       | `float`                           |     `0.5`     | Threshold for affinity (similarity) to determine cell suppression or selection.                                                            |
-| `suppression_threshold`    | `float`                           |     `0.5`     | Threshold for suppressing similar memory cells                                                                                             |
-| `mst_inconsistency_factor` | `float`                           |     `2.0`     | Factor used to determine which edges in the **Minimum Spanning Tree (MST)** are considered inconsistent.                                   |
-| `max_iterations`           | `int`                             |     `10`      | Maximum number of training iterations.                                                                                                     |
-| `k`                        | `int`                             |      `3`      | The number of K nearest neighbors that will be used to choose a label in the prediction.                                                   |
-| `metric`                   | [`MetricType`](../utils/types.md) | `"euclidean"` | Distance metric used to compute similarity between memory cells                                                                            |
-| `seed`                     | `Optional[int]`                   |    `None`     | Seed for the random generation of detector values. Defaults to None.                                                                       |
-| `use_mst_clustering`       | `bool`                            |    `True`     | If ``True``, performs clustering with **Minimum Spanning Tree** (MST). If ``False``, does not perform clustering and predict returns None. |
-| `p`                        | `float`                           |     `2.0`     | This parameter stores the value of ``p`` used in the Minkowski distance.                                                                   |
+| Name                       | Type                                         |    Default    | Description                                                                                                                                |
+|----------------------------|----------------------------------------------|:-------------:|--------------------------------------------------------------------------------------------------------------------------------------------|
+| `N`                        | `int`                                        |     `50`      | Number of memory cells (antibodies) in the population.                                                                                     |
+| `n_clone`                  | `int`                                        |     `10`      | Number of clones generated for each selected memory cell.                                                                                  |
+| `top_clonal_memory_size`   | `int`                                        |      `5`      | Number of highest-affinity antibodies selected per antigen for cloning and mutation.                                                       |
+| `n_diversity_injection`    | `int`                                        |      `5`      | Number of new random memory cells injected to maintain diversity.                                                                          |
+| `affinity_threshold`       | `float`                                      |     `0.5`     | Threshold for affinity (similarity) to determine cell suppression or selection.                                                            |
+| `suppression_threshold`    | `float`                                      |     `0.5`     | Threshold for suppressing similar memory cells                                                                                             |
+| `mst_inconsistency_factor` | `float`                                      |     `2.0`     | Factor used to determine which edges in the **Minimum Spanning Tree (MST)** are considered inconsistent.                                   |
+| `max_iterations`           | `int`                                        |     `10`      | Maximum number of training iterations.                                                                                                     |
+| `k`                        | `int`                                        |      `3`      | The number of K nearest neighbors that will be used to choose a label in the prediction.                                                   |
+| `metric`                   | [`MetricType`](../utils/types.md#metrictype) | `"euclidean"` | Distance metric used to compute similarity between memory cells                                                                            |
+| `seed`                     | `Optional[int]`                              |    `None`     | Seed for the random generation of detector values. Defaults to None.                                                                       |
+| `use_mst_clustering`       | `bool`                                       |    `True`     | If ``True``, performs clustering with **Minimum Spanning Tree** (MST). If ``False``, does not perform clustering and predict returns None. |
+| `p`                        | `float`                                      |     `2.0`     | This parameter stores the value of ``p`` used in the Minkowski distance.                                                                   |
 
 ## Attributes
 
