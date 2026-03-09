@@ -8,7 +8,7 @@ FeatureType:
     - "ranged-features": values defined by intervals.
 
 FeatureTypeAll:
-    Same as ``FeatureType``, plus:
+    Same as `FeatureType`, plus:
     - "permutation-features": values represented as permutation.
 
 MetricType:
