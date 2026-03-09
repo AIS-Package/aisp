@@ -3,11 +3,13 @@ id: class-name
 sidebar_label: ClassName
 keywords:
     - key
+tags:
+    - tag
 ---
 
 # ClassName
 
-{{ Brief description of the class. }}
+{{ Brief description of the class }}
 
 :::tip[Inheritance]
 This class extends {{ class }}
@@ -60,6 +62,13 @@ model.method_name()
 
 ### method_name
 
+````python
+def method_name(
+    param_1: type,
+) -> type:
+    ...
+````
+
 Description.
 
 **Parameters**
@@ -68,9 +77,13 @@ Description.
 |-----------|--------|:-------:|---------------------------|
 | `param_1` | `Type` |    -    | Description of the param. |
 
+**Raises**
+
+{{ Raise }} - {{ Description }}.
+
 **Returns**
 
-{{ Type }} - {{ Description   }}.
+{{ Type }} - {{ Description }}.
 
 ---
 
