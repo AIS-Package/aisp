@@ -19,7 +19,7 @@ simulating the clonal expansion process in artificial immune systems.
 > **Module:** `aisp.base.immune`  
 > **Import:** `from aisp.base.immune import mutation`
 
-## Methods
+## Functions
 
 ### clone_and_mutate_continuous
 
