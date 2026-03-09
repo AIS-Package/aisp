@@ -28,7 +28,7 @@ Fundamental abstractions and base classes that define core interfaces of package
 
 Core structures and support utilities for implementations immune.
 
-| Class                                         | Description                                                                                |
+| Module                                        | Description                                                                                |
 |-----------------------------------------------|--------------------------------------------------------------------------------------------|
 | [`cell`](./base/immune/cell/README.md)        | Representation of immune system cells.                                                     |
 | [`mutation`](./base/immune/mutation.md)       | Functions to generate mutated clones and simulate clonal expansion.                        |
@@ -64,4 +64,16 @@ Algorithms based on Network Theory Algorithms proposed by Jerne.
 |------------------------|--------------------------------------------------------------------------------------------|
 | [`AiNet`](./ai-net.md) | An unsupervised learning algorithm for clustering, based on the theory of immune networks. |
 
-## Utils (`aisp.utils`)
+## Utils ([`aisp.utils`](./utils/README.md))
+
+Utility functions and helpers for development.
+
+| Module                                 | Description                                                              |
+|----------------------------------------|--------------------------------------------------------------------------|
+| [`display`](./utils/display/README.md) | Utility functions for displaying algorithm information.                  |
+| [`distance`](./utils/distance.md)      | Utility functions for distance between arrays with numba decorators.     |
+| [`metrics`](./utils/metrics.md)        | Utility functions for measuring accuracy and performance.                |
+| [`multiclass`](./utils/multiclass.md)  | Utility functions for handling classes with multiple categories.         |
+| [`sanitizers`](./utils/sanitizers.md)  | Utility functions for validation and treatment of parameters.            |
+| [`types`](./utils/types.md)            | Defines type aliases used throughout the project to improve readability. |
+| [`validation`](./utils/validation.md)  | Contains functions responsible for validating data types.                |
