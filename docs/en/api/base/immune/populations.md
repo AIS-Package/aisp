@@ -36,12 +36,12 @@ Generate a random antibody population.
 
 **Parameters**
 
-| Name           | Type                      |         Default         | Description                                                                                                             |
-|----------------|---------------------------|:-----------------------:|-------------------------------------------------------------------------------------------------------------------------|
-| `n_samples`    | `int`                     |            -            | Number of antibodies (samples) to generate.                                                                             |
-| `n_features`   | `int`                     |            -            | Number of features (dimensions) for each antibody.                                                                      |
-| `feature_type` | `FeatureType`             | `"continuous-features"` | Specifies the type of features: "continuous-features", "binary-features", "ranged-features", or "permutation-features". |
-| `bounds`       | `npt.NDArray[np.float64]` |         `None`          | Array (n_features, 2) with min and max per dimension.                                                                   |
+| Name           | Type                                     |         Default         | Description                                                                                                             |
+|----------------|------------------------------------------|:-----------------------:|-------------------------------------------------------------------------------------------------------------------------|
+| `n_samples`    | `int`                                    |            -            | Number of antibodies (samples) to generate.                                                                             |
+| `n_features`   | `int`                                    |            -            | Number of features (dimensions) for each antibody.                                                                      |
+| `feature_type` | [`FeatureTypeAll`](../../utils/types.md) | `"continuous-features"` | Specifies the type of features: "continuous-features", "binary-features", "ranged-features", or "permutation-features". |
+| `bounds`       | `npt.NDArray[np.float64]`                |         `None`          | Array (n_features, 2) with min and max per dimension.                                                                   |
 
 **Raises**
 
