@@ -16,7 +16,7 @@ Format tabular data into strings for display in the console.
 
 | Name      | Type                | Default | Description                                                                                    |
 |-----------|---------------------|:-------:|------------------------------------------------------------------------------------------------|
-| `headers` | `Mapping[str, int]` |    -    | Mapping of column names to their respective widths, in the format {column_name: column_width}. |
+| `headers` | `Mapping[str, int]` |    -    | Mapping of column names to their respective widths, in the format `{column_name: column_width}`. |
 
 ---
 
@@ -48,9 +48,9 @@ Generate a formatted row for the table data.
 
 **Parameters**
 
-| Name     | Type                                   | Default | Description                                                                 |
-|----------|----------------------------------------|:-------:|-----------------------------------------------------------------------------|
-| `values` | `Mapping[str, Union[str, int, float]]` |    -    | Dictionary with values for each column, in the format {column_name: value}. |
+| Name     | Type                                   | Default | Description                                                                   |
+|----------|----------------------------------------|:-------:|-------------------------------------------------------------------------------|
+| `values` | `Mapping[str, Union[str, int, float]]` |    -    | Dictionary with values for each column, in the format `{column_name: value}`. |
 
 **Returns**
 

@@ -23,7 +23,7 @@ This class extends [TableFormatter](./table-formatter.md).
 
 | Name      | Type                | Default | Description                               |
 |-----------|---------------------|:-------:|-------------------------------------------|
-| `headers` | `Mapping[str, int]` |    -    | Mapping {column_name: column_width}.      |
+| `headers` | `Mapping[str, int]` |    -    | Mapping `{column_name: column_width}`.    |
 | `verbose` | `bool`              | `True`  | If False, prints nothing to the terminal. |
 
 ---

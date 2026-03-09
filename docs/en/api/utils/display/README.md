@@ -1,13 +1,12 @@
 ---
-id: module-name
-sidebar_label: ModuleName
+id: display
+sidebar_label: display
 keywords:
-    - key
-tags:
-    - tag
+    - table
+    - progress
 ---
 
-# ModuleName
+# display
 
 Utility functions for displaying algorithm information.
 
