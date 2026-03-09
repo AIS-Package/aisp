@@ -24,10 +24,10 @@ Format tabular data into strings for display in the console.
 
 ### get_header
 
-````python
+```python
 def get_header(self):
     ...
-````
+```
 
 Generate the table header, including the top border, column headings, and separator line.
 
@@ -39,10 +39,10 @@ Generate the table header, including the top border, column headings, and separa
 
 ### get_row
 
-````python
+```python
 def get_row(self, values: Mapping[str, Union[str, int, float]]):
     ...
-````
+```
 
 Generate a formatted row for the table data.
 
@@ -60,10 +60,10 @@ Generate a formatted row for the table data.
 
 ### get_bottom
 
-````python
+```python
 def get_bottom(self, new_line: bool = False):
     ...
-````
+```
 
 Generate the table's bottom border.
 

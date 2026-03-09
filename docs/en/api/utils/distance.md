@@ -14,18 +14,18 @@ keywords:
 
 Utility functions for distance between arrays with numba decorators.
 
-> **Module:** `aisp.[module]`  
-> **Import:** `from aisp import [module]`
+> **Module:** `aisp.utils.distance`  
+> **Import:** `from aisp.utils import distance`
 
 ## Functions
 
 ### hamming
 
-````python
+```python
 @njit([(types.boolean[:], types.boolean[:])], cache=True)
 def hamming(u: npt.NDArray[np.bool_], v: npt.NDArray[np.bool_]) -> float64:
     ...
-````
+```
 
 Calculate the Hamming distance between two points.
 
@@ -48,11 +48,11 @@ $$
 
 ### euclidean
 
-````python
+```python
 @njit()
 def euclidean(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]) -> float64:
     ...
-````
+```
 
 Calculate the Euclidean distance between two points.
 
@@ -75,11 +75,11 @@ $$
 
 ### cityblock
 
-````python
+```python
 @njit()
 def cityblock(u: npt.NDArray[float64], v: npt.NDArray[float64]) -> float64:
     ...
-````
+```
 
 Calculate the Manhattan distance between two points.
 
@@ -102,7 +102,7 @@ $$
 
 ### minkowski
 
-````python
+```python
 @njit()
 def minkowski(
     u: npt.NDArray[float64],
@@ -110,7 +110,7 @@ def minkowski(
     p: float = 2.0
 ) -> float64:
     ...
-````
+```
 
 Calculate the Minkowski distance between two points.
 
@@ -142,7 +142,7 @@ $$
 
 ### compute_metric_distance
 
-````python
+```python
 @njit([(types.float64[:], types.float64[:], types.int32, types.float64)], cache=True)
 def compute_metric_distance(
     u: npt.NDArray[float64],
@@ -151,7 +151,7 @@ def compute_metric_distance(
     p: float = 2.0
 ) -> float64:
     ...
-````
+```
 
 Calculate the distance between two points by the chosen metric.
 
@@ -176,7 +176,7 @@ Calculate the distance between two points by the chosen metric.
 
 ### min_distance_to_class_vectors
 
-````python
+```python
 @njit([(types.float64[:, :], types.float64[:], types.int32, types.float64)], cache=True)
 def min_distance_to_class_vectors(
     x_class: npt.NDArray[float64],
@@ -185,7 +185,7 @@ def min_distance_to_class_vectors(
     p: float = 2.0,
 ) -> float:
     ...
-````
+```
 
 Calculate the minimum distance between an input vector and the vectors of a class.
 
@@ -206,10 +206,10 @@ Calculate the minimum distance between an input vector and the vectors of a clas
 
 ### get_metric_code
 
-````python
+```python
 def get_metric_code(metric: str) -> int:
     ...
-````
+```
 
 Get the numeric code associated with a distance metric.
 

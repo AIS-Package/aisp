@@ -32,10 +32,10 @@ This class extends [TableFormatter](./table-formatter.md).
 
 ### update
 
-````python
+```python
 def update(self, values: Mapping[str, Union[str, int, float]]) -> None:
     ...
-````
+```
 
 Add a new row of values to the table.
 
@@ -49,9 +49,9 @@ Add a new row of values to the table.
 
 ### finish
 
-````python
+```python
 def finish(self) -> None:
     ...
-````
+```
 
 End the table display, printing the bottom border and total time.
