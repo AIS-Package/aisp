@@ -60,9 +60,9 @@ Algorithms inspired by the process of antibody proliferation to detecting an ant
 
 Algorithms based on Network Theory Algorithms proposed by Jerne.
 
-| Class                  | Description                                                                                |
-|------------------------|--------------------------------------------------------------------------------------------|
-| [`AiNet`](./ai-net.md) | An unsupervised learning algorithm for clustering, based on the theory of immune networks. |
+| Class                      | Description                                                                                |
+|----------------------------|--------------------------------------------------------------------------------------------|
+| [`AiNet`](./ina/ai-net.md) | An unsupervised learning algorithm for clustering, based on the theory of immune networks. |
 
 ## Utils ([`aisp.utils`](./utils/README.md))
 

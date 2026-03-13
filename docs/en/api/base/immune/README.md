@@ -1,6 +1,6 @@
 ---
 id: immune
-sidebar_label: cell
+sidebar_label: immune
 keywords:
     - cell
     - mutation
