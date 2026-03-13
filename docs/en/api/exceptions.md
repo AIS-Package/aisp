@@ -1,13 +1,13 @@
 ---
 id: exceptions
-sidebar_label: exceptions
+sidebar_label: aisp.exceptions
 keywords:
     - exceptions
     - raises
     - warnings
 ---
 
-# exceptions
+# aisp.exceptions
 
 Custom warnings and errors.
 
