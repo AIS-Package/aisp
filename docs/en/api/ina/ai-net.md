@@ -124,7 +124,7 @@ Train the AiNet model on input data.
 **Raises**
 
 * `TypeError` - If X is not a ndarray or list.
-* `UnsupportedTypeError` - If the data type of the vector is not supported.
+* [`UnsupportedTypeError`](../exceptions.md#unsupportedtypeerror) - If the data type of the vector is not supported.
 
 **Returns**
 
@@ -151,8 +151,8 @@ Predict cluster labels for input data.
 
 * `TypeError` - If X is not a ndarray or list.
 * `ValueError` - If the array contains values other than 0 and 1.
-* `FeatureDimensionMismatch` - If the number of features in X does not match the expected number.
-* `ModelNotFittedError` - If the mode has not yet been adjusted and does not have defined memory cells, it is not able to predictions
+* [`FeatureDimensionMismatch`](../exceptions.md#featuredimensionmismatch) - If the number of features in X does not match the expected number.
+* [`ModelNotFittedError`](../exceptions.md#modelnotfittederror) - If the mode has not yet been adjusted and does not have defined memory cells, it is not able to predictions
 
 **Returns**
 

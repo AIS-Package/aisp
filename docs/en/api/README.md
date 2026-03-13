@@ -77,3 +77,8 @@ Utility functions and helpers for development.
 | [`sanitizers`](./utils/sanitizers.md)  | Utility functions for validation and treatment of parameters.            |
 | [`types`](./utils/types.md)            | Defines type aliases used throughout the project to improve readability. |
 | [`validation`](./utils/validation.md)  | Contains functions responsible for validating data types.                |
+
+
+## Exceptions ([`aisp.exceptions`](./exceptions.md))
+
+Custom warnings and errors.

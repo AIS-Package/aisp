@@ -156,8 +156,8 @@ using the k-nearest neighbors approach.
 **Raises**
 
 * `TypeError` - If X is not a ndarray or list.
-* `FeatureDimensionMismatch` - If the number of features in X does not match the expected number.
-* `ModelNotFittedError` - If the mode has not yet been adjusted and does not have defined memory cells, it is not able to predictions
+* [`FeatureDimensionMismatch`](../exceptions.md#featuredimensionmismatch) - If the number of features in X does not match the expected number.
+* [`ModelNotFittedError`](../exceptions.md#modelnotfittederror) - If the mode has not yet been adjusted and does not have defined memory cells, it is not able to predictions
 
 **Returns**
 
