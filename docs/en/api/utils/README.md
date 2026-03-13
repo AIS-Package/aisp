@@ -1,13 +1,13 @@
 ---
 id: utils
-sidebar_label: utils
+sidebar_label: aisp.utils
 keywords:
     - functions
     - helpers
     - utils
 ---
 
-# utils
+# aisp.utils
 
 Utility functions and helpers for development.
 

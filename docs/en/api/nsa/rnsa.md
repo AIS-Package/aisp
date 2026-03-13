@@ -155,7 +155,7 @@ Perform training according to X and y, using the negative selection method (Nega
 
 * `TypeError` - If X or y are not ndarrays or have incompatible shapes.
 * `ValueError` - If the array X fall outside the interval (0, 1).
-* `MaxDiscardsReachedError` - The maximum number of detector discards was reached during maturation. Check the defined radius value and consider reducing it.
+* [`MaxDiscardsReachedError`](../exceptions.md#maxdiscardsreachederror) - The maximum number of detector discards was reached during maturation. Check the defined radius value and consider reducing it.
 
 **Returns**
 
@@ -182,8 +182,8 @@ Prediction of classes based on detectors created after training.
 
 * `TypeError` - If X is not a ndarray or list.
 * `ValueError` - If the array X fall outside the interval (0, 1).
-* `FeatureDimensionMismatch` - If the number of features in X does not match the expected number.
-* `ModelNotFittedError` - If the mode has not yet been adjusted and does not have defined detectors or classes, it is not able to predictions
+* [`FeatureDimensionMismatch`](../exceptions.md#featuredimensionmismatch) - If the number of features in X does not match the expected number.
+* [`ModelNotFittedError`](../exceptions.md#modelnotfittederror) - If the mode has not yet been adjusted and does not have defined detectors or classes, it is not able to predictions
 
 **Returns**
 
