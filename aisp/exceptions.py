@@ -4,13 +4,21 @@ from typing import Optional
 
 
 class MaxDiscardsReachedError(Exception):
-    """Exception thrown when the maximum number of detector discards is reached."""
+    """Exception thrown when the maximum number of detector discards is reached.
 
-    def __init__(self, _class_, message=None):
+    Parameters
+    ----------
+    object_name : str
+        The name of the instantiated class that throws the exceptions.
+    message : Optional[str]
+        Custom message to display.
+    """
+
+    def __init__(self, object_name: str, message: Optional[str] = None):
         if message is None:
             message = (
                 "An error has been identified:\n"
-                f"the maximum number of discards of detectors for the {_class_} class "
+                f"the maximum number of discards of detectors for the {object_name} class "
                 "has been reached.\nIt is recommended to check the defined radius and "
                 "consider reducing its value."
             )
@@ -23,6 +31,15 @@ class FeatureDimensionMismatch(Exception):
     Exception raised when the number of input features does not match the expected number.
 
     This exception is triggered during prediction if the input features' dimension is incorrect.
+
+    Parameters
+    ----------
+    expected : int
+        The expected number of features
+    received : int
+        The actual number of features received.
+    variable_name : Optional[str]
+        The name of the variable that caused this mismatch.
     """
 
     def __init__(
@@ -47,9 +64,14 @@ class UnsupportedTypeError(Exception):
     Exception raised when the input vector type is not supported.
 
     This exception is thrown when the vector data type does not match any of the supported.
+
+    Parameters
+    ----------
+    message : Optional[str]
+        Custom message to display.
     """
 
-    def __init__(self, message=None):
+    def __init__(self, message: Optional[str] = None):
         if message is None:
             message = (
                 "Type is not supported. Provide a binary, normalized, or bounded "
@@ -64,6 +86,13 @@ class ModelNotFittedError(Exception):
 
     This exception is thrown when the  model instance is being used without first training
     it via the `fit` method.
+
+    Parameters
+    ----------
+    object_name : str
+        The name of the instantiated class that throws the exceptions.
+    message : Optional[str]
+        Custom message to display.
     """
 
     def __init__(self, object_name: str, message: Optional[str] = None):
