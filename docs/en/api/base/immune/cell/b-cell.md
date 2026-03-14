@@ -27,7 +27,7 @@ This class extends [Cell](./cell.md)
 
 | Name     | Type         | Default | Description                |
 |----------|--------------|:-------:|----------------------------|
-| `vector` | `np.ndarray` |    -    | A vector of cell features. |]
+| `vector` | `np.ndarray` |    -    | A vector of cell features. |
 
 ---
 
@@ -45,15 +45,15 @@ def hyper_clonal_mutate(
     ...
 ```
 
-Clones N features from a cell's features, generating a set of mutated vectors.
+Generate **N** clones of the current cell and apply hypermutation to the clones.
 
 **Parameters**
 
-| Name           | Type                                                 |         Default         | Description                                                                         |
-|----------------|------------------------------------------------------|:-----------------------:|-------------------------------------------------------------------------------------|
-| `n`            | `int`                                                |            -            | Number of clones to be generated from mutations of the original cell.               |
-| `feature_type` | [`FeatureType`](../../../utils/types.md#featuretype) | `"continuous-features"` | Specifies the type of feature_type to use based on the nature of the input features |
-| `bounds`       | `Optional[npt.NDArray[np.float64]]`                  |         `None`          | Array (n_features, 2) with min and max per dimension.                               |
+| Name           | Type                                                 |         Default         | Description                                            |
+|----------------|------------------------------------------------------|:-----------------------:|--------------------------------------------------------|
+| `n`            | `int`                                                |            -            | Number of clones to generate from the original b-cell. |
+| `feature_type` | [`FeatureType`](../../../utils/types.md#featuretype) | `"continuous-features"` | Specifies the type of features of the cell.            |
+| `bounds`       | `Optional[npt.NDArray[np.float64]]`                  |         `None`          | Array (n_features, 2) with min and max per dimension.  |
 
 **Returns**
 

@@ -72,14 +72,14 @@ class BCell(Cell):
         bounds: Optional[npt.NDArray[np.float64]] = None
     ) -> npt.NDArray:
         """
-        Clones N features from a cell's features, generating a set of mutated vectors.
+        Generate N clones of the current cell and apply hypermutation to the clones.
 
         Parameters
         ----------
         n : int
-            Number of clones to be generated from mutations of the original cell.
+            Number of clones to generate from the original b-cell.
         feature_type : { "binary-features", "continuous-features", "ranged-features" }
-            Specifies the type of feature_type to use based on the nature of the input features
+            Specifies the type of features of the cell.
         bounds : npt.NDArray[np.float64], optional
             Array (n_features, 2) with min and max per dimension.
 
