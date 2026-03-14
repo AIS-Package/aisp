@@ -145,7 +145,7 @@ def compute_metric_distance(
     Returns
     -------
     float64
-        Distance (``float``) between the two points with the selected metric.
+        Distance between the two points with the selected metric.
     """
     if metric == MANHATTAN:
         return cityblock(u, v)

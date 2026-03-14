@@ -38,7 +38,7 @@ class Clonalg(BaseOptimizer):
         Dimension of the problem to be minimized.
     N : int, default=50
         Number of memory cells (antibodies) in the population.
-    rate_clonal : float, default=10
+    rate_clonal : int, default=10
         Maximum number of possible clones of a cell. This value is multiplied by
         cell_affinity to determine the number of clones.
     rate_hypermutation : float, default=1.0
@@ -182,7 +182,7 @@ class Clonalg(BaseOptimizer):
         max_iters : int, default=50
             Maximum number of iterations when searching for the best solution using clonalg.
         n_iter_no_change: int, default=10
-            The maximum number of iterations without updating the best cell
+            The maximum number of iterations without updating the best cell.
         verbose : bool, default=True
             Feedback on iterations, indicating the best antibody.
 

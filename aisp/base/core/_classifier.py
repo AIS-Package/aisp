@@ -83,8 +83,8 @@ class BaseClassifier(ABC, Base):
         """
         Score function calculates forecast accuracy.
 
-        Details
-        -------
+        Notes
+        -----
         This function performs the prediction of X and checks how many elements are equal
         between vector y and y_predicted. This function was added for compatibility with some
         scikit-learn functions.

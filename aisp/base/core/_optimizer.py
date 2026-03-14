@@ -202,7 +202,10 @@ class BaseOptimizer(ABC, Base):
         setattr(self, alias, function)
 
     def reset(self):
-        """Reset the object's internal state, clearing history and resetting values."""
+        """Reset the object's internal state.
+
+        Clears the optimization history and resetting values.
+        """
         self._cost_history = []
         self._solution_history = []
         self._best_solution = None

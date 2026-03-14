@@ -23,7 +23,7 @@ def generate_random_antibodies(
         Number of antibodies (samples) to generate.
     n_features : int
         Number of features (dimensions) for each antibody.
-    feature_type : FeatureType, default="continuous-features"
+    feature_type : FeatureTypeAll, default="continuous-features"
         Specifies the type of features: "continuous-features", "binary-features",
         "ranged-features", or "permutation-features".
     bounds : npt.NDArray[np.float64], optional
