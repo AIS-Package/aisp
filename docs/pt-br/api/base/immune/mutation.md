@@ -2,18 +2,19 @@
 id: mutation
 sidebar_label: mutation
 keywords:
-    - mutações
-    - expansão clonal
-    - sistema imune
-    - funções python com numba
-    - vetor de mutações
+  - mutações
+  - expansão clonal
+  - sistema imune
+  - funções python com numba
+  - vetor de mutações
 ---
 
 # mutation
 
 As funções utilizam decoradores do Numba para compilação Just-In-Time(JIT).
 
-Contém funções que geram conjuntos de clones hipermutados a partir de vetores contínuos ou binários, simulando o processo
+Contém funções que geram conjuntos de clones hipermutados a partir de vetores contínuos ou binários, simulando o
+processo
 de expansão clonal dos sistemas imunológicos artificiais.
 
 > **Módulo:** `aisp.base.immune`  
@@ -72,13 +73,12 @@ clonal em sistemas imunes artificiais com representações discretas.
 | Nome            | Tipo                      | Padrão | Descrição                                                                                                                                    |
 |-----------------|---------------------------|:------:|----------------------------------------------------------------------------------------------------------------------------------------------|
 | `vector`        | `npt.NDArray[np.float64]` |   -    | Vetor binário original que representa a célula imune a ser clonada e mutada.                                                                 |
-| `n`             | `int`                     |   -    | Quantidade de clones mutados a serão gerados.                                                                                               |
+| `n`             | `int`                     |   -    | Quantidade de clones mutados a serão gerados.                                                                                                |
 | `mutation_rate` | `float`                   |   -    | Se 0 ≤ mutation_rate < 1, usa probabilidade de mutação por características. Caso contrario, um número aleatorio de características é mutado. |
 
 **Returns**
 
 `npt.NDArray[np.bool_]` - Array com dimensões (n, len(vector)) contendo os `n` clones mutados do vetor original.
-
 
 ### clone_and_mutate_ranged
 
@@ -110,7 +110,6 @@ de expansão clonal em sistemas imunes artificiais.
 **Returns**
 
 `npt.NDArray[np.float64]` - Array com dimensões (n, len(vector)) contendo os `n` clones mutados do vetor original.
-
 
 ### clone_and_mutate_continuous
 

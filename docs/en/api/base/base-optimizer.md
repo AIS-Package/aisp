@@ -90,7 +90,8 @@ def affinity_function(self, solution: Any) -> float:
 
 Evaluate the affinity of a candidate solution.
 
-This abstract method must be implemented by the subclass to define the problem-specific.
+This method must be implemented according to the specific optimization problem, defining how the solution will be evaluated.
+The returned value should represent the quality of the evaluated solution.
 
 **Parameters**
 

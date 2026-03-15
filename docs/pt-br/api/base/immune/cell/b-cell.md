@@ -2,11 +2,11 @@
 id: b-cell
 sidebar_label: BCell
 keywords:
-    - célula-b
-    - memória imune
-    - dataclass
-    - mutação clonal
-    - expansão clonal
+  - célula-b
+  - memória imune
+  - dataclass
+  - mutação clonal
+  - expansão clonal
 ---
 
 # BCell
@@ -23,6 +23,7 @@ Esta classe herda de [Cell](./cell.md)
 > **Importação:** `from aisp.base.immune.cell import BCell`
 
 ---
+
 ## Atributos
 
 | Nome     | Tipo         | Padrão | Descrição                               |

@@ -16,7 +16,7 @@ keywords:
 
 Representação de células do sistema imunológico.
 
-> **Module:** `aisp.base.immune.cell`
+> **Módulos:** `aisp.base.immune.cell`
 
 ## Visão geral
 

@@ -2,13 +2,13 @@
 id: populations
 sidebar_label: populations
 keywords:
-    - binário
-    - classificação
-    - limiar de afinidade
-    - real-valor
-    - célula-b de memória
-    - expansão clonal
-    - população
+  - binário
+  - classificação
+  - limiar de afinidade
+  - real-valor
+  - célula-b de memória
+  - expansão clonal
+  - população
 ---
 
 # populations
