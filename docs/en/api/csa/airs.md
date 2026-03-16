@@ -72,11 +72,12 @@ x_test = [
 y_pred = airs.predict(x_test)
 print(y_pred)
 ```
+
 Output:
+
 ```bash
 [0 1]
 ```
-
 
 ---
 
@@ -102,7 +103,6 @@ Output:
 |----------------|-------------------------------------------|:-------:|---------------------------------------------------------|
 | `cells_memory` | `Optional[Dict[str \| int, list[BCell]]]` |    -    | Dictionary of trained memory cells, organized by class. |
 
-
 ---
 
 ## Public Methods
@@ -118,6 +118,7 @@ def fit(
 ) -> AIRS:
     ...
 ```
+
 Fit the model to the training data using the AIRS.
 
 The function ``fit(...)``, performs the training according to ``X`` and ``y``, using the
@@ -143,6 +144,7 @@ method AIRS.
 def predict(self, X: Union[npt.NDArray, list]) -> npt.NDArray:
     ...
 ```
+
 Predict class labels based on the memory cells created during training.
 
 This method uses the trained memory cells to perform classification of the input data
@@ -157,8 +159,10 @@ using the k-nearest neighbors approach.
 **Raises**
 
 * `TypeError` - If X is not a ndarray or list.
-* [`FeatureDimensionMismatch`](../exceptions.md#featuredimensionmismatch) - If the number of features in X does not match the expected number.
-* [`ModelNotFittedError`](../exceptions.md#modelnotfittederror) - If the mode has not yet been adjusted and does not have defined memory cells, it is not able to predictions
+* [`FeatureDimensionMismatch`](../exceptions.md#featuredimensionmismatch) - If the number of features in X does not
+  match the expected number.
+* [`ModelNotFittedError`](../exceptions.md#modelnotfittederror) - If the mode has not yet been adjusted and does not
+  have defined memory cells, it is not able to predictions
 
 **Returns**
 
@@ -174,7 +178,6 @@ Complete usage examples are available in the Jupyter Notebooks:
 - [**Geyser Dataset Example**](../../../../examples/en/classification/AIRS/geyser_dataBase_example_en.ipynb)
 - [**Mushrooms Dataset Example**](../../../../examples/en/classification/AIRS/mushrooms_dataBase_example_en.ipynb)
 - [**Random Dataset Example**](../../../../examples/en/classification/AIRS/example_with_randomly_generated_dataset-en.ipynb)
-
 
 ---
 

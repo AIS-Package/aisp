@@ -79,7 +79,6 @@ bits, simulating clonal expansion in artificial immune systems with discrete rep
 
 `npt.NDArray[np.bool_]` - An Array(n, len(vector)) containing the `n` mutated clones of the original vector.
 
-
 ### clone_and_mutate_ranged
 
 ```python
@@ -110,7 +109,6 @@ them, simulating the process of clonal expansion in artificial immune systems.
 **Returns**
 
 `npt.NDArray[np.float64]` - An Array(n, len(vector)) containing the `n` mutated clones of the original vector.
-
 
 ### clone_and_mutate_continuous
 

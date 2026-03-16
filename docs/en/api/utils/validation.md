@@ -24,6 +24,7 @@ def detect_vector_data_type(vector: npt.NDArray) -> FeatureType:
 Detect the type of data in a vector.
 
 The function detects if the vector contains data of type:
+
 - Binary features: boolean values or integers restricted to 0 and 1.
 - Continuous features: floating-point values in the normalized range [0.0, 1.0].
 - Ranged features: floating-point values outside the normalized range.
@@ -36,11 +37,12 @@ The function detects if the vector contains data of type:
 
 **Raises**
 
-* `UnsupportedTypeError` -  If the data type of the vector is not supported by the function.
+* `UnsupportedTypeError` - If the data type of the vector is not supported by the function.
 
 **Returns**
 
-[`FeatureType`](./types.md#featuretype) - The data type of the vector: "binary-features", "continuous-features", or "ranged-features".
+[`FeatureType`](./types.md#featuretype) - The data type of the vector: "binary-features", "continuous-features", or "
+ranged-features".
 
 ---
 

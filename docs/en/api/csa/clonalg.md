@@ -69,7 +69,9 @@ clonalg.register('affinity_function', rastrigin_fitness)
 population = clonalg.optimize(100, 50, False)
 print('Best cost:', abs(clonalg.best_cost))
 ```
+
 **Output:**
+
 ```bash
 Best cost: 0.02623036956750724
 ```
@@ -126,7 +128,7 @@ Execute the optimization process and return the population.
 * `NotImplementedError` - If no affinity function has been provided to model.
 
 **Returns**
- 
+
 **population** : `List[Antibody]` - Antibody population after clonal expansion.
 
 ---

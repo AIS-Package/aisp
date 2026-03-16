@@ -63,7 +63,8 @@ def optimize(
 ```
 
 Execute the optimization process.  
-This abstract method must be implemented by the subclass, defining how the optimization strategy explores the search space.
+This abstract method must be implemented by the subclass, defining how the optimization strategy explores the search
+space.
 
 **Parameters**
 
@@ -90,7 +91,8 @@ def affinity_function(self, solution: Any) -> float:
 
 Evaluate the affinity of a candidate solution.
 
-This method must be implemented according to the specific optimization problem, defining how the solution will be evaluated.
+This method must be implemented according to the specific optimization problem, defining how the solution will be
+evaluated.
 The returned value should represent the quality of the evaluated solution.
 
 **Parameters**

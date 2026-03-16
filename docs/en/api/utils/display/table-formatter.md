@@ -14,8 +14,8 @@ Format tabular data into strings for display in the console.
 
 ## Constructor Parameters
 
-| Name      | Type                | Default | Description                                                                                    |
-|-----------|---------------------|:-------:|------------------------------------------------------------------------------------------------|
+| Name      | Type                | Default | Description                                                                                      |
+|-----------|---------------------|:-------:|--------------------------------------------------------------------------------------------------|
 | `headers` | `Mapping[str, int]` |    -    | Mapping of column names to their respective widths, in the format `{column_name: column_width}`. |
 
 ---

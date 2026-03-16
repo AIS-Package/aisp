@@ -40,7 +40,8 @@ Core structures and support utilities for implementations immune.
 
 ### Negative Selection Algorithms ([`aisp.nsa`](./nsa/README.md))
 
-supervised learning algorithms based on negative selection, the immune systems process of distinguishing self from not-self.
+supervised learning algorithms based on negative selection, the immune systems process of distinguishing self from
+not-self.
 
 | Class                   | Description                                                                         |
 |-------------------------|-------------------------------------------------------------------------------------|
@@ -77,7 +78,6 @@ Utility functions and helpers for development.
 | [`sanitizers`](./utils/sanitizers.md)  | Utility functions for validation and treatment of parameters.            |
 | [`types`](./utils/types.md)            | Defines type aliases used throughout the project to improve readability. |
 | [`validation`](./utils/validation.md)  | Contains functions responsible for validating data types.                |
-
 
 ## Exceptions ([`aisp.exceptions`](./exceptions.md))
 

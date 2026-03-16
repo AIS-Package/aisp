@@ -14,7 +14,6 @@ Utility functions and helpers for development.
 > **Module:** `aisp.utils`  
 > **Import:** `from aisp import utils`
 
-
 ## Submodules
 
 | Module                           | Description                                                              |

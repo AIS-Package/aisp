@@ -26,7 +26,8 @@ Classe base abstrata para algoritmos de clustering.
 ## Visão geral
 
 Esta classe define a interface principal para algoritmos de clusterização.  
-Ela define a implementação dos metodos fit e predict em todas as classes filhas, e fornece a implementação do método `fit_predict`.
+Ela define a implementação dos metodos fit e predict em todas as classes filhas, e fornece a implementação do
+método `fit_predict`.
 
 Casos de uso:
 
@@ -64,7 +65,7 @@ Este método abstrato é implementado é responsabilidade das classes filhas.
 
 **Returns**
 
-``BaseClassifier`` - Retorna a instancia da classe. 
+``BaseClassifier`` - Retorna a instancia da classe.
 
 ---
 

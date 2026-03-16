@@ -23,6 +23,7 @@ This class extends [Cell](./cell.md)
 > **Import:** `from aisp.base.immune.cell import BCell`
 
 ---
+
 ## Attributes
 
 | Name     | Type         | Default | Description                |

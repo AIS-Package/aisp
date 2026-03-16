@@ -79,7 +79,6 @@ def predict(self, X: Union[npt.NDArray, list]) -> npt.NDArray:
 Generate predictions based on the input data X.  
 This abstract method is implemented by the class that inherits it.
 
-
 **Parameters**
 
 | Name | Type                       | Default | Description                                         |

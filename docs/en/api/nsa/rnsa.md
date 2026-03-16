@@ -83,10 +83,13 @@ x_test = [
 y_pred = rnsa.predict(x_test)
 print(y_pred)
 ```
+
 **Output**
+
 ```bash
 ['a' 'b']
 ```
+
 **Example 2:** Anomaly Detection (self/non-self)
 
 ```python
@@ -95,7 +98,9 @@ rnsa = rnsa.fit(X=class_a, y=np.array(['self'] * 50), verbose=False)
 y_pred = rnsa.predict(class_b[:5])
 print(y_pred)
 ```
+
 **Output**
+
 ```bash
 ['non-self' 'non-self' 'non-self' 'non-self' 'non-self']
 ```
@@ -116,7 +121,7 @@ print(y_pred)
 | `algorithm`      | `{"default-NSA", "V-detector"}`           | `'default-NSA'` | Set the algorithm version                                                                                                                                                                                                                                |
 | `non_self_label` | `str`                                     |  `'non-self'`   | This variable stores the label that will be assigned when the data has only one output class, and the sample is classified as not belonging to that class.                                                                                               |
 | `cell_bounds`    | `bool`                                    |     `False`     | If set to ``True``, this option limits the generation of detectors to the space within the plane between 0 and 1. This means that any detector whose radius exceeds this limit is discarded, this variable is only used in the ``V-detector`` algorithm. |
-| `p`              | `bool`                                    |      `2.0`      | This parameter stores the value of `p` used in the Minkowski distance.                                                                                                                                                                                 |
+| `p`              | `bool`                                    |      `2.0`      | This parameter stores the value of `p` used in the Minkowski distance.                                                                                                                                                                                   |
 
 ## Attributes
 
@@ -150,12 +155,12 @@ Perform training according to X and y, using the negative selection method (Nega
 | `y`       | `Union[npt.NDArray, list]` |    -    | Array of target classes of ``X`` with (``n_samples``).                                            |
 | `verbose` | `bool`                     | `True`  | Feedback from detector generation to the user.                                                    |
 
-
 **Raises**
 
 * `TypeError` - If X or y are not ndarrays or have incompatible shapes.
 * `ValueError` - If the array X fall outside the interval (0, 1).
-* [`MaxDiscardsReachedError`](../exceptions.md#maxdiscardsreachederror) - The maximum number of detector discards was reached during maturation. Check the defined radius value and consider reducing it.
+* [`MaxDiscardsReachedError`](../exceptions.md#maxdiscardsreachederror) - The maximum number of detector discards was
+  reached during maturation. Check the defined radius value and consider reducing it.
 
 **Returns**
 
@@ -182,8 +187,10 @@ Prediction of classes based on detectors created after training.
 
 * `TypeError` - If X is not a ndarray or list.
 * `ValueError` - If the array X fall outside the interval (0, 1).
-* [`FeatureDimensionMismatch`](../exceptions.md#featuredimensionmismatch) - If the number of features in X does not match the expected number.
-* [`ModelNotFittedError`](../exceptions.md#modelnotfittederror) - If the mode has not yet been adjusted and does not have defined detectors or classes, it is not able to predictions
+* [`FeatureDimensionMismatch`](../exceptions.md#featuredimensionmismatch) - If the number of features in X does not
+  match the expected number.
+* [`ModelNotFittedError`](../exceptions.md#modelnotfittederror) - If the mode has not yet been adjusted and does not
+  have defined detectors or classes, it is not able to predictions
 
 **Returns**
 
@@ -195,10 +202,10 @@ Prediction of classes based on detectors created after training.
 
 Complete usage examples are available in the Jupyter Notebooks:
 
-
 - [**Iris Dataset Example**](../../../../examples/en/classification/RNSA/iris_dataBase_example_en.ipynb)
 - [**Geyser Dataset Example**](../../../../examples/en/classification/RNSA/geyser_dataBase_example_en.ipynb)
-- [**Random Dataset Example**](../../../../examples/en/classification/RNSA/example_with_randomly_generated_dataset-en.ipynb)
+- [**Random Dataset Example
+  **](../../../../examples/en/classification/RNSA/example_with_randomly_generated_dataset-en.ipynb)
 
 ---
 

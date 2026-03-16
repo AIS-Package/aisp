@@ -95,7 +95,6 @@ Complete usage examples are available in the Jupyter Notebooks:
 
 - [example](#link)
 
-
 ---
 
 ## References

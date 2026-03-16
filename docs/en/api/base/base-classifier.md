@@ -35,9 +35,9 @@ Use cases:
 
 ## Attributes
 
-| Name          | Type                    | Default | Description                              |
-|---------------|-------------------------|:-------:|------------------------------------------|
-| `classes`     | `Optional[npt.NDArray]` | `None`  | Class labels identified during training. |
+| Name      | Type                    | Default | Description                              |
+|-----------|-------------------------|:-------:|------------------------------------------|
+| `classes` | `Optional[npt.NDArray]` | `None`  | Class labels identified during training. |
 
 ---
 
@@ -84,7 +84,6 @@ def predict(self, X: Union[npt.NDArray, list]) -> npt.NDArray:
 Generate predictions based on the input data X.  
 This abstract method is implemented by the class that inherits it.
 
-
 **Parameters**
 
 | Name | Type                       | Default | Description                                         |
@@ -117,10 +116,10 @@ This function was added for compatibility with some scikit-learn functions.
 
 **Parameters**
 
-| Name      | Type   | Default | Description                   |
-|-----------|--------|:-------:|-------------------------------|
-| `X` | `Union[npt.NDArray, list]` |    -    | Feature set with shape (n_samples, n_features). |
-| `y` | `Union[npt.NDArray, list]` |    -    | True values with shape (n_samples,). |
+| Name | Type                       | Default | Description                                     |
+|------|----------------------------|:-------:|-------------------------------------------------|
+| `X`  | `Union[npt.NDArray, list]` |    -    | Feature set with shape (n_samples, n_features). |
+| `y`  | `Union[npt.NDArray, list]` |    -    | True values with shape (n_samples,).            |
 
 **Returns**
 

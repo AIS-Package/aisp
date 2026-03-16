@@ -200,7 +200,8 @@ Calculate the minimum distance between an input vector and the vectors of a clas
 
 **Returns**
 
-**min_distance**: `float` - The minimum distance calculated between the input vector and the class vectors. Returns -1.0 if the input dimensions are incompatible.
+**min_distance**: `float` - The minimum distance calculated between the input vector and the class vectors. Returns -1.0
+if the input dimensions are incompatible.
 
 ---
 

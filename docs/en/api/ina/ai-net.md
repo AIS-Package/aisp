@@ -68,7 +68,9 @@ x_test = [
 y_pred = ai_net.predict(x_test)
 print(y_pred)
 ```
+
 **Output**
+
 ```bash
 [0 1]
 ```
@@ -89,9 +91,9 @@ print(y_pred)
 | `max_iterations`           | `int`                                        |     `10`      | Maximum number of training iterations.                                                                                                     |
 | `k`                        | `int`                                        |      `3`      | The number of K nearest neighbors that will be used to choose a label in the prediction.                                                   |
 | `metric`                   | [`MetricType`](../utils/types.md#metrictype) | `"euclidean"` | Distance metric used to compute similarity between memory cells                                                                            |
-| `seed`                     | `Optional[int]`                              |    `None`     | Seed for random generation.                                                                       |
+| `seed`                     | `Optional[int]`                              |    `None`     | Seed for random generation.                                                                                                                |
 | `use_mst_clustering`       | `bool`                                       |    `True`     | If ``True``, performs clustering with **Minimum Spanning Tree** (MST). If ``False``, does not perform clustering and predict returns None. |
-| `p`                        | `float`                                      |     `2.0`     | This parameter stores the value of `p` used in the Minkowski distance.                                                                   |
+| `p`                        | `float`                                      |     `2.0`     | This parameter stores the value of `p` used in the Minkowski distance.                                                                     |
 
 ## Attributes
 
@@ -151,8 +153,10 @@ Predict cluster labels for input data.
 
 * `TypeError` - If X is not a ndarray or list.
 * `ValueError` - If the array contains values other than 0 and 1.
-* [`FeatureDimensionMismatch`](../exceptions.md#featuredimensionmismatch) - If the number of features in X does not match the expected number.
-* [`ModelNotFittedError`](../exceptions.md#modelnotfittederror) - If the mode has not yet been adjusted and does not have defined memory cells, it is not able to predictions
+* [`FeatureDimensionMismatch`](../exceptions.md#featuredimensionmismatch) - If the number of features in X does not
+  match the expected number.
+* [`ModelNotFittedError`](../exceptions.md#modelnotfittederror) - If the mode has not yet been adjusted and does not
+  have defined memory cells, it is not able to predictions
 
 **Returns**
 
@@ -166,6 +170,7 @@ Predict cluster labels for input data.
 def update_clusters(self, mst_inconsistency_factor: Optional[float] = None):
     ...
 ```
+
 Partition the clusters based on the MST inconsistency factor.
 
 Uses the precomputed Minimum Spanning Tree (MST) of the antibody population
@@ -183,14 +188,13 @@ distinct cluster.
 **Raises**
 
 * `ValueError`
-  * If the Minimum Spanning Tree (MST) has not yet been created
-  * If Population of antibodies is empty
-  * If MST statistics (mean or std) are not available.
+    * If the Minimum Spanning Tree (MST) has not yet been created
+    * If Population of antibodies is empty
+    * If MST statistics (mean or std) are not available.
 
 **Updates**
 
-* **memory_network** : `dict[int, npt.NDArray]` -
-    Dictionary mapping cluster labels to antibody arrays.
+* **memory_network** : `dict[int, npt.NDArray]` - Dictionary mapping cluster labels to antibody arrays.
 * **labels** : `list` - List of cluster labels.
 
 ---

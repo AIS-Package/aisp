@@ -28,11 +28,14 @@ metáforas
 
 ## Introdução
 
-O **AISP** é um pacote python que implementa as técnicas dos sistemas imunológicos artificiais, distribuído sob a licença GNU Lesser General Public License v3.0 (LGPLv3).
+O **AISP** é um pacote python que implementa as técnicas dos sistemas imunológicos artificiais, distribuído sob a
+licença GNU Lesser General Public License v3.0 (LGPLv3).
 
-O pacote foi iniciado no ano de 2022, como parte de um projeto de pesquisa desenvolvido no Instituto Federal do Norte de Minas Gerais - Campus Salinas (IFNMG - Salinas).
+O pacote foi iniciado no ano de 2022, como parte de um projeto de pesquisa desenvolvido no Instituto Federal do Norte de
+Minas Gerais - Campus Salinas (IFNMG - Salinas).
 
-Os sistemas imunológicos artificiais (SIA) inspiram-se no sistema imunológico dos vertebrados, criando metáforas que aplicam a capacidade de reconhecer e catalogar os patógenos, entre outras características desse sistema.
+Os sistemas imunológicos artificiais (SIA) inspiram-se no sistema imunológico dos vertebrados, criando metáforas que
+aplicam a capacidade de reconhecer e catalogar os patógenos, entre outras características desse sistema.
 
 ### Algoritmos implementados
 
@@ -58,12 +61,12 @@ O módulo requer a instalação do [python 3.10](https://www.python.org/download
 
 <div align = center>
 
-|    Pacotes    |    Versão     |
-|:-------------:|:-------------:|
-|     numpy     |   ≥ 1.22.4    |
-|     scipy     |    ≥ 1.8.1    |
-|     tqdm      |   ≥ 4.64.1    |
-|     numba     |   ≥ 0.59.0    |
+| Pacotes |  Versão  |
+|:-------:|:--------:|
+|  numpy  | ≥ 1.22.4 |
+|  scipy  | ≥ 1.8.1  |
+|  tqdm   | ≥ 4.64.1 |
+|  numba  | ≥ 0.59.0 |
 
 </div>
 </section>

@@ -53,6 +53,7 @@ This exception is triggered during prediction if the input features' dimension i
 | `variable_name` | `Optional[str]` | `None`  | The name of the variable that caused this mismatch. |
 
 ---
+
 ### UnsupportedTypeError
 
 ```python
@@ -70,6 +71,7 @@ This exception is thrown when the vector data type does not match any of the sup
 | `message` | `Optional[str]` | `None`  | Custom message to display. |
 
 ---
+
 ### ModelNotFittedError
 
 ```python
@@ -78,7 +80,7 @@ class ModelNotFittedError(Exception):
 ```
 
 Exception raised when a method is called before the model has been fit.  
-This exception is thrown when the  model instance is being used without first training
+This exception is thrown when the model instance is being used without first training
 it via the `fit` method.
 
 **Parameters**

@@ -76,7 +76,9 @@ x_test = [
 y_prev = bnsa.predict(X=x_test)
 print(y_prev)
 ```
+
 **Output**
+
 ```bash
 ['non-self' 'self']
 ```
@@ -125,12 +127,12 @@ Training according to X and y, using the method negative selection method.
 | `y`       | `Union[npt.NDArray, list]` |    -    | Array of target classes of ``X`` with (``n_samples``).                                            |
 | `verbose` | `bool`                     | `True`  | Feedback from detector generation to the user.                                                    |
 
-
 **Raises**
 
 * `TypeError` - If X or y are not ndarrays or have incompatible shapes.
 * `ValueError` - If the array contains values other than 0 and 1.
-* [`MaxDiscardsReachedError`](../exceptions.md#maxdiscardsreachederror) - The maximum number of detector discards was reached during maturation. Check the defined radius value and consider reducing it.
+* [`MaxDiscardsReachedError`](../exceptions.md#maxdiscardsreachederror) - The maximum number of detector discards was
+  reached during maturation. Check the defined radius value and consider reducing it.
 
 **Returns**
 
@@ -157,8 +159,10 @@ Prediction of classes based on detectors created after training.
 
 * `TypeError` - If X is not a ndarray or list.
 * `ValueError` - If the array contains values other than 0 and 1.
-* [`FeatureDimensionMismatch`](../exceptions.md#featuredimensionmismatch) - If the number of features in X does not match the expected number.
-* [`ModelNotFittedError`](../exceptions.md#modelnotfittederror) - If the mode has not yet been adjusted and does not have defined detectors or classes, it is not able to predictions
+* [`FeatureDimensionMismatch`](../exceptions.md#featuredimensionmismatch) - If the number of features in X does not
+  match the expected number.
+* [`ModelNotFittedError`](../exceptions.md#modelnotfittederror) - If the mode has not yet been adjusted and does not
+  have defined detectors or classes, it is not able to predictions
 
 **Returns**
 
@@ -171,7 +175,8 @@ Prediction of classes based on detectors created after training.
 Complete usage examples are available in the Jupyter Notebooks:
 
 - [**Mushrooms Dataset Example**](../../../../examples/en/classification/BNSA/mushrooms_dataBase_example_en.ipynb)
-- [**Random Dataset Example**](../../../../examples/en/classification/BNSA/example_with_randomly_generated_dataset-en.ipynb)
+- [**Random Dataset Example
+  **](../../../../examples/en/classification/BNSA/example_with_randomly_generated_dataset-en.ipynb)
 
 ---
 
