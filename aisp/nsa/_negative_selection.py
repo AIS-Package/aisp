@@ -40,7 +40,7 @@ class RNSA(BaseClassifier):
     r : float, default=0.05
         Radius of the detector.
     r_s : float, default=0.0001
-        rₛ Radius of the ``X`` own samples.
+        rₛ Radius of the `X` own samples.
     k : int, default=1
         Number of neighbors near the randomly generated detectors to perform the distance average
         calculation.
@@ -187,7 +187,7 @@ class RNSA(BaseClassifier):
             Training array, containing the samples and their characteristics.
             Shape: ``(n_samples, n_features)``
         y : Union[npt.NDArray, list]
-            Array of target classes of ``X`` with ``n_samples`` (lines).
+            Array of target classes of `X` with `n_samples` (lines).
         verbose: bool, default=True
             Feedback from detector generation to the user.
 
@@ -285,8 +285,8 @@ class RNSA(BaseClassifier):
         Returns
         -------
         C : npt.NDArray
-            A ndarray of the form ``C`` (n_samples), containing the predicted classes
-            for ``X``.
+            A ndarray of the form `C` (n_samples), containing the predicted classes
+            for `X`.
         """
         if self._detectors is None or self.classes is None:
             raise ModelNotFittedError("RNSA")

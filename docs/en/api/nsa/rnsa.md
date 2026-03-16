@@ -113,7 +113,7 @@ print(y_pred)
 |------------------|-------------------------------------------|:---------------:|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `N`              | `int`                                     |      `100`      | Number of detectors.                                                                                                                                                                                                                                     |
 | `r`              | `float`                                   |     `0.05`      | Radius of the detector.                                                                                                                                                                                                                                  |
-| `r_s`            | `float`                                   |    `0.0001`     | rₛ Radius of the ``X`` own samples.                                                                                                                                                                                                                      |
+| `r_s`            | `float`                                   |    `0.0001`     | rₛ Radius of the `X` own samples.                                                                                                                                                                                                                        |
 | `k`              | `int`                                     |       `1`       | Number of neighbors near the randomly generated detectors to perform the distance average calculation.                                                                                                                                                   |
 | `metric`         | `{"euclidean", "minkowski", "manhattan"}` |  `'euclidean'`  | Distance metric used to compute the distance between the detector and the sample.                                                                                                                                                                        |
 | `max_discards`   | `int`                                     |     `1000`      | This parameter indicates the maximum number of consecutive detector discards, aimed at preventing a possible infinite loop in case a radius is defined that cannot generate non-self detectors.                                                          |
@@ -152,7 +152,7 @@ Perform training according to X and y, using the negative selection method (Nega
 | Name      | Type                       | Default | Description                                                                                       |
 |-----------|----------------------------|:-------:|---------------------------------------------------------------------------------------------------|
 | `X`       | `Union[npt.NDArray, list]` |    -    | Training array, containing the samples and their characteristics, Shape: (n_samples, n_features). |
-| `y`       | `Union[npt.NDArray, list]` |    -    | Array of target classes of ``X`` with (``n_samples``).                                            |
+| `y`       | `Union[npt.NDArray, list]` |    -    | Array of target classes of `X` with (`n_samples`).                                                |
 | `verbose` | `bool`                     | `True`  | Feedback from detector generation to the user.                                                    |
 
 **Raises**
@@ -179,9 +179,9 @@ Prediction of classes based on detectors created after training.
 
 **Parameters**
 
-| Name | Type                       | Default | Description                                                       |
-|------|----------------------------|:-------:|-------------------------------------------------------------------|
-| `X`  | `Union[npt.NDArray, list]` |    -    | Array with input samples with  Shape: (``n_samples, n_features``) |
+| Name | Type                       | Default | Description                                                     |
+|------|----------------------------|:-------:|-----------------------------------------------------------------|
+| `X`  | `Union[npt.NDArray, list]` |    -    | Array with input samples with  Shape: (`n_samples, n_features`) |
 
 **Raises**
 
@@ -194,7 +194,7 @@ Prediction of classes based on detectors created after training.
 
 **Returns**
 
-**C** : `npt.NDArray` - An ndarray of the form ``C`` (``n_samples``), containing the predicted classes for ``X``.
+**C** : `npt.NDArray` - An ndarray of the form `C` (`n_samples`), containing the predicted classes for `X`.
 
 ---
 

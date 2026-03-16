@@ -116,11 +116,11 @@ class BaseClassifier(ABC, Base):
         Parameters
         ----------
         y : npt.NDArray
-            Receives a y ``n_samples`` array with the output classes of the ``X`` sample array.
+            Receives a y `n_samples` array with the output classes of the `X` sample array.
 
         Returns
         -------
         indices_by_class : dict
-            A dictionary with the list of array positions(``y``), with the classes as key.
+            A dictionary with the list of array positions(`y`), with the classes as key.
         """
         return slice_index_list_by_class(self.classes, y)

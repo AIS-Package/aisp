@@ -142,9 +142,9 @@ class BNSA(BaseClassifier):
         ----------
         X : Union[npt.NDArray, list]
             Training array, containing the samples and their characteristics.
-            Shape: (``n_samples, n_features``)
+            Shape: (`n_samples, n_features`)
         y : Union[npt.NDArray, list]
-            Array of target classes of ``X`` with ``n_samples`` (lines).
+            Array of target classes of `X` with `n_samples` (lines).
         verbose : bool, default=True
             Feedback from detector generation to the user.
 
@@ -223,7 +223,7 @@ class BNSA(BaseClassifier):
         Parameters
         ----------
         X : Union[npt.NDArray, list]
-            Array with input samples with Shape: (``n_samples, n_features``)
+            Array with input samples with Shape: (`n_samples, n_features`)
 
         Raises
         ------
@@ -240,8 +240,8 @@ class BNSA(BaseClassifier):
         Returns
         -------
         c : npt.NDArray
-            A ndarray of the form ``C`` (``n_samples``), containing the predicted classes for
-            ``X``.
+            A ndarray of the form `C` (`n_samples`), containing the predicted classes for
+            `X`.
         """
         if (
             self._detectors is None

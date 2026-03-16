@@ -35,7 +35,7 @@ Separate indices of samples by class for targeted iteration.
 
 **Returns**
 
-**position_samples**: `dict` - A dictionary with the list of array positions(``y``), with the classes as key.
+**position_samples**: `dict` - A dictionary with the list of array positions(`y`), with the classes as key.
 
 **Example**
 

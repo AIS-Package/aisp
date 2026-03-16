@@ -173,7 +173,7 @@ class AIRS(BaseClassifier):
         """
         Fit the model to the training data using the AIRS.
 
-        The function ``fit(...)``, performs the training according to ``X`` and ``y``, using the
+        The function ``fit(...)``, performs the training according to `X` and `y`, using the
         method AIRS.
 
         Parameters
@@ -182,7 +182,7 @@ class AIRS(BaseClassifier):
             Training array, containing the samples and their characteristics,
             Shape: (n_samples, n_features).
         y : Union[npt.NDArray, list]
-            Array of target classes of ``X`` with (``n_samples``).
+            Array of target classes of `X` with (`n_samples`).
         verbose : bool
             Feedback on which sample aᵢ the memory cells are being generated.
 
@@ -256,7 +256,7 @@ class AIRS(BaseClassifier):
         Parameters
         ----------
         X : Union[npt.NDArray, list]
-            Array with input samples with  Shape: (``n_samples, n_features``)
+            Array with input samples with  Shape: (`n_samples, n_features`)
 
         Raises
         ------
@@ -271,8 +271,8 @@ class AIRS(BaseClassifier):
         Returns
         -------
         C : npt.NDArray
-            An ndarray of the form ``C`` (``n_samples``), containing the predicted classes for
-            ``X``.
+            An ndarray of the form `C` (`n_samples`), containing the predicted classes for
+            `X`.
         """
         if self._all_class_cell_vectors is None:
             raise ModelNotFittedError("AIRS")

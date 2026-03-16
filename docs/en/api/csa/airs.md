@@ -121,7 +121,7 @@ def fit(
 
 Fit the model to the training data using the AIRS.
 
-The function ``fit(...)``, performs the training according to ``X`` and ``y``, using the
+The function ``fit(...)``, performs the training according to `X` and `y`, using the
 method AIRS.
 
 **Parameters**
@@ -129,7 +129,7 @@ method AIRS.
 | Name      | Type                       | Default | Description                                                                                       |
 |-----------|----------------------------|:-------:|---------------------------------------------------------------------------------------------------|
 | `X`       | `Union[npt.NDArray, list]` |    -    | Training array, containing the samples and their characteristics, Shape: (n_samples, n_features). |
-| `y`       | `Union[npt.NDArray, list]` |    -    | Array of target classes of ``X`` with (``n_samples``).                                            |
+| `y`       | `Union[npt.NDArray, list]` |    -    | Array of target classes of `X` with (`n_samples`).                                            |
 | `verbose` | `bool`                     | `True`  | Feedback on which sample aᵢ the memory cells are being generated.                                 |
 
 **Returns**
@@ -152,9 +152,9 @@ using the k-nearest neighbors approach.
 
 **Parameters**
 
-| Name | Type                       | Default | Description                                                       |
-|------|----------------------------|:-------:|-------------------------------------------------------------------|
-| `X`  | `Union[npt.NDArray, list]` |    -    | Array with input samples with  Shape: (``n_samples, n_features``) |
+| Name | Type                       | Default | Description                                                     |
+|------|----------------------------|:-------:|-----------------------------------------------------------------|
+| `X`  | `Union[npt.NDArray, list]` |    -    | Array with input samples with  Shape: (`n_samples, n_features`) |
 
 **Raises**
 
@@ -166,7 +166,7 @@ using the k-nearest neighbors approach.
 
 **Returns**
 
-**C** : `npt.NDArray` - An ndarray of the form ``C`` (``n_samples``), containing the predicted classes for ``X``.
+**C** : `npt.NDArray` - An ndarray of the form `C` (`n_samples`), containing the predicted classes for `X`.
 
 ---
 

@@ -124,7 +124,7 @@ Training according to X and y, using the method negative selection method.
 | Name      | Type                       | Default | Description                                                                                       |
 |-----------|----------------------------|:-------:|---------------------------------------------------------------------------------------------------|
 | `X`       | `Union[npt.NDArray, list]` |    -    | Training array, containing the samples and their characteristics, Shape: (n_samples, n_features). |
-| `y`       | `Union[npt.NDArray, list]` |    -    | Array of target classes of ``X`` with (``n_samples``).                                            |
+| `y`       | `Union[npt.NDArray, list]` |    -    | Array of target classes of `X` with (`n_samples`).                                                |
 | `verbose` | `bool`                     | `True`  | Feedback from detector generation to the user.                                                    |
 
 **Raises**
@@ -153,7 +153,7 @@ Prediction of classes based on detectors created after training.
 
 | Name | Type                       | Default | Description                                                       |
 |------|----------------------------|:-------:|-------------------------------------------------------------------|
-| `X`  | `Union[npt.NDArray, list]` |    -    | Array with input samples with  Shape: (``n_samples, n_features``) |
+| `X`  | `Union[npt.NDArray, list]` |    -    | Array with input samples with  Shape: (`n_samples, n_features`) |
 
 **Raises**
 
@@ -166,7 +166,7 @@ Prediction of classes based on detectors created after training.
 
 **Returns**
 
-**C** : `npt.NDArray` - An ndarray of the form ``C`` (``n_samples``), containing the predicted classes for ``X``.
+**C** : `npt.NDArray` - An ndarray of the form `C` (`n_samples`), containing the predicted classes for `X`.
 
 ---
 
