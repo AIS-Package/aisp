@@ -53,16 +53,16 @@ class AIRS(BaseClassifier):
     k : int, default=3
         The number of K nearest neighbors that will be used to choose a label in the prediction.
     max_iters : int, default=100
-        Maximum number of interactions in the refinement process of the ARB set exposed to aᵢ.
+        Maximum number of iterations in the refinement process of the ARB set exposed to aᵢ.
     resource_amplified : float, default=1.0
         Resource consumption amplifier is multiplied with the incentive to subtract resources.
         Defaults to 1.0 without amplification.
     metric : {"euclidean", "minkowski", "manhattan"}, default="euclidean"
         Distance metric used to compute affinity between cells and samples.
     seed : int
-        Seed for the random generation of detector values. Defaults to None.
+        Seed for random generation.
     p : float
-        This parameter stores the value of ``p`` used in the Minkowski distance. The default
+        This parameter stores the value of `p` used in the Minkowski distance. The default
         is ``2``, which represents normalized Euclidean distance.\
         Different values of p lead to different variants of the Minkowski Distance.
 
@@ -105,7 +105,7 @@ class AIRS(BaseClassifier):
     >>> airs = airs.fit(x_train, y_train, verbose=False)
     >>> x_test = [
     ...     [0.15, 0.45],  # Expected: Class 0
-    ...     [0.85, 0.65],  # Esperado: Classe 1
+    ...     [0.85, 0.65],  # Esperado: Class 1
     ... ]
     >>> y_pred = airs.predict(x_test)
     >>> print(y_pred)

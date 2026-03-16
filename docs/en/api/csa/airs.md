@@ -7,6 +7,7 @@ keywords:
     - memory cells
     - k-nn
     - supervised learning
+    - AIRS2
 tags:
     - classification
     - supervised
@@ -89,11 +90,11 @@ Output:
 | `rate_hypermutation`        | `float` |    `0.75`     | The rate of mutated clones derived from rate_clonal as a scalar factor.                                                                           |
 | `affinity_threshold_scalar` | `float` |    `0.75`     | Normalized affinity threshold.                                                                                                                    |
 | `k`                         | `int`   |      `3`      | The number of K nearest neighbors that will be used to choose a label in the prediction.                                                          |
-| `max_iters`                 | `int`   |     `100`     | Maximum number of interactions in the refinement process of the ARB set exposed to aᵢ.                                                            |
+| `max_iters`                 | `int`   |     `100`     | Maximum number of iterations in the refinement process of the ARB set exposed to aᵢ.                                                              |
 | `resource_amplified`        | `float` |     `1.0`     | Resource consumption amplifier is multiplied with the incentive to subtract resources.                                                            |
 | `metric`                    | `str`   | `"euclidean"` | Distance metric used to compute affinity between cells and samples.                                                                               |
-| `seed`                      | `int`   |    `None`     | Seed for the random generation of detector values. Defaults to None.                                                                              |
-| `p`                         | `float` |      `2`      | This parameter stores the value of ``p`` used in the Minkowski distance.                                                                          |
+| `seed`                      | `int`   |    `None`     | Seed for random generation.                                                                                                                       |
+| `p`                         | `float` |      `2`      | This parameter stores the value of `p` used in the Minkowski distance.                                                                            |
 
 ## Attributes
 

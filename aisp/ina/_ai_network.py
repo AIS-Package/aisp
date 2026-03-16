@@ -67,12 +67,12 @@ class AiNet(BaseClusterer):
     metric : {"euclidean", "minkowski", "manhattan"}, default="euclidean"
         Distance metric used to compute similarity between memory cells
     seed : Optional[int]
-        Seed for the random generation of detector values. Defaults to None.
+        Seed for random generation.
     use_mst_clustering : bool, default=True
         If ``True``, performs clustering with **Minimum Spanning Tree** (MST). If ``False``,
         does not perform clustering and predict returns None.
     p : float
-        This parameter stores the value of ``p`` used in the Minkowski distance. The default
+        This parameter stores the value of `p` used in the Minkowski distance. The default
         is ``2``, which represents normalized Euclidean distance.\
         Different values of p lead to different variants of the Minkowski Distance.
 
@@ -239,7 +239,7 @@ class AiNet(BaseClusterer):
             total=self.max_iterations,
             postfix="\n",
             disable=not verbose,
-            bar_format="{desc} ┇{bar}┇ {n}/{total} total training interactions",
+            bar_format="{desc} ┇{bar}┇ {n}/{total} total training iterations",
         )
 
         population_p = self._init_population_antibodies()

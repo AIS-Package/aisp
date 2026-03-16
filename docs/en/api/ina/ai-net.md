@@ -89,9 +89,9 @@ print(y_pred)
 | `max_iterations`           | `int`                                        |     `10`      | Maximum number of training iterations.                                                                                                     |
 | `k`                        | `int`                                        |      `3`      | The number of K nearest neighbors that will be used to choose a label in the prediction.                                                   |
 | `metric`                   | [`MetricType`](../utils/types.md#metrictype) | `"euclidean"` | Distance metric used to compute similarity between memory cells                                                                            |
-| `seed`                     | `Optional[int]`                              |    `None`     | Seed for the random generation of detector values. Defaults to None.                                                                       |
+| `seed`                     | `Optional[int]`                              |    `None`     | Seed for random generation.                                                                       |
 | `use_mst_clustering`       | `bool`                                       |    `True`     | If ``True``, performs clustering with **Minimum Spanning Tree** (MST). If ``False``, does not perform clustering and predict returns None. |
-| `p`                        | `float`                                      |     `2.0`     | This parameter stores the value of ``p`` used in the Minkowski distance.                                                                   |
+| `p`                        | `float`                                      |     `2.0`     | This parameter stores the value of `p` used in the Minkowski distance.                                                                   |
 
 ## Attributes
 

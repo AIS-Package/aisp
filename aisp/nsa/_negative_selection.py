@@ -57,6 +57,7 @@ class RNSA(BaseClassifier):
         * ``'default-NSA'``: Default algorithm with fixed radius.
         * ``'V-detector'``: This algorithm is based on the article Ji & Dasgupta (2004) [1]_
             and uses a variable radius for anomaly detection in feature spaces.
+    Additional parameters. The following arguments are recognized:
     * non_self_label : str, default='non-self'
         This variable stores the label that will be assigned when the data has only one
         output class, and the sample is classified as not belonging to that class.
@@ -65,7 +66,7 @@ class RNSA(BaseClassifier):
         within the plane between 0 and 1. This means that any detector whose radius exceeds
         this limit is discarded, this variable is only used in the ``V-detector`` algorithm.
     * p : float, default=2
-        This parameter stores the value of ``p`` used in the Minkowski distance. The default
+        This parameter stores the value of `p` used in the Minkowski distance. The default
         is ``2``, which represents Euclidean distance. Different values of p lead
         to different variants of the Minkowski Distance.
 

@@ -116,7 +116,7 @@ print(y_pred)
 | `algorithm`      | `{"default-NSA", "V-detector"}`           | `'default-NSA'` | Set the algorithm version                                                                                                                                                                                                                                |
 | `non_self_label` | `str`                                     |  `'non-self'`   | This variable stores the label that will be assigned when the data has only one output class, and the sample is classified as not belonging to that class.                                                                                               |
 | `cell_bounds`    | `bool`                                    |     `False`     | If set to ``True``, this option limits the generation of detectors to the space within the plane between 0 and 1. This means that any detector whose radius exceeds this limit is discarded, this variable is only used in the ``V-detector`` algorithm. |
-| `p`              | `bool`                                    |      `2.0`      | This parameter stores the value of ``p`` used in the Minkowski distance.                                                                                                                                                                                 |
+| `p`              | `bool`                                    |      `2.0`      | This parameter stores the value of `p` used in the Minkowski distance.                                                                                                                                                                                 |
 
 ## Attributes
 
