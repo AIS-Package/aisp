@@ -79,13 +79,19 @@ Description.
 |-----------|--------|:-------:|---------------------------|
 | `param_1` | `Type` |    -    | Description of the param. |
 
-**Raises**
-
-{{ Raise }} - {{ Description }}.
 
 **Returns**
 
-{{ Type }} - {{ Description }}.
+| Type         | Description                |
+|--------------|----------------------------|
+| `ReturnType` | Description of the return. |
+
+
+**Raises**
+
+| Exception | Description               |
+|-----------|---------------------------|
+| `Error`   | Description of the raise. |
 
 ---
 
