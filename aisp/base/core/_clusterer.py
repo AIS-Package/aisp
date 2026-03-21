@@ -70,7 +70,7 @@ class BaseClusterer(ABC, Base):
         Parameters
         ----------
         X : Union[npt.NDArray, list]
-            Input data for which predictions will be generated.
+            Data for which predictions will be generated.
 
         Returns
         -------
@@ -87,7 +87,7 @@ class BaseClusterer(ABC, Base):
         Parameters
         ----------
         X : Union[npt.NDArray, list]
-            Input data for which predictions will be generated.
+            Data for which predictions will be generated.
         verbose : bool, default=True
             Flag to enable or disable detailed output during training.
 

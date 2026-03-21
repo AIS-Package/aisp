@@ -188,10 +188,10 @@ class BaseOptimizer(ABC, Base):
         Raises
         ------
         TypeError
-            If `function` is not callable.
+            If the provided `function` is not callable.
         AttributeError
-            If `alias` is protected and cannot be modified. Or if `alias` does not exist in the
-            optimizer class.
+            If `alias` is protected and cannot be modified, or does not exist in the
+            class.
         """
         if not callable(function):
             raise TypeError(f"Expected a function for '{alias}', got {type(function).__name__}")

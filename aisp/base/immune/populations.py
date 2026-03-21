@@ -29,15 +29,15 @@ def generate_random_antibodies(
     bounds : npt.NDArray[np.float64], optional
         Array (n_features, 2) with min and max per dimension.
 
-    Raises
-    ------
-    ValueError
-        If number of features must be greater than zero.
-
     Returns
     -------
     npt.NDArray
         Array of shape (n_samples, n_features) containing the generated antibodies.
+
+    Raises
+    ------
+    ValueError
+        If the number of features is less than or equal to zero.
     """
     if n_features <= 0:
         raise ValueError("Number of features must be greater than zero.")

@@ -221,17 +221,17 @@ class AiNet(BaseClusterer):
         verbose : bool, default=True
             Feedback from the progress bar showing current training interaction details.
 
+        Returns
+        -------
+        self : AiNet
+            Returns the instance of the class that implements this method.
+
         Raises
         ------
         TypeError
             If X is not a ndarray or list.
         UnsupportedTypeError
-            If the data type of the vector is not supported.
-
-        Returns
-        -------
-        self : AiNet
-            Returns the instance of the class that implements this method.
+            If the data type of the feature on X is not supported.
         """
         X = self._prepare_features(X)
 
@@ -286,6 +286,11 @@ class AiNet(BaseClusterer):
         X : Union[npt.NDArray, list]
             Data to predict.
 
+        Returns
+        -------
+        predictions : npt.NDArray
+            Predicted cluster labels, or None if clustering is disabled.
+
         Raises
         ------
         TypeError
@@ -293,15 +298,10 @@ class AiNet(BaseClusterer):
         ValueError
             If the array contains values other than 0 and 1.
         FeatureDimensionMismatch
-            If the number of features in X does not match the expected number.
+            If the number of features (columns) in X does not match the expected number.
         ModelNotFittedError
             If the mode has not yet been adjusted and does not have defined memory cells, it is
             not able to predictions
-
-        Returns
-        -------
-        predictions : npt.NDArray
-            Predicted cluster labels, or None if clustering is disabled.
         """
         if (
             not self.use_mst_clustering
@@ -477,7 +477,6 @@ class AiNet(BaseClusterer):
         v : npt.NDArray
             An array of vectors with shape (n_samples, n_features).
 
-
         Returns
         -------
         affinities : npt.NDArray
@@ -616,7 +615,7 @@ class AiNet(BaseClusterer):
         """
         Check the samples, specifying the type, quantity of characteristics, and other parameters.
 
-        * This method updates the following attributes:
+        This method updates the following attributes:
             * ``self._feature_type``
             * ``self.metric`` (only for binary features)
             * ``self._bounds`` (only for ranged features)
@@ -628,15 +627,17 @@ class AiNet(BaseClusterer):
             Training array, containing the samples and their characteristics,
             Shape: (n_samples, n_features).
 
-        Raises
-        ------
-        UnsupportedTypeError
-            If the data type of the vector is not supported.
-
         Returns
         -------
         X : npt.NDArray
             The processed input data.
+
+        Raises
+        ------
+        TypeError:
+            If X is not a ndarray or a list.
+        UnsupportedTypeError
+            If the data type of the vector is not supported.
         """
         X = check_array_type(X)
         self._feature_type = detect_vector_data_type(X)

@@ -148,20 +148,20 @@ class BNSA(BaseClassifier):
         verbose : bool, default=True
             Feedback from detector generation to the user.
 
+        Returns
+        -------
+        self : BNSA
+             Returns the instance itself.
+
         Raises
         ------
         TypeError
             If X or y are not ndarrays or have incompatible shapes.
         ValueError
-            If the array contains values other than 0 and 1.
+            If the array X contains any values other than (0 and 1) or (True and False).
         MaxDiscardsReachedError
-            The maximum number of detector discards was reached during maturation. Check the
+            If the maximum number of detector discards was reached during maturation. Check the
             defined radius value and consider reducing it.
-
-        Returns
-        -------
-        self : BNSA
-             Returns the instance itself.
         """
         X = check_array_type(X)
         y = check_array_type(y, "y")
@@ -225,6 +225,12 @@ class BNSA(BaseClassifier):
         X : Union[npt.NDArray, list]
             Array with input samples with Shape: (`n_samples, n_features`)
 
+        Returns
+        -------
+        c : npt.NDArray
+            A ndarray of the form `C` (`n_samples`), containing the predicted classes for
+            `X`.
+
         Raises
         ------
         TypeError
@@ -232,16 +238,10 @@ class BNSA(BaseClassifier):
         ValueError
             If the array contains values other than 0 and 1.
         FeatureDimensionMismatch
-            If the number of features in X does not match the expected number.
+            If the number of features (columns) in X does not match the expected number.
         ModelNotFittedError
             If the mode has not yet been adjusted and does not have defined detectors or
             classes, it is not able to predictions
-
-        Returns
-        -------
-        c : npt.NDArray
-            A ndarray of the form `C` (`n_samples`), containing the predicted classes for
-            `X`.
         """
         if (
             self._detectors is None

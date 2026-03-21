@@ -203,15 +203,15 @@ def get_metric_code(metric: str) -> int:
     metric : str
         Name of the metric. Can be "euclidean", "manhattan", "minkowski" or "hamming".
 
-    Raises
-    ------
-    ValueError
-        If the metric provided is not supported.
-
     Returns
     -------
     int
         Numeric code corresponding to the metric.
+
+    Raises
+    ------
+    ValueError
+        If the metric provided is not supported.
     """
     metric_map = {
         "euclidean": EUCLIDEAN,

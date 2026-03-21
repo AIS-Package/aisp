@@ -186,15 +186,15 @@ class Clonalg(BaseOptimizer):
         verbose : bool, default=True
             Feedback on iterations, indicating the best antibody.
 
-        Raises
-        ------
-        NotImplementedError
-            If no affinity function has been provided to model.
-
         Returns
         -------
         population : List[Antibody]
             Antibody population after clonal expansion.
+
+        Raises
+        ------
+        NotImplementedError
+            If no affinity function has been provided to evaluate candidate solutions.
         """
         self.reset()
 

@@ -67,7 +67,7 @@ class BaseClassifier(ABC, Base):
         Parameters
         ----------
         X : Union[npt.NDArray, list]
-            Input data for which predictions will be generated.
+            Data for which predictions will be generated.
 
         Returns
         -------

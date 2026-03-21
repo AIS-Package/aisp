@@ -56,7 +56,6 @@ class AIRS(BaseClassifier):
         Maximum number of iterations in the refinement process of the ARB set exposed to aᵢ.
     resource_amplified : float, default=1.0
         Resource consumption amplifier is multiplied with the incentive to subtract resources.
-        Defaults to 1.0 without amplification.
     metric : {"euclidean", "minkowski", "manhattan"}, default="euclidean"
         Distance metric used to compute affinity between cells and samples.
     seed : int
@@ -190,6 +189,11 @@ class AIRS(BaseClassifier):
         -------
         AIRS
             Returns the instance itself.
+
+        Raises
+        ------
+        TypeError
+            If X or y are not ndarrays or have incompatible shapes.
         """
         X = self._prepare_features(X)
         y = check_array_type(y, "y")
@@ -258,6 +262,12 @@ class AIRS(BaseClassifier):
         X : Union[npt.NDArray, list]
             Array with input samples with  Shape: (`n_samples, n_features`)
 
+        Returns
+        -------
+        C : npt.NDArray
+            An ndarray of the form `C` (`n_samples`), containing the predicted classes for
+            `X`.
+
         Raises
         ------
         TypeError
@@ -267,12 +277,6 @@ class AIRS(BaseClassifier):
         ModelNotFittedError
             If the mode has not yet been adjusted and does not have defined memory cells, it is
             not able to predictions
-
-        Returns
-        -------
-        C : npt.NDArray
-            An ndarray of the form `C` (`n_samples`), containing the predicted classes for
-            `X`.
         """
         if self._all_class_cell_vectors is None:
             raise ModelNotFittedError("AIRS")
@@ -522,6 +526,13 @@ class AIRS(BaseClassifier):
         -------
         X : npt.NDArray
             The processed input data.
+
+        Raises
+        ------
+        TypeError:
+            If X is not a ndarray or a list.
+        UnsupportedTypeError
+            If the data type of the vector is not supported.
         """
         X = check_array_type(X)
         self._feature_type = detect_vector_data_type(X)

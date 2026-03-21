@@ -191,20 +191,20 @@ class RNSA(BaseClassifier):
         verbose: bool, default=True
             Feedback from detector generation to the user.
 
-        Raises
-        ------
-        TypeError
-            If X or y are not ndarrays or have incompatible shapes.
-        MaxDiscardsReachedError
-            The maximum number of detector discards was reached during maturation. Check the
-            defined radius value and consider reducing it.
-        ValueError
-          If the array X fall outside the interval (0, 1).
-
         Returns
         -------
         self : RNSA
             Returns the instance itself.
+
+        Raises
+        ------
+        TypeError
+            If X or y are not ndarrays or have incompatible shapes.
+        ValueError
+          If the array X fall outside the interval (0.0, 1.0).
+        MaxDiscardsReachedError
+            The maximum number of detector discards was reached during maturation. Check the
+            defined radius value and consider reducing it.
         """
         X = check_array_type(X)
         y = check_array_type(y, "y")
@@ -270,23 +270,23 @@ class RNSA(BaseClassifier):
         X : Union[npt.NDArray, list]
             Array with input samples with Shape: (n_samples, n_features)
 
-        Raises
-        ------
-        TypeError
-            If X is not a ndarray or list.
-        FeatureDimensionMismatch
-            If the number of features in X does not match the expected number.
-        ModelNotFittedError
-            If the mode has not yet been adjusted and does not have defined detectors or
-            classes, it is not able to predictions
-        ValueError
-          If the array X fall outside the interval (0, 1).
-
         Returns
         -------
         C : npt.NDArray
             A ndarray of the form `C` (n_samples), containing the predicted classes
             for `X`.
+
+        Raises
+        ------
+        TypeError
+            If X is not a ndarray or list.
+        ValueError
+          If the array X fall outside the interval (0.0, 1.0).
+        FeatureDimensionMismatch
+            If the number of features in X does not match the expected number.
+        ModelNotFittedError
+            If the mode has not yet been adjusted and does not have defined detectors or
+            classes, it is not able to predictions
         """
         if self._detectors is None or self.classes is None:
             raise ModelNotFittedError("RNSA")
