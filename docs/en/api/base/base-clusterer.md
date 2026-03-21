@@ -64,7 +64,9 @@ This abstract method is implemented by the class that inherits it.
 
 **Returns**
 
-``BaseClassifier`` - Returns the instance of the class that implements this method.
+| Type   | Description                                                    |
+|--------|----------------------------------------------------------------|
+| `Self` | Returns the instance of the class that implements this method. |
 
 ---
 
@@ -83,11 +85,13 @@ This abstract method is implemented by the class that inherits it.
 
 | Name | Type                       | Default | Description                                         |
 |------|----------------------------|:-------:|-----------------------------------------------------|
-| `X`  | `Union[npt.NDArray, list]` |    -    | Input data for which predictions will be generated. |
+| `X`  | `Union[npt.NDArray, list]` |    -    | Data for which predictions will be generated. |
 
 **Returns**
 
-`npt.NDArray` - Predicted cluster labels for each input sample.
+| Type          | Description                                     |
+|---------------|-------------------------------------------------|
+| `npt.NDArray` | Predicted cluster labels for each input sample. |
 
 ---
 
@@ -113,4 +117,6 @@ This is a convenience method that combines `fit` and `predict` into a single cal
 
 **Returns**
 
-`npt.NDArray` - Predicted cluster labels for each input sample.
+| Type          | Description                                     |
+|---------------|-------------------------------------------------|
+| `npt.NDArray` | Predicted cluster labels for each input sample. |

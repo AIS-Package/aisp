@@ -43,10 +43,14 @@ Generate a random antibody population.
 | `feature_type` | [`FeatureTypeAll`](../../utils/types.md#featuretypeall) | `"continuous-features"` | Specifies the type of features: "continuous-features", "binary-features", "ranged-features", or "permutation-features". |
 | `bounds`       | `npt.NDArray[np.float64]`                               |         `None`          | Array (n_features, 2) with min and max per dimension.                                                                   |
 
-**Raises**
-
-`ValueError` - If number of features must be greater than zero.
-
 **Returns**
 
-`npt.NDArray` - Array of shape (n_samples, n_features) containing the generated antibodies.
+| Type          | Description                                                                 |
+|---------------|-----------------------------------------------------------------------------|
+| `npt.NDArray` | Array of shape (n_samples, n_features) containing the generated antibodies. |
+
+**Raises**
+
+| Exception    | Description                                              |
+|--------------|----------------------------------------------------------|
+| `ValueError` | If the number of features is less than or equal to zero. |

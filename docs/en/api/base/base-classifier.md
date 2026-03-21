@@ -69,7 +69,9 @@ This abstract method is implemented by the class that inherits it.
 
 **Returns**
 
-``BaseClassifier`` - Returns the instance of the class that implements this method.
+| Type   | Description                                                    |
+|--------|----------------------------------------------------------------|
+| `Self` | Returns the instance of the class that implements this method. |
 
 ---
 
@@ -86,13 +88,15 @@ This abstract method is implemented by the class that inherits it.
 
 **Parameters**
 
-| Name | Type                       | Default | Description                                         |
-|------|----------------------------|:-------:|-----------------------------------------------------|
-| `X`  | `Union[npt.NDArray, list]` |    -    | Input data for which predictions will be generated. |
+| Name | Type                       | Default | Description                                   |
+|------|----------------------------|:-------:|-----------------------------------------------|
+| `X`  | `Union[npt.NDArray, list]` |    -    | Data for which predictions will be generated. |
 
 **Returns**
 
-`npt.NDArray` - Predicted values for each input sample.
+| Type          | Description                             |
+|---------------|-----------------------------------------|
+| `npt.NDArray` | Predicted values for each input sample. |
 
 ---
 
@@ -123,5 +127,7 @@ This function was added for compatibility with some scikit-learn functions.
 
 **Returns**
 
-`float` - The accuracy of the model.
+| Type    | Description                |
+|---------|----------------------------|
+| `float` | The accuracy of the model. |
 

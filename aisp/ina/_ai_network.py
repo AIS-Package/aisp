@@ -224,7 +224,7 @@ class AiNet(BaseClusterer):
         Returns
         -------
         self : AiNet
-            Returns the instance of the class that implements this method.
+            Returns the instance itself.
 
         Raises
         ------

@@ -40,9 +40,12 @@ $$
 | `u`  | `npt.NDArray[np.bool_]` |    -    | Coordinates of the first point.  |
 | `v`  | `npt.NDArray[np.bool_]` |    -    | Coordinates of the second point. |
 
+
 **Returns**
 
-`float64` - Hamming distance between two points.
+| Type      | Description                          |
+|-----------|--------------------------------------|
+| `float64` | Hamming distance between two points. |
 
 ---
 
@@ -69,7 +72,9 @@ $$
 
 **Returns**
 
-`float64` - Euclidean distance between two points.
+| Type      | Description                            |
+|-----------|----------------------------------------|
+| `float64` | Euclidean distance between two points. |
 
 ---
 
@@ -96,7 +101,9 @@ $$
 
 **Returns**
 
-`float64` - Manhattan distance between two points.
+| Type      | Description                            |
+|-----------|----------------------------------------|
+| `float64` | Manhattan distance between two points. |
 
 ---
 
@@ -136,7 +143,9 @@ $$
 
 **Returns**
 
-`float64` - Minkowski distance between two points.
+| Type      | Description                            |
+|-----------|----------------------------------------|
+| `float64` | Minkowski distance between two points. |
 
 ---
 
@@ -164,13 +173,11 @@ Calculate the distance between two points by the chosen metric.
 | `metric` | `int`                  |    -    | Distance metric to be used. Available options: 0 (Euclidean), 1 (Manhattan), 2 (Minkowski) |
 | `p`      | `float`                |  `2.0`  | The p parameter defines the type of distance to be calculated.                             |
 
-**Raises**
-
-{{ Raise }} - {{ Description }}.
-
 **Returns**
 
-`float64` - Distance between the two points with the selected metric.
+| Type      | Description                                               |
+|-----------|-----------------------------------------------------------|
+| `float64` | Distance between the two points with the selected metric. |
 
 ---
 
@@ -200,8 +207,9 @@ Calculate the minimum distance between an input vector and the vectors of a clas
 
 **Returns**
 
-**min_distance**: `float` - The minimum distance calculated between the input vector and the class vectors. Returns -1.0
-if the input dimensions are incompatible.
+| Type    | Description                                                                                                                            |
+|---------|----------------------------------------------------------------------------------------------------------------------------------------|
+| `float` | The minimum distance calculated between the input vector and the class vectors. Returns -1.0 if the input dimensions are incompatible. |
 
 ---
 
@@ -220,10 +228,16 @@ Get the numeric code associated with a distance metric.
 |----------|-------|:-------:|----------------------------------------------------------------------------------------|
 | `metric` | `str` |    -    | Name of the metric. Can be `"euclidean"`, `"manhattan"`, `"minkowski"` or `"hamming"`. |
 
-**Raises**
-
-* `ValueError` - If the metric provided is not supported.
-
 **Returns**
 
-`int` - Numeric code corresponding to the metric.
+| Type  | Description                               |
+|-------|-------------------------------------------|
+| `int` | Numeric code corresponding to the metric. |
+
+
+**Raises**
+
+| Exception    | Description                              |
+|--------------|------------------------------------------|
+| `ValueError` | If the metric provided is not supported. |
+

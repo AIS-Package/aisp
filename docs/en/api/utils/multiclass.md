@@ -35,7 +35,9 @@ Separate indices of samples by class for targeted iteration.
 
 **Returns**
 
-**position_samples**: `dict` - A dictionary with the list of array positions(`y`), with the classes as key.
+| Type   | Description                                                                  |
+|--------|------------------------------------------------------------------------------|
+| `dict` | A dictionary with the list of array positions(`y`), with the classes as key. |
 
 **Example**
 
@@ -75,4 +77,6 @@ Predict classes using k-nearest neighbors and trained cells.
 
 **Returns**
 
-**predicted_labels**: `npt.NDArray` - Array of predicted labels for each sample in X, based on the k nearest neighbors.
+| Type          | Description                                                                       |
+|---------------|-----------------------------------------------------------------------------------|
+| `npt.NDArray` | Array of predicted labels for each sample in X, based on the k nearest neighbors. |

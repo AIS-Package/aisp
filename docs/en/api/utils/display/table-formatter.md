@@ -33,7 +33,10 @@ Generate the table header, including the top border, column headings, and separa
 
 **Returns**
 
-`str` - Formatted string of the table header.
+| Type  | Description                           |
+|-------|---------------------------------------|
+| `str` | Formatted string of the table header. |
+
 
 ---
 
@@ -54,7 +57,9 @@ Generate a formatted row for the table data.
 
 **Returns**
 
-`str` - Formatted string of the table row.
+| Type  | Description                        |
+|-------|------------------------------------|
+| `str` | Formatted string of the table row. |
 
 ---
 
@@ -75,4 +80,6 @@ Generate the table's bottom border.
 
 **Returns**
 
-`str` - Formatted string for the bottom border.
+| Type  | Description                             |
+|-------|-----------------------------------------|
+| `str` | Formatted string for the bottom border. |

@@ -123,13 +123,18 @@ Execute the optimization process and return the population.
 | `n_iter_no_change` | `int`  |  `10`   | The maximum number of iterations without updating the best cell.                 |
 | `verbose`          | `bool` | `True`  | Feedback on iterations, indicating the best antibody.                            |
 
-**Raises**
-
-* `NotImplementedError` - If no affinity function has been provided to model.
-
 **Returns**
 
-**population** : `List[Antibody]` - Antibody population after clonal expansion.
+| Type             | Description                                 |
+|------------------|---------------------------------------------|
+| `List[Antibody]` | Antibody population after clonal expansion. |
+
+
+**Raises**
+
+| Exception             | Description                                                                |
+|-----------------------|----------------------------------------------------------------------------|
+| `NotImplementedError` | If no affinity function has been provided to evaluate candidate solutions. |
 
 ---
 
@@ -148,13 +153,18 @@ Evaluate the affinity of a candidate cell.
 |------------|---------------|:-------:|---------------------------------|
 | `solution` | `npt.NDArray` |    -    | Candidate solution to evaluate. |
 
-**Raises**
-
-* `NotImplementedError` - If no affinity function has been provided.
-
 **Returns**
 
-**affinity** : `np.float64` - Affinity value associated with the given cell.
+| Type         | Description                                    |
+|--------------|------------------------------------------------|
+| `np.float64` | Affinity value associated with the given cell. |
+
+
+**Raises**
+
+| Exception             | Description                                |
+|-----------------------|--------------------------------------------|
+| `NotImplementedError` | If no affinity function has been provided. |
 
 ---
 

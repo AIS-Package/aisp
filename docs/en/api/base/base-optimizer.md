@@ -76,8 +76,9 @@ space.
 
 **Returns**
 
-``BaseClassifier`` - Returns the instance of the class that implements this method.
-
+| Type   | Description                                                    |
+|--------|----------------------------------------------------------------|
+| `Self` | Returns the instance of the class that implements this method. |
 
 ---
 
@@ -103,7 +104,9 @@ The returned value should represent the quality of the evaluated solution.
 
 **Returns**
 
-`float` - Cost value associated with the given solution.
+| Type    | Description                                    |
+|---------|------------------------------------------------|
+| `float` | Cost value associated with the given solution. |
 
 ---
 
@@ -121,7 +124,9 @@ The report includes the best solution, its associated cost, and the evolution of
 
 **Returns**
 
-`str` - A formatted string containing the optimization summary.
+| Type  | Description                                             |
+|-------|---------------------------------------------------------|
+| `str` | A formatted string containing the optimization summary. |
 
 ---
 
@@ -143,9 +148,10 @@ Register a function dynamically in the optimizer instance.
 
 **Raises**
 
-`TypeError` - If `function` is not callable.
-
-`AttributeError` - If `alias` is protected and cannot be modified. Or if `alias` does not exist in the optimizer class.
+| Exception        | Description                                                                     |
+|------------------|---------------------------------------------------------------------------------|
+| `TypeError`      | If the provided `function` is not callable.                                     |
+| `AttributeError` | If `alias` is protected and cannot be modified, or does not exist in the class. |
 
 ---
 

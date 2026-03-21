@@ -33,7 +33,9 @@ Value if present in the set of valid choices; otherwise, the default value.
 
 **Returns**
 
-**value** : `T` - The original value if valid, or the default value if not.
+| Type | Description                                               |
+|------|-----------------------------------------------------------|
+| `T`  | The original value if valid, or the default value if not. |
 
 ---
 
@@ -56,7 +58,9 @@ Value if it satisfies the specified condition; otherwise, the default value.
 
 **Returns**
 
-**value**: `T` - The original value if the condition is satisfied, or the default value if not.
+| Type | Description                                                                    |
+|------|--------------------------------------------------------------------------------|
+| `T`  | The original value if the condition is satisfied, or the default value if not. |
 
 ---
 
@@ -76,6 +80,11 @@ Seed if it is a non-negative integer; otherwise, None.
 | `seed` | `Any` |    -    | The seed value to be validated. |
 
 **Returns**
+
+| Type            | Description                                                                  |
+|-----------------|------------------------------------------------------------------------------|
+| `Optional[int]` | The original seed if it is a non-negative integer, or None if it is invalid. |
+
 
 **seed**: `Optional[int]` - The original seed if it is a non-negative integer, or None if it is invalid.
 
@@ -99,11 +108,15 @@ Validate and normalize feature bounds.
 | `bounds`       | `Any` |    -    | The input bounds, which must be either None or a dictionary with 'low' and 'high' keys.                      |
 | `problem_size` | `int` |    -    | The expected length for the normalized bounds lists, corresponding to the number of features in the problem. |
 
-**Raises**
-
-* `TypeError` - If `bounds` is not None and not a dict with 'low'/'high', or if items are non-numeric.
-* `ValueError` - If provided iterables have the wrong length.
-
 **Returns**
 
-`Dict[str, list]` - Dictionary `{'low': [low_1, ..., low_N], 'high': [high_1, ..., high_N]}`.
+| Type              | Description                                                               |
+|-------------------|---------------------------------------------------------------------------|
+| `Dict[str, list]` | Dictionary `{'low': [low_1, ..., low_N], 'high': [high_1, ..., high_N]}`. |
+
+**Raises**
+
+| Exception    | Description                                                                            |
+|--------------|----------------------------------------------------------------------------------------|
+| `TypeError`  | If `bounds` is not None and not a dict with 'low'/'high', or if items are non-numeric. |
+| `ValueError` | If provided iterables have the wrong length.                                           |

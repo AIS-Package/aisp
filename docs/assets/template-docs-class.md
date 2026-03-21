@@ -79,13 +79,11 @@ Description.
 |-----------|--------|:-------:|---------------------------|
 | `param_1` | `Type` |    -    | Description of the param. |
 
-
 **Returns**
 
 | Type         | Description                |
 |--------------|----------------------------|
 | `ReturnType` | Description of the return. |
-
 
 **Raises**
 

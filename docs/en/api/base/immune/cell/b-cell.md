@@ -58,4 +58,6 @@ Generate **N** clones of the current cell and apply hypermutation to the clones.
 
 **Returns**
 
-`npt.NDArray` - An array containing N mutated vectors from the original cell.
+| Type          | Description                                                   |
+|---------------|---------------------------------------------------------------|
+| `npt.NDArray` | An array containing N mutated vectors from the original cell. |

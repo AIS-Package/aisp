@@ -35,14 +35,17 @@ The function detects if the vector contains data of type:
 |----------|---------------|:-------:|------------------------------------------------|
 | `vector` | `npt.NDArray` |    -    | An array containing the data to be classified. |
 
-**Raises**
-
-* `UnsupportedTypeError` - If the data type of the vector is not supported by the function.
-
 **Returns**
 
-[`FeatureType`](./types.md#featuretype) - The data type of the vector: "binary-features", "continuous-features", or "
-ranged-features".
+| Type                                    | Description                                                                                   |
+|-----------------------------------------|-----------------------------------------------------------------------------------------------|
+| [`FeatureType`](./types.md#featuretype) | The data type of the vector: "binary-features", "continuous-features", or " ranged-features". |
+
+**Raises**
+
+| Exception              | Description                                                      |
+|------------------------|------------------------------------------------------------------|
+| `UnsupportedTypeError` | If the data type of the vector is not supported by the function. |
 
 ---
 
@@ -62,13 +65,17 @@ Ensure X is a numpy array. Convert from list if needed.
 | `x`    | `Any` |    -    | Array, containing the samples and their characteristics, Shape: (n_samples, n_features). |
 | `name` | `str` |  `'X'`  | Variable name used in error messages.                                                    |
 
-**Raises**
-
-* `TypeError` - If X or y are not ndarrays or a list.
-
 **Returns**
 
-`npt.NDArray` - The converted or validated array
+| Type          | Description                      |
+|---------------|----------------------------------|
+| `npt.NDArray` | The converted or validated array |
+
+**Raises**
+
+| Exception   | Description                           |
+|-------------|---------------------------------------|
+| `TypeError` | If X or y are not ndarrays or a list. |
 
 ---
 
@@ -90,7 +97,9 @@ Ensure X and y have compatible first dimensions.
 
 **Raises**
 
-* `TypeError` - If x or y have incompatible shapes.
+| Exception   | Description                         |
+|-------------|-------------------------------------|
+| `TypeError` | If x or y have incompatible shapes. |
 
 ---
 
@@ -112,7 +121,9 @@ Ensure X has the expected number of features.
 
 **Raises**
 
-* `FeatureDimensionMismatch` - If the number of features in X does not match the expected number.
+| Exception                                                               | Description                                                        |
+|-------------------------------------------------------------------------|--------------------------------------------------------------------|
+| [`FeatureDimensionMismatch`](../exceptions.md#featuredimensionmismatch) | If the number of features in X does not match the expected number. |
 
 ---
 
@@ -133,7 +144,9 @@ Ensure X contains only 0 and 1.
 
 **Raises**
 
-* `ValueError` - If the array contains values other than 0 and 1.
+| Exception    | Description                                      |
+|--------------|--------------------------------------------------|
+| `ValueError` | If the array contains values other than 0 and 1. |
 
 ---
 
@@ -162,4 +175,6 @@ Ensure all values in the x array fall within a range.
 
 **Raises**
 
-* `ValueError` - If the array fall outside the interval (min_value, max_value).
+| Exception    | Description                                                    |
+|--------------|----------------------------------------------------------------|
+| `ValueError` | If the array fall outside the interval (min_value, max_value). |

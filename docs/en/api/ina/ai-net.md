@@ -123,14 +123,19 @@ Train the AiNet model on input data.
 | `X`       | `Union[npt.NDArray, list]` |    -    | Input data used for training the model.                                      |
 | `verbose` | `bool`                     | `True`  | Feedback from the progress bar showing current training interaction details. |
 
-**Raises**
-
-* `TypeError` - If X is not a ndarray or list.
-* [`UnsupportedTypeError`](../exceptions.md#unsupportedtypeerror) - If the data type of the vector is not supported.
-
 **Returns**
 
-`AiNet` - Returns the instance of the class that implements this method.
+| Type   | Description                  |
+|--------|------------------------------|
+| `Self` | Returns the instance itself. |
+
+
+**Raises**
+
+| Exception                                                       | Description                                            |
+|-----------------------------------------------------------------|--------------------------------------------------------|
+| `TypeError`                                                     | If X is not a ndarray or list.                         |
+| [`UnsupportedTypeError`](../exceptions.md#unsupportedtypeerror) | If the data type of the feature on X is not supported. |
 
 ---
 
@@ -149,18 +154,21 @@ Predict cluster labels for input data.
 |------|----------------------------|:-------:|------------------|
 | `X`  | `Union[npt.NDArray, list]` |    -    | Data to predict. |
 
-**Raises**
-
-* `TypeError` - If X is not a ndarray or list.
-* `ValueError` - If the array contains values other than 0 and 1.
-* [`FeatureDimensionMismatch`](../exceptions.md#featuredimensionmismatch) - If the number of features in X does not
-  match the expected number.
-* [`ModelNotFittedError`](../exceptions.md#modelnotfittederror) - If the mode has not yet been adjusted and does not
-  have defined memory cells, it is not able to predictions
-
 **Returns**
 
-**predictions** : `npt.NDArray` - Predicted cluster labels, or None if clustering is disabled.
+| Type          | Description                                                  |
+|---------------|--------------------------------------------------------------|
+| `npt.NDArray` | Predicted cluster labels, or None if clustering is disabled. |
+
+
+**Raises**
+
+| Exception                                                               | Description                                                                                                 |
+|-------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------|
+| `TypeError`                                                             | If X is not a ndarray or list.                                                                              |
+| `ValueError`                                                            | If the array contains values other than 0 and 1.                                                            |
+| [`FeatureDimensionMismatch`](../exceptions.md#featuredimensionmismatch) | If the number of features (columns) in X does not match the expected number.                                |
+| [`ModelNotFittedError`](../exceptions.md#modelnotfittederror)           | If the mode has not yet been adjusted and does not have defined memory cells, it is not able to predictions |
 
 ---
 
@@ -187,15 +195,18 @@ distinct cluster.
 
 **Raises**
 
-* `ValueError`
-    * If the Minimum Spanning Tree (MST) has not yet been created
-    * If Population of antibodies is empty
-    * If MST statistics (mean or std) are not available.
+| Exception    | Description                                                 |
+|--------------|-------------------------------------------------------------|
+| `ValueError` | If the Minimum Spanning Tree (MST) has not yet been created |
+| `ValueError` | If Population of antibodies is empty                        |
+| `ValueError` | If MST statistics (mean or std) are not available.          |
 
 **Updates**
 
-* **memory_network** : `dict[int, npt.NDArray]` - Dictionary mapping cluster labels to antibody arrays.
-* **labels** : `list` - List of cluster labels.
+| Name             | Type                     | Description                                           |
+|------------------|--------------------------|-------------------------------------------------------|
+| `memory_network` | `dict[int, npt.NDArray]` | Dictionary mapping cluster labels to antibody arrays. |
+| `labels`         | `list`                   | List of cluster labels.                               |
 
 ---
 

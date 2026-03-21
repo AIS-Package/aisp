@@ -127,16 +127,20 @@ Training according to X and y, using the method negative selection method.
 | `y`       | `Union[npt.NDArray, list]` |    -    | Array of target classes of `X` with (`n_samples`).                                                |
 | `verbose` | `bool`                     | `True`  | Feedback from detector generation to the user.                                                    |
 
-**Raises**
-
-* `TypeError` - If X or y are not ndarrays or have incompatible shapes.
-* `ValueError` - If the array contains values other than 0 and 1.
-* [`MaxDiscardsReachedError`](../exceptions.md#maxdiscardsreachederror) - The maximum number of detector discards was
-  reached during maturation. Check the defined radius value and consider reducing it.
-
 **Returns**
 
-`BNSA` - Returns the instance itself.
+| Type   | Description                  |
+|--------|------------------------------|
+| `Self` | Returns the instance itself. |
+
+
+**Raises**
+
+| Exception                                                             | Description                                                                                                                        |
+|-----------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|
+| `TypeError`                                                           | If X or y are not ndarrays or have incompatible shapes.                                                                            |
+| `ValueError`                                                          | If the array X contains any values other than (0 and 1) or (True and False).                                                       |
+| [`MaxDiscardsReachedError`](../exceptions.md#maxdiscardsreachederror) | If the maximum number of detector discards was reached during maturation. Check the defined radius value and consider reducing it. |
 
 ---
 
@@ -151,22 +155,25 @@ Prediction of classes based on detectors created after training.
 
 **Parameters**
 
-| Name | Type                       | Default | Description                                                       |
-|------|----------------------------|:-------:|-------------------------------------------------------------------|
+| Name | Type                       | Default | Description                                                     |
+|------|----------------------------|:-------:|-----------------------------------------------------------------|
 | `X`  | `Union[npt.NDArray, list]` |    -    | Array with input samples with  Shape: (`n_samples, n_features`) |
-
-**Raises**
-
-* `TypeError` - If X is not a ndarray or list.
-* `ValueError` - If the array contains values other than 0 and 1.
-* [`FeatureDimensionMismatch`](../exceptions.md#featuredimensionmismatch) - If the number of features in X does not
-  match the expected number.
-* [`ModelNotFittedError`](../exceptions.md#modelnotfittederror) - If the mode has not yet been adjusted and does not
-  have defined detectors or classes, it is not able to predictions
 
 **Returns**
 
-**C** : `npt.NDArray` - An ndarray of the form `C` (`n_samples`), containing the predicted classes for `X`.
+| Type          | Description                                                                         |
+|---------------|-------------------------------------------------------------------------------------|
+| `npt.NDArray` | An ndarray of the form `C` (`n_samples`), containing the predicted classes for `X`. |
+
+
+**Raises**
+
+| Exception                                                               | Description                                                                                                         |
+|-------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
+| `TypeError`                                                             | If X is not a ndarray or list.                                                                                      |
+| `ValueError`                                                            | If the array contains values other than 0 and 1.                                                                    |
+| [`FeatureDimensionMismatch`](../exceptions.md#featuredimensionmismatch) | If the number of features (columns) in X does not match the expected number.                                        |
+| [`ModelNotFittedError`](../exceptions.md#modelnotfittederror)           | If the mode has not yet been adjusted and does not have defined detectors or classes, it is not able to predictions |
 
 ---
 

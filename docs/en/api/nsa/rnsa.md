@@ -155,16 +155,20 @@ Perform training according to X and y, using the negative selection method (Nega
 | `y`       | `Union[npt.NDArray, list]` |    -    | Array of target classes of `X` with (`n_samples`).                                                |
 | `verbose` | `bool`                     | `True`  | Feedback from detector generation to the user.                                                    |
 
-**Raises**
-
-* `TypeError` - If X or y are not ndarrays or have incompatible shapes.
-* `ValueError` - If the array X fall outside the interval (0, 1).
-* [`MaxDiscardsReachedError`](../exceptions.md#maxdiscardsreachederror) - The maximum number of detector discards was
-  reached during maturation. Check the defined radius value and consider reducing it.
-
 **Returns**
 
-`RNSA` - Returns the instance itself.
+| Type   | Description                  |
+|--------|------------------------------|
+| `Self` | Returns the instance itself. |
+
+
+**Raises**
+
+| Exception                                                             | Description                                                                                                                     |
+|-----------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
+| `TypeError`                                                           | If X or y are not ndarrays or have incompatible shapes.                                                                         |
+| `ValueError`                                                          | If the array X fall outside the interval (0.0, 1.0).                                                                            |
+| [`MaxDiscardsReachedError`](../exceptions.md#maxdiscardsreachederror) | The maximum number of detector discards was reached during maturation. Check the defined radius value and consider reducing it. |
 
 ---
 
@@ -183,18 +187,20 @@ Prediction of classes based on detectors created after training.
 |------|----------------------------|:-------:|-----------------------------------------------------------------|
 | `X`  | `Union[npt.NDArray, list]` |    -    | Array with input samples with  Shape: (`n_samples, n_features`) |
 
-**Raises**
-
-* `TypeError` - If X is not a ndarray or list.
-* `ValueError` - If the array X fall outside the interval (0, 1).
-* [`FeatureDimensionMismatch`](../exceptions.md#featuredimensionmismatch) - If the number of features in X does not
-  match the expected number.
-* [`ModelNotFittedError`](../exceptions.md#modelnotfittederror) - If the mode has not yet been adjusted and does not
-  have defined detectors or classes, it is not able to predictions
-
 **Returns**
 
-**C** : `npt.NDArray` - An ndarray of the form `C` (`n_samples`), containing the predicted classes for `X`.
+| Type          | Description                                                                         |
+|---------------|-------------------------------------------------------------------------------------|
+| `npt.NDArray` | An ndarray of the form `C` (`n_samples`), containing the predicted classes for `X`. |
+
+**Raises**
+
+| Exception                                                               | Description                                                                                                         |
+|-------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
+| `TypeError`                                                             | If X is not a ndarray or list.                                                                                      |
+| `ValueError`                                                            | If the array X fall outside the interval (0.0, 1.0).                                                                |
+| [`FeatureDimensionMismatch`](../exceptions.md#featuredimensionmismatch) | If the number of features in X does not match the expected number.                                                  |
+| [`ModelNotFittedError`](../exceptions.md#modelnotfittederror)           | If the mode has not yet been adjusted and does not have defined detectors or classes, it is not able to predictions |
 
 ---
 
