@@ -58,4 +58,6 @@ Gera **N** clones da célula atual e aplica hipermutação aos clones.
 
 **Returns**
 
-`npt.NDArray` - Uma matriz contendo N clones mutados da célula original.
+| Tipo          | Descrição                                                |
+|---------------|----------------------------------------------------------|
+| `npt.NDArray` | Uma matriz contendo N clones mutados da célula original. |

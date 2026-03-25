@@ -75,8 +75,9 @@ Este método abstrato é implementado é responsabilidade das classes filhas, de
 
 **Returns**
 
-``BaseClassifier`` - Retorna a instância da classe.
-
+| Tipo   | Descrição                      |
+|--------|--------------------------------|
+| `Self` | Retorna a instancia da classe. |
 
 ---
 
@@ -101,7 +102,9 @@ O valor retornado deve representar a qualidade da solução avaliada.
 
 **Returns**
 
-`float` - Valor de custo associada a solução encontrada.
+| Tipo    | Descrição                                      |
+|---------|------------------------------------------------|
+| `float` | Valor de custo associada a solução encontrada. |
 
 ---
 
@@ -119,7 +122,9 @@ O relatorio incluir a melhor solução, seu custo, e a evolução dos valores a 
 
 **Returns**
 
-`str` - Uma string formatada contendo o resumo da otimização.
+| Tipo  | Descrição                                             |
+|-------|-------------------------------------------------------|
+| `str` | Uma string formatada contendo o resumo da otimização. |
 
 ---
 
@@ -141,9 +146,12 @@ Registra dinamicamente uma função na instância do otimizador.
 
 **Exceções**
 
-`TypeError` - Lançado quando não é uma função valida.
 
-`AttributeError` - Lançado quando o `alias` esta protegido e não pode ser modificado, ou se não existir na classe.
+| Exceção          | Description                                                                      |
+|------------------|----------------------------------------------------------------------------------|
+| `TypeError`      | Se a `function` fornecida não for uma função valida.                             |
+| `AttributeError` | Se o `alias` for protegido e não puder ser modificado, ou não existir na classe. |
+
 
 ---
 

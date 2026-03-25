@@ -65,7 +65,9 @@ Este método abstrato é implementado é responsabilidade das classes filhas.
 
 **Returns**
 
-``BaseClassifier`` - Retorna a instancia da classe.
+| Tipo   | Descrição                      |
+|--------|--------------------------------|
+| `Self` | Retorna a instancia da classe. |
 
 ---
 
@@ -88,7 +90,9 @@ Este método abstrato é implementado é responsabilidade das classes filhas.
 
 **Returns**
 
-`npt.NDArray` - Os labels do cluster previsto para cada amostra de entrada.
+| Tipo          | Descrição                                                   |
+|---------------|-------------------------------------------------------------|
+| `npt.NDArray` | Os labels do cluster previsto para cada amostra de entrada. |
 
 ---
 
@@ -113,4 +117,6 @@ Este é um método que combina `fit` e `predict` em uma única chamada.
 
 **Returns**
 
-`npt.NDArray` - Os labels do cluster previsto para cada amostra de entrada.
+| Tipo          | Descrição                                                   |
+|---------------|-------------------------------------------------------------|
+| `npt.NDArray` | Os labels do cluster previsto para cada amostra de entrada. |

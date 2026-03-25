@@ -43,10 +43,15 @@ Gera uma população aleatória de anticorpos.
 | `feature_type` | [`FeatureTypeAll`](../../utils/types.md#featuretypeall) | `"continuous-features"` | Especifica o tipo das características: "continuous-features", "binary-features", "ranged-features", or "permutation-features". |
 | `bounds`       | `npt.NDArray[np.float64]`                               |         `None`          | Array (n_features, 2) contendo os valores mínimo e máximo por dimensão.                                                        |
 
-**Exceções**
-
-`ValueError` - Lançado caso o número de características seja menor ou igual a zero.
 
 **Returns**
 
-`npt.NDArray` - Array de dimensão (n_samples, n_features) contendo os anticorpos gerados.
+| Tipo          | Descrição                                                                 |
+|---------------|---------------------------------------------------------------------------|
+| `npt.NDArray` | Array de dimensão (n_samples, n_features) contendo os anticorpos gerados. |
+
+**Exceções**
+
+| Exception    | Descrição                                                 |
+|--------------|-----------------------------------------------------------|
+| `ValueError` | Se o número de características for menor ou igual a zero. |

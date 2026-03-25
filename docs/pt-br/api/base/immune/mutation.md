@@ -49,7 +49,9 @@ de expansão clonal em sistemas imunes artificiais.
 
 **Returns**
 
-`npt.NDArray[np.float64]` - Array com dimensões (n, len(vector)) contendo os `n` clones mutados do vetor original.
+| Tipo                      | Descrição                                                                              |
+|---------------------------|----------------------------------------------------------------------------------------|
+| `npt.NDArray[np.float64]` | Array com dimensões (n, len(vector)) contendo os `n` clones mutados do vetor original. |
 
 ### clone_and_mutate_binary
 
@@ -78,7 +80,9 @@ clonal em sistemas imunes artificiais com representações discretas.
 
 **Returns**
 
-`npt.NDArray[np.bool_]` - Array com dimensões (n, len(vector)) contendo os `n` clones mutados do vetor original.
+| Tipo                    | Descrição                                                                              |
+|-------------------------|----------------------------------------------------------------------------------------|
+| `npt.NDArray[np.bool_]` | Array com dimensões (n, len(vector)) contendo os `n` clones mutados do vetor original. |
 
 ### clone_and_mutate_ranged
 
@@ -109,7 +113,9 @@ de expansão clonal em sistemas imunes artificiais.
 
 **Returns**
 
-`npt.NDArray[np.float64]` - Array com dimensões (n, len(vector)) contendo os `n` clones mutados do vetor original.
+| Tipo                      | Descrição                                                                              |
+|---------------------------|----------------------------------------------------------------------------------------|
+| `npt.NDArray[np.float64]` | Array com dimensões (n, len(vector)) contendo os `n` clones mutados do vetor original. |
 
 ### clone_and_mutate_continuous
 
@@ -135,4 +141,6 @@ Gera um conjunto de clones com mutações por permutação.
 
 **Returns**
 
-`npt.NDArray[np.float64]` - Array com dimensões (n, len(vector)) contendo os `n` clones mutados do vetor original.
+| Tipo                      | Descrição                                                                              |
+|---------------------------|----------------------------------------------------------------------------------------|
+| `npt.NDArray[np.float64]` | Array com dimensões (n, len(vector)) contendo os `n` clones mutados do vetor original. |

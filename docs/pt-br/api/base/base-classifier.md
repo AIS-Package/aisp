@@ -70,7 +70,9 @@ Este método abstrato é implementado é responsabilidade das classes filhas.
 
 **Returns**
 
-``BaseClassifier`` - Retorna a instancia da classe.
+| Tipo   | Descrição                      |
+|--------|--------------------------------|
+| `Self` | Retorna a instancia da classe. |
 
 ---
 
@@ -93,7 +95,9 @@ Este método abstrato é implementado é responsabilidade das classes filhas.
 
 **Returns**
 
-`npt.NDArray` - Array com as previsões para cada amostra de `X`.
+| Tipo          | Descrição                                        |
+|---------------|--------------------------------------------------|
+| `npt.NDArray` | Array com as previsões para cada amostra de `X`. |
 
 ---
 
@@ -124,5 +128,6 @@ Esta função foi adicionada para compatibilidade com algumas funções do sciki
 
 **Returns**
 
-`float` - A precisão do modelo.
-
+| Tipo    | Descrição             |
+|---------|-----------------------|
+| `float` | A precisão do modelo. |
