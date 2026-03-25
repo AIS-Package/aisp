@@ -146,8 +146,7 @@ Registra dinamicamente uma função na instância do otimizador.
 
 **Exceções**
 
-
-| Exceção          | Description                                                                      |
+| Exceção          | Descrição                                                                        |
 |------------------|----------------------------------------------------------------------------------|
 | `TypeError`      | Se a `function` fornecida não for uma função valida.                             |
 | `AttributeError` | Se o `alias` for protegido e não puder ser modificado, ou não existir na classe. |

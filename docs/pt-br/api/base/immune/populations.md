@@ -52,6 +52,6 @@ Gera uma população aleatória de anticorpos.
 
 **Exceções**
 
-| Exception    | Descrição                                                 |
+| Exceção      | Descrição                                                 |
 |--------------|-----------------------------------------------------------|
 | `ValueError` | Se o número de características for menor ou igual a zero. |
