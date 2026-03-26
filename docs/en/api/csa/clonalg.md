@@ -92,13 +92,13 @@ Best cost: 0.02623036956750724
 | `feature_type`          | [`FeatureTypeAll`](../utils/types.md#featuretypeall) | `'ranged-features'` | Type of problem samples: binary, continuous, or based on value ranges.                                                                                     |
 | `bounds`                | `Optional[Dict]`                                     |       `None`        | Definition of search limits when ``feature_type='ranged-features'``.                                                                                       |
 | `mode`                  | `{"min", "max"}`                                     |       `'min'`       | Defines whether the algorithm minimizes or maximizes the cost function.                                                                                    |
-| `seed`                  | `int`                                                |       `None`        | Seed for random generation of detector values. If None, the value is random.                                                                               |
+| `seed`                  | `int`                                                |       `None`        | Seed for random generation.                                                                                                                                |
 
 ## Attributes
 
-| Name         | Type                       | Default | Description              |
-|--------------|----------------------------|:-------:|--------------------------|
-| `population` | `Optional[List[Antibody]]` | `None`  | Population of antibodies |
+| Name         | Type                       | Default | Description               |
+|--------------|----------------------------|:-------:|---------------------------|
+| `population` | `Optional[List[Antibody]]` | `None`  | Population of antibodies. |
 
 ---
 

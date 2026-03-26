@@ -68,12 +68,12 @@ class Clonalg(BaseOptimizer):
     mode : {"min", "max"}, default="min"
         Defines whether the algorithm minimizes or maximizes the cost function.
     seed : Optional[int], default=None
-        Seed for random generation of detector values. If None, the value is random.
+        Seed for random generation.
 
     Attributes
     ----------
     population : Optional[List[Antibody]]
-        Population of antibodies
+        Population of antibodies.
 
     Notes
     -----
