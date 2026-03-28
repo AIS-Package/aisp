@@ -63,7 +63,7 @@ ai_net = AiNet(
 ai_net = ai_net.fit(x_train, verbose=True)
 x_test = [
     [0.15, 0.45],  # Expected: label 0
-    [0.85, 0.65],  # Esperado: label 1
+    [0.85, 0.65],  # Expected: label 1
 ]
 y_pred = ai_net.predict(x_test)
 print(y_pred)
@@ -86,13 +86,13 @@ print(y_pred)
 | `top_clonal_memory_size`   | `int`                                        |      `5`      | Number of highest-affinity antibodies selected per antigen for cloning and mutation.                                                       |
 | `n_diversity_injection`    | `int`                                        |      `5`      | Number of new random memory cells injected to maintain diversity.                                                                          |
 | `affinity_threshold`       | `float`                                      |     `0.5`     | Threshold for affinity (similarity) to determine cell suppression or selection.                                                            |
-| `suppression_threshold`    | `float`                                      |     `0.5`     | Threshold for suppressing similar memory cells                                                                                             |
+| `suppression_threshold`    | `float`                                      |     `0.5`     | Threshold for suppressing similar memory cells.                                                                                            |
 | `mst_inconsistency_factor` | `float`                                      |     `2.0`     | Factor used to determine which edges in the **Minimum Spanning Tree (MST)** are considered inconsistent.                                   |
 | `max_iterations`           | `int`                                        |     `10`      | Maximum number of training iterations.                                                                                                     |
 | `k`                        | `int`                                        |      `3`      | The number of K nearest neighbors that will be used to choose a label in the prediction.                                                   |
-| `metric`                   | [`MetricType`](../utils/types.md#metrictype) | `"euclidean"` | Distance metric used to compute similarity between memory cells                                                                            |
+| `metric`                   | [`MetricType`](../utils/types.md#metrictype) | `"euclidean"` | Distance metric used to compute similarity between memory cells.                                                                           |
 | `seed`                     | `Optional[int]`                              |    `None`     | Seed for random generation.                                                                                                                |
-| `use_mst_clustering`       | `bool`                                       |    `True`     | If ``True``, performs clustering with **Minimum Spanning Tree** (MST). If ``False``, does not perform clustering and predict returns None. |
+| `use_mst_clustering`       | `bool`                                       |    `True`     | If `True`, performs clustering using the MST. If `False`, clustering is not performed and the predict method raises a ModelNotFittedError. |
 | `p`                        | `float`                                      |     `2.0`     | This parameter stores the value of `p` used in the Minkowski distance.                                                                     |
 
 ## Attributes
@@ -163,12 +163,12 @@ Predict cluster labels for input data.
 
 **Raises**
 
-| Exception                                                               | Description                                                                                                 |
-|-------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------|
-| `TypeError`                                                             | If X is not a ndarray or list.                                                                              |
-| `ValueError`                                                            | If the array contains values other than 0 and 1.                                                            |
-| [`FeatureDimensionMismatch`](../exceptions.md#featuredimensionmismatch) | If the number of features (columns) in X does not match the expected number.                                |
-| [`ModelNotFittedError`](../exceptions.md#modelnotfittederror)           | If the mode has not yet been adjusted and does not have defined memory cells, it is not able to predictions |
+| Exception                                                               | Description                                                                                                              |
+|-------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------|
+| `TypeError`                                                             | If X is not a ndarray or list.                                                                                           |
+| `ValueError`                                                            | If X contains values other than (0 and 1) or (True and False) when the trained features are of type `"binary-features"`. |
+| [`FeatureDimensionMismatch`](../exceptions.md#featuredimensionmismatch) | If the number of features (columns) in X does not match the expected number.                                             |
+| [`ModelNotFittedError`](../exceptions.md#modelnotfittederror)           | If the mode has not yet been adjusted and does not have defined memory cells, it is not able to predictions.             |
 
 ---
 
@@ -195,11 +195,11 @@ distinct cluster.
 
 **Raises**
 
-| Exception    | Description                                                 |
-|--------------|-------------------------------------------------------------|
-| `ValueError` | If the Minimum Spanning Tree (MST) has not yet been created |
-| `ValueError` | If Population of antibodies is empty                        |
-| `ValueError` | If MST statistics (mean or std) are not available.          |
+| Exception    | Description                                                  |
+|--------------|--------------------------------------------------------------|
+| `ValueError` | If the Minimum Spanning Tree (MST) has not yet been created. |
+| `ValueError` | If Population of antibodies is empty.                        |
+| `ValueError` | If MST statistics (mean or std) are not available.           |
 
 **Updates**
 

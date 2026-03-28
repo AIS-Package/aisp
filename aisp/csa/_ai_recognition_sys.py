@@ -260,7 +260,7 @@ class AIRS(BaseClassifier):
         Parameters
         ----------
         X : Union[npt.NDArray, list]
-            Array with input samples with  Shape: (`n_samples, n_features`)
+            Array with input samples with Shape: (`n_samples, n_features`)
 
         Returns
         -------

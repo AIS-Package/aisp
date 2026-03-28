@@ -69,8 +69,8 @@ class AiNet(BaseClusterer):
     seed : Optional[int]
         Seed for random generation.
     use_mst_clustering : bool, default=True
-        If ``True``, performs clustering with **Minimum Spanning Tree** (MST). If ``False``,
-        does not perform clustering and predict returns None.
+        If `True`, performs clustering using the MST. If `False`, clustering is not performed and
+        the predict method raises a ModelNotFittedError.
     p : float
         This parameter stores the value of `p` used in the Minkowski distance. The default
         is ``2``, which represents normalized Euclidean distance.\
@@ -117,7 +117,7 @@ class AiNet(BaseClusterer):
     >>> ai_net = ai_net.fit(x_train, verbose=True)
     >>> x_test = [
     ...     [0.15, 0.45],  # Expected: label 0
-    ...     [0.85, 0.65],  # Esperado: label 1
+    ...     [0.85, 0.65],  # Expected: label 1
     ... ]
     >>> y_pred = ai_net.predict(x_test)
     >>> print(y_pred)
@@ -289,19 +289,20 @@ class AiNet(BaseClusterer):
         Returns
         -------
         predictions : npt.NDArray
-            Predicted cluster labels, or None if clustering is disabled.
+            Predicted cluster labels.
 
         Raises
         ------
         TypeError
             If X is not a ndarray or list.
         ValueError
-            If the array contains values other than 0 and 1.
+            If X contains values other than (0 and 1) or (True and False) when the trained
+            features are of type `"binary-features"`.
         FeatureDimensionMismatch
             If the number of features (columns) in X does not match the expected number.
         ModelNotFittedError
             If the mode has not yet been adjusted and does not have defined memory cells, it is
-            not able to predictions
+            not able to predictions.
         """
         if (
             not self.use_mst_clustering
@@ -562,8 +563,8 @@ class AiNet(BaseClusterer):
         Raises
         ------
         ValueError
-            If the Minimum Spanning Tree (MST) has not yet been created
-            If Population of antibodies is empty
+            If the Minimum Spanning Tree (MST) has not yet been created.
+            If Population of antibodies is empty.
             If MST statistics (mean or std) are not available.
 
         Updates

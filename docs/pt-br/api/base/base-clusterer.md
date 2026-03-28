@@ -9,9 +9,10 @@ keywords:
   - fit
   - predict
   - fit_predict
+  - agrupamento
 tags:
   - clusterer
-  - clustering
+  - agrupamento
 ---
 
 # BaseClusterer
