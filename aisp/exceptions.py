@@ -35,7 +35,7 @@ class FeatureDimensionMismatch(Exception):
     Parameters
     ----------
     expected : int
-        The expected number of features
+        The expected number of features.
     received : int
         The actual number of features received.
     variable_name : Optional[str]
