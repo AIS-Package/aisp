@@ -122,11 +122,11 @@ Treinamento de acordo com X e y, utilizando o algoritmo de seleção negativa.
 
 **Parâmetros**
 
-| Nome      | Tipo                       | Padrão | Descrição                                                                                      |
-|-----------|----------------------------|:------:|------------------------------------------------------------------------------------------------|
-| `X`       | `Union[npt.NDArray, list]` |   -    | Dados de treinamento contendo as amostras e com suas características. (n_samples, n_features). |
-| `y`       | `Union[npt.NDArray, list]` |   -    | Array com as classes alvo de `X`, com dimensão (n_samples).                                    |
-| `verbose` | `bool`                     | `True` | Indica se as mensagens de progresso de geração dos detectores.                                 |
+| Nome      | Tipo                       | Padrão | Descrição                                                                                                      |
+|-----------|----------------------------|:------:|----------------------------------------------------------------------------------------------------------------|
+| `X`       | `Union[npt.NDArray, list]` |   -    | Amostras de entrada para treinamento. Cada linha corresponde a uma amostra e cada coluna a uma característica. |
+| `y`       | `Union[npt.NDArray, list]` |   -    | Vetor alvo no formato (n_samples,). Deve conter o mesmo número de amostras que X.                              |
+| `verbose` | `bool`                     | `True` | Se True, exibe informações sobre o progresso do treinamento.                                                   |
 
 **Returns**
 
@@ -155,9 +155,9 @@ Prever as classes com base nos detectores gerados após o treinamento.
 
 **Parâmetros**
 
-| Nome | Tipo                       | Padrão | Descrição                                                       |
-|------|----------------------------|:------:|-----------------------------------------------------------------|
-| `X`  | `Union[npt.NDArray, list]` |   -    | Array com amostras de entrada no com: (`n_samples, n_features`) |
+| Nome | Tipo                       | Padrão | Descrição                                                                              |
+|------|----------------------------|:------:|----------------------------------------------------------------------------------------|
+| `X`  | `Union[npt.NDArray, list]` |   -    | Amostras de entrada. Deve ter o mesmo número de características usadas no treinamento. |
 
 **Returns**
 

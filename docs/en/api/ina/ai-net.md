@@ -118,10 +118,10 @@ Train the AiNet model on input data.
 
 **Parameters**
 
-| Name      | Type                       | Default | Description                                                                  |
-|-----------|----------------------------|:-------:|------------------------------------------------------------------------------|
-| `X`       | `Union[npt.NDArray, list]` |    -    | Input data used for training the model.                                      |
-| `verbose` | `bool`                     | `True`  | Feedback from the progress bar showing current training interaction details. |
+| Name      | Type                       | Default | Description                                                                      |
+|-----------|----------------------------|:-------:|----------------------------------------------------------------------------------|
+| `X`       | `Union[npt.NDArray, list]` |    -    | Training input samples. Each row corresponds to a samples and column to feature. |
+| `verbose` | `bool`                     | `True`  | If True, prints training progress information.                                   |
 
 **Returns**
 
@@ -150,9 +150,9 @@ Predict cluster labels for input data.
 
 **Parameters**
 
-| Name | Type                       | Default | Description      |
-|------|----------------------------|:-------:|------------------|
-| `X`  | `Union[npt.NDArray, list]` |    -    | Data to predict. |
+| Name | Type                       | Default | Description                                                                |
+|------|----------------------------|:-------:|----------------------------------------------------------------------------|
+| `X`  | `Union[npt.NDArray, list]` |    -    | Input samples. Must have the same number of features used during training. |
 
 **Returns**
 

@@ -50,9 +50,9 @@ class BaseClusterer(ABC, Base):
         Parameters
         ----------
         X : Union[npt.NDArray, list]
-            Input data used for training the model.
+            Training input samples. Each row corresponds to a samples and column to feature.
         verbose : bool, default=True
-            Flag to enable or disable detailed output during training.
+            If True, prints training progress information.
 
         Returns
         -------
@@ -70,7 +70,7 @@ class BaseClusterer(ABC, Base):
         Parameters
         ----------
         X : Union[npt.NDArray, list]
-            Data for which predictions will be generated.
+            Input samples. Must have the same number of features used during training.
 
         Returns
         -------
@@ -87,9 +87,9 @@ class BaseClusterer(ABC, Base):
         Parameters
         ----------
         X : Union[npt.NDArray, list]
-            Data for which predictions will be generated.
+            Training input samples. Each row corresponds to a samples and column to feature.
         verbose : bool, default=True
-            Flag to enable or disable detailed output during training.
+            If True, prints training progress information.
 
         Returns
         -------

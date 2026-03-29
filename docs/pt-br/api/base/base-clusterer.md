@@ -59,10 +59,10 @@ Este método abstrato é implementado é responsabilidade das classes filhas.
 
 **Parâmetros**
 
-| Nome      | Tipo                       | Padrão | Descrição                                                            |
-|-----------|----------------------------|:------:|----------------------------------------------------------------------|
-| `X`       | `Union[npt.NDArray, list]` |   -    | Dados de entrada utilizados para o treinamento.                      |
-| `verbose` | `bool`                     | `True` | Indica se as mensagens de progresso do treinamento deve ser exibido. |
+| Nome      | Tipo                       | Padrão | Descrição                                                                                                      |
+|-----------|----------------------------|:------:|----------------------------------------------------------------------------------------------------------------|
+| `X`       | `Union[npt.NDArray, list]` |   -    | Amostras de entrada para treinamento. Cada linha corresponde a uma amostra e cada coluna a uma característica. |
+| `verbose` | `bool`                     | `True` | Se True, exibe informações sobre o progresso do treinamento.                                                   |
 
 **Returns**
 
@@ -85,9 +85,9 @@ Este método abstrato é implementado é responsabilidade das classes filhas.
 
 **Parâmetros**
 
-| Nome | Tipo                       | Padrão | Descrição                                                  |
-|------|----------------------------|:------:|------------------------------------------------------------|
-| `X`  | `Union[npt.NDArray, list]` |   -    | Dados de entrada para os quais as previsões serão geradas. |
+| Nome | Tipo                       | Padrão | Descrição                                                                              |
+|------|----------------------------|:------:|----------------------------------------------------------------------------------------|
+| `X`  | `Union[npt.NDArray, list]` |   -    | Amostras de entrada. Deve ter o mesmo número de características usadas no treinamento. |
 
 **Returns**
 
@@ -111,10 +111,10 @@ Este é um método que combina `fit` e `predict` em uma única chamada.
 
 **Parâmetros**
 
-| Nome      | Tipo                       | Padrão | Descrição                                                            |
-|-----------|----------------------------|:------:|----------------------------------------------------------------------|
-| `X`       | `Union[npt.NDArray, list]` |   -    | Conjunto de características com dimensões (n_samples, n_features).   |
-| `verbose` | `bool`                     | `True` | Indica se as mensagens de progresso do treinamento deve ser exibido. |
+| Nome      | Tipo                       | Padrão | Descrição                                                                                                      |
+|-----------|----------------------------|:------:|----------------------------------------------------------------------------------------------------------------|
+| `X`       | `Union[npt.NDArray, list]` |   -    | Amostras de entrada para treinamento. Cada linha corresponde a uma amostra e cada coluna a uma característica. |
+| `verbose` | `bool`                     | `True` | Se True, exibe informações sobre o progresso do treinamento.                                                   |
 
 **Returns**
 

@@ -126,11 +126,11 @@ method AIRS.
 
 **Parameters**
 
-| Name      | Type                       | Default | Description                                                                                       |
-|-----------|----------------------------|:-------:|---------------------------------------------------------------------------------------------------|
-| `X`       | `Union[npt.NDArray, list]` |    -    | Training array, containing the samples and their characteristics, Shape: (n_samples, n_features). |
-| `y`       | `Union[npt.NDArray, list]` |    -    | Array of target classes of `X` with (`n_samples`).                                                |
-| `verbose` | `bool`                     | `True`  | Feedback on which sample aᵢ the memory cells are being generated.                                 |
+| Name      | Type                       | Default | Description                                                                          |
+|-----------|----------------------------|:-------:|--------------------------------------------------------------------------------------|
+| `X`       | `Union[npt.NDArray, list]` |    -    | Training input samples. Each row corresponds to a samples and column to feature.     |
+| `y`       | `Union[npt.NDArray, list]` |    -    | Target vector of shape (n_samples,). Must contain the same number of samples as `X`. |
+| `verbose` | `bool`                     | `True`  | If True, prints training progress information.                                       |
 
 **Returns**
 
@@ -160,9 +160,9 @@ using the k-nearest neighbors approach.
 
 **Parameters**
 
-| Name | Type                       | Default | Description                                                     |
-|------|----------------------------|:-------:|-----------------------------------------------------------------|
-| `X`  | `Union[npt.NDArray, list]` |    -    | Array with input samples with  Shape: (`n_samples, n_features`) |
+| Name | Type                       | Default | Description                                                                |
+|------|----------------------------|:-------:|----------------------------------------------------------------------------|
+| `X`  | `Union[npt.NDArray, list]` |    -    | Input samples. Must have the same number of features used during training. |
 
 **Returns**
 

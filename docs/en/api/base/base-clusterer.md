@@ -57,10 +57,10 @@ This abstract method is implemented by the class that inherits it.
 
 **Parameters**
 
-| Name      | Type                       | Default | Description                                                |
-|-----------|----------------------------|:-------:|------------------------------------------------------------|
-| `X`       | `Union[npt.NDArray, list]` |    -    | Input data used for training the model.                    |
-| `verbose` | `bool`                     | `True`  | Flag to enable or disable detailed output during training. |
+| Name      | Type                       | Default | Description                                                                      |
+|-----------|----------------------------|:-------:|----------------------------------------------------------------------------------|
+| `X`       | `Union[npt.NDArray, list]` |    -    | Training input samples. Each row corresponds to a samples and column to feature. |
+| `verbose` | `bool`                     | `True`  | If True, prints training progress information.                                   |
 
 **Returns**
 
@@ -83,9 +83,9 @@ This abstract method is implemented by the class that inherits it.
 
 **Parameters**
 
-| Name | Type                       | Default | Description                                         |
-|------|----------------------------|:-------:|-----------------------------------------------------|
-| `X`  | `Union[npt.NDArray, list]` |    -    | Data for which predictions will be generated. |
+| Name | Type                       | Default | Description                                                                |
+|------|----------------------------|:-------:|----------------------------------------------------------------------------|
+| `X`  | `Union[npt.NDArray, list]` |    -    | Input samples. Must have the same number of features used during training. |
 
 **Returns**
 
@@ -110,10 +110,10 @@ This is a convenience method that combines `fit` and `predict` into a single cal
 
 **Parameters**
 
-| Name      | Type                       | Default | Description                                                |
-|-----------|----------------------------|:-------:|------------------------------------------------------------|
-| `X`       | `Union[npt.NDArray, list]` |    -    | Feature set with shape (n_samples, n_features).            |
-| `verbose` | `bool`                     | `True`  | Flag to enable or disable detailed output during training. |
+| Name      | Type                       | Default | Description                                                                       |
+|-----------|----------------------------|:-------:|-----------------------------------------------------------------------------------|
+| `X`       | `Union[npt.NDArray, list]` |    -    | Training input samples. Each row corresponds to a samples and column to feature.  |
+| `verbose` | `bool`                     | `True`  | If True, prints training progress information.                                    |
 
 **Returns**
 

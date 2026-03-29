@@ -184,12 +184,11 @@ class RNSA(BaseClassifier):
         Parameters
         ----------
         X : Union[npt.NDArray, list]
-            Training array, containing the samples and their characteristics.
-            Shape: ``(n_samples, n_features)``
+            Training input samples. Each row corresponds to a samples and column to feature.
         y : Union[npt.NDArray, list]
-            Array of target classes of `X` with `n_samples` (lines).
-        verbose: bool, default=True
-            Feedback from detector generation to the user.
+            Target vector of shape (n_samples,). Must contain the same number of samples as `X`.
+        verbose : bool, default=True
+            If True, prints training progress information.
 
         Returns
         -------
@@ -268,7 +267,7 @@ class RNSA(BaseClassifier):
         Parameters
         ----------
         X : Union[npt.NDArray, list]
-            Array with input samples with Shape: (n_samples, n_features)
+            Input samples. Must have the same number of features used during training.
 
         Returns
         -------

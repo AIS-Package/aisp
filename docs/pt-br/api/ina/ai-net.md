@@ -116,10 +116,10 @@ Treina o modelo com os dados de entrada utilizando o algoritmo AiNet.
 
 **Parâmetros**
 
-| Nome      | Tipo                       | Padrão | Descrição                                                        |
-|-----------|----------------------------|:------:|------------------------------------------------------------------|
-| `X`       | `Union[npt.NDArray, list]` |   -    | Dados de entrada usados para o treinamento.                      |
-| `verbose` | `bool`                     | `True` | Indica se as mensagens de progresso do treinamento será exibida. |
+| Nome      | Tipo                       | Padrão | Descrição                                                                                                      |
+|-----------|----------------------------|:------:|----------------------------------------------------------------------------------------------------------------|
+| `X`       | `Union[npt.NDArray, list]` |   -    | Amostras de entrada para treinamento. Cada linha corresponde a uma amostra e cada coluna a uma característica. |
+| `verbose` | `bool`                     | `True` | Se True, exibe informações sobre o progresso do treinamento.                                                   |
 
 **Returns**
 
@@ -147,9 +147,9 @@ Prever os rótulos dos clusters para os dados de entrada.
 
 **Parâmetros**
 
-| Nome | Tipo                       | Padrão | Descrição                        |
-|------|----------------------------|:------:|----------------------------------|
-| `X`  | `Union[npt.NDArray, list]` |   -    | Dados de entrada para a previsão |
+| Nome | Tipo                       | Padrão | Descrição                                                                              |
+|------|----------------------------|:------:|----------------------------------------------------------------------------------------|
+| `X`  | `Union[npt.NDArray, list]` |   -    | Amostras de entrada. Deve ter o mesmo número de características usadas no treinamento. |
 
 **Returns**
 

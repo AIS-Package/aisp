@@ -125,11 +125,11 @@ A função `fit(...)`, realiza o treinamento de acordo com X e y, usando o méto
 
 **Parâmetros**
 
-| Nome      | Tipo                       | Padrão | Descrição                                                                                            |
-|-----------|----------------------------|:------:|------------------------------------------------------------------------------------------------------|
-| `X`       | `Union[npt.NDArray, list]` |   -    | Matriz de treinamento contendo as amostras e suas características. Com (n_samples, n_features).      |
-| `y`       | `Union[npt.NDArray, list]` |   -    | Array com as classes referentes à `X`, com (`n_samples`).                                            |
-| `verbose` | `bool`                     | `True` | Indica se as mensagens de progresso de geração das células de memorias expostas a cada amostra (aᵢ). |
+| Nome      | Tipo                       | Padrão | Descrição                                                                                                      |
+|-----------|----------------------------|:------:|----------------------------------------------------------------------------------------------------------------|
+| `X`       | `Union[npt.NDArray, list]` |   -    | Amostras de entrada para treinamento. Cada linha corresponde a uma amostra e cada coluna a uma característica. |
+| `y`       | `Union[npt.NDArray, list]` |   -    | Vetor alvo no formato (n_samples,). Deve conter o mesmo número de amostras que X.                              |
+| `verbose` | `bool`                     | `True` | Se True, exibe informações sobre o progresso do treinamento.                                                   |
 
 **Returns**
 
@@ -159,9 +159,9 @@ próximos (K-NN).
 
 **Parâmetros**
 
-| Nome | Tipo                       | Padrão | Descrição                                                                          |
-|------|----------------------------|:------:|------------------------------------------------------------------------------------|
-| `X`  | `Union[npt.NDArray, list]` |   -    | Conjunto de dados de entrada para previsão, com formato: (`n_samples, n_features`) |
+| Nome | Tipo                       | Padrão | Descrição                                                                              |
+|------|----------------------------|:------:|----------------------------------------------------------------------------------------|
+| `X`  | `Union[npt.NDArray, list]` |   -    | Amostras de entrada. Deve ter o mesmo número de características usadas no treinamento. |
 
 **Returns**
 

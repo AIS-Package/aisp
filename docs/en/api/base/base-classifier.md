@@ -61,11 +61,11 @@ This abstract method is implemented by the class that inherits it.
 
 **Parameters**
 
-| Name      | Type                       | Default | Description                                                |
-|-----------|----------------------------|:-------:|------------------------------------------------------------|
-| `X`       | `Union[npt.NDArray, list]` |    -    | Input data used for training the model.                    |
-| `y`       | `Union[npt.NDArray, list]` |    -    | Corresponding labels or target values for the input data.  |
-| `verbose` | `bool`                     | `True`  | Flag to enable or disable detailed output during training. |
+| Name      | Type                       | Default | Description                                                                          |
+|-----------|----------------------------|:-------:|--------------------------------------------------------------------------------------|
+| `X`       | `Union[npt.NDArray, list]` |    -    | Training input samples. Each row corresponds to a samples and column to feature.     |
+| `y`       | `Union[npt.NDArray, list]` |    -    | Target vector of shape (n_samples,). Must contain the same number of samples as `X`. |
+| `verbose` | `bool`                     | `True`  | If True, prints training progress information.                                       |
 
 **Returns**
 
@@ -88,9 +88,9 @@ This abstract method is implemented by the class that inherits it.
 
 **Parameters**
 
-| Name | Type                       | Default | Description                                   |
-|------|----------------------------|:-------:|-----------------------------------------------|
-| `X`  | `Union[npt.NDArray, list]` |    -    | Data for which predictions will be generated. |
+| Name | Type                       | Default | Description                                                                |
+|------|----------------------------|:-------:|----------------------------------------------------------------------------|
+| `X`  | `Union[npt.NDArray, list]` |    -    | Input samples. Must have the same number of features used during training. |
 
 **Returns**
 

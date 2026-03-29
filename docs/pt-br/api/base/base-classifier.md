@@ -62,11 +62,11 @@ Este método abstrato é implementado é responsabilidade das classes filhas.
 
 **Parâmetros**
 
-| Nome      | Tipo                       | Padrão | Descrição                                                            |
-|-----------|----------------------------|:------:|----------------------------------------------------------------------|
-| `X`       | `Union[npt.NDArray, list]` |   -    | Dados de entrada utilizados para o treinamento.                      |
-| `y`       | `Union[npt.NDArray, list]` |   -    | Rótulos correspondentes as características dos dados de entrada.     |
-| `verbose` | `bool`                     | `True` | Indica se as mensagens de progresso do treinamento deve ser exibido. |
+| Nome      | Tipo                       | Padrão | Descrição                                                                                                      |
+|-----------|----------------------------|:------:|----------------------------------------------------------------------------------------------------------------|
+| `X`       | `Union[npt.NDArray, list]` |   -    | Amostras de entrada para treinamento. Cada linha corresponde a uma amostra e cada coluna a uma característica. |
+| `y`       | `Union[npt.NDArray, list]` |   -    | Vetor alvo no formato (n_samples,). Deve conter o mesmo número de amostras que X.                              |
+| `verbose` | `bool`                     | `True` | Se True, exibe informações sobre o progresso do treinamento.                                                   |
 
 **Returns**
 
@@ -89,9 +89,9 @@ Este método abstrato é implementado é responsabilidade das classes filhas.
 
 **Parâmetros**
 
-| Nome | Tipo                       | Padrão | Descrição                                         |
-|------|----------------------------|:------:|---------------------------------------------------|
-| `X`  | `Union[npt.NDArray, list]` |   -    | Dados de entrada que serão previstos pelo modelo. |
+| Nome | Tipo                       | Padrão | Descrição                                                                              |
+|------|----------------------------|:------:|----------------------------------------------------------------------------------------|
+| `X`  | `Union[npt.NDArray, list]` |   -    | Amostras de entrada. Deve ter o mesmo número de características usadas no treinamento. |
 
 **Returns**
 

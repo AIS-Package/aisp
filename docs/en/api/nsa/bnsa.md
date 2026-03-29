@@ -121,11 +121,11 @@ Training according to X and y, using the method negative selection method.
 
 **Parameters**
 
-| Name      | Type                       | Default | Description                                                                                       |
-|-----------|----------------------------|:-------:|---------------------------------------------------------------------------------------------------|
-| `X`       | `Union[npt.NDArray, list]` |    -    | Training array, containing the samples and their characteristics, Shape: (n_samples, n_features). |
-| `y`       | `Union[npt.NDArray, list]` |    -    | Array of target classes of `X` with (`n_samples`).                                                |
-| `verbose` | `bool`                     | `True`  | Feedback from detector generation to the user.                                                    |
+| Name      | Type                       | Default | Description                                                                          |
+|-----------|----------------------------|:-------:|--------------------------------------------------------------------------------------|
+| `X`       | `Union[npt.NDArray, list]` |    -    | Training input samples. Each row corresponds to a samples and column to feature.     |
+| `y`       | `Union[npt.NDArray, list]` |    -    | Target vector of shape (n_samples,). Must contain the same number of samples as `X`. |
+| `verbose` | `bool`                     | `True`  | If True, prints training progress information.                                       |
 
 **Returns**
 
@@ -155,9 +155,9 @@ Prediction of classes based on detectors created after training.
 
 **Parameters**
 
-| Name | Type                       | Default | Description                                                     |
-|------|----------------------------|:-------:|-----------------------------------------------------------------|
-| `X`  | `Union[npt.NDArray, list]` |    -    | Array with input samples with  Shape: (`n_samples, n_features`) |
+| Name | Type                       | Default | Description                                                                |
+|------|----------------------------|:-------:|----------------------------------------------------------------------------|
+| `X`  | `Union[npt.NDArray, list]` |    -    | Input samples. Must have the same number of features used during training. |
 
 **Returns**
 
@@ -182,8 +182,7 @@ Prediction of classes based on detectors created after training.
 Complete usage examples are available in the Jupyter Notebooks:
 
 - [**Mushrooms Dataset Example**](../../../../examples/en/classification/BNSA/mushrooms_dataBase_example_en.ipynb)
-- [**Random Dataset Example
-  **](../../../../examples/en/classification/BNSA/example_with_randomly_generated_dataset-en.ipynb)
+- [**Random Dataset Example**](../../../../examples/en/classification/BNSA/example_with_randomly_generated_dataset-en.ipynb)
 
 ---
 
