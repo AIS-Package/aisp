@@ -85,9 +85,6 @@ Seed if it is a non-negative integer; otherwise, None.
 |-----------------|------------------------------------------------------------------------------|
 | `Optional[int]` | The original seed if it is a non-negative integer, or None if it is invalid. |
 
-
-**seed**: `Optional[int]` - The original seed if it is a non-negative integer, or None if it is invalid.
-
 ---
 
 ### sanitize_bounds

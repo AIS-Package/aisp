@@ -64,7 +64,7 @@ def check_array_type(x, name: str = "X") -> npt.NDArray:
     Raises
     ------
     TypeError:
-        If X or y are not ndarrays or a list.
+        If X is not ndarray or a list.
     """
     if isinstance(x, list):
         x = np.array(x)

@@ -73,9 +73,9 @@ Ensure X is a numpy array. Convert from list if needed.
 
 **Raises**
 
-| Exception   | Description                           |
-|-------------|---------------------------------------|
-| `TypeError` | If X or y are not ndarrays or a list. |
+| Exception   | Description                    |
+|-------------|--------------------------------|
+| `TypeError` | If X is not ndarray or a list. |
 
 ---
 
