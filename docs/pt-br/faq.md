@@ -23,7 +23,7 @@ Depende do tipo de problema:
   - RNSA para problemas com dados contínuos.
   - BNSA para problemas com dados binários.
 - **Classificação**: Use `AIRS`, `RNSA` ou `BNSA`.
-  - O `RNSA` e `BNSA`, foram implementados para serem aplicados a classificação multi-classe.
+  - O `RNSA` e `BNSA`, foram implementados para serem aplicados a classificação multiclasse.
   - O `AIRS` é mais robusto para dados com ruídos.
 - **Otimização**: Use `Clonalg`.
   - A implementação pode ser aplicada à otimização (min/max) de funções objetivas.
