@@ -160,22 +160,7 @@ class AIRS(BaseClassifier):
         self.affinity_threshold: float = 0.0
         self.classes: Optional[npt.NDArray] = None
         self._bounds: Optional[npt.NDArray[np.float64]] = None
-
-    def get_params(self, deep=True):
-        return {
-        "n_resources": self.n_resources,
-        "rate_clonal": self.rate_clonal,
-        "rate_mc_init": self.rate_mc_init,
-        "rate_hypermutation": self.rate_hypermutation,
-        "affinity_threshold_scalar": self.affinity_threshold_scalar,
-        "k": self.k,
-        "max_iters": self.max_iters,
-        "resource_amplified": self.resource_amplified,
-        "metric": self.metric,
-        "seed": self.seed,
-        "p": self.p,
-        }
-
+        
     @property
     def cells_memory(self) -> Optional[Dict[str | int, list[BCell]]]:
         """Returns the trained cells memory, organized by class."""
