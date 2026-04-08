@@ -118,7 +118,7 @@ class BNSA(BaseClassifier):
         self.no_label_sample_selection: str = sanitize_param(
             no_label_sample_selection,
             "max_average_difference",
-            lambda x: x == "nearest_difference",
+            lambda x: x == "max_nearest_difference",
         )
 
         self.classes: Optional[npt.NDArray] = None
@@ -308,7 +308,7 @@ class BNSA(BaseClassifier):
             distances = np.mean(line != self._detectors[_class_], axis=1)
             # Assign the label to the class with the greatest distance from
             # the nearest detector.
-            if self.no_label_sample_selection == "nearest_difference":
+            if self.no_label_sample_selection == "max_nearest_difference":
                 class_differences[_class_] = distances.min()
             # Or based on the greatest distance from the average distances of the detectors.
             else:
