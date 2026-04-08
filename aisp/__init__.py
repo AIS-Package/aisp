@@ -26,10 +26,12 @@ For detailed documentation and examples, visit:
 https://ais-package.github.io/docs/intro
 """
 
+from importlib.metadata import version
+
 from . import csa
 from . import ina
 from . import nsa
 
 __author__ = "AISP Development Team"
-__version__ = "0.5.1"
+__version__ = version('aisp')
 __all__ = ["csa", "nsa", "ina"]
