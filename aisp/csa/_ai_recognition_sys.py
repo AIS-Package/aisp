@@ -160,7 +160,7 @@ class AIRS(BaseClassifier):
         self.affinity_threshold: float = 0.0
         self.classes: Optional[npt.NDArray] = None
         self._bounds: Optional[npt.NDArray[np.float64]] = None
-        
+
     @property
     def cells_memory(self) -> Optional[Dict[str | int, list[BCell]]]:
         """Returns the trained cells memory, organized by class."""
