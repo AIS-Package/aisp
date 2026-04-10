@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from inspect import signature
 
+
 class Base:
     """
     Generic base class for models with a common interface.
@@ -46,4 +47,4 @@ class Base:
             key: getattr(self, key)
             for key, _ in signature(self.__init__).parameters.items()
             if key != "self" and not key.startswith("_") and hasattr(self, key)
-            }
+        }

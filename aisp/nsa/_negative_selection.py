@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, Literal, Optional, Union, List
+from typing import Dict, Literal, Optional, Union, List
 
 import numpy as np
 import numpy.typing as npt
@@ -57,20 +57,17 @@ class RNSA(BaseClassifier):
         * ``'default-NSA'``: Default algorithm with fixed radius.
         * ``'V-detector'``: This algorithm is based on the article Ji & Dasgupta (2004) [1]_
             and uses a variable radius for anomaly detection in feature spaces.
-
-    **kwargs : dict
-        Additional parameters. The following arguments are recognized:  
-        * non_self_label : str, default='non-self'
-            This variable stores the label that will be assigned when the data has only one
-            output class, and the sample is classified as not belonging to that class.
-        * cell_bounds : bool, default=False
-            If set to ``True``, this option limits the generation of detectors to the space
-            within the plane between 0 and 1. This means that any detector whose radius exceeds
-            this limit is discarded, this variable is only used in the ``V-detector`` algorithm.
-        * p : float, default=2
-            This parameter stores the value of ``p`` used in the Minkowski distance. The default
-            is ``2``, which represents Euclidean distance. Different values of p lead
-            to different variants of the Minkowski Distance.
+    * non_self_label : str, default='non-self'
+        This variable stores the label that will be assigned when the data has only one
+        output class, and the sample is classified as not belonging to that class.
+    * cell_bounds : bool, default=False
+        If set to ``True``, this option limits the generation of detectors to the space
+        within the plane between 0 and 1. This means that any detector whose radius exceeds
+        this limit is discarded, this variable is only used in the ``V-detector`` algorithm.
+    * p : float, default=2
+        This parameter stores the value of ``p`` used in the Minkowski distance. The default
+        is ``2``, which represents Euclidean distance. Different values of p lead
+        to different variants of the Minkowski Distance.
 
     Attributes
     ----------
@@ -142,7 +139,9 @@ class RNSA(BaseClassifier):
         max_discards: int = 1000,
         seed: Optional[int] = None,
         algorithm: Literal["default-NSA", "V-detector"] = "default-NSA",
-        **kwargs: Any,
+        p: float = 2.0,
+        non_self_label: str = 'non-self',
+        cell_bounds: bool = False
     ):
         self.metric: str = sanitize_choice(
             metric, ["manhattan", "minkowski"], "euclidean"
@@ -160,9 +159,9 @@ class RNSA(BaseClassifier):
         )
         self.max_discards: int = sanitize_param(max_discards, 1000, lambda x: x > 0)
 
-        self.p: np.float64 = np.float64(kwargs.get("p", 2))
-        self.cell_bounds: bool = bool(kwargs.get("cell_bounds", False))
-        self.non_self_label: str = str(kwargs.get("non_self_label", "non-self"))
+        self.p: float = p
+        self.cell_bounds: bool = cell_bounds
+        self.non_self_label: str = non_self_label
 
         self._detectors: Optional[Dict[str | int, list[Detector]]] = None
         self.classes: Optional[npt.NDArray] = None
