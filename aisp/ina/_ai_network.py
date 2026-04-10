@@ -39,7 +39,7 @@ class AiNet(BaseClusterer):
     clustering and data compression tasks. The aiNet algorithm uses principles from immune
     network theory, clonal selection, and affinity maturation to compress high-dimensional
     datasets. [1]_
-    For clustering, the class uses SciPy implementation of the **Minimum Spanning Tree**
+    For clustering, the class uses SciPy's implementation of the **Minimum Spanning Tree**
     (MST) to remove the most distant nodes and separate the groups. [2]_
 
     Parameters
@@ -67,12 +67,12 @@ class AiNet(BaseClusterer):
     metric : {"euclidean", "minkowski", "manhattan"}, default="euclidean"
         Distance metric used to compute similarity between memory cells
     seed : Optional[int]
-        Seed for random generation.
+        Seed for the random generation of detector values. Defaults to None.
     use_mst_clustering : bool, default=True
-        If `True`, performs clustering using the MST. If `False`, clustering is not performed and
-        the predict method raises a ModelNotFittedError.
+        If ``True``, performs clustering with **Minimum Spanning Tree** (MST). If ``False``,
+        does not perform clustering and predict returns None.
     p : float
-        This parameter stores the value of `p` used in the Minkowski distance. The default
+        This parameter stores the value of ``p`` used in the Minkowski distance. The default
         is ``2``, which represents normalized Euclidean distance.\
         Different values of p lead to different variants of the Minkowski Distance.
 
@@ -117,7 +117,7 @@ class AiNet(BaseClusterer):
     >>> ai_net = ai_net.fit(x_train, verbose=True)
     >>> x_test = [
     ...     [0.15, 0.45],  # Expected: label 0
-    ...     [0.85, 0.65],  # Expected: label 1
+    ...     [0.85, 0.65],  # Esperado: label 1
     ... ]
     >>> y_pred = ai_net.predict(x_test)
     >>> print(y_pred)
@@ -217,21 +217,21 @@ class AiNet(BaseClusterer):
         Parameters
         ----------
         X : Union[npt.NDArray, list]
-            Training input samples. Each row corresponds to a samples and column to feature.
+            Input data used for training the model.
         verbose : bool, default=True
-            If True, prints training progress information.
-
-        Returns
-        -------
-        self : AiNet
-            Returns the instance itself.
+            Feedback from the progress bar showing current training interaction details.
 
         Raises
         ------
         TypeError
             If X is not a ndarray or list.
         UnsupportedTypeError
-            If the data type of the feature on X is not supported.
+            If the data type of the vector is not supported.
+
+        Returns
+        -------
+        self : AiNet
+            Returns the instance of the class that implements this method.
         """
         X = self._prepare_features(X)
 
@@ -239,7 +239,7 @@ class AiNet(BaseClusterer):
             total=self.max_iterations,
             postfix="\n",
             disable=not verbose,
-            bar_format="{desc} ┇{bar}┇ {n}/{total} total training iterations",
+            bar_format="{desc} ┇{bar}┇ {n}/{total} total training interactions",
         )
 
         population_p = self._init_population_antibodies()
@@ -284,25 +284,24 @@ class AiNet(BaseClusterer):
         Parameters
         ----------
         X : Union[npt.NDArray, list]
-            Input samples. Must have the same number of features used during training.
-
-        Returns
-        -------
-        predictions : npt.NDArray
-            Predicted cluster labels.
+            Data to predict.
 
         Raises
         ------
         TypeError
             If X is not a ndarray or list.
         ValueError
-            If X contains values other than (0 and 1) or (True and False) when the trained
-            features are of type `"binary-features"`.
+            If the array contains values other than 0 and 1.
         FeatureDimensionMismatch
-            If the number of features (columns) in X does not match the expected number.
+            If the number of features in X does not match the expected number.
         ModelNotFittedError
             If the mode has not yet been adjusted and does not have defined memory cells, it is
-            not able to predictions.
+            not able to predictions
+
+        Returns
+        -------
+        predictions : npt.NDArray
+            Predicted cluster labels, or None if clustering is disabled.
         """
         if (
             not self.use_mst_clustering
@@ -478,6 +477,7 @@ class AiNet(BaseClusterer):
         v : npt.NDArray
             An array of vectors with shape (n_samples, n_features).
 
+
         Returns
         -------
         affinities : npt.NDArray
@@ -563,8 +563,8 @@ class AiNet(BaseClusterer):
         Raises
         ------
         ValueError
-            If the Minimum Spanning Tree (MST) has not yet been created.
-            If Population of antibodies is empty.
+            If the Minimum Spanning Tree (MST) has not yet been created
+            If Population of antibodies is empty
             If MST statistics (mean or std) are not available.
 
         Updates
@@ -616,7 +616,7 @@ class AiNet(BaseClusterer):
         """
         Check the samples, specifying the type, quantity of characteristics, and other parameters.
 
-        This method updates the following attributes:
+        * This method updates the following attributes:
             * ``self._feature_type``
             * ``self.metric`` (only for binary features)
             * ``self._bounds`` (only for ranged features)
@@ -628,17 +628,15 @@ class AiNet(BaseClusterer):
             Training array, containing the samples and their characteristics,
             Shape: (n_samples, n_features).
 
+        Raises
+        ------
+        UnsupportedTypeError
+            If the data type of the vector is not supported.
+
         Returns
         -------
         X : npt.NDArray
             The processed input data.
-
-        Raises
-        ------
-        TypeError:
-            If X is not a ndarray or a list.
-        UnsupportedTypeError
-            If the data type of the vector is not supported.
         """
         X = check_array_type(X)
         self._feature_type = detect_vector_data_type(X)
