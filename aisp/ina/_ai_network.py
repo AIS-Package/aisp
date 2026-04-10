@@ -71,11 +71,10 @@ class AiNet(BaseClusterer):
     use_mst_clustering : bool, default=True
         If ``True``, performs clustering with **Minimum Spanning Tree** (MST). If ``False``,
         does not perform clustering and predict returns None.
-    **kwargs
-        p : float
-            This parameter stores the value of ``p`` used in the Minkowski distance. The default
-            is ``2``, which represents normalized Euclidean distance.\
-            Different values of p lead to different variants of the Minkowski Distance.
+    p : float
+        This parameter stores the value of ``p`` used in the Minkowski distance. The default
+        is ``2``, which represents normalized Euclidean distance.\
+        Different values of p lead to different variants of the Minkowski Distance.
 
     Attributes
     ----------
@@ -139,7 +138,7 @@ class AiNet(BaseClusterer):
         metric: MetricType = "euclidean",
         seed: Optional[int] = None,
         use_mst_clustering: bool = True,
-        **kwargs,
+        p: float = 2.0
     ):
         self.N: int = sanitize_param(N, 50, lambda x: x > 0)
         self.n_clone: int = sanitize_param(n_clone, 10, lambda x: x > 0)
@@ -175,7 +174,7 @@ class AiNet(BaseClusterer):
             metric, ["euclidean", "manhattan", "minkowski"], "euclidean"
         )
 
-        self.p: np.float64 = np.float64(kwargs.get("p", 2.0))
+        self.p: float = p
         self._metric_params = {}
         if self.metric == "minkowski":
             self._metric_params["p"] = self.p

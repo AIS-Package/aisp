@@ -61,12 +61,10 @@ class AIRS(BaseClassifier):
         Distance metric used to compute affinity between cells and samples.
     seed : int
         Seed for the random generation of detector values. Defaults to None.
-
-    **kwargs
-        p : float
-            This parameter stores the value of ``p`` used in the Minkowski distance. The default
-            is ``2``, which represents normalized Euclidean distance.\
-            Different values of p lead to different variants of the Minkowski Distance.
+    p : float
+        This parameter stores the value of ``p`` used in the Minkowski distance. The default
+        is ``2``, which represents normalized Euclidean distance.\
+        Different values of p lead to different variants of the Minkowski Distance.
 
     Attributes
     ----------
@@ -153,7 +151,7 @@ class AIRS(BaseClassifier):
 
         self.metric = sanitize_choice(metric, ["manhattan", "minkowski"], "euclidean")
 
-        self.p = p
+        self.p: float = p
 
         self._cells_memory: Optional[Dict[str | int, list[BCell]]] = None
         self._all_class_cell_vectors: Optional[List[Tuple[Any, np.ndarray]]] = None
