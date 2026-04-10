@@ -1,7 +1,7 @@
 """Base class for parameter introspection compatible with the scikit-learn API."""
-
 from __future__ import annotations
 
+from inspect import signature
 
 class Base:
     """
@@ -43,7 +43,7 @@ class Base:
             Dictionary containing the object's attributes that do not start with "_".
         """
         return {
-            key: value
-            for key, value in self.__dict__.items()
-            if not key.startswith("_")
-        }
+            key: getattr(self, key)
+            for key, _ in signature(self.__init__).parameters.items()
+            if key != "self" and not key.startswith("_") and hasattr(self, key)
+            }

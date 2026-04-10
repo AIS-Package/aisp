@@ -126,7 +126,7 @@ class AIRS(BaseClassifier):
         resource_amplified: float = 1.0,
         metric: MetricType = "euclidean",
         seed: Optional[int] = None,
-        **kwargs,
+        p: float = 2.0,
     ) -> None:
         self.n_resources: float = sanitize_param(n_resources, 10, lambda x: x >= 1)
         self.rate_mc_init: float = sanitize_param(
@@ -153,7 +153,7 @@ class AIRS(BaseClassifier):
 
         self.metric = sanitize_choice(metric, ["manhattan", "minkowski"], "euclidean")
 
-        self.p: np.float64 = np.float64(kwargs.get("p", 2.0))
+        self.p = p
 
         self._cells_memory: Optional[Dict[str | int, list[BCell]]] = None
         self._all_class_cell_vectors: Optional[List[Tuple[Any, np.ndarray]]] = None

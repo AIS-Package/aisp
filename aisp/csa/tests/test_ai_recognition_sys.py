@@ -34,7 +34,7 @@ class TestAIRSBinary:
     def test_fit_and_predict(self, b_airs_data):
         """Should the fit and predict methods of the AIRS class."""
         X, y, seed = b_airs_data
-        model = AIRS(algorithm="binary-features", seed=seed)
+        model = AIRS(seed=seed)
         model.fit(X, y, verbose=False)
         predictions = model.predict(X)
         assert predictions is not None
@@ -44,7 +44,7 @@ class TestAIRSBinary:
     def test_predict_raises_feature_dimension_mismatch(self, b_airs_data):
         """Should raise FeatureDimensionMismatch when prediction input has wrong dimensions."""
         X, y, seed = b_airs_data
-        model = AIRS(algorithm="binary-features", seed=seed)
+        model = AIRS(seed=seed)
         model.fit(X, y, verbose=False)
         x_invalid = np.random.choice([True, False], size=(5, 5))
 
@@ -54,7 +54,7 @@ class TestAIRSBinary:
     def test_score_range(self, b_airs_data):
         """Score should return a value between 0 and 1."""
         X, y, seed = b_airs_data
-        model = AIRS(algorithm="binary-features", seed=seed)
+        model = AIRS(seed=seed)
         model.fit(X, y, verbose=False)
         score = model.score(X, y)
         assert isinstance(score, float)
