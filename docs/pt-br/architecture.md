@@ -14,7 +14,7 @@ auxiliar contribuições e manutenção.
 A estrutura do pacote é modular, com separação clara entre as famílias de algoritmos e modulos de suporte para
 reutilização de componente pelos algoritmos.
 
-## Organização dos modulos
+## Organização dos módulos
 
 A hierarquia do pacote esta divida em 3 núcleos principais: base, utils e famílias de algoritmos.  
 O núcleo base concentra nas abstrações e modelagens imunológicas, servindo como a fundação para os algoritmos.
@@ -29,23 +29,48 @@ As principais famílias de algoritmos são:
 - Immune Network Algorithms (INA)
 - Negative Selection Algorithms (NSA)
 
-Representação visual:
+### Detalhamento dos módulos
 
-```mermaid
-flowchart TB
-    AISP
+1. Nucleo do pacote (`aisp.base`)  
+    O modulo base é a fundação do pacote, dividido em:
+   1. `base.core`: Contem as classes abstratas que implementa o gerenciamento dos parâmetros e a lógica base para compatibilidade.
+      - `Base` (Privada): Classe abstrata, no qual é estendida pelas demais classes **base** listadas abaixo.
+      - `BaseClassifier`: Classe abstrata para algoritmos de classificação.
+      - `BaseClusterer`: Classe abstrata para algoritmos de clusterização.
+      - `BaseOptimizer`: Classe abstrata para algoritmos de otimização.
+   2. `base.immune`: Define as células e processos do domínio imunoinspirados.
+      - `cell`: Representações de células e anticorpos do sistema imunológico.
+      - `mutation`: Funções de mutação das célular.
+      - `population`: Criação de populações de células imunes.
+2. Utilitários (`aisp.utils`)  
+    Modulo de suporte com funções auxiliares reutilizáveis no pacote.
+3. Famílias de algoritmos  
+   Implementações dos algoritmos imunoinspirados, seus modulos foram separados por famílias com a classificação
+   apresentada em Brabazon et al. [^1]
 
-    subgraph families [Famílias de Algoritmos]
-        DTA[dta]
-        CSA[csa]
-        INA[ina]
-        NSA[nsa]
-    end
+    ```mermaid
+    flowchart TD
+        AIS[Artificial Immune Systems]
+        NSA[Negative/Positive Selection]
+        CSA[Clonal Expansion and Selection]
+        INA[Network Theory Algorithms]
+        DT[Danger Theory]
+        
+        AIS --> NSA
+        AIS --> CSA
+        AIS --> INA
+        AIS --> DT
+    ```
+   **Fonte: *Adaptado de Brabazon et al. [^1], Fig. 16.1.***
+ 
+    Sendo definidos, no pacote como:
+    - `aisp.csa`: Módulo com algoritmos baseados na seleção clonal.
+    - `aisp.dta`: Módulo com algoritmos baseados na teoria do perigo. **(Ainda não implementado)**
+    - `aisp.ina`: Módulo com algoritmos baseados na teoria da rede imunológica.
+    - `aisp.nsa`: Módulo com algoritmos baseados na seleção negativa.
 
-    AISP --> DTA
-    AISP --> CSA
-    AISP --> INA
-    AISP --> NSA    
-    AISP --> BASE[base]
-    AISP --> UTILS[utils]
-```
+## Referências
+
+[^1]: BRABAZON, Anthony; O'NEILL, Michael; MCGARRAGHY, Seán. Natural Computing
+    Algorithms. [S. l.]: Springer Berlin Heidelberg, 2015. DOI 10.1007/978-3-662-43631-8.
+    Disponível em: https://dx.doi.org/10.1007/978-3-662-43631-8.
