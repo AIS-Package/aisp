@@ -121,7 +121,7 @@ print(y_pred)
 | `algorithm`      | `{"default-NSA", "V-detector"}`           | `'default-NSA'` | Define a versão do algoritmo.                                                                                                                                                                                                                                        |
 | `non_self_label` | `str`                                     |  `'non-self'`   | Rótulo atribuído quando há apenas uma classe de saída e a amostra não pertence a essa classe.                                                                                                                                                                        |
 | `cell_bounds`    | `bool`                                    |     `False`     | Se definido como True, esta opção limita a geração dos detectores ao espaço do plano compreendido entre 0 e 1. Isso significa que qualquer detector cujo raio ultrapasse esse limite é descartado, e esta variável é usada exclusivamente no algoritmo `V-detector`. |
-| `p`              | `bool`                                    |      `2.0`      | Valor de `p` utilizado na distância de Minkowski.                                                                                                                                                                                                                    |
+| `p`              | `float`                                   |      `2.0`      | Valor de `p` utilizado na distância de Minkowski.                                                                                                                                                                                                                    |
 
 ## Atributos
 

@@ -86,7 +86,7 @@ Output:
 | Nome                        | Tipo    |    Default    | Descrição                                                                                                                                                      |
 |-----------------------------|---------|:-------------:|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `n_resources`               | `float` |     `10`      | Quantidade total de recursos disponíveis.                                                                                                                      |
-| `rate_clonal`               | `float` |     `10`      | Número máximo de clones possíveis de uma classe. Esta quantidade é multiplicada por (estímulo da célula * rate_hypermutation) para definir o número de clones. |
+| `rate_clonal`               | `int`   |     `10`      | Número máximo de clones possíveis de uma classe. Esta quantidade é multiplicada por (estímulo da célula * rate_hypermutation) para definir o número de clones. |
 | `rate_mc_init`              | `float` |     `0.2`     | Porcentagem de amostras usadas para inicializar a população de células de memória.                                                                             |
 | `rate_hypermutation`        | `float` |    `0.75`     | Taxa de clones mutados derivada de rate_clonal como um fator escalar.                                                                                          |
 | `affinity_threshold_scalar` | `float` |    `0.75`     | Limiar de afinidade normalizado.                                                                                                                               |
