@@ -120,7 +120,7 @@ class Clonalg(BaseOptimizer):
         mode: Literal["min", "max"] = "min",
         seed: Optional[int] = None,
     ):
-        super().__init__()
+        super().__init__(affinity_function)
         self.problem_size = sanitize_param(problem_size, 1, lambda x: x > 0)
         self.N: int = sanitize_param(N, 50, lambda x: x > 0)
         self.rate_clonal: int = sanitize_param(rate_clonal, 10, lambda x: x > 0)
@@ -135,7 +135,6 @@ class Clonalg(BaseOptimizer):
         self.selection_size: int = sanitize_param(
             selection_size, 5, lambda x: x > 0
         )
-        self._affinity_function = affinity_function
         self.feature_type: FeatureTypeAll = feature_type
 
         self._bounds: Optional[Dict] = None
@@ -200,7 +199,7 @@ class Clonalg(BaseOptimizer):
 
         t = 1
         antibodies = [
-            Antibody(antibody, self.affinity_function(antibody))
+            Antibody(antibody, self._affinity_function(antibody))
             for antibody in self._init_population_antibodies()
         ]
         best_cost = None
@@ -222,7 +221,7 @@ class Clonalg(BaseOptimizer):
             clones = self._clone_and_hypermutation(p_select)
 
             p_rand = [
-                Antibody(antibody, self.affinity_function(antibody))
+                Antibody(antibody, self._affinity_function(antibody))
                 for antibody in self._diversity_introduction()
             ]
             antibodies = p_select
@@ -278,31 +277,6 @@ class Clonalg(BaseOptimizer):
             return heapq.nlargest(n, antibodies)
 
         return heapq.nsmallest(n, antibodies)
-
-    def affinity_function(self, solution: npt.NDArray) -> np.float64:
-        """
-        Evaluate the affinity of a candidate cell.
-
-        Parameters
-        ----------
-        solution : npt.NDArray
-            Candidate solution to evaluate.
-
-        Returns
-        -------
-        affinity : np.float64
-            Affinity value associated with the given cell.
-
-        Raises
-        ------
-        NotImplementedError
-            If no affinity function has been provided.
-        """
-        if not callable(self._affinity_function):
-            raise NotImplementedError(
-                "No affinity function to evaluate the candidate cell was provided."
-            )
-        return np.float64(self._affinity_function(solution))
 
     def _init_population_antibodies(self) -> npt.NDArray:
         """Initialize the antibody set of the population randomly.
