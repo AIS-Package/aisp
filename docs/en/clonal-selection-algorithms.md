@@ -24,15 +24,15 @@ Clonal selection and expansion can be applied in different contexts, such as:
 
 ## Package implementation
 
-### Sistema Imunológico Artificial de Reconhecimento ([AIRS](./api/csa/airs.md))
+### Artificial Immune Recognition System ([AIRS](./api/csa/airs.md))
 
 Classification algorithm inspired by the clonal selection process.
 
-### Algoritmo de Seleção Clonal ([CLONALG](./api/csa/clonalg.md))
+### Clonal Selection Algorithm ([CLONALG](./api/csa/clonalg.md))
 
 Optimization algorithm inspired by the biological process of clonal selection of the immune system.
 
-## Referências
+## References
 
 [^1]: BRABAZON, Anthony; O'NEILL, Michael; MCGARRAGHY, Seán. Natural Computing
     Algorithms. [S. l.]: Springer Berlin Heidelberg, 2015. DOI 10.1007/978-3-662-43631-8.

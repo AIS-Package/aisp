@@ -24,18 +24,18 @@ Negative Selection can be applied in different contexts, such as:
 
 ## Package implementation
 
-### Algoritmo seleção negativa binária ([BNSA](./api/nsa/bnsa.md))
+### Binary Negative Selection Algorithm ([BNSA](./api/nsa/bnsa.md))
 
 The binary algorithm adapted for multiple classes in this project is based on the version proposed by
 Forrest et al. (1994)[^2], originally developed for computer security.
 
-### Algoritmo seleção negativa de real valor ([RNSA](./api/nsa/rnsa.md))
+### Real-Valued Negative Selection Algorithm ([RNSA](./api/nsa/rnsa.md))
 
 This algorithm has two different versions: one based on the canonical version [^1] and another with variable
 radius detectors.[^3] Both are adapted to work with multiple classes and have methods for predicting data
 present in the non-self region of all detectors and classes.
 
-## Referências
+## References
 
 [^1]: BRABAZON, Anthony; O'NEILL, Michael; MCGARRAGHY, Seán. Natural Computing
     Algorithms. [S. l.]: Springer Berlin Heidelberg, 2015. DOI 10.1007/978-3-662-43631-8.

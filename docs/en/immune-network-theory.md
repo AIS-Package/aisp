@@ -25,12 +25,12 @@ The Artificial Immune Network can be applied in different contexts, such as:
 
 ## Package implementation
 
-### Rede Imunológica Artificial para Agrupamento e Compressão ([AiNet](./api/ina/ai-net.md))
+### Artificial Immune Network for clustering and compression ([AiNet](./api/ina/ai-net.md))
 
 AiNet is a clustering algorithm based on immune network theory that uses clonal selection and affinity maturation
 to compress data and identify groups [^2].
 
-## Referências
+## References
 
 [^1]: BRABAZON, Anthony; O'NEILL, Michael; MCGARRAGHY, Seán. Natural Computing
     Algorithms. [S. l.]: Springer Berlin Heidelberg, 2015. DOI 10.1007/978-3-662-43631-8.
