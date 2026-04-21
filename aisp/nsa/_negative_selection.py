@@ -179,7 +179,7 @@ class RNSA(BaseClassifier):
         verbose: bool = True,
     ) -> RNSA:
         """
-        Perform training according to X and y, using the negative selection method (NegativeSelect).
+        Perform training according to X and y, using the negative selection method (RNSA).
 
         Parameters
         ----------
