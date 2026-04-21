@@ -10,7 +10,6 @@ keywords:
     - computação natural
 ---
 
-
 # Seleção e expansão clonal
 
 Os Algoritmos baseados na seleção e expansão clonal são inspirados no processo de proliferação de anticorpos

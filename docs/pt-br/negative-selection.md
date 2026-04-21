@@ -16,6 +16,8 @@ Os algoritmos de **seleção negativa** inspiram-se no processo em que o sistema
 conhecidas também por linfócitos-T, no qual as tornam aptas na detecção dos não-próprios. Assim, o Algoritmo de
 seleção negativa (NSA), utilizam-se de hiperesferas simbolizando os detectores em um espaço de dados N-dimensional[^1].
 
+---
+
 A Seleção Negativa pode ser aplicada em diferentes contextos, tais como:
 - **Detecção de anomalias**
 - **Classificação**
