@@ -45,11 +45,11 @@ class BaseClassifier(ABC, Base):
         Parameters
         ----------
         X : Union[npt.NDArray, list]
-            Input data used for training the model.
+            Training input samples. Each row corresponds to a samples and column to feature.
         y : Union[npt.NDArray, list]
-            Corresponding labels or target values for the input data.
+            Target vector of shape (n_samples,). Must contain the same number of samples as `X`.
         verbose : bool, default=True
-            Flag to enable or disable detailed output during training.
+            If True, prints training progress information.
 
         Returns
         -------
@@ -67,7 +67,7 @@ class BaseClassifier(ABC, Base):
         Parameters
         ----------
         X : Union[npt.NDArray, list]
-            Input data for which predictions will be generated.
+            Input samples. Must have the same number of features used during training.
 
         Returns
         -------
@@ -83,8 +83,8 @@ class BaseClassifier(ABC, Base):
         """
         Score function calculates forecast accuracy.
 
-        Details
-        -------
+        Notes
+        -----
         This function performs the prediction of X and checks how many elements are equal
         between vector y and y_predicted. This function was added for compatibility with some
         scikit-learn functions.
@@ -116,11 +116,11 @@ class BaseClassifier(ABC, Base):
         Parameters
         ----------
         y : npt.NDArray
-            Receives a y ``n_samples`` array with the output classes of the ``X`` sample array.
+            Receives a y `n_samples` array with the output classes of the `X` sample array.
 
         Returns
         -------
         indices_by_class : dict
-            A dictionary with the list of array positions(``y``), with the classes as key.
+            A dictionary with the list of array positions(`y`), with the classes as key.
         """
         return slice_index_list_by_class(self.classes, y)
