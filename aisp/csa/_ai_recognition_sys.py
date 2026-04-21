@@ -41,7 +41,7 @@ class AIRS(BaseClassifier):
     ----------
     n_resources : float, default=10
         Total amount of available resources.
-    rate_clonal : float, default=10
+    rate_clonal : int, default=10
         Maximum number of possible clones of a class. This quantity is multiplied by (
         cell_stimulus * rate_hypermutation) to define the number of clones.
     rate_mc_init : float, default=0.2
