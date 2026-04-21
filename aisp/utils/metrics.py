@@ -28,6 +28,15 @@ def accuracy_score(
     ------
     ValueError
         If `y_true` or `y_pred` are empty or if they do not have the same length.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from aisp.utils.metrics import accuracy_score
+    >>> y_true = [1, 1, 1, 1, 1]
+    >>> y_pred = [1, 1, 1, 0, 0]
+    >>> print(accuracy_score(y_true, y_pred))
+    0.6
     """
     n = len(y_true)
     if n == 0:

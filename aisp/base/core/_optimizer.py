@@ -160,7 +160,9 @@ class BaseOptimizer(ABC, Base):
     def affinity_function(self, solution: Any) -> float:
         """Evaluate the affinity of a candidate solution.
 
-        This abstract method must be implemented by the subclass to define the problem-specific.
+        This method must be implemented according to the specific optimization problem, defining
+        how the solution will be evaluated. The returned value should represent the quality of
+        the evaluated solution.
 
         Parameters
         ----------
@@ -186,10 +188,10 @@ class BaseOptimizer(ABC, Base):
         Raises
         ------
         TypeError
-            If `function` is not callable.
+            If the provided `function` is not callable.
         AttributeError
-            If `alias` is protected and cannot be modified. Or if `alias` does not exist in the
-            optimizer class.
+            If `alias` is protected and cannot be modified, or does not exist in the
+            class.
         """
         if not callable(function):
             raise TypeError(f"Expected a function for '{alias}', got {type(function).__name__}")
@@ -202,7 +204,10 @@ class BaseOptimizer(ABC, Base):
         setattr(self, alias, function)
 
     def reset(self):
-        """Reset the object's internal state, clearing history and resetting values."""
+        """Reset the object's internal state.
+
+        Clears the optimization history and resetting values.
+        """
         self._cost_history = []
         self._solution_history = []
         self._best_solution = None

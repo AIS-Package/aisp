@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, Literal, Optional, Union, List
+from typing import Dict, Literal, Optional, Union, List
 
 import numpy as np
 import numpy.typing as npt
@@ -40,7 +40,7 @@ class RNSA(BaseClassifier):
     r : float, default=0.05
         Radius of the detector.
     r_s : float, default=0.0001
-        rₛ Radius of the ``X`` own samples.
+        rₛ Radius of the `X` own samples.
     k : int, default=1
         Number of neighbors near the randomly generated detectors to perform the distance average
         calculation.
@@ -57,20 +57,18 @@ class RNSA(BaseClassifier):
         * ``'default-NSA'``: Default algorithm with fixed radius.
         * ``'V-detector'``: This algorithm is based on the article Ji & Dasgupta (2004) [1]_
             and uses a variable radius for anomaly detection in feature spaces.
-
-    **kwargs : dict
-        Additional parameters. The following arguments are recognized:  
-        * non_self_label : str, default='non-self'
-            This variable stores the label that will be assigned when the data has only one
-            output class, and the sample is classified as not belonging to that class.
-        * cell_bounds : bool, default=False
-            If set to ``True``, this option limits the generation of detectors to the space
-            within the plane between 0 and 1. This means that any detector whose radius exceeds
-            this limit is discarded, this variable is only used in the ``V-detector`` algorithm.
-        * p : float, default=2
-            This parameter stores the value of ``p`` used in the Minkowski distance. The default
-            is ``2``, which represents Euclidean distance. Different values of p lead
-            to different variants of the Minkowski Distance.
+    Additional parameters. The following arguments are recognized:
+    * non_self_label : str, default='non-self'
+        This variable stores the label that will be assigned when the data has only one
+        output class, and the sample is classified as not belonging to that class.
+    * cell_bounds : bool, default=False
+        If set to ``True``, this option limits the generation of detectors to the space
+        within the plane between 0 and 1. This means that any detector whose radius exceeds
+        this limit is discarded, this variable is only used in the ``V-detector`` algorithm.
+    * p : float, default=2
+        This parameter stores the value of `p` used in the Minkowski distance. The default
+        is ``2``, which represents Euclidean distance. Different values of p lead
+        to different variants of the Minkowski Distance.
 
     Attributes
     ----------
@@ -142,7 +140,9 @@ class RNSA(BaseClassifier):
         max_discards: int = 1000,
         seed: Optional[int] = None,
         algorithm: Literal["default-NSA", "V-detector"] = "default-NSA",
-        **kwargs: Any,
+        p: float = 2.0,
+        non_self_label: str = 'non-self',
+        cell_bounds: bool = False
     ):
         self.metric: str = sanitize_choice(
             metric, ["manhattan", "minkowski"], "euclidean"
@@ -160,9 +160,9 @@ class RNSA(BaseClassifier):
         )
         self.max_discards: int = sanitize_param(max_discards, 1000, lambda x: x > 0)
 
-        self.p: np.float64 = np.float64(kwargs.get("p", 2))
-        self.cell_bounds: bool = bool(kwargs.get("cell_bounds", False))
-        self.non_self_label: str = str(kwargs.get("non_self_label", "non-self"))
+        self.p: float = p
+        self.cell_bounds: bool = cell_bounds
+        self.non_self_label: str = non_self_label
 
         self._detectors: Optional[Dict[str | int, list[Detector]]] = None
         self.classes: Optional[npt.NDArray] = None
@@ -179,32 +179,31 @@ class RNSA(BaseClassifier):
         verbose: bool = True,
     ) -> RNSA:
         """
-        Perform training according to X and y, using the negative selection method (NegativeSelect).
+        Perform training according to X and y, using the negative selection method (RNSA).
 
         Parameters
         ----------
         X : Union[npt.NDArray, list]
-            Training array, containing the samples and their characteristics.
-            Shape: ``(n_samples, n_features)``
+            Training input samples. Each row corresponds to a samples and column to feature.
         y : Union[npt.NDArray, list]
-            Array of target classes of ``X`` with ``n_samples`` (lines).
-        verbose: bool, default=True
-            Feedback from detector generation to the user.
-
-        Raises
-        ------
-        TypeError
-            If X or y are not ndarrays or have incompatible shapes.
-        MaxDiscardsReachedError
-            The maximum number of detector discards was reached during maturation. Check the
-            defined radius value and consider reducing it.
-        ValueError
-          If the array X fall outside the interval (0, 1).
+            Target vector of shape (n_samples,). Must contain the same number of samples as `X`.
+        verbose : bool, default=True
+            If True, prints training progress information.
 
         Returns
         -------
         self : RNSA
             Returns the instance itself.
+
+        Raises
+        ------
+        TypeError
+            If X or y are not ndarrays or have incompatible shapes.
+        ValueError
+          If the array X fall outside the interval (0.0, 1.0).
+        MaxDiscardsReachedError
+            The maximum number of detector discards was reached during maturation. Check the
+            defined radius value and consider reducing it.
         """
         X = check_array_type(X)
         y = check_array_type(y, "y")
@@ -268,25 +267,25 @@ class RNSA(BaseClassifier):
         Parameters
         ----------
         X : Union[npt.NDArray, list]
-            Array with input samples with Shape: (n_samples, n_features)
+            Input samples. Must have the same number of features used during training.
+
+        Returns
+        -------
+        C : npt.NDArray
+            A ndarray of the form `C` (n_samples), containing the predicted classes
+            for `X`.
 
         Raises
         ------
         TypeError
             If X is not a ndarray or list.
+        ValueError
+          If the array X fall outside the interval (0.0, 1.0).
         FeatureDimensionMismatch
             If the number of features in X does not match the expected number.
         ModelNotFittedError
             If the mode has not yet been adjusted and does not have defined detectors or
             classes, it is not able to predictions
-        ValueError
-          If the array X fall outside the interval (0, 1).
-
-        Returns
-        -------
-        C : npt.NDArray
-            A ndarray of the form ``C`` (n_samples), containing the predicted classes
-            for ``X``.
         """
         if self._detectors is None or self.classes is None:
             raise ModelNotFittedError("RNSA")

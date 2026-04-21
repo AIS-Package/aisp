@@ -41,7 +41,7 @@ class AIRS(BaseClassifier):
     ----------
     n_resources : float, default=10
         Total amount of available resources.
-    rate_clonal : float, default=10
+    rate_clonal : int, default=10
         Maximum number of possible clones of a class. This quantity is multiplied by (
         cell_stimulus * rate_hypermutation) to define the number of clones.
     rate_mc_init : float, default=0.2
@@ -53,20 +53,17 @@ class AIRS(BaseClassifier):
     k : int, default=3
         The number of K nearest neighbors that will be used to choose a label in the prediction.
     max_iters : int, default=100
-        Maximum number of interactions in the refinement process of the ARB set exposed to aᵢ.
+        Maximum number of iterations in the refinement process of the ARB set exposed to aᵢ.
     resource_amplified : float, default=1.0
         Resource consumption amplifier is multiplied with the incentive to subtract resources.
-        Defaults to 1.0 without amplification.
     metric : {"euclidean", "minkowski", "manhattan"}, default="euclidean"
         Distance metric used to compute affinity between cells and samples.
     seed : int
-        Seed for the random generation of detector values. Defaults to None.
-
-    **kwargs
-        p : float
-            This parameter stores the value of ``p`` used in the Minkowski distance. The default
-            is ``2``, which represents normalized Euclidean distance.\
-            Different values of p lead to different variants of the Minkowski Distance.
+        Seed for random generation.
+    p : float
+        This parameter stores the value of `p` used in the Minkowski distance. The default
+        is ``2``, which represents normalized Euclidean distance.\
+        Different values of p lead to different variants of the Minkowski Distance.
 
     Attributes
     ----------
@@ -107,7 +104,7 @@ class AIRS(BaseClassifier):
     >>> airs = airs.fit(x_train, y_train, verbose=False)
     >>> x_test = [
     ...     [0.15, 0.45],  # Expected: Class 0
-    ...     [0.85, 0.65],  # Esperado: Classe 1
+    ...     [0.85, 0.65],  # Esperado: Class 1
     ... ]
     >>> y_pred = airs.predict(x_test)
     >>> print(y_pred)
@@ -126,7 +123,7 @@ class AIRS(BaseClassifier):
         resource_amplified: float = 1.0,
         metric: MetricType = "euclidean",
         seed: Optional[int] = None,
-        **kwargs,
+        p: float = 2.0,
     ) -> None:
         self.n_resources: float = sanitize_param(n_resources, 10, lambda x: x >= 1)
         self.rate_mc_init: float = sanitize_param(
@@ -153,7 +150,7 @@ class AIRS(BaseClassifier):
 
         self.metric = sanitize_choice(metric, ["manhattan", "minkowski"], "euclidean")
 
-        self.p: np.float64 = np.float64(kwargs.get("p", 2.0))
+        self.p: float = p
 
         self._cells_memory: Optional[Dict[str | int, list[BCell]]] = None
         self._all_class_cell_vectors: Optional[List[Tuple[Any, np.ndarray]]] = None
@@ -175,23 +172,27 @@ class AIRS(BaseClassifier):
         """
         Fit the model to the training data using the AIRS.
 
-        The function ``fit(...)``, performs the training according to ``X`` and ``y``, using the
+        The function ``fit(...)``, performs the training according to `X` and `y`, using the
         method AIRS.
 
         Parameters
         ----------
         X : Union[npt.NDArray, list]
-            Training array, containing the samples and their characteristics,
-            Shape: (n_samples, n_features).
+            Training input samples. Each row corresponds to a samples and column to feature.
         y : Union[npt.NDArray, list]
-            Array of target classes of ``X`` with (``n_samples``).
-        verbose : bool
-            Feedback on which sample aᵢ the memory cells are being generated.
+            Target vector of shape (n_samples,). Must contain the same number of samples as `X`.
+        verbose : bool, default=True
+            If True, prints training progress information.
 
         Returns
         -------
         AIRS
             Returns the instance itself.
+
+        Raises
+        ------
+        TypeError
+            If X or y are not ndarrays or have incompatible shapes.
         """
         X = self._prepare_features(X)
         y = check_array_type(y, "y")
@@ -258,7 +259,13 @@ class AIRS(BaseClassifier):
         Parameters
         ----------
         X : Union[npt.NDArray, list]
-            Array with input samples with  Shape: (``n_samples, n_features``)
+            Input samples. Must have the same number of features used during training.
+
+        Returns
+        -------
+        C : npt.NDArray
+            An ndarray of the form `C` (`n_samples`), containing the predicted classes for
+            `X`.
 
         Raises
         ------
@@ -269,12 +276,6 @@ class AIRS(BaseClassifier):
         ModelNotFittedError
             If the mode has not yet been adjusted and does not have defined memory cells, it is
             not able to predictions
-
-        Returns
-        -------
-        C : npt.NDArray
-            An ndarray of the form ``C`` (``n_samples``), containing the predicted classes for
-            ``X``.
         """
         if self._all_class_cell_vectors is None:
             raise ModelNotFittedError("AIRS")
@@ -524,6 +525,13 @@ class AIRS(BaseClassifier):
         -------
         X : npt.NDArray
             The processed input data.
+
+        Raises
+        ------
+        TypeError:
+            If X is not a ndarray or a list.
+        UnsupportedTypeError
+            If the data type of the vector is not supported.
         """
         X = check_array_type(X)
         self._feature_type = detect_vector_data_type(X)

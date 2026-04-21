@@ -118,7 +118,7 @@ class BNSA(BaseClassifier):
         self.no_label_sample_selection: str = sanitize_param(
             no_label_sample_selection,
             "max_average_difference",
-            lambda x: x == "nearest_difference",
+            lambda x: x == "max_nearest_difference",
         )
 
         self.classes: Optional[npt.NDArray] = None
@@ -141,27 +141,26 @@ class BNSA(BaseClassifier):
         Parameters
         ----------
         X : Union[npt.NDArray, list]
-            Training array, containing the samples and their characteristics.
-            Shape: (``n_samples, n_features``)
+            Training input samples. Each row corresponds to a samples and column to feature.
         y : Union[npt.NDArray, list]
-            Array of target classes of ``X`` with ``n_samples`` (lines).
+            Target vector of shape (n_samples,). Must contain the same number of samples as `X`.
         verbose : bool, default=True
-            Feedback from detector generation to the user.
+            If True, prints training progress information.
+
+        Returns
+        -------
+        self : BNSA
+             Returns the instance itself.
 
         Raises
         ------
         TypeError
             If X or y are not ndarrays or have incompatible shapes.
         ValueError
-            If the array contains values other than 0 and 1.
+            If the array X contains any values other than (0 and 1) or (True and False).
         MaxDiscardsReachedError
-            The maximum number of detector discards was reached during maturation. Check the
+            If the maximum number of detector discards was reached during maturation. Check the
             defined radius value and consider reducing it.
-
-        Returns
-        -------
-        self : BNSA
-             Returns the instance itself.
         """
         X = check_array_type(X)
         y = check_array_type(y, "y")
@@ -223,7 +222,13 @@ class BNSA(BaseClassifier):
         Parameters
         ----------
         X : Union[npt.NDArray, list]
-            Array with input samples with Shape: (``n_samples, n_features``)
+            Input samples. Must have the same number of features used during training.
+
+        Returns
+        -------
+        c : npt.NDArray
+            A ndarray of the form `C` (`n_samples`), containing the predicted classes for
+            `X`.
 
         Raises
         ------
@@ -232,16 +237,10 @@ class BNSA(BaseClassifier):
         ValueError
             If the array contains values other than 0 and 1.
         FeatureDimensionMismatch
-            If the number of features in X does not match the expected number.
+            If the number of features (columns) in X does not match the expected number.
         ModelNotFittedError
             If the mode has not yet been adjusted and does not have defined detectors or
             classes, it is not able to predictions
-
-        Returns
-        -------
-        c : npt.NDArray
-            A ndarray of the form ``C`` (``n_samples``), containing the predicted classes for
-            ``X``.
         """
         if (
             self._detectors is None
@@ -308,7 +307,7 @@ class BNSA(BaseClassifier):
             distances = np.mean(line != self._detectors[_class_], axis=1)
             # Assign the label to the class with the greatest distance from
             # the nearest detector.
-            if self.no_label_sample_selection == "nearest_difference":
+            if self.no_label_sample_selection == "max_nearest_difference":
                 class_differences[_class_] = distances.min()
             # Or based on the greatest distance from the average distances of the detectors.
             else:

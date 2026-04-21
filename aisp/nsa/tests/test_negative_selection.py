@@ -103,7 +103,7 @@ class TestRNSA:
     def test_predict_raises_feature_dimension_mismatch(self, rnsa_data):
         """Should raise FeatureDimensionMismatch when prediction input has wrong dimensions."""
         X, y, seed = rnsa_data
-        model = RNSA(N=1000, aff_thresh=0.2, seed=seed)
+        model = RNSA(N=1000, seed=seed)
         model.fit(X, y, verbose=False)
         x_invalid = np.random.rand(5, 5)
         with pytest.raises(FeatureDimensionMismatch):

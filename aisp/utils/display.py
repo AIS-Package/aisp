@@ -35,7 +35,7 @@ class TableFormatter:
     ----------
     headers : Mapping[str, int]
         Mapping of column names to their respective widths, in the format
-        {column_name: column_width}.
+        `{column_name: column_width}`.
     """
 
     def __init__(self, headers: Mapping[str, int]) -> None:
@@ -108,7 +108,7 @@ class TableFormatter:
         ----------
         values : Mapping[str, Union[str, int, float]]
             Dictionary with values for each column, in the format
-            {column_name: value}.
+            `{column_name: value}`.
 
         Returns
         -------
@@ -154,15 +154,13 @@ class ProgressTable(TableFormatter):
     Parameters
     ----------
     headers : Mapping[str, int]
-        Mapping {column_name: column_width}.
+        Mapping `{column_name: column_width}`.
     verbose : bool, default=True
         If False, prints nothing to the terminal.
     """
 
     def __init__(self, headers: Mapping[str, int], verbose: bool = True) -> None:
         super().__init__(headers)
-        if not headers or not isinstance(headers, Mapping):
-            raise ValueError("'headers' must be a non-empty dictionary.")
         self.verbose: bool = verbose
         self.headers: Mapping[str, int] = headers
         self._ascii_only = not _supports_box_drawing()

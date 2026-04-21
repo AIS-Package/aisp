@@ -9,9 +9,13 @@ class TestBase:
 
     def setup_method(self):
         """Set up a Base instance with example attributes before each test."""
-        self.obj = Base()
-        self.obj.alpha = 1
-        self.obj.beta = 2
+        class BaseFixture(Base):
+            """Fixture class for Base tests."""
+            def __init__(self, alpha=1, beta=2):
+                self.alpha = alpha
+                self.beta = beta
+
+        self.obj = BaseFixture()
 
     def test_set_and_get_params_basic(self):
         """Test setting parameters using set_params and retrieving them with get_params."""
@@ -28,8 +32,7 @@ class TestBase:
 
         params = self.obj.get_params()
         assert "_private" not in params
-        assert "public" in params
-        assert params["public"] == "ok"
+        assert "public" not in params
 
     def test_set_params_updates_existing(self):
         """Test that set_params updates existing attributes correctly."""
