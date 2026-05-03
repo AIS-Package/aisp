@@ -1,11 +1,14 @@
 """Artificial Immune Network for Optimization (Opt-AiNet)."""
-
-from typing import Any, Optional, Callable, Literal, Dict
+import heapq
+from typing import Any, Optional, Callable, Literal, Dict, List
 
 import numpy as np
 import numpy.typing as npt
 
 from ..base import BaseOptimizer
+from ..base.immune.cell import Antibody
+from ..base.immune.populations import generate_random_antibodies
+from ..utils.display import ProgressTable
 from ..utils.random import set_seed_numba
 from ..utils.sanitizers import sanitize_param, sanitize_seed, sanitize_bounds
 from ..utils.types import FeatureTypeAll
@@ -61,6 +64,7 @@ class OptAiNet(BaseOptimizer):
         seed: Optional[int] = None
     ):
         super().__init__(affinity_function)
+        self.population = None
         self.problem_size = sanitize_param(problem_size, 1, lambda x: x > 0)
         self.N: int = sanitize_param(N, 50, lambda x: x > 0)
         self.rate_clonal: int = sanitize_param(rate_clonal, 10, lambda x: x > 0)
@@ -85,6 +89,8 @@ class OptAiNet(BaseOptimizer):
             np.random.seed(self.seed)
             set_seed_numba(self.seed)
 
+        self._pop_avg = None
+
     @property
     def bounds(self) -> Optional[Dict]:
         """Getter for the bounds attribute."""
@@ -102,7 +108,12 @@ class OptAiNet(BaseOptimizer):
             self._bounds = None
             self._bounds_extend_cache = None
 
-    def optimize(self, max_iters: int = 50, n_iter_no_change=10, verbose: bool = True) -> Any:
+    def optimize(
+        self,
+        max_iters: int = 50,
+        n_iter_no_change=10,
+        verbose: bool = True
+    ) -> List[Antibody]:
         """Execute the optimization process and return the population.
 
         Parameters
@@ -118,4 +129,86 @@ class OptAiNet(BaseOptimizer):
         -------
         population : any
         """
-        return []
+
+        self.population = [
+            Antibody(cell, self._affinity_function(cell))
+            for cell in self._init_population_antibodies()
+        ]
+        t = 1
+        best_cost = None
+        stop = 0
+        progress = ProgressTable(
+            {
+                "Iteration": 11,
+                f"Best Affinity ({self.mode})": 25,
+                "Worse Affinity": 20,
+                "Pop Size": 10,
+                "Stagnation": 17,
+                "avg": 10,
+            },
+            verbose,
+        )
+        while t <= max_iters:
+            best_antibody = self._select_top_antibody()
+            best_cost = best_antibody.affinity
+            self._record_best(best_antibody[0].affinity, best_antibody[0].vector)
+
+            self._pop_avg = self._average_affinity(self.population)
+
+            if stop == n_iter_no_change:
+                break
+
+            t += 1
+
+        progress.finish()
+        return self.population
+
+    def _init_population_antibodies(self) -> npt.NDArray:
+        """Initialize the antibody set of the population randomly.
+
+        Returns
+        -------
+        antibodies : npt.NDArray
+            List of initialized antibodies.
+        """
+        return generate_random_antibodies(
+            self.N,
+            self.problem_size,
+            self.feature_type,
+            self._bounds_extend_cache
+        )
+
+    def _diversity_introduction(self):
+        """Introduce diversity into the antibody population.
+
+        Returns
+        -------
+        new_antibodies : npt.NDArray
+            Array of new random antibodies for diversity introduction.
+        """
+        return generate_random_antibodies(
+            self.n_diversity_injection,
+            self.problem_size,
+            self.feature_type,
+            self._bounds_extend_cache,
+        )
+
+    def _select_top_antibody(
+        self,
+    ) -> Antibody:
+        """Select the antibodies with the highest or lowest values, depending on the mode.
+
+        Returns
+        -------
+        selected : list[Antibody]
+            List containing the `n` antibodies selected according to the defined min
+            or max criterion.
+        """
+        if self.mode == "max":
+            return heapq.nlargest(1, self.population)[0]
+
+        return heapq.nsmallest(1, self.population)[0]
+
+    @staticmethod
+    def _average_affinity(population: list[Antibody]) -> float:
+        return np.fromiter((p.affinity for p in population), dtype=float).mean()
