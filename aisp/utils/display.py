@@ -119,8 +119,8 @@ class TableFormatter:
         row = (
             border
             + border.join(
-                f"{values.get(h, ''):^{self.headers[h]}}" for h in self.headers
-            )
+            f"{values.get(h, ''):^{self.headers[h]}}" for h in self.headers
+        )
             + border
         )
 
@@ -191,4 +191,34 @@ class ProgressTable(TableFormatter):
             return
 
         print(self.get_bottom())
+        print(f"Total time: {time.perf_counter() - self._start:.6f} seconds")
+
+
+class ProgressBar:
+    """Display a console progress bar to track an algorithm's progress.
+    """
+
+    def __init__(self, total: int, suffix: str, verbose: bool = True) -> None:
+        self.verbose: bool = verbose
+        self.suffix = suffix
+
+        self._total = total
+        self._actual = 0
+        self._ascii_only = not _supports_box_drawing()
+        if self.verbose:
+            self._start = time.perf_counter()
+
+    def update(self, quant: int = 1):
+        """Update the progress bar by quantity.
+        """
+        self._actual += quant
+        if not self.verbose:
+            return
+
+    def finish(self) -> None:
+        """End the progress display, printing total time.
+        """
+        if not self.verbose:
+            return
+
         print(f"Total time: {time.perf_counter() - self._start:.6f} seconds")
