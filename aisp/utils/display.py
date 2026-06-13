@@ -198,15 +198,32 @@ class ProgressBar:
     """Display a console progress bar to track an algorithm's progress.
     """
 
-    def __init__(self, total: int, suffix: str, verbose: bool = True) -> None:
+    def __init__(self, total: int, suffix: str = '', description: str = '', verbose: bool = True) -> None:
         self.verbose: bool = verbose
         self.suffix = suffix
 
         self._total = total
         self._actual = 0
         self._ascii_only = not _supports_box_drawing()
+        self._description = description
         if self.verbose:
             self._start = time.perf_counter()
+
+    def _print_bar(self) -> None:
+        """Print the progress bar."""
+        print("\r\033[K", end="")
+        print(self._description, self._get_bar(), self.suffix, end='')
+
+    def _get_bar(self) -> str:
+        slot_quant = 5
+        filled = int((self._actual / self._total) * slot_quant)
+        bar = '#' * filled + ' ' * (slot_quant - filled)
+        return f'┇{bar}┇ {self._actual} / {self._total}'
+
+    def set_description(self, description: str):
+        """
+        """
+        self._description = description
 
     def update(self, quant: int = 1):
         """Update the progress bar by quantity.
@@ -215,10 +232,12 @@ class ProgressBar:
         if not self.verbose:
             return
 
+        self._print_bar()
+
     def finish(self) -> None:
         """End the progress display, printing total time.
         """
         if not self.verbose:
             return
 
-        print(f"Total time: {time.perf_counter() - self._start:.6f} seconds")
+        print(f"\nTotal time: {time.perf_counter() - self._start:.6f} seconds")
