@@ -119,8 +119,8 @@ class TableFormatter:
         row = (
             border
             + border.join(
-            f"{values.get(h, ''):^{self.headers[h]}}" for h in self.headers
-        )
+                f"{values.get(h, ''):^{self.headers[h]}}" for h in self.headers
+            )
             + border
         )
 
@@ -198,7 +198,9 @@ class ProgressBar:
     """Display a console progress bar to track an algorithm's progress.
     """
 
-    def __init__(self, total: int, suffix: str = '', description: str = '', verbose: bool = True) -> None:
+    def __init__(
+        self, total: int, suffix: str = '', description: str = '', verbose: bool = True
+        ) -> None:
         self.verbose: bool = verbose
         self.suffix = suffix
 
@@ -211,8 +213,10 @@ class ProgressBar:
 
     def _print_bar(self) -> None:
         """Print the progress bar."""
-        print("\r\033[K", end="")
-        print(self._description, self._get_bar(), self.suffix, end='')
+        sys.stdout.write(
+            f"\r\033[K{self._description} {self._get_bar()} {self.suffix}"
+        )
+        sys.stdout.flush()
 
     def _get_bar(self) -> str:
         slot_quant = 5
