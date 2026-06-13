@@ -199,10 +199,16 @@ class ProgressBar:
     """
 
     def __init__(
-        self, total: int, suffix: str = '', description: str = '', verbose: bool = True
-        ) -> None:
+        self,
+        total: int,
+        suffix: str = '',
+        description: str = '',
+        slots: int = 10,
+        verbose: bool = True
+    ) -> None:
         self.verbose: bool = verbose
         self.suffix = suffix
+        self.slots = slots
 
         self._total = total
         self._actual = 0
@@ -219,9 +225,12 @@ class ProgressBar:
         sys.stdout.flush()
 
     def _get_bar(self) -> str:
-        slot_quant = 5
+        slot_quant = self.slots
+
+        box = '#' if self._ascii_only else '█'
+
         filled = int((self._actual / self._total) * slot_quant)
-        bar = '#' * filled + ' ' * (slot_quant - filled)
+        bar = box * filled + ' ' * (slot_quant - filled)
         return f'┇{bar}┇ {self._actual} / {self._total}'
 
     def set_description(self, description: str):
@@ -244,4 +253,5 @@ class ProgressBar:
         if not self.verbose:
             return
 
+        self._print_bar()
         print(f"\nTotal time: {time.perf_counter() - self._start:.6f} seconds")
