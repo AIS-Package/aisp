@@ -183,7 +183,7 @@ class BNSA(BaseClassifier):
         for _class_ in self.classes:
             valid_detectors_set: list = []
             discard_count: int = 0
-            progress.set_description_str(
+            progress.set_description(
                 f"Generating the detectors for the {_class_} class:"
             )
             x_class = X[sample_index[_class_]]

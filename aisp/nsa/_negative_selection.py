@@ -225,7 +225,7 @@ class RNSA(BaseClassifier):
             discard_count = 0
             x_class = X[sample_index[_class_]]
 
-            progress.set_description_str(
+            progress.set_description(
                 f"Generating the detectors for the {_class_} class:"
             )
 
