@@ -232,7 +232,6 @@ class ProgressBar:
 
     def _print_bar(self) -> None:
         """Print the current progress bar."""
-
         sys.stdout.write(
             f"\r\033[K{self._description} {self._get_bar()} {self.suffix}"
         )
@@ -240,14 +239,13 @@ class ProgressBar:
 
     def _get_bar(self) -> str:
         """Build string representation of the progress bar."""
-
         slot_quant = self.slots
 
-        box = '#' if self._ascii_only else '█'
+        fill_char = '#' if self._ascii_only else '█'
 
         filled = int((self._actual / self._total) * slot_quant)
-        bar = box * filled + ' ' * (slot_quant - filled)
-        return f'┇{bar}┇ {self._actual} / {self._total}'
+        progress_bar = fill_char * filled + ' ' * (slot_quant - filled)
+        return f'┇{progress_bar}┇ {self._actual} / {self._total}'
 
     def set_description(self, description: str) -> None:
         """Update the description before the progress bar.
@@ -275,7 +273,6 @@ class ProgressBar:
 
     def finish(self) -> None:
         """End the progress display and print the total elapsed time."""
-
         if not self.verbose:
             return
 
