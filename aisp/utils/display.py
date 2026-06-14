@@ -213,9 +213,7 @@ class ProgressBar:
     Raises
     ------
     ValueError
-        If total is negative
-    ZeroDivisionError
-        If total is zero.
+        If the total or slots is less than or equal to zero.
     """
 
     def __init__(
@@ -228,16 +226,16 @@ class ProgressBar:
     ) -> None:
         self.verbose: bool = verbose
         self.suffix: str = suffix
+        if slots <= 0:
+            raise ValueError("'total' must be greater than zero.")
         self.slots: int = slots
 
-        if total == 0:
-            raise ZeroDivisionError("'total' cannot be zero.")
-        if total < 0:
-            raise ValueError("'total' cannot be negative.")
+        if total <= 0:
+            raise ValueError("'total' must be greater than zero.")
 
         self._total: int = total
-        self._actual: int = 0
-        self._ascii_only: bool = not _supports_box_drawing()
+        self._current: int = 0
+        self._fill_char: str = '█' if _supports_box_drawing() else '#'
         self._description: str = description
         if self.verbose:
             self._start: float = time.perf_counter()
@@ -253,11 +251,9 @@ class ProgressBar:
         """Build string representation of the progress bar."""
         slot_quant = self.slots
 
-        fill_char = '#' if self._ascii_only else '█'
-
-        filled = int((self._actual / self._total) * slot_quant)
-        progress_bar = fill_char * filled + ' ' * (slot_quant - filled)
-        return f'┇{progress_bar}┇ {self._actual} / {self._total}'
+        filled = int((self._current / self._total) * slot_quant)
+        progress_bar = self._fill_char * filled + ' ' * (slot_quant - filled)
+        return f'┇{progress_bar}┇ {self._current} / {self._total}'
 
     def set_description(self, description: str) -> None:
         """Update the description before the progress bar.
@@ -269,15 +265,23 @@ class ProgressBar:
         """
         self._description = description
 
-    def update(self, quant: int = 1) -> None:
+    def update(self, increment: int = 1) -> None:
         """Increment the progress bar.
 
         Parameters
         ----------
-        quant : int, default=1
-            Number of completed iterations to add to the current progress..
+        increment : int, default=1
+            Number of completed iterations to add to the current progress.
+
+        Raises
+        ------
+        ValueError
+            If the increment is negative.
         """
-        self._actual += quant
+        if increment < 0:
+            raise ValueError("'increment' must be non-negative.")
+
+        self._current = min(self._current + increment, self._total)
         if not self.verbose:
             return
 
