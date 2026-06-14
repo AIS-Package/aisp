@@ -6,12 +6,12 @@ from typing import Dict, Literal, Optional, Union, List
 
 import numpy as np
 import numpy.typing as npt
-from tqdm import tqdm
 
 from ._base import check_detector_rnsa_validity
 from ..base import BaseClassifier
 from ..base.immune.cell import Detector
 from ..exceptions import MaxDiscardsReachedError, ModelNotFittedError
+from ..utils.display import ProgressBar
 from ..utils.distance import (
     min_distance_to_class_vectors,
     get_metric_code,
@@ -215,11 +215,10 @@ class RNSA(BaseClassifier):
         list_detectors_by_class = {}
         sample_index = self._slice_index_list_by_class(y)
 
-        progress = tqdm(
-            total=int(self.N * (len(self.classes))),
-            bar_format="{desc} ┇{bar}┇ {n}/{total} detectors",
-            postfix="\n",
-            disable=not verbose,
+        progress = ProgressBar(
+            int(self.N * (len(self.classes))),
+            "detectors",
+            verbose=verbose
         )
         for _class_ in self.classes:
             valid_detectors_set: List[Detector] = []
@@ -255,7 +254,7 @@ class RNSA(BaseClassifier):
             f"\033[92m✔ Non-self detectors for classes ({', '.join(map(str, self.classes))}) "
             f"successfully generated\033[0m"
         )
-        progress.close()
+        progress.finish()
 
         self._detectors = list_detectors_by_class
         return self

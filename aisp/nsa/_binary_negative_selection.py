@@ -6,11 +6,11 @@ from typing import Dict, Literal, Optional, Union
 
 import numpy as np
 import numpy.typing as npt
-from tqdm import tqdm
 
 from ._base import check_detector_bnsa_validity, bnsa_class_prediction
 from ..base import BaseClassifier
 from ..exceptions import MaxDiscardsReachedError, ModelNotFittedError
+from ..utils.display import ProgressBar
 from ..utils.sanitizers import sanitize_seed, sanitize_param
 from ..utils.validation import (
     check_array_type,
@@ -174,11 +174,10 @@ class BNSA(BaseClassifier):
         list_detectors_by_class: dict = {}
         sample_index: dict = self._slice_index_list_by_class(y)
 
-        progress = tqdm(
-            total=int(self.N * (len(self.classes))),
-            bar_format="{desc} ┇{bar}┇ {n}/{total} detectors",
-            postfix="\n",
-            disable=not verbose,
+        progress = ProgressBar(
+            int(self.N * (len(self.classes))),
+            "detectors",
+            verbose=verbose,
         )
 
         for _class_ in self.classes:
@@ -208,7 +207,7 @@ class BNSA(BaseClassifier):
             f"\033[92m✔ Non-self detectors for classes ({', '.join(map(str, self.classes))}) "
             f"successfully generated\033[0m"
         )
-        progress.close()
+        progress.finish()
         self._detectors = list_detectors_by_class
         self._detectors_stack = np.array(
             [np.stack(self._detectors[class_name]) for class_name in self.classes]
