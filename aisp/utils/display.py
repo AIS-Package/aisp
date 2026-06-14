@@ -73,7 +73,7 @@ class TableFormatter:
             f"{nl}{left}{middle.join(line * w for w in self.headers.values())}{right}"
         )
 
-    def get_header(self):
+    def get_header(self) -> str:
         """
         Generate the table header, including the top border, column headings, and separator line.
 
@@ -100,7 +100,7 @@ class TableFormatter:
 
         return top + titles + sep
 
-    def get_row(self, values: Mapping[str, Union[str, int, float]]):
+    def get_row(self, values: Mapping[str, Union[str, int, float]]) -> str:
         """
         Generate a formatted row for the table data.
 
@@ -113,7 +113,7 @@ class TableFormatter:
         Returns
         -------
         str
-        Formatted string of the table row.
+            Formatted string of the table row.
         """
         border = "|" if self._ascii_only else "│"
         row = (
@@ -126,7 +126,7 @@ class TableFormatter:
 
         return row
 
-    def get_bottom(self, new_line: bool = False):
+    def get_bottom(self, new_line: bool = False) -> str:
         """
         Generate the table's bottom border.
 
