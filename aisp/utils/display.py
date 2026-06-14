@@ -196,6 +196,19 @@ class ProgressTable(TableFormatter):
 
 class ProgressBar:
     """Display a console progress bar to track an algorithm's progress.
+
+    Parameters
+    ----------
+    total : int
+        Total number of iterations.
+    suffix : str, default=''
+        Optional text displayed after the progress bar.
+    description : str, default=''
+        Optional text displayed before the progress bar.
+    slots : int, default=10
+        Number of character slots used to represent the bar.
+    verbose : bool, default=True
+        If False, prints nothing to the terminal.
     """
 
     def __init__(
@@ -207,24 +220,27 @@ class ProgressBar:
         verbose: bool = True
     ) -> None:
         self.verbose: bool = verbose
-        self.suffix = suffix
-        self.slots = slots
+        self.suffix: str = suffix
+        self.slots: int = slots
 
-        self._total = total
-        self._actual = 0
-        self._ascii_only = not _supports_box_drawing()
-        self._description = description
+        self._total: int = total
+        self._actual: int = 0
+        self._ascii_only: bool = not _supports_box_drawing()
+        self._description: str = description
         if self.verbose:
-            self._start = time.perf_counter()
+            self._start: float = time.perf_counter()
 
     def _print_bar(self) -> None:
-        """Print the progress bar."""
+        """Print the current progress bar."""
+
         sys.stdout.write(
             f"\r\033[K{self._description} {self._get_bar()} {self.suffix}"
         )
         sys.stdout.flush()
 
     def _get_bar(self) -> str:
+        """Build string representation of the progress bar."""
+
         slot_quant = self.slots
 
         box = '#' if self._ascii_only else '█'
@@ -233,13 +249,23 @@ class ProgressBar:
         bar = box * filled + ' ' * (slot_quant - filled)
         return f'┇{bar}┇ {self._actual} / {self._total}'
 
-    def set_description(self, description: str):
-        """
+    def set_description(self, description: str) -> None:
+        """Update the description before the progress bar.
+
+        Parameters
+        ----------
+        description : str
+            New description.
         """
         self._description = description
 
-    def update(self, quant: int = 1):
-        """Update the progress bar by quantity.
+    def update(self, quant: int = 1) -> None:
+        """Increment the progress bar.
+
+        Parameters
+        ----------
+        quant : int, default=1
+            Number of completed iterations to add to the current progress..
         """
         self._actual += quant
         if not self.verbose:
@@ -248,8 +274,8 @@ class ProgressBar:
         self._print_bar()
 
     def finish(self) -> None:
-        """End the progress display, printing total time.
-        """
+        """End the progress display and print the total elapsed time."""
+
         if not self.verbose:
             return
 
