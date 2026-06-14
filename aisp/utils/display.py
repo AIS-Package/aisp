@@ -209,6 +209,13 @@ class ProgressBar:
         Number of character slots used to represent the bar.
     verbose : bool, default=True
         If False, prints nothing to the terminal.
+
+    Raises
+    ------
+    ValueError
+        If total is negative
+    ZeroDivisionError
+        If total is zero.
     """
 
     def __init__(
@@ -222,6 +229,11 @@ class ProgressBar:
         self.verbose: bool = verbose
         self.suffix: str = suffix
         self.slots: int = slots
+
+        if total == 0:
+            raise ZeroDivisionError("'total' cannot be zero.")
+        if total < 0:
+            raise ValueError("'total' cannot be negative.")
 
         self._total: int = total
         self._actual: int = 0
