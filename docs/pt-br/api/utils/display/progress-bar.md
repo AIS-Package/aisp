@@ -3,7 +3,6 @@ id: progress-bar
 sidebar_label: ProgressBar
 ---
 
-
 # ProgressBar
 
 Exibe uma barra de progresso no console para acompanhar a execução de um algoritmo.
@@ -22,10 +21,10 @@ Esta classe monta uma barra de progresso no formato `{description}{bar*slots}{su
 | Nome          | Tipo   | Padrão | Descrição                                              |
 |---------------|--------|:------:|--------------------------------------------------------|
 | `total`       | `int`  |   -    | Número total de interações.                            |
-| `suffix`      | `str`  |   -    | Texto opcional exibido apos a barra de progresso.      |
-| `description` | `str`  |   -    | Texto opcional exibido antes a barra de progresso.     |
-| `slots`       | `int`  |   -    | Numero de caracteres para formar a barra de progresso. |
-| `verbose`     | `bool` |   -    | Se False, não imprime nada no terminal.                |
+| `suffix`      | `str`  |  `''`  | Texto opcional exibido apos a barra de progresso.      |
+| `description` | `str`  |  `''`  | Texto opcional exibido antes a barra de progresso.     |
+| `slots`       | `int`  |  `10`  | Numero de caracteres para formar a barra de progresso. |
+| `verbose`     | `bool` | `True` | Se False, não imprime nada no terminal.                |
 
 **Exceções**
 
@@ -48,9 +47,9 @@ Atualize o texto da descrição antes da barra de progresso.
 
 **Parâmetros**
 
-| Nome          | Tipo  | Padrão | Description    |
-|---------------|-------|:------:|----------------|
-| `description` | `str` |   -    | Nova descrição |
+| Nome          | Tipo  | Padrão | Description     |
+|---------------|-------|:------:|-----------------|
+| `description` | `str` |   -    | Nova descrição. |
 
 ### update
 

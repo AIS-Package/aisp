@@ -197,6 +197,10 @@ class ProgressTable(TableFormatter):
 class ProgressBar:
     """Display a console progress bar to track an algorithm's progress.
 
+    This class builds a progress bar in the format `{description}{bar*slots}{suffix}` and,
+    when calling the `finish` method, print the final progress bar along with the total time
+    elapsed since the class was instance.
+
     Parameters
     ----------
     total : int
