@@ -224,19 +224,23 @@ class ProgressBar:
         slots: int = 10,
         verbose: bool = True
     ) -> None:
-        self.verbose: bool = verbose
-        self.suffix: str = suffix
         if slots <= 0:
-            raise ValueError("'total' must be greater than zero.")
-        self.slots: int = slots
-
+            raise ValueError("'slots' must be greater than zero.")
         if total <= 0:
             raise ValueError("'total' must be greater than zero.")
 
+        self.verbose: bool = verbose
+        self.suffix: str = suffix
+        self.slots: int = slots
+
+        self._fill_char, self._edge_char = (
+            ('█', '┇') if _supports_box_drawing() else ('#', '|')
+        )
+
         self._total: int = total
         self._current: int = 0
-        self._fill_char: str = '█' if _supports_box_drawing() else '#'
         self._description: str = description
+
         if self.verbose:
             self._start: float = time.perf_counter()
 
@@ -250,10 +254,10 @@ class ProgressBar:
     def _get_bar(self) -> str:
         """Build string representation of the progress bar."""
         slot_quant = self.slots
-
+        edge = self._edge_char
         filled = int((self._current / self._total) * slot_quant)
         progress_bar = self._fill_char * filled + ' ' * (slot_quant - filled)
-        return f'┇{progress_bar}┇ {self._current} / {self._total}'
+        return f'{edge}{progress_bar}{edge} {self._current} / {self._total}'
 
     def set_description(self, description: str) -> None:
         """Update the description before the progress bar.
