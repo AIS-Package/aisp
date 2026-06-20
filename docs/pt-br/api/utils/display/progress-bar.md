@@ -37,31 +37,50 @@ Esta classe monta uma barra de progresso no formato `{description}{bar*slots}{su
 
 ## Public Methods
 
-### method_name
+### set_description
 
 ```python
-def method_name(
-    param_1: type,
-) -> type:
+def set_description(self, description: str) -> None:
     ...
 ```
 
-Description.
+Atualize o texto da descrição antes da barra de progresso.
 
 **Parameters**
 
-| Name      | Type   | Default | Description               |
-|-----------|--------|:-------:|---------------------------|
-| `param_1` | `Type` |    -    | Description of the param. |
+| Name          | Type  | Default | Description    |
+|---------------|-------|:-------:|----------------|
+| `description` | `str` |    -    | Nova descrição |
 
-**Returns**
+### update
 
-| Type         | Description                |
-|--------------|----------------------------|
-| `ReturnType` | Description of the return. |
+```python
+def update(self, increment: int = 1) -> None:
+    ...
+```
+
+Atualiza a barra de progresso, incrementando seu valor pela quantidade informada.
+
+**Parameters**
+
+| Name        | Type  | Default | Description                                                       |
+|-------------|-------|:-------:|-------------------------------------------------------------------|
+| `increment` | `int` |   `1`   | Número de iterações concluídas para adicionar ao progresso atual. |
+
 
 **Raises**
 
-| Exception | Description               |
-|-----------|---------------------------|
-| `Error`   | Description of the raise. |
+| Exception    | Description                    |
+|--------------|--------------------------------|
+| `ValueError` | Se o `increment` for negativo. |
+
+### finish
+
+```python
+def finish(self) -> None:
+    ...
+```
+
+Encerre a exibição da barra de progresso e imprima o tempo total.
+
+
