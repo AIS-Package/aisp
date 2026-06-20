@@ -81,5 +81,3 @@ def finish(self) -> None:
 ```
 
 End the progress display and print the total elapsed time.
-
-

@@ -81,5 +81,3 @@ def finish(self) -> None:
 ```
 
 Encerre a exibição da barra de progresso e imprima o tempo total.
-
-
