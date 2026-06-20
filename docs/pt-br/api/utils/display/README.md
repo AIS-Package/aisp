@@ -21,3 +21,4 @@ Funções utilitárias para exibir informações de algoritmos.
 |------------------------------------------|---------------------------------------------------------------------------------|
 | [`TableFormatter`](./table-formatter.md) | Formata dados em tabelas para exibição no console.                              |
 | [`ProgressTable`](./progress-table.md)   | Exibe uma tabela formatada no console para acompanhar o progresso do algoritmo. |
+| [`ProgressBar`](./progress-bar.md)       | Exibe uma tabela formatada no console para acompanhar o progresso do algoritmo. |
