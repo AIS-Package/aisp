@@ -21,3 +21,4 @@ Utility functions for displaying algorithm information.
 |------------------------------------------|-----------------------------------------------------------------------------|
 | [`TableFormatter`](./table-formatter.md) | Format tabular data into strings for display in the console.                |
 | [`ProgressTable`](./progress-table.md)   | Display a formatted table in the console to track the algorithm's progress. |
+| [`ProgressTable`](./progress-table.md)   | Display a console progress bar to track an algorithm's progress.            |

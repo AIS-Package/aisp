@@ -9,12 +9,12 @@ from typing import List, Optional, Dict, Tuple, Any, Union
 import numpy as np
 import numpy.typing as npt
 from scipy.spatial.distance import pdist
-from tqdm import tqdm
 
 from ._artificial_recognition_ball import _ARB
 from ..base import BaseClassifier
 from ..base.immune.cell import BCell
 from ..exceptions import ModelNotFittedError
+from ..utils.display import ProgressBar
 from ..utils.distance import hamming, compute_metric_distance, get_metric_code
 from ..utils.multiclass import predict_knn_affinity
 from ..utils.random import set_seed_numba
@@ -200,15 +200,14 @@ class AIRS(BaseClassifier):
 
         self.classes = np.unique(y)
         sample_index = self._slice_index_list_by_class(y)
-        progress = tqdm(
-            total=len(y),
-            postfix="\n",
-            disable=not verbose,
-            bar_format="{desc} ┇{bar}┇ {n}/{total} memory cells for each aᵢ",
+        progress = ProgressBar(
+            len(y),
+            "memory cells for each aᵢ",
+            verbose=verbose,
         )
         pool_cells_classes = {}
         for _class_ in self.classes:
-            progress.set_description_str(
+            progress.set_description(
                 f"Generating the memory cells for the {_class_} class:"
             )
 
@@ -238,9 +237,9 @@ class AIRS(BaseClassifier):
 
         progress.set_description(
             f"\033[92m✔ Set of memory cells for classes ({', '.join(map(str, self.classes))}) "
-            f"successfully generated\033[0m"
+            f"successfully generated\033[0m",
         )
-        progress.close()
+        progress.finish()
         self._cells_memory = pool_cells_classes
         self._all_class_cell_vectors = [
             (class_name, cell.vector)

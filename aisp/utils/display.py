@@ -73,7 +73,7 @@ class TableFormatter:
             f"{nl}{left}{middle.join(line * w for w in self.headers.values())}{right}"
         )
 
-    def get_header(self):
+    def get_header(self) -> str:
         """
         Generate the table header, including the top border, column headings, and separator line.
 
@@ -100,7 +100,7 @@ class TableFormatter:
 
         return top + titles + sep
 
-    def get_row(self, values: Mapping[str, Union[str, int, float]]):
+    def get_row(self, values: Mapping[str, Union[str, int, float]]) -> str:
         """
         Generate a formatted row for the table data.
 
@@ -113,7 +113,7 @@ class TableFormatter:
         Returns
         -------
         str
-        Formatted string of the table row.
+            Formatted string of the table row.
         """
         border = "|" if self._ascii_only else "│"
         row = (
@@ -126,7 +126,7 @@ class TableFormatter:
 
         return row
 
-    def get_bottom(self, new_line: bool = False):
+    def get_bottom(self, new_line: bool = False) -> str:
         """
         Generate the table's bottom border.
 
@@ -192,3 +192,113 @@ class ProgressTable(TableFormatter):
 
         print(self.get_bottom())
         print(f"Total time: {time.perf_counter() - self._start:.6f} seconds")
+
+
+class ProgressBar:
+    """Display a console progress bar to track an algorithm's progress.
+
+    This class builds a progress bar in the format `{description}{bar*slots}{suffix}` and,
+    when calling the `finish` method, print the final progress bar along with the total time
+    elapsed since the class was instance.
+
+    Parameters
+    ----------
+    total : int
+        Total number of iterations.
+    suffix : str, default=''
+        Optional text displayed after the progress bar.
+    description : str, default=''
+        Optional text displayed before the progress bar.
+    slots : int, default=10
+        Number of character slots used to represent the bar.
+    verbose : bool, default=True
+        If False, prints nothing to the terminal.
+
+    Raises
+    ------
+    ValueError
+        If the total or slots is less than or equal to zero.
+    """
+
+    def __init__(
+        self,
+        total: int,
+        suffix: str = '',
+        description: str = '',
+        slots: int = 10,
+        verbose: bool = True
+    ) -> None:
+        if slots <= 0:
+            raise ValueError("'slots' must be greater than zero.")
+        if total <= 0:
+            raise ValueError("'total' must be greater than zero.")
+
+        self.verbose: bool = verbose
+        self.suffix: str = suffix
+        self.slots: int = slots
+
+        self._fill_char, self._edge_char = (
+            ('█', '┇') if _supports_box_drawing() else ('#', '|')
+        )
+
+        self._total: int = total
+        self._current: int = 0
+        self._description: str = description
+
+        if self.verbose:
+            self._start: float = time.perf_counter()
+
+    def _print_bar(self) -> None:
+        """Print the current progress bar."""
+        sys.stdout.write(
+            f"\r\033[K{self._description} {self._get_bar()} {self.suffix}"
+        )
+        sys.stdout.flush()
+
+    def _get_bar(self) -> str:
+        """Build string representation of the progress bar."""
+        slot_quant = self.slots
+        edge = self._edge_char
+        filled = int((self._current / self._total) * slot_quant)
+        progress_bar = self._fill_char * filled + ' ' * (slot_quant - filled)
+        return f'{edge}{progress_bar}{edge} {self._current} / {self._total}'
+
+    def set_description(self, description: str) -> None:
+        """Update the description before the progress bar.
+
+        Parameters
+        ----------
+        description : str
+            New description.
+        """
+        self._description = description
+
+    def update(self, increment: int = 1) -> None:
+        """Increment the progress bar.
+
+        Parameters
+        ----------
+        increment : int, default=1
+            Number of completed iterations to add to the current progress.
+
+        Raises
+        ------
+        ValueError
+            If the increment is negative.
+        """
+        if increment < 0:
+            raise ValueError("'increment' must be non-negative.")
+
+        self._current = min(self._current + increment, self._total)
+        if not self.verbose:
+            return
+
+        self._print_bar()
+
+    def finish(self) -> None:
+        """End the progress display and print the total elapsed time."""
+        if not self.verbose:
+            return
+
+        self._print_bar()
+        print(f"\nTotal time: {time.perf_counter() - self._start:.6f} seconds")

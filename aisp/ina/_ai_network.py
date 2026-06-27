@@ -8,7 +8,6 @@ import numpy as np
 import numpy.typing as npt
 from scipy.sparse.csgraph import minimum_spanning_tree, connected_components
 from scipy.spatial.distance import squareform, pdist, cdist
-from tqdm import tqdm
 
 from ..base import BaseClusterer
 from ..base.immune.cell import Cell
@@ -19,6 +18,7 @@ from ..base.immune.mutation import (
 )
 from ..base.immune.populations import generate_random_antibodies
 from ..exceptions import ModelNotFittedError
+from ..utils.display import ProgressBar
 from ..utils.distance import hamming, compute_metric_distance, get_metric_code
 from ..utils.multiclass import predict_knn_affinity
 from ..utils.random import set_seed_numba
@@ -235,11 +235,10 @@ class AiNet(BaseClusterer):
         """
         X = self._prepare_features(X)
 
-        progress = tqdm(
-            total=self.max_iterations,
-            postfix="\n",
-            disable=not verbose,
-            bar_format="{desc} ┇{bar}┇ {n}/{total} total training iterations",
+        progress = ProgressBar(
+            self.max_iterations,
+            "total training iterations",
+            verbose=verbose
         )
 
         population_p = self._init_population_antibodies()
@@ -273,7 +272,7 @@ class AiNet(BaseClusterer):
 
         parts.append(f"Antibody population size: {len(self._population_antibodies)}")
         progress.set_description(f"\033[92m{' | '.join(parts)}\033[0m")
-        progress.close()
+        progress.finish()
 
         return self
 

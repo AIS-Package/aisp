@@ -45,6 +45,6 @@ class Base:
         """
         return {
             key: getattr(self, key)
-            for key, _ in signature(self.__init__).parameters.items()
+            for key, _ in signature(type(self).__init__).parameters.items()
             if key != "self" and not key.startswith("_") and hasattr(self, key)
         }
