@@ -26,12 +26,17 @@ For detailed documentation and examples, visit:
 https://ais-package.github.io/docs/intro
 """
 
-from importlib.metadata import version
+from importlib.metadata import version, PackageNotFoundError
 
 from . import csa
 from . import ina
 from . import nsa
 
+try:
+    __version__ = version('aisp')
+except PackageNotFoundError:
+    __version__ = '0.dev'
+
 __author__ = "AISP Development Team"
-__version__ = version('aisp')
+
 __all__ = ["csa", "nsa", "ina"]
