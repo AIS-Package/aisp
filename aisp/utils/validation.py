@@ -1,5 +1,4 @@
 """Contains functions responsible for validating data types."""
-
 import numpy as np
 import numpy.typing as npt
 
@@ -160,3 +159,32 @@ def check_value_range(
         raise ValueError(
             f"{name} must contain oly values within [{min_value}, {max_value}]."
         )
+
+
+def positive(arg):
+    if arg <= 0:
+        raise ValueError('Expected a positive value.')
+    return arg
+
+
+def non_negative(arg):
+    if arg < 0:
+        raise ValueError('Expected a positive value.')
+    return arg
+
+
+def between(low, high):
+    def validator(arg):
+        if not low <= arg <= high:
+            raise ValueError(f"Expected {low} <= value <= {high}.")
+
+    return validator
+
+
+def choice(choices: list):
+    def validator(arg):
+        if arg not in choices:
+            raise ValueError(f"Expected one of {choices}.")
+        return arg
+
+    return validator
