@@ -1,4 +1,7 @@
 """Contains functions responsible for validating data types."""
+from numbers import Real
+from typing import Collection, Callable, Any
+
 import numpy as np
 import numpy.typing as npt
 
@@ -161,27 +164,27 @@ def check_value_range(
         )
 
 
-def positive(arg):
+def positive(arg: Real):
     if arg <= 0:
         raise ValueError('Expected a positive value.')
     return arg
 
 
-def non_negative(arg):
+def non_negative(arg: Real):
     if arg < 0:
         raise ValueError('Expected a non-negative value.')
     return arg
 
 
-def between(low, high):
-    def validator(arg):
+def between(low: Real, high: Real):
+    def validator(arg: Real):
         if not low <= arg <= high:
             raise ValueError(f"Expected {low} <= value <= {high}.")
         return arg
     return validator
 
 
-def choice(choices: list):
+def choice(choices: Collection):
     def validator(arg):
         if arg not in choices:
             raise ValueError(f"Expected one of {choices}.")
@@ -190,7 +193,7 @@ def choice(choices: list):
     return validator
 
 
-def optional(validator):
+def optional(validator: Callable[[Any], Any]):
     def validate(arg):
         if arg is None:
             return None
