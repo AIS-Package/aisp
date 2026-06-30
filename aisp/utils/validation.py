@@ -201,3 +201,10 @@ def optional(validator: Callable[[Any], Any]):
 
     return validate
 
+def compose(*validators):
+    def validate(arg):
+        for validator in validators:
+            arg = validator(arg)
+        return arg
+
+    return validate
