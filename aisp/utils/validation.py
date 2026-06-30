@@ -169,7 +169,7 @@ def positive(arg):
 
 def non_negative(arg):
     if arg < 0:
-        raise ValueError('Expected a positive value.')
+        raise ValueError('Expected a non-negative value.')
     return arg
 
 
@@ -177,7 +177,7 @@ def between(low, high):
     def validator(arg):
         if not low <= arg <= high:
             raise ValueError(f"Expected {low} <= value <= {high}.")
-
+        return arg
     return validator
 
 
@@ -188,3 +188,13 @@ def choice(choices: list):
         return arg
 
     return validator
+
+
+def optional(validator):
+    def validate(arg):
+        if arg is None:
+            return None
+        return validator(arg)
+
+    return validate
+
