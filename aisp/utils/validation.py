@@ -166,47 +166,53 @@ def check_value_range(
         )
 
 
-def positive(arg: Real):
+def _validation_error(name, expected, value):
+    raise ValueError(
+        f"Invalid value for {name!r}: expected {expected}, got {value!r}."
+    )
+
+
+def positive(arg: Real, name: str):
     if arg <= 0:
-        raise ValueError('Expected a positive value.')
+        _validation_error(name, "must be positive", arg)
     return arg
 
 
-def non_negative(arg: Real):
+def non_negative(arg: Real, name):
     if arg < 0:
-        raise ValueError('Expected a non-negative value.')
+        _validation_error(name, "must be non-negative", arg)
     return arg
 
 
 def between(low: Real, high: Real):
-    def validator(arg: Real):
+    def validator(arg: Real, name: str):
         if not low <= arg <= high:
-            raise ValueError(f"Expected {low} <= value <= {high}.")
+            _validation_error(name, f"a value in [{low}, {high}]", arg)
         return arg
     return validator
 
 
 def choice(choices: Collection):
-    def validator(arg):
+    def validator(arg, name: str):
         if arg not in choices:
-            raise ValueError(f"Expected one of {choices}.")
+            _validation_error(name, f"one of {tuple(choices)}", arg)
         return arg
 
     return validator
 
 
-def optional(validator: Callable[[Any], Any]):
-    def validate(arg):
+def optional(validator: Callable[[Any, str], Any]):
+    def validate(arg, name: str):
         if arg is None:
             return None
-        return validator(arg)
+        return validator(arg, name)
 
     return validate
 
 def compose(*validators):
-    def validate(arg):
+    def validate(arg, name: str):
         for validator in validators:
-            arg = validator(arg)
+            arg = validator(arg, name)
         return arg
 
     return validate
@@ -227,7 +233,7 @@ def validate_parameters(**validators):
 
             for name, validator in validators.items():
                 value = bound.arguments[name]
-                bound.arguments[name] = validator(value)
+                bound.arguments[name] = validator(value, name)
 
             return func(*bound.args, **bound.kwargs)
 
