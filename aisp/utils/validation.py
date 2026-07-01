@@ -1,4 +1,6 @@
 """Contains functions responsible for validating data types."""
+import inspect
+from functools import wraps
 from numbers import Real
 from typing import Collection, Callable, Any
 
@@ -208,3 +210,27 @@ def compose(*validators):
         return arg
 
     return validate
+
+
+def validate_parameters(**validators: Callable[[Any], Any]):
+    def decorator(func):
+        sig = inspect.signature(func)
+        unknown = validators.keys() - sig.parameters.keys()
+        if unknown:
+            raise TypeError(f"{func.__name__} has no parameter: {','.join(unknown)}")
+
+        @wraps(func)
+        def wrapper(*args):
+            bound = sig.bind(*args)
+            bound.apply_defaults()
+
+            for name, validator in validators.items():
+                value = bound.arguments[name]
+                bound.arguments[name] = validator(value)
+
+            return func(*bound.args)
+
+        return wrapper
+
+    return decorator
+
