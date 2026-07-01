@@ -1,4 +1,8 @@
 """Contains functions responsible for validating data types."""
+import inspect
+from functools import wraps
+from numbers import Real
+from typing import Collection, Callable, Any
 
 import numpy as np
 import numpy.typing as npt
@@ -160,3 +164,80 @@ def check_value_range(
         raise ValueError(
             f"{name} must contain oly values within [{min_value}, {max_value}]."
         )
+
+
+def _validation_error(name, expected, value):
+    raise ValueError(
+        f"Invalid value for {name!r}: expected {expected}, got {value!r}."
+    )
+
+
+def positive(arg: Real, name: str):
+    if arg <= 0:
+        _validation_error(name, "must be positive", arg)
+    return arg
+
+
+def non_negative(arg: Real, name):
+    if arg < 0:
+        _validation_error(name, "must be non-negative", arg)
+    return arg
+
+
+def between(low: Real, high: Real):
+    def validator(arg: Real, name: str):
+        if not low <= arg <= high:
+            _validation_error(name, f"a value in [{low}, {high}]", arg)
+        return arg
+    return validator
+
+
+def choice(choices: Collection):
+    def validator(arg, name: str):
+        if arg not in choices:
+            _validation_error(name, f"one of {tuple(choices)}", arg)
+        return arg
+
+    return validator
+
+
+def optional(validator: Callable[[Any, str], Any]):
+    def validate(arg, name: str):
+        if arg is None:
+            return None
+        return validator(arg, name)
+
+    return validate
+
+def compose(*validators):
+    def validate(arg, name: str):
+        for validator in validators:
+            arg = validator(arg, name)
+        return arg
+
+    return validate
+
+
+def validate_parameters(**validators):
+    def decorator(func):
+        sig = inspect.signature(func)
+        valid_params = sig.parameters.keys()
+        unknown = {k: v for k, v in validators.items() if k not in valid_params}
+        if unknown:
+            raise TypeError(f"{func.__name__} has no parameter: {','.join(unknown)}")
+
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            bound = sig.bind(*args, **kwargs)
+            bound.apply_defaults()
+
+            for name, validator in validators.items():
+                value = bound.arguments[name]
+                bound.arguments[name] = validator(value, name)
+
+            return func(*bound.args, **bound.kwargs)
+
+        return wrapper
+
+    return decorator
+
