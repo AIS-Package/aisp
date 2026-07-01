@@ -212,23 +212,24 @@ def compose(*validators):
     return validate
 
 
-def validate_parameters(**validators: Callable[[Any], Any]):
+def validate_parameters(**validators):
     def decorator(func):
         sig = inspect.signature(func)
-        unknown = validators.keys() - sig.parameters.keys()
+        valid_params = sig.parameters.keys()
+        unknown = {k: v for k, v in validators.items() if k not in valid_params}
         if unknown:
             raise TypeError(f"{func.__name__} has no parameter: {','.join(unknown)}")
 
         @wraps(func)
-        def wrapper(*args):
-            bound = sig.bind(*args)
+        def wrapper(*args, **kwargs):
+            bound = sig.bind(*args, **kwargs)
             bound.apply_defaults()
 
             for name, validator in validators.items():
                 value = bound.arguments[name]
                 bound.arguments[name] = validator(value)
 
-            return func(*bound.args)
+            return func(*bound.args, **bound.kwargs)
 
         return wrapper
 
